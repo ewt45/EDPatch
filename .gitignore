@@ -28,3 +28,10 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# other project 
+/apksig/
+/edapi/
+/overlayapp/
+/xml/
+/app/src/main/java/com/eltechs
