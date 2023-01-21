@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <EditTextPreference
+
+        android:defaultValue="[No name]"
+        android:dialogTitle="环境名称"
+        android:key="NAME"
+        android:title="环境名称" />
+<!--    <com.ewt45.exagearsupportv7.ui.resolutionpreference.RSPreference-->
+<!--        android:defaultValue="default"-->
+<!--        android:dialogTitle="屏幕分辨率"-->
+<!--        android:entries="@array/cont_pref_screen_size_entries"-->
+<!--        android:entryValues="@array/cont_pref_screen_size_values"-->
+<!--        android:key="SCREEN_SIZE"-->
+<!--        android:summary="%s"-->
+<!--        android:title="屏幕分辨率" />-->
+
+    <ListPreference
+        app:dialogLayout="@layout/nav_header_main"
+        android:defaultValue="llvmpipe"
+        android:dialogTitle="渲染方式"
+        android:entries="@array/cont_pref_renderer_entries"
+        android:entryValues="@array/cont_pref_renderer_values"
+        android:key="RENDERER"
+        android:summary="%s"
+        android:title="渲染方式" />
+    <ListPreference
+        android:defaultValue="default"
+        android:dialogTitle="屏幕分辨率"
+        android:entries="@array/cont_pref_screen_size_entries"
+        android:entryValues="@array/cont_pref_screen_size_values"
+        android:key="SCREEN_SIZE"
+        android:summary="%s"
+        android:title="屏幕分辨率" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="HIDE_TASKBAR_SHORTCUT"
+        android:title="从快捷方式启动时隐藏任务栏" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="DEFAULT_CONTROLS_NOT_SHORTCUT"
+        android:title="未从快捷方式启动时采用默认操作模式" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="DEFAULT_RESOLUTION_NOT_SHORTCUT"
+        android:title="未从快捷方式启动时采用默认分辨率" />
+</PreferenceScreen>

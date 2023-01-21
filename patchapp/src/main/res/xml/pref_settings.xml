@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="clear_patcher_apk"
+        android:summary="@string/settings_delpatcherapksummary"
+        android:title="@string/settings_delpatcherapk"
+        android:widgetLayout="@layout/empty" />
+
+    <CheckBoxPreference
+        android:key="credits"
+        android:title="@string/settings_credits"
+        android:widgetLayout="@layout/empty" />
+    <CheckBoxPreference
+        android:key="version"
+        android:title="@string/settings_version"
+        android:widgetLayout="@layout/empty" />
+</PreferenceScreen>

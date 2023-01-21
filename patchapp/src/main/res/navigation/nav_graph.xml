@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/fragmentChoosePatch">
+
+    <fragment
+        android:id="@+id/FirstFragment"
+        android:name="com.ewt45.patchapp.FragmentFirst"
+        android:label="@string/first_fragment_label"
+        tools:layout="@layout/fragment_first">
+
+        <action
+            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            app:destination="@id/SecondFragment" />
+        <action
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            android:id="@+id/action_FirstFragment_to_fragmentChoosePatch"
+            app:destination="@id/fragmentChoosePatch" />
+    </fragment>
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="com.ewt45.patchapp.unused.FragmentSecond"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_second">
+
+        <action
+            android:id="@+id/action_SecondFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentChoosePatch"
+        android:name="com.ewt45.patchapp.FragmentChoosePatch"
+        android:label="@string/fragment_patch_label"
+        tools:layout="@layout/fragment_choose_patch" >
+            </fragment>
+    <fragment
+        android:id="@+id/settingPreferences"
+        android:name="com.ewt45.patchapp.FragmentSettings"
+        android:label="@string/action_settings" />
+    <fragment
+        android:id="@+id/fragmentHelp"
+        android:name="com.ewt45.patchapp.FragmentHelp"
+        android:label="@string/action_guide" />
+
+</navigation>

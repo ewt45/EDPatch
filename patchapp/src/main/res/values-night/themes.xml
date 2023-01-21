@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.ExagearSupportV7包" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#5a6abf</item>
+        <item name="colorPrimaryDark">#23408e</item>
+        <item name="colorAccent">#4527a0</item>
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
+        <!-- Customize your theme here. -->
+    </style>
+</resources>

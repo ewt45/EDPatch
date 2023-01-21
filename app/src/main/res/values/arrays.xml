@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="cont_pref_screen_size_entries">
+        <item>Default</item>
+        <item>640x480 (4:3)</item>
+        <item>800x600 (4:3)</item>
+        <item>1024x768 (4:3)</item>
+        <item>1280x720 (16:9)</item>
+        <item>1280x1024 (5:4)</item>
+        <item>1366x768 (16:9)</item>
+        <item>1600x900 (16:9)</item>
+        <item>1920x1080 (16:9)</item>
+    </array>
+    <array name="cont_pref_screen_size_values">
+        <item>default</item>
+        <item>640,480</item>
+        <item>800,600</item>
+        <item>1024,768</item>
+        <item>1280,720</item>
+        <item>1280,1024</item>
+        <item>1366,768</item>
+        <item>1600,900</item>
+        <item>1920,1080</item>
+    </array>
+
+    <array name="cont_pref_renderer_entries">
+        <item>ubuntu_i386_llvmpipe</item>
+        <item>virgl overlay by alexvorxx </item>
+        <item>vtest_llvmpipe 或 vtest_zink_turnip by Grima04(VirtIO-GPU)</item>
+        <item>基于gallium_xlib的zink_turnip by alexvorxx</item>
+    </array>
+    <array name="cont_pref_renderer_values">
+        <item>llvmpipe</item>
+        <item>virgloverlay</item>
+        <item>virpipe</item>
+        <item>gallium_xlib_zink_turnip</item>
+    </array>
+
+
+</resources>

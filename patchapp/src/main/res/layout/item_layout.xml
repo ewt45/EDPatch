@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/item_iv"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+ />
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignBottom="@id/item_iv"
+        android:layout_toRightOf="@id/item_iv"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="com.apk.apk"
+        android:textSize="20sp" />
+
+</RelativeLayout>

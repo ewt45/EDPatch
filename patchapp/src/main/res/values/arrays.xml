@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="credits_name">
+        <item>Apktool</item>
+        <item>common-io</item>
+        <item>android-gif-drawable</item>
+        <item>apksig</item>
+        <item>AndroidBinaryXml</item>
+
+    </array>
+    <array name="credits_link">
+        <item>https://ibotpeaches.github.io/Apktool/</item>
+        <item>https://commons.apache.org/proper/commons-io/</item>
+        <item>https://github.com/koral--/android-gif-drawable</item>
+        <item>https://android.googlesource.com/platform/tools/apksig</item>
+        <item>https://github.com/senswrong/AndroidBinaryXml</item>
+    </array>
+</resources>

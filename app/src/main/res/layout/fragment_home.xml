@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
+    <LinearLayout
+        android:id="@+id/touch_outer"
+        android:layout_width="match_parent"
+        android:background="#EFB6B6"
+        android:layout_height="200dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/toggle_input"
+        android:orientation="vertical" >
+        <android.support.design.widget.TextInputLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+<!--            <Spinner-->
+<!--                android:autofillHints="1111"-->
+<!--                android:entries="@array/cont_pref_screen_size_entries"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"/>-->
+            <AutoCompleteTextView
+                android:inputType="none"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </android.support.design.widget.TextInputLayout>
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="111"
+            android:inputType="text" />
+        <TextView
+            android:id="@+id/startupAdText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/startupAdButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+            <ImageView
+                android:src="@drawable/side_nav_bar"
+                android:layout_width="20dp"
+                android:layout_height="60dp"
+                />
+            <TextView
+                android:layout_gravity="center"
+                android:text="aaaaaaaa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <Button
+        android:text="显示键盘"
+        android:id="@+id/toggle_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/touch_outer" />
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/test_btn"
+        android:text="测试样式"
+        app:layout_constraintTop_toBottomOf="@id/text_home"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+<!--    <LinearLayout-->
+<!--        app:layout_constraintTop_toTopOf="@id/text_home"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+<!--        <Button-->
+<!--            android:text="111"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="?android:attr/buttonBarButtonStyle" />-->
+<!--        <Button-->
+<!--            android:text="1111"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            style="?android:attr/buttonBarButtonStyle" />-->
+<!--    </LinearLayout>-->
+    <TextView
+        android:id="@+id/text_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>
