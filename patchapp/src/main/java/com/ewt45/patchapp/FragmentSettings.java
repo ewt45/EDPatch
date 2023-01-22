@@ -71,6 +71,18 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
             return true;
         });
+
+        //更新地址
+        findPreference("update").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ewt45/EDPatch/releases"));
+                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
     }
 
 

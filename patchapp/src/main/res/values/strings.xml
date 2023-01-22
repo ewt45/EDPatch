@@ -44,10 +44,10 @@
     <string name="fraghelp_body_step_3">点击“开始修改”按钮，耐心等待打包完成。打包进度可以在输出信息中查看。</string>
     <string name="fraghelp_body_step_4">打包完成后，点击“安装修改后的apk”按钮安装新apk。由于签名变化，可能需要卸载原先的apk。</string>
     <string name="fraghelp_title2_attention">注意事项</string>
-    <string name="fraghelp_body_attention_1">本apk为实验项目，并不保证一定会成功添加功能，可能会出现功能无法添加/apk闪退等问题。</string>
+    <string name="fraghelp_body_attention_1">本apk为实验性项目，出现各种bug都是正常现象。</string>
     <string name="fraghelp_body_attention_2">在点击“开始修改”按钮后，请不要点击其他按钮或跳转其他界面，否则可能会出现问题。</string>
     <string name="fraghelp_body_attention_3">打包完成的apk存在于/storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk，可以手动在第三方文件管理器中查看。</string>
-    <string name="fraghelp_body_attention_4">由于打包后重新签名，如果手机里已安装该包名的exagear且签名不同，则需要卸载原应用再安装。\n另外由于virgl overlay的apk需要与exagear的apk具有相同的签名和sharedUserId才能正常运行，添加功能后的exagear apk可能无法正常使用原先的vo，解决办法就是自己使用同一签名秘钥，对二者手动签名，再安装。</string>
+    <string name="fraghelp_body_attention_4">由于打包后重新签名，需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。\n如果需要virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。</string>
     <string name="fraghelp_title1_func">可添加的功能介绍</string>
     <string name="fraghelp_body_cursorimg">在某些游戏内鼠标光标只显示一个很小的叉或者完全不显示，本功能将其图标修改为自定义的鼠标图片。图片保存于apk文件内的assets/mouse.png。</string>
     <string name="fraghelp_body_prefresl">在容器设置里可以自定义进入桌面后的宽高，兼容原本的预设分辨率选择。</string>
@@ -64,6 +64,9 @@
     <string name="tv_patchstep3">3. 执行操作</string>
     <string name="fragment_patch_label">主界面</string>
     <string name="settings_credits">第三方项目依赖</string>
+    <string name="settings_update">更新</string>
+    <string name="fraghelp_title2_brief">应用简介</string>
+    <string name="fraghelp_body_brief">在为exagear(3.0.2)加了一些小功能之后（主要是通过修改dex实现），我发现手改smali终究还是太麻烦了。即使提供修改代码和位置的傻瓜式教程，也不适用于未接触过apk修改的大部分人群。\n所以我在想，能否做一个应用，用户只需点一个按钮，等待自动修改完成后安装新的apk即可。于是本应用便诞生了。由于能力有限，不保证适用于所有版本的exagear，也不保证100%修改成功。</string>
 
 
 </resources>

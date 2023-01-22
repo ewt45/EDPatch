@@ -11,6 +11,34 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:contentPadding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/fraghelp_title2_brief" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Body2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="@string/fraghelp_body_brief" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <TextView
             style="@style/TextAppearance.MaterialComponents.Headline5"
@@ -18,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text="@string/fraghelp_title1_guide" />
+
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"

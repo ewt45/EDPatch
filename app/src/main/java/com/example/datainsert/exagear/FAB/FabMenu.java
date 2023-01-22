@@ -57,10 +57,10 @@ public class FabMenu{
                 new DriveD().show(a.getSupportFragmentManager(), null);
                 return true;
             });
-            menu.add("测试：vo").setOnMenuItemClickListener(item1->{
-                new VirGLOverlay().show(a.getSupportFragmentManager(),null);
-                return true;
-            });
+//            menu.add("测试：vo").setOnMenuItemClickListener(item1->{
+//                new VirGLOverlay().show(a.getSupportFragmentManager(),null);
+//                return true;
+//            });
         });
         fab.setOnClickListener(view -> fab.showContextMenu());
         //findViewById找到线性布局，添加fab和params

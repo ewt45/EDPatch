@@ -54,14 +54,6 @@ public class ActivityPatch extends AppCompatActivity {
 
         setContentView(binding.getRoot());
 
-
-//        Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
-//        intent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0));
-//        intent.putExtra("sender", "str");
-//        ResolveInfo resolveInfo = getPackageManager().queryIntentServices(intent, 0).get(0);
-//        new Intent(intent).setComponent(new ComponentName(resolveInfo.serviceInfo.packageName, resolveInfo.serviceInfo.name));
-
-
         setSupportActionBar(binding.toolbar);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main);
@@ -75,6 +67,9 @@ public class ActivityPatch extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        //写入版本号
+        getSharedPreferences("config",MODE_PRIVATE).edit().putInt("versionCode",BuildConfig.VERSION_CODE).apply();
 
     }
 

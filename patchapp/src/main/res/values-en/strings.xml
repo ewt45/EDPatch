@@ -42,7 +42,7 @@
     <string name="action_guide">Guide</string>
     <string name="fraghelp_body_attention_2">After clicking\"start patch\" button, please don\'t click or move to other view, otherwise problems may occur.</string>
     <string name="fraghelp_body_attention_3">"The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. You can check it manually with third-party file manager app. "</string>
-    <string name="fraghelp_body_attention_4">"Since the patched apk is resigned, you may need to uninstall the original installed apk to install the patched apk.\nMoreover, virgl overlay apk requires the same signature and sharedUserId with exagear apk. The resigned exagear apk may not work with the original installed virgl overlay apk. One solution is to sign these two apk  with the same signature manually and reinstall them. "</string>
+    <string name="fraghelp_body_attention_4">Since the patched apk is resigned, you may need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) before installing it.\nIf you need virgl overlay, please resign them with the same signature manually.</string>
     <string name="fraghelp_body_fab">Add a floating action button at the right-end of the layout, providing some extra functions. Currently functions: Changing the drive d location.</string>
     <string name="fraghelp_body_drived">The location of drive D inside the container is normally corresponding to /storage/emulated/0/Donwload or Exagear directory in android file system.\nThis function allows user to change the directory\'s location and customize its name. There will be an availability check after changing the location. If changed successfully, app needs to be restart so that the location will be updated.</string>
     <string name="fraghelp_body_softinput">Fix the crash of showing softinput method on android11 and above. After fixed, the launching of input method will be delayed for one second.</string>
@@ -56,4 +56,7 @@
     <string name="tv_patchstep3">3. action</string>
     <string name="fragment_patch_label">Main</string>
     <string name="settings_credits">Third-party project dependencies</string>
+    <string name="settings_update">Update</string>
+    <string name="fraghelp_title2_brief">About</string>
+    <string name="fraghelp_body_brief">After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. Even if  a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\nSo I\'m wondering if I can make an application. The user only needs to click a button and wait for the automatic modification to complete, then install the new apk. So this application was born. Due to my limited knowledge, 100% modification success or compatibility with all versions of exagear is not guaranteed.</string>
 </resources>
