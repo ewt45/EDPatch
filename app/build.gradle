@@ -36,7 +36,19 @@ android {
         baseline = file("lint-baseline.xml")
     }
 }
+sourceSets {
+    main {
+        java{
 
+        }
+        resources {
+            // 打包忽略目录: src/main/resources/img
+            exclude 'img/**'
+            // 打包忽略文件: src/main/resources/icons/scanner.vsdx
+            exclude 'icons/scanner.vsdx'
+        }
+    }
+}
 dependencies {
 
     //noinspection GradleCompatible
