@@ -1,5 +1,4 @@
-
-
+![icon](https://github.com/ewt45/EDPatch/blob/main/patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
 ## 介绍
 靠着仅有的一点java基础知识，在为exagear(3.0.2)加了一些小功能之后（主要是通过修改dex实现），我发现手改smali终究还是太麻烦了。
