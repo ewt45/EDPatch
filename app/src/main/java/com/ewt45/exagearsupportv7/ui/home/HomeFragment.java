@@ -95,10 +95,13 @@ public class HomeFragment extends Fragment {
 //                return true;
 //            });
 //            popupMenu.show();
-            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");//仅显示obb类型
-            startActivityForResult(intent, 123);
+
+//            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//            intent.addCategory(Intent.CATEGORY_OPENABLE);
+//            intent.setType("*/*");//仅显示obb类型
+//            startActivityForResult(intent, 123);
+
+            ProcessInstallObb.startest(this);
 
         });
         SensitivitySeekBar.create(binding.getRoot());
@@ -114,7 +117,7 @@ public class HomeFragment extends Fragment {
 
 
         //防止多次添加
-        ProcessInstallObb.startest(this);
+
 
 
 

@@ -68,11 +68,15 @@ public class SelectObbFragment extends Fragment {
         });
         LinearLayout l2 = new LinearLayout(requireContext());
         l2.setOrientation(LinearLayout.HORIZONTAL);
-        l2.setVerticalGravity(Gravity.CENTER);
+//        l2.setVerticalGravity(Gravity.CENTER);
         l2.addView(btn);
         l2.addView(mTv);
-        root.addView(l2);
-        root.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
+//        l2.setMinimumHeight(50);
+        root.addView(l2,new ViewGroup.LayoutParams(-1,-2));
+
+//        root.addView(btn);
+//        root.addView(mTv);
+        root.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         return root;
     }
 

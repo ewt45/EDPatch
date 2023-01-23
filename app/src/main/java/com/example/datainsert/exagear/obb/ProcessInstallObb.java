@@ -51,6 +51,9 @@ public class ProcessInstallObb {
         //显示fragment
         edStartupActivity.getSupportFragmentManager().beginTransaction().show(fragment).addToBackStack(null).commit();
 
+        //高度怎么不wrapcontent了呢
+//        startupAdButtons.requestLayout();
+//        startupAdButtons.invalidate();
     }
 
     public static void startest(HomeFragment homeFragment){

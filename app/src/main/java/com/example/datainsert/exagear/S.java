@@ -64,7 +64,7 @@ public class S {
                 "具有该文件夹的读取权限",
                 "具有该文件夹的写入权限",
                 "应用文件存储权限被禁止",
-                "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。\n*安卓11及以上，无法选择Android/obb及Android/data目录内的文件",
+                "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。",//*安卓11及以上，无法选择Android/obb及Android/data目录内的文件
                 "手动选择",
                 "所选文件不是obb数据包",
                 "使用自定义分辨率",
@@ -93,7 +93,8 @@ public class S {
                 "App is allowed to read the directory",
                 "App is allowed to write to the directory",
                 "App's storage permission is not granted",
-                "can't find exagear obb file, please check its name and location or select it manually.\n on Android11+, Android/obb and Android/data directory can't be seen in system file picker.",
+                "No obb detected, please try Selecting it manually",//                "can't find exagear obb file, please check its name and location or select it manually.\n on Android11+, Android/obb and Android/data directory can't be seen in system file picker.",
+
                 "select manually",
                 "selected file is not an obb file",
                 "using custom resolution",
