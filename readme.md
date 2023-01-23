@@ -7,6 +7,8 @@
 所以我在想，能否做一个自动修改apk的应用，用户完全不需要手动编辑smali，只需点一个按钮，等待修改完成后安装新的apk即可。于是本应用便诞生了。
 由于能力有限，不保证适用于所有版本，不保证100%修改成功。
 
+视频演示：[Youtube](https://youtu.be/t0y_AcWhZxI), [哔哩哔哩](https://www.bilibili.com/video/BV1mY411X7Nn/)
+下载：[release](https://github.com/ewt45/EDPatch/releases)
 ## 使用
 ### 操作步骤
 1. 从已安装应用列表，或者本地文件中选择exagear的apk，等待解包完成。
