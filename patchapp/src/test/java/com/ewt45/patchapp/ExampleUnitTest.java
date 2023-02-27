@@ -29,6 +29,10 @@ public class ExampleUnitTest {
         assertEquals(4, 2 + 2);
     }
 
+    public void test1(){
+        System.out.println("    invoke-direct {v1}, Lcom/eltechs/ed_virgl/controls/touchControls/DefaultTCF;-><init>()V".contains(""));
+    }
+
     @Test
     public void byteToByte() throws IOException {
         /*

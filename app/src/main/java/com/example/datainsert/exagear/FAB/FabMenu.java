@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.ewt45.exagearsupportv7.R;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
-import com.example.datainsert.exagear.FAB.dialogfragment.VirGLOverlay;
 import com.example.datainsert.exagear.RSIDHelper;
 import com.example.datainsert.exagear.S;
 
@@ -39,7 +39,6 @@ public class FabMenu{
             //设置icon颜色
             if(fab.getBackgroundTintList()!=null){
                 int bgColor = fab.getBackgroundTintList().getDefaultColor() | 0xff000000;
-
                 int icColor = ColorUtils.calculateMinimumAlpha(Color.WHITE,bgColor,4.5f)==-1
                         ? Color.BLACK : Color.WHITE;
                 assert iconDrawable != null;
@@ -54,13 +53,18 @@ public class FabMenu{
 
             MenuItem item = menu.add(S.get(S.DriveD_Title));
             item.setOnMenuItemClickListener(item1 -> {
-                new DriveD().show(a.getSupportFragmentManager(), null);
+                new DriveD().show(a.getSupportFragmentManager(), DriveD.TAG);
                 return true;
             });
 //            menu.add("测试：vo").setOnMenuItemClickListener(item1->{
 //                new VirGLOverlay().show(a.getSupportFragmentManager(),null);
 //                return true;
 //            });
+            menu.add(S.get(S.CmCtrl_title)).setOnMenuItemClickListener(item12 -> {
+                new CustomControls().show(a.getSupportFragmentManager(),CustomControls.TAG);
+                return true;
+            });
+
         });
         fab.setOnClickListener(view -> fab.showContextMenu());
         //findViewById找到线性布局，添加fab和params

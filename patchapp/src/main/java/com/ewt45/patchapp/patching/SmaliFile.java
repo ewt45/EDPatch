@@ -1,5 +1,7 @@
 package com.ewt45.patchapp.patching;
 
+import static com.ewt45.patchapp.PatchUtils.scanAndParsePkgName;
+
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -20,12 +22,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class SmaliFile {
-    static String TAG = "SmaliFile";
     public final static int LOCATION_BEFORE = 0;
     public final static int LOCATION_AFTER = 1;
     public final static int ACTION_DELETE = 0;
     public final static int ACTION_INSERT = 1;
     public final static int LIMIT_TYPE_METHOD = 0;
+    static String TAG = "SmaliFile";
     File mFile;//Smali对应的File
     private String mCls;//smali类名。格式如：Lcom/eltechs/ed/AppRunGuide;
     private String mMethodLimit;//限制范围。目前仅想到了方法限制
@@ -42,7 +44,7 @@ public class SmaliFile {
      * @param className 类名
      * @return this
      */
-    public SmaliFile findSmali(@Nullable String pkgName, String className)  {
+    public SmaliFile findSmali(@Nullable String pkgName, String className) {
         File smaliRoot = new File(PatchUtils.getPatchTmpDir() + "/tmp/smali");
         try {
             mFile = pkgName == null
@@ -50,7 +52,7 @@ public class SmaliFile {
                     : new File(smaliRoot.getAbsolutePath() + "/" + pkgName.replace(".", "/") + "/" + className + ".smali");
         } catch (Exception e) {
             e.printStackTrace();
-            mFile=null;
+            mFile = null;
         }
         Log.d(TAG, "locate: 找到smali：" + mFile);
         try {
@@ -111,7 +113,11 @@ public class SmaliFile {
      *
      * @return
      */
-    public SmaliFile patch(int location, int action, String[] origin, String[] patch) throws Exception {
+    public SmaliFile patch(int location, int action, String[] origin1, String[] patch1) throws Exception {
+
+        //先转换一下代码中的包名
+        List<String> originPkgCorrected = scanAndParsePkgName(origin1);
+        List<String> patchPkgCorrected = scanAndParsePkgName(patch1);
 
         boolean methodStart = false; //限制范围的函数是否开始
         int patchPosition = -1;//定位的原始代码位置是否找到
@@ -128,10 +134,10 @@ public class SmaliFile {
             }
             //找原始代码的位置
             //如果和原始代码第一行匹配，且后续长度够用，匹配剩余行数
-            if (line.contains(origin[0]) && mAllLines.size() - i >= origin.length) {
+            if (line.contains(originPkgCorrected.get(0)) && mAllLines.size() - i >= originPkgCorrected.size()) {
                 boolean locFound = true;
-                for (int j = 0; j < origin.length; j++) {
-                    if (!mAllLines.get(i + j).contains(parsePkgName(origin[j]))) {
+                for (int j = 0; j < originPkgCorrected.size(); j++) {
+                    if (!mAllLines.get(i + j).contains(originPkgCorrected.get(j))) {
                         locFound = false;
                         break;
                     }
@@ -154,22 +160,22 @@ public class SmaliFile {
             if (patchPosition == -1)
                 continue;
 
-            if (location == LOCATION_AFTER){
-                patchPosition += origin.length;
+            if (location == LOCATION_AFTER) {
+                patchPosition += originPkgCorrected.size();
             }
 
             switch (action) {
                 case ACTION_INSERT: {
-                    mAllLines.addAll(patchPosition, Arrays.asList(patch));
+                    mAllLines.addAll(patchPosition, patchPkgCorrected);
                     break;
                 }
                 case ACTION_DELETE: {
-                    if (patchPosition + patch.length > mAllLines.size())
+                    if (patchPosition + patchPkgCorrected.size() > mAllLines.size())
                         throw new Exception("删除失败：当前起始位置行数+删除代码行数>全部代码行数");
-                    for (String str : patch) {
+                    for (String str : patchPkgCorrected) {
                         String removedStr = mAllLines.remove(patchPosition);
-                        if (!removedStr.contains(parsePkgName(str))) {
-                            Log.e(TAG, "patch: 原始行：" + removedStr + ", 待删除行：" + parsePkgName(str), new Exception("删除错误：当前原始行与要删除行内容不匹配"));
+                        if (!removedStr.contains(str)) {
+                            Log.e(TAG, "patch: 原始行：" + removedStr + ", 待删除行：" + str, new Exception("删除错误：当前原始行与要删除行内容不匹配"));
                         }
                     }
                     break;
@@ -184,6 +190,7 @@ public class SmaliFile {
         return this;
     }
 
+
     /**
      * 将修改范围缩小到某一范围（比如某个方法内），如果有多个patch，请注意是否需要修改limit
      *
@@ -197,49 +204,51 @@ public class SmaliFile {
     }
 
     /**
-     检查该功能是否已有
-     - 在之后：
-     - 插入：如果这之后第一句是插入代码第一句，则说明功能已有
-     - 删除：如果这之后第一句不是删除代码第一句，则说明功能已有。
-     - 在之前：
-     - 插入：如果这之前的一句是插入代码的最后一句，则功能已有
-     - 删除：如果这之前的一句不是删除代码的最后一句，则功能已有
-     delete和before的情况有问题，请勿使用
+     * 检查该功能是否已有
+     * - 在之后：
+     * - 插入：如果这之后第一句是插入代码第一句，则说明功能已有
+     * - 删除：如果这之后第一句不是删除代码第一句，则说明功能已有。
+     * - 在之前：
+     * - 插入：如果这之前的一句是插入代码的最后一句，则功能已有
+     * - 删除：如果这之前的一句不是删除代码的最后一句，则功能已有
+     * delete和before的情况有问题，请勿使用
      */
     public boolean patchedEarlier(String method, int location, int action, String[] origin, String[] patch) {
         boolean methodStart = false; //限制范围的函数是否开始
         int patchPosition = -1;//定位的原始代码位置是否找到
         //找到函数起始位置
-        for(int i=0; i<mAllLines.size(); i++){
-            if(mAllLines.get(i).contains(method)){
+        for (int i = 0; i < mAllLines.size(); i++) {
+            if (mAllLines.get(i).contains(scanAndParsePkgName(new String[]{method}).get(0))) {
                 patchPosition = i;
                 break;
             }
         }
-
+        //更新包名
+        origin = scanAndParsePkgName(origin).toArray(new String[0]);
+        patch  = scanAndParsePkgName(patch).toArray(new String[0]);
         //找到函数中定位代码的位置
         boolean locFound = false;
-        for(int i=patchPosition; i<mAllLines.size(); i++){
+        for (int i = patchPosition; i < mAllLines.size(); i++) {
             String line = mAllLines.get(i);
             if (line.contains(origin[0]) && mAllLines.size() - i >= origin.length) {
-                int matchLength=0;
+                int matchLength = 0;
                 for (int j = 0; j < origin.length; j++) {
-                    if (mAllLines.get(i + j).contains(parsePkgName(origin[j])))
+                    if (mAllLines.get(i + j).contains(origin[j]))
                         matchLength++;
                 }
-                if(matchLength== origin.length){
-                    locFound=true;
+                if (matchLength == origin.length) {
+                    locFound = true;
                     patchPosition = i;
                     break;
                 }
             }
         }
 
-        if (location == LOCATION_AFTER){
+        if (location == LOCATION_AFTER) {
             patchPosition += origin.length;
             return (action == ACTION_INSERT && mAllLines.get(patchPosition).contains(patch[0])) ||
                     (action == ACTION_DELETE && !mAllLines.get(patchPosition).contains(patch[0]));
-        }else if(location == LOCATION_BEFORE){
+        } else if (location == LOCATION_BEFORE) {
             return (action == ACTION_INSERT && mAllLines.get(patchPosition - 1).contains(patch[patch.length - 1]))
 //                    || (action ==ACTION_DELETE && !locFound); delete和before的情况有问题
                     || (action == ACTION_DELETE && !mAllLines.get(patchPosition - 1).contains(patch[patch.length - 1]));
@@ -250,29 +259,34 @@ public class SmaliFile {
 
     /**
      * 判断该功能已经存在。用于delete+before的情况
-     * @param method 给定方法
+     *
+     * @param method       给定方法
      * @param deletedLines 如果该功能已存在，则这些行代码应该已被删除
      * @return 是否已存在
      */
-    public boolean patchedEarlier(String method,String[] deletedLines){
+    public boolean patchedEarlier(String method, String[] deletedLines) {
         boolean methodBegin = false;
-        boolean patched=false;
-        for(int i =0; i<mAllLines.size(); i++){
-            if(!methodBegin && mAllLines.get(i).contains(method)){
+        boolean patched = false;
+        for (int i = 0; i < mAllLines.size(); i++) {
+            if (!methodBegin && mAllLines.get(i).contains(scanAndParsePkgName(new String[]{method}).get(0))) {
                 methodBegin = true;
                 continue;
             }
-            if(methodBegin && mAllLines.get(i).contains(deletedLines[0])
-            && isEqualInOrder(i,deletedLines)){
+            //更新包名
+            deletedLines = scanAndParsePkgName(deletedLines).toArray(new String[0]);
+            if (methodBegin && mAllLines.get(i).contains(deletedLines[0])
+                    && isEqualInOrder(i, deletedLines)) {
                 return false; //如果找到了完整的这几行代码，说明没被删除，说明功能不存在
             }
         }
         return true;
     }
 
-    /**添加一整个方法*/
-    public SmaliFile addMethod(String[] add){
-        mAllLines.addAll(Arrays.asList(add));
+    /**
+     * 添加一整个方法
+     */
+    public SmaliFile addMethod(String[] add) {
+        mAllLines.addAll(scanAndParsePkgName(add));
         return this;
     }
 
@@ -304,9 +318,11 @@ public class SmaliFile {
         Log.d(TAG, "close: 生成新文件，关闭");
     }
 
-    private String parsePkgName(String str) {
-        return str.replace("$PACKAGE_NAME", PatchUtils.getPackageName());
-    }
+//    private String parsePkgName(String str) {
+//        return str.replace("$PACKAGE_NAME", PatchUtils.getPackageName());
+//    }
+
+
 
     public String getmCls() {
         return mCls;
@@ -314,15 +330,16 @@ public class SmaliFile {
 
     /**
      * 已知mAllLines在startPosition处的字符串与compared的第一个字符串相等，判断从start往后的compared.length长度个字符串，是否都与compared相等
+     *
      * @param startPosition 首个字符窜相等的位置
-     * @param compared 要比较的字符串数组
+     * @param compared      要比较的字符串数组
      * @return 是否相等
      */
-    private boolean isEqualInOrder(int startPosition, String[] compared){
-        if(startPosition+compared.length>mAllLines.size())
+    private boolean isEqualInOrder(int startPosition, String[] compared) {
+        if (startPosition + compared.length > mAllLines.size())
             return false;
-        for(int i=0; i< compared.length; i++){
-            if(!mAllLines.get(startPosition+i).contains(compared[i])){
+        for (int i = 0; i < compared.length; i++) {
+            if (!mAllLines.get(startPosition + i).contains(compared[i])) {
                 return false;
             }
         }

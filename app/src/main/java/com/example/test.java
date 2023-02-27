@@ -2,10 +2,13 @@ package com.example;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.eltechs.axs.Globals;
+import com.ewt45.exagearsupportv7.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.CursorToggle;
@@ -28,14 +31,16 @@ public class test extends AppCompatActivity {
 
     private void test2(float a){
         CursorToggle cursorToggle;
+        Toolbar toolbar =new Toolbar(Globals.getAppContext());
+        toolbar.setBackgroundResource(R.drawable.someimg);
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode!=10001){
-            SelectObbFragment.receiveResultManually(this,requestCode,resultCode,data);
-            return;
-        }
-        assert resultCode==2||resultCode==0;
-        int i=0;
-        test2(1f);
-    }
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        if(requestCode!=10001){
+//            SelectObbFragment.receiveResultManually(this,requestCode,resultCode,data);
+//            return;
+//        }
+//        assert resultCode==2||resultCode==0;
+//        int i=0;
+//        test2(1f);
+//    }
 }

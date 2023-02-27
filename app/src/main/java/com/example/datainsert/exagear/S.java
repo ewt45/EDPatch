@@ -9,6 +9,12 @@ import java.util.Map;
 import java.util.Objects;
 
 public class S {
+    /**
+     * 存储按键按钮的framelayout布局.在dialogfragment里用这个来寻找当前是否存在该布局
+     */
+    public static final int BTNCONTAINER_RESOURCE_ID = 0x7f095123;
+    public static final int VIEWPAGER_RESOURCE_ID = 0x7f095124; //滑动视图的id
+
     private static String locale;
     private static final Map<String, String[]> stringMap = new HashMap<>();
 
@@ -40,6 +46,8 @@ public class S {
     public static int CstRsl_editW=25;
     public static int CstRsl_editH=26;
 
+    public static int CmCtrl_title=27;
+
     static {
         //需要确保翻译完全，因为是通过索引来取字符串的
         String[] zhStrings = new String[]{
@@ -69,7 +77,8 @@ public class S {
                 "所选文件不是obb数据包",
                 "使用自定义分辨率",
                 "输入自定义宽度",
-                "输入自定义高度"
+                "输入自定义高度",
+                "按键设置（自定义操作模式）"
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -99,7 +108,8 @@ public class S {
                 "selected file is not an obb file",
                 "using custom resolution",
                 "input width",
-                "input height"
+                "input height",
+                "Controls Settings"
 
         };
 
@@ -110,7 +120,7 @@ public class S {
     public static String get(int id) {
         if (locale == null)
             locale = Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
-        Log.d("S", "f: 获取字符串，当前系统语言为" + locale + ", 要获取的字符串为" + id);
+//        Log.d("S", "get: 获取字符串，当前系统语言为" + locale + ", 要获取的字符串为" + id);
         if (stringMap.containsKey(locale)) {
             return Objects.requireNonNull(stringMap.get(locale))[id];
         } else {

@@ -45,7 +45,7 @@ import com.example.datainsert.exagear.S;
 import java.io.File;
 
 public class DriveD extends BaseFragment implements DialogInterface.OnClickListener {
-    private final static String TAG = "DriveD";
+    public final static String TAG = "DriveD";
     //sharedpreference里记录父路径和文件夹的key
     public static String PREF_KEY_PAR_IND = "PREF_KEY_PAR_IND"; //值为int
     public static String PREF_KEY_DST_NAME = "PREF_KEY_DST_IND"; //值为string
@@ -76,14 +76,14 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         Context c = requireContext();
         setCancelable(false);//禁止中途退出
 
-        tvTestResult = getTextViewWithText("");
+        tvTestResult = getTextViewWithText(c,"");
 
         ScrollView rootScrollView = new ScrollView(c);
         rootScrollView.setPadding(40, 40, 40, 40);
         LinearLayout rootView = new LinearLayout(c);
         rootView.setOrientation(LinearLayout.VERTICAL);
         rootScrollView.addView(rootView);
-        rootView.addView(getTextViewWithText(S.get(S.DriveD_Explain)));
+        rootView.addView(getTextViewWithText(c,S.get(S.DriveD_Explain)));
 
         TextInputLayout textInputLayout = new TextInputLayout(c);
         textInputLayout.addView(setupETPar());
@@ -97,7 +97,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         rootView.addView(tvTestResult);
 
 
-        rootView.addView(getOneLineWithTitle(S.get(S.DriveD_DescTitle), getTextViewWithText(S.get(S.DriveD_DescCont)), false));
+        rootView.addView(getOneLineWithTitle(c,S.get(S.DriveD_DescTitle), getTextViewWithText(c,S.get(S.DriveD_DescCont)), false));
         //初始化当前路径
         tvInputDstDir.setText(getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
         updateCurrentParDir(getPreference().getInt(PREF_KEY_PAR_IND, 0));

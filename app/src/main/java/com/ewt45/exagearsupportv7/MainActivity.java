@@ -43,6 +43,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MainActivity extends FrameworkActivity {
+    public MainActivity(){
+        if (Globals.getApplicationState() == null) {
+            Globals.setApplicationState(new ApplicationStateObject(EDApplicationState.class));
+        }
+
+    }
 
     String TAG = "MainActivity";
     private AppBarConfiguration mAppBarConfiguration;
@@ -59,6 +65,7 @@ public class MainActivity extends FrameworkActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
+        binding.toolbar.setBackgroundResource(R.drawable.someimg);
 
         Toast.makeText(this, Environment.getExternalStorageState(), Toast.LENGTH_SHORT).show();
 

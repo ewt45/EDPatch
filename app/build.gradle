@@ -16,7 +16,24 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your app.
+            abiFilters 'armeabi-v7a','x86_64'//, 'arm64-v8a','x86', 'x86_64', 'armeabi'
+        }
     }
+
+    // Encapsulates your external native build configurations.
+    externalNativeBuild {
+
+        // Encapsulates your CMake build configurations.
+        cmake {
+
+            // Provides a relative path to your CMake build script.
+            path "CMakeLists.txt"
+        }
+    }
+
 
     buildTypes {
         release {
@@ -35,7 +52,18 @@ android {
     lint {
         baseline = file("lint-baseline.xml")
     }
+
+
 }
+
+// 自定义打包名称
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        outputFileName = "patcher.apk"
+    }
+}
+
+
 sourceSets {
     main {
         java{

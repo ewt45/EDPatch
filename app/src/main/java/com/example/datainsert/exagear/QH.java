@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.example.datainsert.exagear.controls.OneColPrefs;
 
@@ -73,5 +75,15 @@ public class QH {
             minA = ColorUtils.calculateMinimumAlpha(Color.BLACK, bgColorNoAlpha, 4.5f);
 //         return ((Color.alpha(bgColor)==0xff)?minA<<24:bgColor&0xff000000)+(solid&0x00ffffff);
         return (((255 + Color.alpha(bgColor)) / 2) << 24) + (solid & 0x00ffffff);
+    }
+
+    /**
+     * 一次性添加多个子布局（为什么官方api没有这种功能啊）
+     * @param parent 父布局
+     * @param subs 多个子布局
+     */
+    public static void addAllViews(ViewGroup parent, View... subs){
+        for(View v:subs)
+            parent.addView(v);
     }
 }

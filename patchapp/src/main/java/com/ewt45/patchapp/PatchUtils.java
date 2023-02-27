@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PatchUtils {
@@ -84,5 +85,20 @@ public class PatchUtils {
             pkgSmali.close();
         }
         return packageName;
+    }
+
+    /**
+     * 不使用$PACKAGE_NAME了，自动检测com.eltechs.ed包名吧
+     *
+     * @param origin
+     * @return
+     */
+    public static List<String> scanAndParsePkgName(String[] origin) {
+        List<String> returnLists = new ArrayList<>();
+        for (String str : origin) {
+            returnLists.add(str.replace("com/eltechs/ed", PatchUtils.getPackageName())
+                    .replace("com.eltechs.ed", PatchUtils.getPackageName().replace('/', '.')));
+        }
+        return  returnLists;
     }
 }

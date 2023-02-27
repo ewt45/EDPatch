@@ -21,4 +21,6 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="no_obb_file_found">没找到obb文件</string>
+
+    <string name="show_keyboard">显示键盘</string>
 </resources>

@@ -35,3 +35,6 @@ google-services.json
 /overlayapp/
 /xml/
 /app/src/main/java/com/eltechs
+
+#smali
+*.smali

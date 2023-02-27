@@ -6,7 +6,11 @@
         android:summary="@string/settings_delpatcherapksummary"
         android:title="@string/settings_delpatcherapk"
         android:widgetLayout="@layout/empty" />
-
+    <!--            android:summary="开启android:debuggable选项"-->
+<!--    <CheckBoxPreference-->
+<!--        android:key="apk_debuggable"-->
+<!--        android:title="生成的apk允许调试"-->
+<!--        />-->
     <CheckBoxPreference
         android:key="credits"
         android:title="@string/settings_credits"
@@ -16,6 +20,7 @@
         android:summary="https://github.com/ewt45/EDPatch/releases"
         android:title="@string/settings_update"
         android:widgetLayout="@layout/empty" />
+
     <CheckBoxPreference
         android:key="version"
         android:title="@string/settings_version"

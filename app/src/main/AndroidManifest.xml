@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-sdk tools:overrideLibrary="com.mittorn.virgloverlay"/>
     <application
+        android:name="com.example.datainsert.exagear.application.MyApplication"
         tools:replace="android:theme"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,15 +32,18 @@
                 android:value="" />
         </activity>
 
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+        <activity android:name="com.eltechs.axs.activities.XServerDisplayActivity"
+            android:screenOrientation="sensorLandscape"/>
+
+<!--        <provider-->
+<!--            android:name="android.support.v4.content.FileProvider"-->
+<!--            android:authorities="${applicationId}.provider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/provider_paths" />-->
+<!--        </provider>-->
     </application>
 
 </manifest>

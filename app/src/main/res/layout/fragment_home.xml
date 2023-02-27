@@ -24,18 +24,18 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <!--            <Spinner-->
-                <!--                android:autofillHints="1111"-->
-                <!--                android:entries="@array/cont_pref_screen_size_entries"-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="wrap_content"/>-->
+
                 <AutoCompleteTextView
+                    android:hint="hint"
+                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none" />
             </android.support.design.widget.TextInputLayout>
 
             <EditText
+                android:focusable="false"
+
                 android:id="@+id/edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,10 +64,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="aaaaaaaa" />
+
             </LinearLayout>
 
-
         </LinearLayout>
+
     </ScrollView>
 
     <Button
@@ -82,34 +83,67 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="测试样式"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_home" />
-    <!--    <LinearLayout-->
-    <!--        app:layout_constraintTop_toTopOf="@id/text_home"-->
+        app:layout_constraintTop_toTopOf="parent" />
+    <Button
+        android:id="@+id/start_xserveractivity_btn"
+        app:layout_constraintLeft_toRightOf="@id/test_btn"
+        app:layout_constraintTop_toTopOf="@id/test_btn"
+        android:text="启动XServerActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <!--    <RelativeLayout-->
+    <!--        android:id="@+id/parentRelative"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/test_btn"-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="wrap_content">-->
-    <!--        <Button-->
-    <!--            android:text="111"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            style="?android:attr/buttonBarButtonStyle" />-->
-    <!--        <Button-->
-    <!--            android:text="1111"-->
-    <!--            android:layout_width="wrap_content"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            style="?android:attr/buttonBarButtonStyle" />-->
-    <!--    </LinearLayout>-->
-    <TextView
-        android:id="@+id/text_home"
+
+    <!--       <TextView-->
+    <!--           android:background="@color/cardview_dark_background"-->
+    <!--           android:layout_centerInParent="true"-->
+    <!--           android:id="@+id/tv"-->
+    <!--           android:layout_width="300dp"-->
+    <!--           android:layout_height="200dp"/>-->
+    <!--        <TextView-->
+    <!--            android:background="@color/purple_200"-->
+    <!--            android:layout_alignParentStart="true"-->
+    <!--            android:layout_width="80dp"-->
+    <!--            android:layout_height="30dp"/>-->
+    <!--    </RelativeLayout>-->
+    <FrameLayout
+        android:id="@+id/fake_tsc_mainframe"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="200dp"
+        app:layout_constraintTop_toBottomOf="@id/test_btn">
+
+        <TextView
+            android:id="@+id/tv"
+            android:elevation="100dp"
+            android:translationZ="100dp"
+
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:background="#14202020" />
+
+        <!--        一个纵向滚动，宽高match_parent，，在里面放一个横向滚动，宽高wrap_content,再里面都是wrap。就可以横向纵向都可以滑动了-->
+    </FrameLayout>
+
+    <!--    <android.support.design.widget.TabLayout-->
+    <!--        android:id="@+id/tablayout1"-->
+    <!--        android:layout_width="200dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:tabMode="scrollable"-->
+    <!--        app:tabMaxWidth="80dp"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/test_btn" />-->
+
+    <!--    <android.support.v4.view.ViewPager-->
+    <!--        android:id="@+id/pager1"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/tablayout1" />-->
+
+
 </android.support.constraint.ConstraintLayout>

@@ -20,7 +20,7 @@ public class BuildApk implements Action {
         try {
             Log.d(TAG, "run: 开始回编译apk");
             BuildOptions options = new BuildOptions();
-//            options.debugMode=true;
+            options.debugMode=true;
             new Androlib(options).build(new File(PatchUtils.getPatchTmpDir(), "tmp"), null);
         } catch (BrutException e) {
             e.printStackTrace();
