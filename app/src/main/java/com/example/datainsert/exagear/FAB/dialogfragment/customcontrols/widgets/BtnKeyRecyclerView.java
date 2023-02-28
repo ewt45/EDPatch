@@ -5,7 +5,11 @@ import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
 import static android.support.v7.widget.helper.ItemTouchHelper.UP;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SIDEBAR_COLOR;
+
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,7 +32,8 @@ public class BtnKeyRecyclerView extends RecyclerView {
         mAdapter.submitList(Arrays.asList(keys));
         //设置拖拽排序
         new ItemTouchHelper(new DragHelperCallback(UP | DOWN, 0)).attachToRecyclerView(this);
-
+        //设置侧栏底色
+        setBackgroundColor(getPreference().getInt(PREF_KEY_SIDEBAR_COLOR, Color.BLACK));
     }
     @NonNull
     @Override

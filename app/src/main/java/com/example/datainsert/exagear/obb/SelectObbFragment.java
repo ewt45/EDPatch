@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eltechs.axs.helpers.ZipInstallerObb;
-import com.example.datainsert.exagear.S;
+import com.example.datainsert.exagear.RR;
 
 import org.apache.commons.io.IOUtils;
 
@@ -48,14 +46,14 @@ public class SelectObbFragment extends Fragment {
         root.setTag(TAG); //设置tag，用于在布局树中标识fragment，删除那个隐藏布局的其他子布局的时候会用到
 //        root.setGravity(Gravity.TOP);
         TextView tv1 = new TextView(requireContext());
-        tv1.setText(S.get(S.SelObb_info));
+        tv1.setText(RR.getS(RR.SelObb_info));
         tv1.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
         root.addView(tv1);
 
         mTv = new TextView(requireContext());
         mTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
         Button btn = new Button(requireContext());
-        btn.setText(S.get(S.SelObb_btn));
+        btn.setText(RR.getS(RR.SelObb_btn));
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +130,7 @@ public class SelectObbFragment extends Fragment {
                 +", type(MimeTypeMap):"+MimeTypeMap.getSingleton().getMimeTypeFromExtension("obb"));
         //判断一下后缀吧，如果不是obb就显示错
         if(!isSuffixObb(filename)){
-            fragment.mTv.setText(S.get(S.SelObb_wrongFile));
+            fragment.mTv.setText(RR.getS(RR.SelObb_wrongFile));
             return;
         }
         fragment.mTv.setText(filename);

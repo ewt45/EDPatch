@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay.widget;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ALPHA;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
@@ -18,10 +19,12 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.eltechs.axs.Finger;
 import com.eltechs.axs.Globals;
@@ -31,6 +34,9 @@ import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
+import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
@@ -158,13 +164,18 @@ public class RegularKeyBtn extends BaseMoveBtn {
         editText.setSingleLine();
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setText(mOneKey.getName());
+        editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(getContext(),100),-2));
+        LinearLayout rootView = getOneLineWithTitle(getContext(),"重命名",editText,false);
+        int padding = QH.px(getContext(), RR.attr.dialogPaddingDp);
+        rootView.setPadding(padding,0,padding,0);
         new AlertDialog.Builder(getContext())
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     mOneKey.setName(editText.getText().toString());
                     setText(editText.getText().toString());
                 })
+                .setTitle("按钮属性")
                 .setNegativeButton(android.R.string.cancel, null)
-                .setView(editText).create().show();
+                .setView(rootView).create().show();
     }
 
 

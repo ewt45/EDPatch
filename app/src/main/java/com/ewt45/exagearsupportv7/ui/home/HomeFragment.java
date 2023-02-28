@@ -126,76 +126,7 @@ public class HomeFragment extends Fragment {
 //        ViewGroup linear = requireActivity().findViewById(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2));
 //        linear.setVisibility(View.VISIBLE);
 
-        LinearLayout linearLayout = new LinearLayout(getContext()){
-            @Override
-            public boolean dispatchTouchEvent(MotionEvent ev) {
-//                Log.d(TAG, "dispatchTouchEvent: 外层framelayout");
-                return super.dispatchTouchEvent(ev);
-            }
 
-            @Override
-            public boolean onTouchEvent(MotionEvent event) {
-//                Log.d(TAG, "onTouchEvent: 外层framelayout");
-                int actionIndex = event.getActionIndex();
-                int pointerId = event.getPointerId(actionIndex);
-                int actionMasked = event.getActionMasked();
-                if(actionMasked==ACTION_DOWN){
-                    Log.d(TAG, "onTouchEvent: ACTION_DOWN,pointerId="+pointerId+", actionIndex="+actionIndex);
-                }else if(actionMasked == ACTION_POINTER_DOWN){
-                    Log.d(TAG, "onTouchEvent: ACTION_POINTER_DOWN,pointerId="+pointerId+", actionIndex="+actionIndex);
-                }else if(actionMasked==ACTION_UP){
-                    Log.d(TAG, "onTouchEvent: ACTION_UP,pointerId="+pointerId+", actionIndex="+actionIndex);
-
-                }else if(actionMasked==ACTION_POINTER_UP){
-                    Log.d(TAG, "onTouchEvent: ACTION_UP,pointerId="+pointerId+", actionIndex="+actionIndex);
-
-                }
-
-                return super.onTouchEvent(event);
-            }
-        };
-        ArrayList<View> lists = new ArrayList<>();
-        linearLayout.setFocusable(true);
-        linearLayout.setClickable(true);
-        Button btnNoPointerUp = new android.support.v7.widget.AppCompatButton(getContext()){
-            @Override
-            public boolean onTouchEvent(MotionEvent event) {
-//                super.onTouchEvent(event);
-                return event.getActionMasked()==MotionEvent.ACTION_POINTER_DOWN;        //只有第一个手指按下返回true
-//                return false;
-
-            }
-        };
-        btnNoPointerUp.setText("btnNoPointerUp");
-        Button btnTestIfCanReceive = new android.support.v7.widget.AppCompatButton(getContext()){
-            @Override
-            public boolean onTouchEvent(MotionEvent event) {
-                //难道是没调用super不行？也不是，返回false就行。
-                super.onTouchEvent(event);
-                //            Log.d(TAG, "onTouch: 用于测试能否接收到ACTION_POINTER_DOWN的按钮,返回"+!(event.getActionMasked()==MotionEvent.ACTION_POINTER_DOWN));
-                return false;//!(event.getActionMasked()==MotionEvent.ACTION_POINTER_DOWN);//第二个手指按下时不处理，让父布局处理
-            }
-        };
-        btnTestIfCanReceive.setText("btnTestIfCanReceive");
-
-//        lists.add(linearLayout);
-//        lists.add(btnTestIfCanReceive);
-//        lists.add(btnNoPointerUp);
-//        linearLayout.addTouchables(lists);
-        linearLayout.addView(btnNoPointerUp);
-        linearLayout.addView(btnTestIfCanReceive);
-        //!(event.getActionMasked()==MotionEvent.ACTION_POINTER_DOWN)
-        binding.fakeTscMainframe.addView(linearLayout);
-
-//        Button btn1 = new Button(getContext());
-//        Button btn2 = new Button(getContext());
-//        TextView textView1 = new TextView(getContext());
-//        lists.add(btn1);
-//        lists.add(btn2);
-//        textView1.addTouchables(lists);
-//        textView1.setText("测试touchables");
-//
-//        binding.fakeTscMainframe.addView(textView1);
 
     }
 

@@ -7,6 +7,7 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.get
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getTextViewWithText;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ALPHA;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
@@ -43,6 +44,7 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -56,11 +58,11 @@ public class SubView3Style extends LinearLayout {
 
         //样例按钮
         Button btnSample = new Button(c);
-        btnSample.setText("样例");
+        btnSample.setText(getS(RR.cmCtrl_s3_sampleBtn));
 //        btnSample.setBackground(getPreference().getBoolean(PREF_KEY_BTN_BG_RIPPLE,false)
 //                ?new RippleDrawable(ColorStateList.valueOf(getPreference().getInt(PREF_KEY_BTN_BG_COLOR,0xffffffff)),null,null)
 //                :new ColorDrawable(getPreference().getInt(PREF_KEY_BTN_BG_COLOR,0xffffffff)));
-        Log.d(TAG, "buildUI: 初始化透明度不对？" + btnSample.getBackground().getAlpha());
+//        Log.d(TAG, "buildUI: 初始化透明度不对？" + btnSample.getBackground().getAlpha());
         btnSample.setBackgroundTintList(ColorStateList.valueOf(getPreference().getInt(PREF_KEY_BTN_BG_COLOR, Color.WHITE)));
         btnSample.setTextColor(getPreference().getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK));
         RippleDrawable spdrawable = (RippleDrawable) btnSample.getBackground();
@@ -132,10 +134,10 @@ public class SubView3Style extends LinearLayout {
 
         LinearLayout linearCAOuter = new LinearLayout(c);
         linearCAOuter.setOrientation(LinearLayout.VERTICAL);
-        TextView tvTitleCA = getTextViewWithText(c, "按钮颜色&透明度");
+        TextView tvTitleCA = getTextViewWithText(c, getS(RR.cmCtrl_s3_btnColor));
         tvTitleCA.getPaint().setFakeBoldText(true);
         tvTitleCA.invalidate();
-        setDialogTooltip(tvTitleCA, "按钮颜色为6位的十六进制颜色，如：2121FA。\n透明度为0-255，当透明度设置到0时，按钮背景完全透明，文字保留1/3的透明度。");
+        setDialogTooltip(tvTitleCA, getS(RR.cmCtrl_s3_btnColorTip));
         linearCAOuter.addView(tvTitleCA);
         LinearLayout.LayoutParams linearCAContentparams = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
         linearCAContentparams.setMarginStart(20);
@@ -160,31 +162,10 @@ public class SubView3Style extends LinearLayout {
         linearWHSeek.addView(seekBarWidth, generateLayoutParams(linearParams));
         linearWHSeek.addView(seekBarHeight, generateLayoutParams(linearParams));
 
-        LinearLayout oneLineWHSeek = getOneLineWithTitle(c, "按钮宽高", linearWHSeek, true);
-        setDialogTooltip(oneLineWHSeek.getChildAt(0), "设置按钮的宽高。范围为10~200dp。小于10为自适应宽/高。");
+        LinearLayout oneLineWHSeek = getOneLineWithTitle(c, getS(RR.cmCtrl_s3_btnSize), linearWHSeek, true);
+        setDialogTooltip(oneLineWHSeek.getChildAt(0), getS(RR.cmCtrl_s3_btnSizeTip));
         addView(oneLineWHSeek);
 
-//        CheckBox checkWidth = new CheckBox(c);
-//        checkWidth.setText("自适应");
-//        checkWidth.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            setBtnLayout(btnSample, true, isChecked ? -2 : seekBarWidth.getProgress());
-//            seekBarWidth.setEnabled(!isChecked);
-//        });
-//        CheckBox checkHeight = new CheckBox(c);
-//        checkHeight.setText("自适应");
-//        checkHeight.setOnCheckedChangeListener((buttonView, isChecked) -> {
-//            setBtnLayout(btnSample, false, isChecked ? -2 : seekBarHeight.getProgress());
-//            seekBarHeight.setEnabled(!isChecked);
-//        });
-//        LinearLayout linearWHCheck = new LinearLayout(c);
-//        linearWHCheck.addView(checkWidth, generateLayoutParams(linearParams));
-//        linearWHCheck.addView(checkHeight, generateLayoutParams(linearParams));
-//        addView(linearWHCheck);
-
-//        //到时候再测量宽高，再加进去吧
-//        colorPickerView = new ColorPickerView(getContext());
-//        colorPickerView.setLayoutParams(new ViewGroup.LayoutParams(200,200));
-//        addView(colorPickerView);
 
         //侧栏背景颜色
         EditText editSideColor = new EditText(c);
@@ -199,8 +180,8 @@ public class SubView3Style extends LinearLayout {
             int sideBgColor = Color.parseColor("#ff" + s1);
             getPreference().edit().putInt(PREF_KEY_SIDEBAR_COLOR, sideBgColor).apply();
         }));
-        LinearLayout linearSideColor = getOneLineWithTitle(c,"左右侧栏背景颜色",editSideColor,true);
-        setDialogTooltip(linearSideColor.getChildAt(0),"该选项对应当“按键 - 按键布局方式”选择为左右侧栏时，左右侧栏的底色。\n输入格式为6位的十六进制颜色，如000000，透明度固定为255完全不透明。（该颜色设置后并不会在上方的预览处显示出来，请启动容器后查看。）");
+        LinearLayout linearSideColor = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),editSideColor,true);
+        setDialogTooltip(linearSideColor.getChildAt(0),getS(RR.cmCtrl_s3_sideColorTip));
         addView(linearSideColor);
     }
 

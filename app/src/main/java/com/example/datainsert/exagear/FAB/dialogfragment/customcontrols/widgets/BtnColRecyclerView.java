@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 
+import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.OneCol;
 
 import java.util.List;
@@ -16,13 +17,12 @@ import java.util.List;
 public class BtnColRecyclerView extends RecyclerView {
     int nextId=0;//每个回收视图都单独维护一个nextId
     BtnColAdapter mAdapter ;
-    private DetachCallback mDetachCallback  ;
-    public BtnColRecyclerView(@NonNull Context context) {
+    public BtnColRecyclerView(@NonNull Context context, @NonNull KeyCodes2 keyCodes2, boolean isLeft) {
         super(context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(HORIZONTAL);
         setLayoutManager(layoutManager);
-        mAdapter = new BtnColAdapter();
+        mAdapter = new BtnColAdapter(keyCodes2,isLeft);
         setAdapter(mAdapter);
 
 //        OneKey[] keys = {new OneKey(1),new OneKey(2)};
@@ -64,27 +64,6 @@ public class BtnColRecyclerView extends RecyclerView {
 
     }
 
-    /**
-     * 设置一个detachCallback，在关闭窗口时更新keycode2到最新
-     * @param mDetachCallback
-     */
-    public void setDetachCallback(DetachCallback mDetachCallback) {
-        this.mDetachCallback = mDetachCallback;
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if(mDetachCallback!=null)
-            mDetachCallback.updateKeyCode2(mAdapter.getCurrentList());
-    }
-
-    /**
-     * 关闭视图的时候统一保存一下keycode2
-     */
-    public interface DetachCallback{
-        void updateKeyCode2(List<OneCol> oneCols);
-    }
 }
 
 

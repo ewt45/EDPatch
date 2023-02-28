@@ -26,7 +26,7 @@ public class FuncResl implements Func {
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment$2.smali",
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment$3.smali",
                 "/com/example/datainsert/exagear/RSIDHelper.smali",
-                "/com/example/datainsert/exagear/S.smali"});
+                "/com/example/datainsert/exagear/RR.smali"});
         return R.string.actmsg_funcresl;
     }
 

@@ -266,7 +266,7 @@ public class JoyStickBtn extends BaseMoveBtn {
             }
             //如果原来有 现在没有，松开
             for(int i:lastMovingDirections)
-                if(!thisMovingDirections.contains(i)){
+                if(!thisMovingDirections.contains(i) && mViewOfXServer!=null){
                     mViewOfXServer.getXServerFacade().injectKeyRelease((byte) (mParams.key4Directions[i] + 8));
                 }
 

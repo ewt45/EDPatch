@@ -9,6 +9,7 @@ import com.eltechs.axs.activities.XServerDisplayActivityUiOverlaySidePanels;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.actions.AbstractAction;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
 public class EditingControl extends AbstractAction {
@@ -32,7 +33,7 @@ public class EditingControl extends AbstractAction {
 //        if (getUiOverlaySidePanels().isSidePanelsVisible()) {
 //            return "退出按键编辑";
 //        }
-        return "编辑操作设置";
+        return RR.getS(RR.cmCtrl_actionEdit);
     }
 
     @Override // com.eltechs.axs.widgets.actions.Action

@@ -1,28 +1,23 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay.widget;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
-import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
-import com.example.datainsert.exagear.S;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
-import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +59,7 @@ public class BtnContainer extends FrameLayout {
         //反序列化，初始化添加按钮
 //        reAddBtnsFromKeys();
 
-        setId(S.BTNCONTAINER_RESOURCE_ID);
+        setId(RR.BTNCONTAINER_RESOURCE_ID);
         //设置点击事件 View::showContextMenu
         setOnClickListener(View::showContextMenu);
         setOnCreateContextMenuListener(this::buildMenu);

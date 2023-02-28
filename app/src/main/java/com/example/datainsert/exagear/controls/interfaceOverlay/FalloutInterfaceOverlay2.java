@@ -45,6 +45,7 @@ import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContai
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.RegularKeyBtn;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
 import com.example.datainsert.exagear.controls.menus.EditingControl;
+import com.example.datainsert.exagear.controls.menus.ToggleControlsVisibility;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
@@ -126,57 +127,20 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
                 //a.getSharedPreferences(PREF_FILE_NAME_SETTING,Context.MODE_PRIVATE).getBoolean(PREF_KEY_BTN_ON_WIDGET,false);
         //用于判断重写的方法是返回侧栏相关还是按键编辑相关
 
-        //判断是自定义按键位置还是放到左右侧栏
-//        if(isBtnFreePos){
-//            FrameLayout frameLayout = new FrameLayout(a);
-//            frameLayout.setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
-//            frameLayout.addView(btnContainer);
-//
-//            //中间
-//            FrameLayout.LayoutParams centerParams = new FrameLayout.LayoutParams(-1,-1);
-//            centerParams.gravity= Gravity.CENTER;
-//            frameLayout.addView(this.tscWidget,centerParams);
-//
-//            returnLayout = frameLayout;
-//        }
-//        else if(btnOnWidget){
-//            FrameLayout frameLayout = new FrameLayout(a);
-//            frameLayout.setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
-//            //中间
-//            FrameLayout.LayoutParams centerParams = new FrameLayout.LayoutParams(-1,-1);
-//            centerParams.gravity= Gravity.CENTER;
-//            frameLayout.addView(this.tscWidget,centerParams);
-//
-//            //左侧
-//            FrameLayout.LayoutParams leftParams = new FrameLayout.LayoutParams(-2,-1);
-//            leftParams.gravity= Gravity.START;
-//            frameLayout.addView(createLeftToolbar(a, viewOfXServer),leftParams);
-//            //右侧
-//            FrameLayout.LayoutParams rightParams = new FrameLayout.LayoutParams(-2,-1);
-//            rightParams.gravity= Gravity.END;
-//            frameLayout.addView(createRightToolbar(a, viewOfXServer),rightParams);
-//            returnLayout=frameLayout;
-//        }
-//        else{
-//
-//            LinearLayout linearLayout = new LinearLayout(a);
-//            linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-//            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
-//            linearLayout.addView(createOneSideToolbar(a, viewOfXServer,true));
-//            linearLayout.addView(this.tscWidget, new LinearLayout.LayoutParams(0, -1, 1.0f));
-//            linearLayout.addView(createOneSideToolbar(a, viewOfXServer,false));
-//            returnLayout=linearLayout;
-//        }
-
-
         if(viewOfXServer!=null){
             viewOfXServer.setHorizontalStretchEnabled(new CommonApplicationConfigurationAccessor().isHorizontalStretchEnabled());
             //设置鼠标显隐
             viewOfXServer.getConfiguration().setShowCursor( sp.getBoolean(PREF_KEY_SHOW_CURSOR,true));
             //设置编辑按键的菜单项
-            List<AbstractAction> popupLists = new ArrayList<>(Arrays.asList(new EditingControl(), new ShowKeyboard(), new ToggleHorizontalStretch(), new ToggleUiOverlaySidePanels(), new ShowUsage(), new Quit()));
+            List<AbstractAction> popupLists = new ArrayList<>(Arrays.asList(new EditingControl(), new ShowKeyboard(), new ToggleHorizontalStretch(), new ToggleControlsVisibility(), new ShowUsage(), new Quit()));
             a.addDefaultPopupMenu(popupLists);
         }
+
+        //之前如果设置过隐藏按键，那就隐藏
+        leftToolbar.setVisibility(isToolbarsVisible?VISIBLE:GONE);
+        rightToolbar.setVisibility(isToolbarsVisible?VISIBLE:GONE);
+        btnContainer.setVisibility(isToolbarsVisible?VISIBLE:GONE);
+
         return returnLayout;
     }
 
@@ -198,19 +162,14 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
 
     @Override // com.eltechs.axs.activities.XServerDisplayActivityUiOverlaySidePanels
     public void toggleSidePanelsVisibility() {
-        this.isToolbarsVisible = !this.isToolbarsVisible;
-        if(leftToolbar!=null)
-            leftToolbar.setVisibility(isToolbarsVisible?VISIBLE:GONE);
-        if(rightToolbar!=null)
-            rightToolbar.setVisibility(isToolbarsVisible?VISIBLE:GONE);
-        //隐藏按钮的同时也删去toucharea
-        if(btnContainer!=null){
-            btnContainer.setVisibility(isToolbarsVisible?VISIBLE:GONE);
-            if(isToolbarsVisible){
-                refreshControlUI();//刷新布局
-            }else{
-                controlsFactory.hideControlPanelsTouchArea();//将toucharea范围改为0
-            }
+        isToolbarsVisible = !isToolbarsVisible;
+        leftToolbar.setVisibility(isToolbarsVisible ? VISIBLE : GONE);
+        rightToolbar.setVisibility(isToolbarsVisible ? VISIBLE : GONE);
+        btnContainer.setVisibility(isToolbarsVisible ? VISIBLE : GONE);
+        if(isToolbarsVisible){
+            refreshControlUI();//刷新布局
+        }else{
+            controlsFactory.hideControlPanelsTouchArea();//将toucharea范围改为0
         }
     }
 

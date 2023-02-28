@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,15 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.SubView1Mouse;
+import com.example.datainsert.exagear.RR;
 
 public class SubNormalPagerAdapter extends PagerAdapter implements WrapContentViewPager.ItemHelper {
     private static final String TAG= "SubNormalPagerAdapter";
     private final int mCount;
     private final String[] mTabTitles;
     private final View[] mViewPages;
-    public SubNormalPagerAdapter(int count,View[] viewPages) {
+    public SubNormalPagerAdapter(int count,View[] viewPages,String[] tabTitles) {
         mCount=count;
-        mTabTitles = new String[]{"鼠标","按键","样式"};
+        mTabTitles = tabTitles;
         mViewPages = viewPages;
     }
 

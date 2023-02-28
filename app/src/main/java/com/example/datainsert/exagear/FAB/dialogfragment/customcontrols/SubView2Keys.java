@@ -2,7 +2,9 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getTextViewWithText;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ON_WIDGET;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_USE_CUSTOM_CONTROL;
@@ -19,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
@@ -26,6 +29,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColRecyclerView;
 import com.example.datainsert.exagear.FAB.widget.SimpleItemSelectedListener;
 import com.example.datainsert.exagear.FAB.widget.SpinArrayAdapterSmSize;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
@@ -36,8 +40,8 @@ import java.util.List;
 
 public class SubView2Keys extends LinearLayout {
     private static final String TAG= "SubView2Keys";
-    private KeyCodes2 mKeyCodes2;
-    private KeyCodes3 mKeyCodes3;
+    private final KeyCodes2 mKeyCodes2;
+    private final KeyCodes3 mKeyCodes3;
 
     /**
      * 为自由位置或左右侧栏准备的按键编辑视图 0是左右 1是自由
@@ -50,10 +54,10 @@ public class SubView2Keys extends LinearLayout {
      */
     private final BtnColRecyclerView[] mTwoSideBars = new BtnColRecyclerView[2];
     //≡☰
-    public SubView2Keys(Context c, @NonNull KeyCodes2 initKeyCodes2, @NonNull KeyCodes3 keyCodes3) {
+    public SubView2Keys(Context c, @NonNull KeyCodes2 keyCodes2, @NonNull KeyCodes3 keyCodes3) {
         super(c);
         setOrientation(VERTICAL);
-        mKeyCodes2 = initKeyCodes2;
+        mKeyCodes2 = keyCodes2;
         mKeyCodes3=keyCodes3;
 
         //是否使用自定义操作模式(不使用会创建DefaultCTF）
@@ -61,7 +65,7 @@ public class SubView2Keys extends LinearLayout {
 
         //按键在两侧还是画面上层
         Spinner spinKeyPosType = new Spinner(c);
-        String[] spinOptions = new String[]{"左右侧栏","自由位置"};//≡☰
+        String[] spinOptions = new String[]{getS(RR.cmCtrl_s2_modeSide),getS(RR.cmCtrl_s2_modeFree)};//≡☰
         ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
         spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinKeyPosType.setAdapter(spinKeyPosAdapter);
@@ -72,8 +76,8 @@ public class SubView2Keys extends LinearLayout {
             mTwoWaysKeyGroups[(position+1)%2].setVisibility(GONE);
         }));
         spinKeyPosType.setLayoutParams(new ViewGroup.LayoutParams(-2,-2));
-        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c,"按键布局方式",spinKeyPosType,false);
-        setDialogTooltip(oneLineSpinKeyPos.getChildAt(0),"如果使用自定义按键位置，下方的侧栏按键键位和布局将不会生效。请进入容器后四指触屏->菜单->编辑按键，然后点击空白处添加按钮并移动按钮位置。设定好后再次点击空白处退出编辑");
+        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_layoutMode),spinKeyPosType,false);
+        setDialogTooltip(oneLineSpinKeyPos.getChildAt(0),getS(RR.cmCtrl_s2_layoutModeTip));
         addView(oneLineSpinKeyPos);
 
 //        //按键在两侧还是画面上层(旧版，开关样式）自定义按键位置
@@ -87,8 +91,8 @@ public class SubView2Keys extends LinearLayout {
         //左侧栏按键和右侧栏按键
         LinearLayout linearSideColOuter = new LinearLayout(c);
         linearSideColOuter.setOrientation(VERTICAL);
-        linearSideColOuter.addView(getOneLineWithTitle(c,"左侧按键栏",getAddSideBarGroup(c,true),true));
-        linearSideColOuter.addView(getOneLineWithTitle(c,"右侧按键栏",getAddSideBarGroup(c,false),true));
+        linearSideColOuter.addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s2_LSideTitle),getAddSideBarGroup(c,true),true));
+        linearSideColOuter.addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s2_RSideTitle),getAddSideBarGroup(c,false),true));
 
         mTwoWaysKeyGroups[0]=linearSideColOuter ;
         addView(linearSideColOuter);
@@ -127,7 +131,10 @@ public class SubView2Keys extends LinearLayout {
                 }
             });
         });
-        mTwoWaysKeyGroups[1]=getOneLineWithTitle(c,"添加/移除按键", csPosKeyBtn, true);
+
+
+        //getS(RR.cmCtrl_s2_FreePosTitle)
+        mTwoWaysKeyGroups[1]=getOneLineWithTitle(c,null, csPosKeyBtn, true);
         addView(mTwoWaysKeyGroups[1]);
 
         //设置按键布局方式 两种方式显示一个，另一个隐藏
@@ -144,16 +151,14 @@ public class SubView2Keys extends LinearLayout {
      * 生成一个布局，用于管理侧栏按键布局
      */
     private View getAddSideBarGroup(Context c, boolean isLeft) {
-        BtnColRecyclerView recyclerView = new BtnColRecyclerView(c);
+        BtnColRecyclerView recyclerView = new BtnColRecyclerView(c,mKeyCodes2,isLeft);
         mTwoSideBars[isLeft?0:1]=recyclerView;
         //如果之前有记录，就读取并初始化(注意recyclerview内部的nextId也要初始化）
-        if (mKeyCodes2 != null) {
-            recyclerView.initItemList(isLeft ? mKeyCodes2.getLeftSide() : mKeyCodes2.getRightSide());
-//            recyclerView.getAdapter().submitList();
-        }
+        recyclerView.initItemList(isLeft ? mKeyCodes2.getLeftSide() : mKeyCodes2.getRightSide());
+
         Button addBtn = new Button(c);
         addBtn.setText("+");
-        TooltipCompat.setTooltipText(addBtn, "新建一列按键");
+//        TooltipCompat.setTooltipText(addBtn, "新建一列按键");
         int btnWidth = AndroidHelpers.dpToPx(50);
         addBtn.setLayoutParams(new ViewGroup.LayoutParams(btnWidth, btnWidth));
         LinearLayout linearLayout = new LinearLayout(c);
@@ -185,7 +190,7 @@ public class SubView2Keys extends LinearLayout {
     }
 
     /**
-     * //之前貌似不是用的同一个实例，没法实时更新。只好关闭视图的时候统一保存一下keycode2了
+     * //之前貌似不是用的同一个实例，没法实时更新。只好关闭视图的时候统一保存一下keycode2了（现在已经改到实时更新了）
      * 而dialog的onclick监听是在detach调用之前，所以没法重写回收视图的detach实现
      */
     public void syncKeyCodes2() {

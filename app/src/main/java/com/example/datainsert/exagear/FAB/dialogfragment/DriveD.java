@@ -40,7 +40,7 @@ import android.widget.TextView;
 import com.eltechs.axs.Globals;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.FAB.widget.MyTextInputEditText;
-import com.example.datainsert.exagear.S;
+import com.example.datainsert.exagear.RR;
 
 import java.io.File;
 
@@ -52,7 +52,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     public static String PREF_VAL_DST_NAME = "Exagear";//没有自定义的时候，默认的文件夹名,可以改这个默认的路径
     private static final String[] dstDirArrKeys = new String[]{"Exagear", "Download"};
     private static final String[] dstDirArrVals = new String[]{"Exagear", "Download"};
-    private static final String[] parDirArrKeys = new String[]{S.get(S.DriveD_ParDirKey_1), S.get(S.DriveD_ParDirKey_2), S.get(S.DriveD_ParDirKey_3)};
+    private static final String[] parDirArrKeys = new String[]{RR.getS(RR.DriveD_ParDirKey_1), RR.getS(RR.DriveD_ParDirKey_2), RR.getS(RR.DriveD_ParDirKey_3)};
     private static final ParDirEnum[] parDirArrVals = new ParDirEnum[]{ParDirEnum.ExternalStorage, ParDirEnum.ExternalFilesDir, ParDirEnum.SDCardExternalFilesDir};
     //用于动态显示父目录和测试结果的textview
     private TextView tvTestResult;
@@ -83,7 +83,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         LinearLayout rootView = new LinearLayout(c);
         rootView.setOrientation(LinearLayout.VERTICAL);
         rootScrollView.addView(rootView);
-        rootView.addView(getTextViewWithText(c,S.get(S.DriveD_Explain)));
+        rootView.addView(getTextViewWithText(c, RR.getS(RR.DriveD_Explain)));
 
         TextInputLayout textInputLayout = new TextInputLayout(c);
         textInputLayout.addView(setupETPar());
@@ -97,15 +97,15 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         rootView.addView(tvTestResult);
 
 
-        rootView.addView(getOneLineWithTitle(c,S.get(S.DriveD_DescTitle), getTextViewWithText(c,S.get(S.DriveD_DescCont)), false));
+        rootView.addView(getOneLineWithTitle(c, RR.getS(RR.DriveD_DescTitle), getTextViewWithText(c, RR.getS(RR.DriveD_DescCont)), false));
         //初始化当前路径
         tvInputDstDir.setText(getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
         updateCurrentParDir(getPreference().getInt(PREF_KEY_PAR_IND, 0));
 
         return new AlertDialog.Builder(c)
-                .setTitle(S.get(S.DriveD_Title))
-                .setPositiveButton(S.get(S.Dialog_PosBtn), this)
-                .setNegativeButton(S.get(S.Dialog_NegBtn), this)
+                .setTitle(RR.getS(RR.DriveD_Title))
+                .setPositiveButton(RR.getS(RR.Dialog_PosBtn), this)
+                .setNegativeButton(RR.getS(RR.Dialog_NegBtn), this)
                 .setView(rootScrollView)
                 .create();
     }
@@ -120,14 +120,14 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
             if (checkCurrDirAvailable()) {
                 getPreference().edit().putInt(PREF_KEY_PAR_IND, currentParDir).putString(PREF_KEY_DST_NAME, currentDstDirName).apply();
 //                Toast.makeText(requireActivity(), "设置已更新", Toast.LENGTH_SHORT).show();
-                Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), S.get(S.DriveD_SncBrTxt), Snackbar.LENGTH_LONG)
-                        .setAction(S.get(S.DriveD_SncBrBtn), v -> android.os.Process.killProcess(android.os.Process.myPid()))
+                Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), RR.getS(RR.DriveD_SncBrTxt), Snackbar.LENGTH_LONG)
+                        .setAction(RR.getS(RR.DriveD_SncBrBtn), v -> android.os.Process.killProcess(android.os.Process.myPid()))
                         .show();
             } else {
-                Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), S.get(S.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), RR.getS(RR.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
             }
         } else if (which == BUTTON_NEGATIVE) {
-            Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), S.get(S.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
+            Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), RR.getS(RR.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -136,7 +136,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
      * 设置文件夹名称的edittext
      */
     private MyTextInputEditText setupETDst() {
-        tvInputDstDir = new MyTextInputEditText(requireContext(), dstDirArrKeys, dstDirArrVals, S.get(S.DriveD_EditDstTitle));
+        tvInputDstDir = new MyTextInputEditText(requireContext(), dstDirArrKeys, dstDirArrVals, RR.getS(RR.DriveD_EditDstTitle));
         tvInputDstDir.setInputType(
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 //        InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;用于禁用语法检查
@@ -175,7 +175,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
      * 设置文件夹父目录的edittext
      */
     private MyTextInputEditText setupETPar() {
-        tvInputParDir = new MyTextInputEditText(requireContext(), null, null, S.get(S.DriveD_EditParTitle));
+        tvInputParDir = new MyTextInputEditText(requireContext(), null, null, RR.getS(RR.DriveD_EditParTitle));
         tvInputParDir.setInputType(InputType.TYPE_NULL);
         //设置弹窗菜单
         PopupMenu popupMenu = new PopupMenu(requireContext(), this.tvInputParDir);
@@ -200,7 +200,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     private void updateCurrentParDir(int i) {
         currentParDir = i;
         File file = dirEnumToFile(parDirArrVals[currentParDir]);
-        this.tvInputParDir.setText(file == null ? S.get(S.DriveD_getPathFail) : file.getAbsolutePath());
+        this.tvInputParDir.setText(file == null ? RR.getS(RR.DriveD_getPathFail) : file.getAbsolutePath());
         checkCurrDirAvailable();
     }
 
@@ -257,7 +257,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         return result == 0b00011111;
     }
 
-    String[] testCheckStr = new String[]{S.get(S.DriveD_check_1), S.get(S.DriveD_check_2), S.get(S.DriveD_check_3),S.get(S.DriveD_check_4), S.get(S.DriveD_check_5)};
+    String[] testCheckStr = new String[]{RR.getS(RR.DriveD_check_1), RR.getS(RR.DriveD_check_2), RR.getS(RR.DriveD_check_3), RR.getS(RR.DriveD_check_4), RR.getS(RR.DriveD_check_5)};
 
     /**
      * 设置测试结果的文字到tv
@@ -274,15 +274,15 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         }
         //检查是否有存储权限
         else if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            str.append(S.get(S.DriveD_NoStrgPmsn));
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()- S.get(S.DriveD_NoStrgPmsn).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            str.append(RR.getS(RR.DriveD_NoStrgPmsn));
+            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()- RR.getS(RR.DriveD_NoStrgPmsn).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireContext().getPackageName(), null));
             startActivity(intent);
         }
         //如果父路径或子路径为null
         else if( dirEnumToFile(parDirArrVals[currentParDir]) ==null || currentDstDirName==null || "".equals(currentDstDirName)){
-            str.append(S.get(S.DriveD_getPathFail));
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()- S.get(S.DriveD_getPathFail).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            str.append(RR.getS(RR.DriveD_getPathFail));
+            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()- RR.getS(RR.DriveD_getPathFail).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         //获取文件夹file，并检查是否可用
         else {
@@ -305,7 +305,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
             }
 
         }
-        tvTestResult.setText(str.append("\n"));
+        tvTestResult.setText(str);
     }
 
     /**

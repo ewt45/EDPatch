@@ -1,17 +1,25 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
+import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
@@ -19,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder> {
-
-    //    private List<KeyCodes2.Key[]> currentList;
+    final KeyCodes2 mKeyCodes2;
+    final boolean mIsLeft;
     public static final DiffUtil.ItemCallback<OneCol> DIFF_CALLBACK = new DiffUtil.ItemCallback<OneCol>() {
         @Override
         public boolean areItemsTheSame(
@@ -47,8 +55,10 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
     public static final int TYPE_ADD_BTN = 2;
     public static final int TYPE_NORMAL_COL = 1;
 
-    public BtnColAdapter() {
+    public BtnColAdapter(KeyCodes2 keyCodes2, boolean isLeft) {
         super(DIFF_CALLBACK);
+        mKeyCodes2=keyCodes2;
+        mIsLeft=isLeft;
 
     }
 
@@ -70,13 +80,23 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
         viewHolder.getmBtn().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+                Context c = v.getContext();
+                PopupMenu popupMenu = new PopupMenu(c, v);
                 Menu menu = popupMenu.getMenu();
-                menu.add("编辑").setOnMenuItemClickListener(item->{
+                menu.add(RR.getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item->{
                     OneCol selfCol = (OneCol) v.getTag();
-                    BtnKeyRecyclerView recyclerView = new BtnKeyRecyclerView(v.getContext(),selfCol.getmAllKeys());
-                    new AlertDialog.Builder(v.getContext())
-                            .setView(recyclerView)
+                    LinearLayout linearRoot = new LinearLayout(c);
+                    linearRoot.setPadding(QH.px(c, RR.attr.dialogPaddingDp),QH.px(c, RR.attr.dialogPaddingDp),QH.px(c, RR.attr.dialogPaddingDp),QH.px(c, RR.attr.dialogPaddingDp));
+                    linearRoot.setOrientation(LinearLayout.VERTICAL);
+                    //提示
+                    linearRoot.addView(BaseFragment.getTextViewWithText(c,RR.getS(RR.cmCtrl_s2_ColEditTip)));
+                    //一列按键
+                    BtnKeyRecyclerView recyclerView = new BtnKeyRecyclerView(c,selfCol.getmAllKeys());
+                    LinearLayout.LayoutParams recyclerViewParams = new LinearLayout.LayoutParams(-2,-1);
+                    recyclerViewParams.gravity= Gravity.CENTER_HORIZONTAL;
+                    linearRoot.addView(recyclerView,recyclerViewParams);
+                    new AlertDialog.Builder(c)
+                            .setView(linearRoot)
                             .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                                 OneCol newSelfCol = selfCol.clone();
                                 List<OneKey> newKeyList = recyclerView.getAdapter().getCurrentList();
@@ -92,7 +112,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                             .create().show();
                     return true;
                 });
-                menu.add("删除").setOnMenuItemClickListener(item -> {
+                menu.add(RR.getS(RR.cmCtrl_s2_popDel)).setOnMenuItemClickListener(item -> {
                     OneCol selfCol = (OneCol) v.getTag();
                     List<OneCol> newList = getCurrentList();
                     newList.remove(getIndexOfItem(newList,selfCol));
@@ -119,6 +139,19 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
             if(newList.get(i).getId()== item.getId())
                 break;
         return i;
+    }
+
+    /**
+     * 每次更新数据时，顺带实时更新KeyCodes2
+     * @param list
+     */
+    @Override
+    public void submitList(@Nullable List<OneCol> list) {
+        super.submitList(list);
+        if(mIsLeft)
+            mKeyCodes2.setLeftSide(list);
+        else
+            mKeyCodes2.setRightSide(list);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -35,7 +36,7 @@ public class PatcherFile {
     /**
      * 将自己的apk中的smali复制到exagear的输出文件夹中
      *
-     * @param type    类型，目前仅支持smali
+     * @param type    类型，目前仅支持smali和assets
      * @param strings 要复制的文件名。格式如："/com/a/b/*", "/com/a/b/c.smali" 斜线开头，星号或文件名结尾(不要星号了）
      */
     public static void copy(int type, String[] strings) throws Exception {
@@ -57,8 +58,18 @@ public class PatcherFile {
                 File oneFile = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/" + subfolder + str);
                 if (oneFile.isDirectory())
                     fileList.addFirst(oneFile);
-                else
+                else{
+                    //如果是文件，需要考虑到内部类（即同类名，但带$的smali）
                     fileList.add(oneFile);
+                    File parent = oneFile.getParentFile();
+                    String baseFileName = oneFile.getName().substring(0,oneFile.getName().length()-".smali".length());
+                    if(parent==null)
+                        continue;
+                    File[] innerClasses = parent.listFiles((dir, name) -> name.startsWith(baseFileName + "$"));
+                    if(innerClasses!=null)
+                        fileList.addAll(Arrays.asList(innerClasses));
+                }
+
             }
             //将目录转为文件
             while (fileList.get(0).isDirectory()) {

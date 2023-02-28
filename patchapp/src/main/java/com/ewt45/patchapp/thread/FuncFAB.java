@@ -97,7 +97,7 @@ public class FuncFAB implements Func {
                     "/com/example/datainsert/exagear/controls",
                     "/com/example/datainsert/exagear/QH.smali",
                     "/com/example/datainsert/exagear/RSIDHelper.smali",
-                    "/com/example/datainsert/exagear/S.smali"});
+                    "/com/example/datainsert/exagear/RR.smali"});
 
         } catch (Exception e) {
             e.printStackTrace();

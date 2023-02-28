@@ -8,12 +8,17 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 public class BaseFragment extends DialogFragment {
     protected final static String SHARED_PREFERENCE_SETTING = "some_settings";
@@ -21,6 +26,7 @@ public class BaseFragment extends DialogFragment {
     public static TextView getTextViewWithText(Context c, String s) {
         TextView tv = new TextView(c);
         tv.setText(s);
+        tv.setLineSpacing(0,1.5f);
         tv.setPadding(0, 0, 0, 20);
         return tv;
     }
@@ -47,8 +53,8 @@ public class BaseFragment extends DialogFragment {
         }
         if (view != null) {
             LinearLayout.LayoutParams params = view.getLayoutParams() != null
-                            ? new LinearLayout.LayoutParams(view.getLayoutParams())
-                            : new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+                    ? new LinearLayout.LayoutParams(view.getLayoutParams())
+                    : new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
             if (linearLayout.getChildCount() > 0)
                 params.setMarginStart(20);
             linearLayout.addView(view, params);
@@ -75,7 +81,15 @@ public class BaseFragment extends DialogFragment {
      */
     public static void setDialogTooltip(View view, String tooltip) {
         view.setOnLongClickListener(v -> {
-            new AlertDialog.Builder(v.getContext()).setMessage(tooltip).create().show();
+            TextView textView = new TextView(v.getContext());
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+            textView.setLineSpacing(0,1.5f);
+            textView.setText(tooltip);
+            int padding = QH.px(v.getContext(), RR.attr.dialogPaddingDp);
+            textView.setPadding(padding,padding,padding,padding);
+            ScrollView scrollView = new ScrollView(v.getContext());
+            scrollView.addView(textView);
+            new AlertDialog.Builder(v.getContext()).setView(scrollView).create().show();
             return true;
         });
     }

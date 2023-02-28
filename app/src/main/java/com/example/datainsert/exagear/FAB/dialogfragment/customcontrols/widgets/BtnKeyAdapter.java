@@ -1,24 +1,38 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import com.eltechs.axs.helpers.AndroidHelpers;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder> {
+    private static final String TAG="BtnKeyAdapter";
     public static final DiffUtil.ItemCallback<OneKey> DIFF_CALLBACK = new DiffUtil.ItemCallback<OneKey>() {
         @Override
         public boolean areItemsTheSame(@NonNull OneKey oldKey, @NonNull OneKey newKeys) {
@@ -38,26 +52,32 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
     @NonNull
     @Override
     public BtnKeyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
-        Button btn = new Button(viewGroup.getContext());
-//        int width = AndroidHelpers.dpToPx(50);
-        btn.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
+        Button btn = UnmovableBtn.getSample(viewGroup.getContext());
+        SharedPreferences sp = viewGroup.getContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE);
+        btn.setLayoutParams(new ViewGroup.LayoutParams(sp.getInt(PREF_KEY_BTN_WIDTH, -2), sp.getInt(PREF_KEY_BTN_HEIGHT, -2)));
         return new BtnKeyAdapter.ViewHolder(btn);
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         viewHolder.getmBtn().setText(getItem(position).getName());
         viewHolder.getmBtn().setTag(getItem(position));
-        viewHolder.getmBtn().setOnClickListener(v->{
-            PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
-            popupMenu.getMenu().add("重命名").setOnMenuItemClickListener(item -> {
-                EditText editText = new EditText(v.getContext());
+        viewHolder.getmBtn().setOnClickListener(v -> {
+            Log.d(TAG, "onBindViewHolder: 点击没反应？");
+            Context c = v.getContext();
+            PopupMenu popupMenu = new PopupMenu(c,v);
+            popupMenu.getMenu().add("编辑").setOnMenuItemClickListener(item -> {
+                EditText editText = new EditText(c);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 editText.setSingleLine();
                 editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 editText.setText(((OneKey) v.getTag()).getName());
-
-                new AlertDialog.Builder(v.getContext())
-                        .setView(editText)
+                editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100),-2));
+                LinearLayout renameRootView = getOneLineWithTitle(c,"重命名",editText,false);
+                int padding = QH.px(c, RR.attr.dialogPaddingDp);
+                renameRootView.setPadding(padding,0,padding,0);
+                new AlertDialog.Builder(c)
+                        .setView(renameRootView)
+                        .setTitle("按钮属性")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             OneKey newSelfKey = ((OneKey) v.getTag()).clone();
                             newSelfKey.setName(editText.getText().toString());

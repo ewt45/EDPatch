@@ -32,7 +32,7 @@ import com.eltechs.axs.GeometryHelpers;
  */
 public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClickListener {
     private static final String TAG = "BaseMoveBtn";
-    private PointF mLastXYPoint = new PointF();
+    private final PointF mLastXYPoint = new PointF();
     private boolean mMovedWhenTouch = false; //是否正在移动
     private int mActivePointerId =INVALID_POINTER_ID; //原始按下的那根手指，防止后续新按下的手指捣乱
 

@@ -22,10 +22,13 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.eltechs.axs.GestureStateMachine.GestureContext;
+import com.eltechs.axs.Globals;
 import com.eltechs.axs.TouchArea;
 import com.eltechs.axs.TouchEventMultiplexor;
 import com.eltechs.axs.TouchScreenControls;
 import com.eltechs.axs.TouchScreenControlsFactory;
+import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
+import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.graphicsScene.GraphicsSceneConfigurer;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
@@ -170,6 +173,11 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
 //        mBtnContainer.setVisibility(GONE);
 //        mLeftBar.setVisibility(GONE);
 //        mRightBar.setVisibility(GONE);
+        //如果之前设置了隐藏状态，然后退出到后台，再次切换到前台的时候重新构建布局，这时候应该不显示按键
+        XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
+        if(ui instanceof FalloutInterfaceOverlay2 && !((FalloutInterfaceOverlay2) ui).isSidePanelsVisible()){
+            return;
+        }
 
         boolean isBtnFreePos = BaseFragment.getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false);
         //填充自由位置按键或两侧按键

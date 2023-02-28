@@ -4,6 +4,8 @@ import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.widget.LinearLayout.VERTICAL;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -30,7 +31,8 @@ import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColRecyclerView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.SubNormalPagerAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.WrapContentViewPager;
-import com.example.datainsert.exagear.S;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
@@ -41,6 +43,8 @@ import java.io.IOException;
 public class CustomControls extends BaseFragment implements DialogInterface.OnClickListener {
     public static final String TAG = "CustomControls";
     private final BtnColRecyclerView[] mSidebarKeyRecyclerView = new BtnColRecyclerView[2];
+    ViewGroup[] mPages = new ViewGroup[3];
+    FalloutInterfaceOverlay2 mUiOverlay;
     private File mSerFile2;
     private KeyCodes2 mKeyCodes2;//用于新建dialog的时候，初始化侧栏按键列表
     private File mSerFile3;
@@ -48,10 +52,6 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
      * 直接反序列化，如果是容器内界面，退出编辑后也从本地反序列化读取新的配置。
      */
     private KeyCodes3 mKeyCodes3;
-
-    ViewGroup[] mPages = new ViewGroup[3];
-
-    FalloutInterfaceOverlay2 mUiOverlay;
 
 //    private BtnContainer btnContainer;
 
@@ -78,10 +78,10 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
         }
 
-        if(mUiOverlay!=null){
+        if (mUiOverlay != null) {
             mKeyCodes2 = mUiOverlay.getControlsFactory().getKeyCodes2();
             mKeyCodes3 = mUiOverlay.getControlsFactory().getKeyCodes3();
-        }else{
+        } else {
             try {
                 mKeyCodes2 = KeyCodes2.deserialize(mSerFile2);
             } catch (IOException | ClassNotFoundException e) {
@@ -99,7 +99,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 
         setCancelable(false);
         return new AlertDialog.Builder(requireContext())
-                .setTitle(S.get(S.CmCtrl_title))
+                .setTitle(RR.getS(RR.cmCtrl_title))
                 .setPositiveButton(android.R.string.yes, this)//S.get(S.Dialog_PosBtn)
                 .setNegativeButton(android.R.string.cancel, null)//S.get(S.Dialog_NegBtn)
                 .setView(buildUI())
@@ -138,15 +138,16 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         Context c = requireContext();
         ScrollView scrollView = new ScrollView(c);
 //        scrollView.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        scrollView.setPadding(40, 40, 40, 40);
+        int dialogPadding = QH.px(c, RR.attr.dialogPaddingDp);
+        scrollView.setPadding(dialogPadding, 0, dialogPadding, 0);
         LinearLayout rootView = new LinearLayout(c);
         rootView.setOrientation(VERTICAL);
         scrollView.addView(rootView);
 
-        TextView tv1 = new TextView(c);
-
-        tv1.setText("部分选项可以通过长按查看说明");
-        rootView.addView(tv1);
+        StringBuilder tipOverALl = new StringBuilder(getS(RR.cmCtrl_lgPressHint));
+        if(!(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity))
+            tipOverALl.append( "\n- 在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。\n- 启动环境后，可以通过三指触屏调出此界面进行实时修改。"    );
+        rootView.addView(getTextViewWithText(c, tipOverALl.toString()));
 
         //标签页滑动视图
         TabLayout tabLayout = new TabLayout(requireContext());
@@ -160,15 +161,13 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         rootView.addView(viewPager, viewPagerParams);
 
         //三个标签页
-        mPages[0]= new SubView1Mouse(c);
+        mPages[0] = new SubView1Mouse(c);
         mPages[1] = new SubView2Keys(c, mKeyCodes2, mKeyCodes3);
         mPages[2] = new SubView3Style(c);
 
         //fragmentAdapter在dialogfragment里有问题，就用普通视图adapter吧
-        viewPager.setAdapter(new SubNormalPagerAdapter(3, mPages));
+        viewPager.setAdapter(new SubNormalPagerAdapter(3, mPages, new String[]{getS(RR.cmCtrl_tabMouse), getS(RR.cmCtrl_tabKeys), getS(RR.cmCtrl_tabStyle)}));
         tabLayout.setupWithViewPager(viewPager, false);
-
-
         return scrollView;
     }
 
@@ -188,17 +187,14 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 //        Log.d(TAG, "onClick: getdialog能获取到自身吗"+ getDialog());
         //现在是只有点确定关闭对话框的时候才会更新keycode2和3（序列化存储为文件）
         if (which == BUTTON_POSITIVE) {
-            //手动同步keycode2到最新。这个onCLick会在view的detach之前触发所以不能只重写回收视图detach方法
-            assert mPages[1] instanceof SubView2Keys;
-            ((SubView2Keys)mPages[1]).syncKeyCodes2();
 
             //如果当前是图形界面，调用tscWidget的onLayout去更新一下布局（在这里序列化）
-            if(mUiOverlay!=null && ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity){
+            if (mUiOverlay != null && ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity) {
                 mUiOverlay.refreshControlUI();
                 Log.d(TAG, "onClick: 在图形界面内，直接修改keycode实例 不序列化");
             }
             //否则自己序列化
-            else{
+            else {
                 try {
                     KeyCodes2.serialize(mKeyCodes2, mSerFile2);
                 } catch (IOException e) {

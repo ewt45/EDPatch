@@ -18,7 +18,7 @@ import com.ewt45.exagearsupportv7.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.RSIDHelper;
-import com.example.datainsert.exagear.S;
+import com.example.datainsert.exagear.RR;
 
 public class FabMenu{
     private static final String TAG = "FabMenu";
@@ -51,7 +51,7 @@ public class FabMenu{
         }
         fab.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
 
-            MenuItem item = menu.add(S.get(S.DriveD_Title));
+            MenuItem item = menu.add(RR.getS(RR.DriveD_Title));
             item.setOnMenuItemClickListener(item1 -> {
                 new DriveD().show(a.getSupportFragmentManager(), DriveD.TAG);
                 return true;
@@ -60,7 +60,7 @@ public class FabMenu{
 //                new VirGLOverlay().show(a.getSupportFragmentManager(),null);
 //                return true;
 //            });
-            menu.add(S.get(S.CmCtrl_title)).setOnMenuItemClickListener(item12 -> {
+            menu.add(RR.getS(RR.cmCtrl_title)).setOnMenuItemClickListener(item12 -> {
                 new CustomControls().show(a.getSupportFragmentManager(),CustomControls.TAG);
                 return true;
             });
