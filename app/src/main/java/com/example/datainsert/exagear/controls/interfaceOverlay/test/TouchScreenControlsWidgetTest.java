@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import com.eltechs.axs.TouchScreenControls;
 import com.eltechs.axs.TouchScreenControlsFactory;
 import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.eltechs.axs.gamesControls.FalloutTouchScreenControlsFactory;
 import com.eltechs.axs.helpers.UiThread;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsDisplayWidget;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsInputWidget;
@@ -15,7 +16,7 @@ import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutTouchScreenControlsFactory2;
 
 public class TouchScreenControlsWidgetTest extends FrameLayout {
-    private final FalloutTouchScreenControlsFactory2 controlsFactory;
+    private final FalloutTouchScreenControlsFactory controlsFactory;
     private final TouchScreenControlsDisplayWidget displayWidget;
     private final XServerDisplayActivity host;
     private final TouchScreenControlsInputWidgetTest inputWidget;
@@ -23,7 +24,7 @@ public class TouchScreenControlsWidgetTest extends FrameLayout {
 
     public TouchScreenControlsWidgetTest(@NonNull Context context,XServerDisplayActivity host) {
         super(context);
-        controlsFactory = new FalloutTouchScreenControlsFactory2();
+        controlsFactory = new FalloutTouchScreenControlsFactory();
         displayWidget = null;
         target=null;
         this.host=host;

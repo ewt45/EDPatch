@@ -67,8 +67,37 @@ public class RR {
     public static int cmCtrl_s3_sideColor = 51;
     public static int cmCtrl_s3_sideColorTip = 52;
     public static int cmCtrl_actionEdit = 53;
-    public static int cmCtrl_actionCtrlShow=54;
-    public static int cmCtrl_actionCtrlHide=55;
+    public static int cmCtrl_actionCtrlShow = 54;
+    public static int cmCtrl_actionCtrlHide = 55;
+    public static int cmCtrl_mouseLeftName = 56;
+    public static int cmCtrl_mouseRightName = 57;
+    public static int cmCtrl_mouseMiddleName = 58;
+    public static int cmCtrl_allKeysJoyTitle = 59;
+    public static int cmCtrl_allKeysMouseTitle = 60;
+    public static int cmCtrl_editMenu1Dialog = 61;
+    public static int cmCtrl_editMenu2Exit = 62;
+    public static int cmCtrl_BtnEditReName = 63;
+    public static int cmCtrl_JoyEdit4Ways = 64;
+    public static int cmCtrl_JoyEdit4WaysTip = 65;
+    public static int cmCtrl_JoyEditKeys = 66;
+    public static int cmCtrl_JoyEditKeyCstm = 67;
+    public static int cmCtrl_gs_lClick = 68;
+    public static int cmCtrl_gs_rClick=69;
+    public static int cmCtrl_gs_vScroll=70;
+    public static int cmCtrl_gs_dndLeft = 71;
+    public static int cmCtrl_gs_zoom = 72;
+    public static int cmCtrl_gs_menu = 73;
+    public static int cmCtrl_gs1Abs_title = 74;
+    public static int cmCtrl_gs2Rel_title = 75;
+    public static int cmCtrl_gs_moveCursor = 76;
+    public static int cmCtrl_gs_keyboard = 77;
+    public static int cmCtrl_actionCtrlTip = 78;
+    public static int cmCtrl_actionSubCtrl = 79;
+    public static int cmCtrl_s1_msSpd = 80;
+    public static int cmCtrl_reset = 81;
+    public static int cmCtrl_s1_msSpdTip = 82;
+    public static int cmCtrl_s2_sideTitleTip = 83;
+
     private static String locale;
 
     static {
@@ -84,7 +113,7 @@ public class RR {
                 "说明",
                 "android11及以上，在非应用专属目录下的游戏加载/读档速度可能变慢。解决方法是将d盘修改到应用专属目录，或将游戏复制到c/z盘（c/z盘默认在应用专属目录）。 ",
                 "重启",
-                "设置已更新，手动重启应用后生效",
+                "设置已更新，手动重启应用后生效", //index 10
                 "设置未更新",
                 "文件夹名称",
                 "文件夹位置",
@@ -94,7 +123,7 @@ public class RR {
                 "是文件夹类型",
                 "具有该文件夹的读取权限",
                 "具有该文件夹的写入权限",
-                "应用文件存储权限被禁止",
+                "应用文件存储权限被禁止",      //20
                 "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。",//*安卓11及以上，无法选择Android/obb及Android/data目录内的文件
                 "手动选择",
                 "所选文件不是obb数据包",
@@ -103,14 +132,14 @@ public class RR {
                 "输入自定义高度",
 
                 "按键设置（自定义操作模式）",
-                "部分选项可以通过长按查看说明",
+                "部分选项可以通过长按查看说明\n- 在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。\n- 启动环境后，可以通过三指触屏调出此界面进行实时修改。",
                 "鼠标",
-                "按键",
+                "按键",  //30
                 "样式",
                 "显示鼠标光标",
                 "设置进入容器后鼠标光标显示或隐藏。\n若因为添加“强制显示光标”功能导致同时显示默认鼠标光标和游戏自带光标，使用该选项可隐藏默认鼠标光标。",
-                "鼠标移动使用相对定位",
-                "勾选后采用第二种手势操作。\n\n**手势操作 1**：\n- 单指点击 = 鼠标在手指位置左键点击\n- 单指按下后立刻移动 = 鼠标滚轮\n- 单指长按后移动 = 鼠标在手指位置左键按下（拖拽）\n- 单指长按后松开 = 鼠标在手指位置右键点击\n- 双指点击 = 显示/隐藏安卓输入法\n- 双指按下后移动 = 缩放窗口（松开一根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单\n\n**手势操作 2**：\n- 单指点击 = 鼠标原处左键点击\n- 单指移动 = 鼠标位置移动\n- 二指点击 = 鼠标原处右键点击\n- 二指按下后立刻移动 = 鼠标滚轮\n- 二指长按后移动 = 鼠标在当前位置左键按下（拖拽）\n- 三指按下并移动1或2根手指 = 缩放窗口（松开1或2根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单",
+                "鼠标移动使用相对定位（手势控制 2）",
+                "勾选后采用第二种手势控制。\n\n**手势控制 1**：\n- 单指点击 = 鼠标在手指位置左键点击\n- 单指按下后立刻移动 = 鼠标滚轮\n- 单指长按后移动 = 鼠标在手指位置左键按下（拖拽）\n- 单指长按后松开 = 鼠标在手指位置右键点击\n- 双指点击 = 显示/隐藏安卓输入法\n- 双指按下后移动 = 缩放窗口（松开一根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单\n\n**手势控制 2**：\n- 单指点击 = 鼠标原处左键点击\n- 单指移动 = 鼠标位置移动\n- 二指点击 = 鼠标原处右键点击\n- 二指按下后立刻移动 = 鼠标滚轮\n- 二指长按后移动 = 鼠标在当前位置左键按下（拖拽）\n- 三指按下并移动1或2根手指 = 缩放窗口（松开1或2根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单",
                 "布局方式",
                 "左右侧栏：经典布局，按键位于主画面的左右两侧，每一侧可以有多列，每一列可以有多个按键。\n\n自由位置：按钮可以自由摆放（需要启动容器后，三指触屏调出菜单项，进入编辑模式后才能编辑位置）。可以添加摇杆按钮。",
                 "左侧按键栏",
@@ -131,6 +160,34 @@ public class RR {
                 "编辑按键",
                 "显示按键",
                 "隐藏按键",
+                "鼠标左键",
+                "鼠标右键",
+                "鼠标中键",
+                "摇杆",
+                "鼠标",
+                "显示详细设置",
+                "退出编辑",
+                "重命名",
+                "仅使用4个方向而不是8个方向",
+                "勾选此选项使用4个方向，则同一时刻只会按下一个按键。若不勾选，当移动到斜方向时会触发两个按键，即有8个方向。\n允许斜向会导致判定方向变化的角度从45°变为22.5°，所以在游戏不支持斜向的情况下建议开启此选项。",
+                "设置摇杆按键",
+                "自定义",
+                "左键点击$单指点击屏幕$单指点击屏幕", //获取的时候按split("\\$")分割成三段，第一个是标题，第二个是操作1的介绍，第二个是操作2的接受啊
+                "右键点击$单指长按后松开$二指点击屏幕",
+                "鼠标滚轮$单指上下滑动$二指上下滑动",
+                "左键拖拽$单指长按后移动$二指长按后移动",
+                "缩放窗口$二指按下并移动，松开1指变为移动窗口$三指按下并移动其中1或2指，松开1或2指变为移动窗口",
+                "弹窗菜单$三指点击屏幕$三指点击屏幕",
+                "手势控制 1$原始的默认模式",
+                "手势控制 2$触摸板模式",
+                "移动鼠标$ $单指按下并移动",
+                "安卓输入法$二指点击屏幕$ ",
+                "手势说明",
+                "自定义操作模式",
+                "鼠标灵敏度",
+                "重置",
+                "调整鼠标移动速度，仅在使用“手势控制 2”时生效。",
+                "点击“+”新建一列按键。长按可进行排序。"
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -163,16 +220,16 @@ public class RR {
                 "input height",
 
                 "Controls Settings",
-                "Long click options to check its description",
+                "Long click options to check its description.\n- To enable this control, set Control Mode \"default\" in container properties.\n- this dialog can also show up by three-finger click after launching the container.",
                 "Mouse",
                 "Keys",
                 "Style",
                 "Display mouse Cursor",
                 "Display or hide the mouse cursor in containers.\nIf there are two cursors in game checking this option may help to hide one.",
-                "Move mouse relatively",
-                "If checked, the second gesture mode will be used.\n\n**Gesture Mode 1**:\n- One finger click = Mouse left click at finger's position\n- One finger press and move = Mouse scroll\n- One finger long press and move = Mouse left button press (drag)\n- One finger long click = Mouse right click\n- Two fingers click = toggle android keyboard\n- Two fingers press and move = resize the window (release one finger to move the window)\n- Three fingers click = Show popup menu\n\n**Gesture Mode 2**:\n- One finger click = Mouse left click at its own position\n- One finger move = Mouse move with finger's movement\n- Two fingers click = Mouse right click\n- Two fingers press and move = Mouse scroll\n- Tow fingers long press and move = Mouse left button press (drag)\n- Three fingers press and move 1 or 2 of them = Resize the window (release 1 or 2 of them to move the window)\n- Three fingers click = Show popup menu",
+                "Move mouse relatively (Gesture Mode 2)",
+                "If checked, the second Gesture mode will be used.\n\n**Gesture Mode 1**:\n- One finger click = Mouse left click at finger's position\n- One finger press and move = Mouse scroll\n- One finger long press and move = Mouse left button press (drag)\n- One finger long click = Mouse right click\n- Two fingers click = toggle android keyboard\n- Two fingers press and move = resize the window (release one finger to move the window)\n- Three fingers click = Show popup menu\n\n**Gesture Mode 2**:\n- One finger click = Mouse left click at its own position\n- One finger move = Mouse move with finger's movement\n- Two fingers click = Mouse right click\n- Two fingers press and move = Mouse scroll\n- Tow fingers long press and move = Mouse left button press (drag)\n- Three fingers press and move 1 or 2 of them = Resize the window (release 1 or 2 of them to move the window)\n- Three fingers click = Show popup menu",
                 "Layout Mode",
-                "Left&Right Sidebar: Classic layout. Key buttons are put in the sidebar and the main frame won't be overlaid.\n\nFree Position: Buttons can be placed anywhere (you need to launch a container, three-fingers click to show popup menu, enter the editing mode to change a button's position). The joystick-style button is available.",
+                "Left&Right Sidebar: Classic layout. Key buttons are put in the sidebar and the main frame won't be overlaid.\n\nFree Position: Buttons can be placed anywhere (you need to enter a container, three-fingers click to edit a button's position). The joystick-style button is available.",
                 "Left Sidebar",
                 "Right Sidebar",
                 "Select buttons",
@@ -191,6 +248,35 @@ public class RR {
                 "Edit Controls",
                 "Show Controls",
                 "Hide Controls",
+                "Mouse Left",
+                "Mouse Right",
+                "Mouse Middle",
+                "Joystick",
+                "Mouse",
+                "Show Editing Dialog",
+                "Exit",
+                "Rename",
+                "Use 4 directions instead of 8 directions",
+                "If checked, only one key will be pressed at a time. If unchecked, two buttons will be triggered when moving to the diagonal direction, that is, there are 8 directions.\nAllowing the diagonal direction will cause the angle of the determination direction to change from 45° to 22.5°, so it is recommended to enable this option if the game does not support diagonal.",
+                "Button keys",
+                "Custom",
+                "Left Click$One finger click$One finger click", //获取的时候按split("\\$")分割成三段，第一个是标题，第二个是操作1的介绍，第二个是操作2的接受啊
+                "Right Click$One finger long press & release$Two fingers click",
+                "Scroll (Wheel)$One finger move$Two fingers move",
+                "Left Press (Drag)$One finger long press and move$Two fingers long press and move",
+                "Zoom$Two fingers press and move$Three fingers press and move 1 or 2 of them",
+                "Popup Menu$Three fingers click$Three fingers click",
+                "Gesture Mode 1$Original Default Mode",
+                "Gesture Mode 2$TouchPad Mode",
+                "Cursor Move$ $One finger move",
+                "Toggle Keyboard$Two fingers click$ ",
+                "Gesture Tips",
+                "Custom Control",
+                "Mouse sensitivity",
+                "Reset",
+                "Adjust the pointer speed, effective only in Gesture Mode 2",
+                "Click \"+\" to add one column of buttons. Long press to rearrange them."
+
         };
 
         stringMap.put("zh", zhStrings);

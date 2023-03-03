@@ -3,7 +3,6 @@ package com.example.datainsert.exagear.controls.menus;
 import android.util.Log;
 
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.activities.XServerDisplayActivityUiOverlaySidePanels;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
@@ -12,9 +11,9 @@ import com.eltechs.axs.widgets.actions.AbstractAction;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
-public class EditingControl extends AbstractAction {
+public class ControlEdit extends AbstractAction {
 
-    public EditingControl() {
+    public ControlEdit() {
         super(null);
     }
 

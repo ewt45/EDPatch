@@ -15,4 +15,23 @@
         <item>https://android.googlesource.com/platform/tools/apksig</item>
         <item>https://github.com/senswrong/AndroidBinaryXml</item>
     </array>
+
+    <string-array name="func_name">
+        <item>@string/funcname_fab_drived</item>
+        <item>@string/funcname_fab_cstmCtrl</item>
+        <item>@string/funcname_cursorimg</item>
+        <item>@string/funcname_prefresl</item>
+        <item>@string/funcname_softinput</item>
+        <item>@string/funcname_selobb</item>
+    </string-array>
+
+    <string-array name="func_description">
+        <item>@string/fraghelp_body_drived</item>
+        <item>@string/fraghelp_body_cstmCtrl</item>
+        <item>@string/fraghelp_body_cursorimg</item>
+        <item>@string/fraghelp_body_prefresl</item>
+        <item>@string/fraghelp_body_softinput</item>
+        <item>@string/fraghelp_body_selobb</item>
+    </string-array>
+
 </resources>

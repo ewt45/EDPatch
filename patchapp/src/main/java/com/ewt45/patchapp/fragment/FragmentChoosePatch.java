@@ -1,4 +1,4 @@
-package com.ewt45.patchapp;
+package com.ewt45.patchapp.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -18,6 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import com.ewt45.patchapp.ActionPool;
+import com.ewt45.patchapp.PatchUtils;
+import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentChoosePatchBinding;
 import com.ewt45.patchapp.thread.BuildApk;
 import com.ewt45.patchapp.thread.DecodeApk;

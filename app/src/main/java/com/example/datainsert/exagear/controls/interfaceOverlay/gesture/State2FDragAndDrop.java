@@ -12,6 +12,8 @@ import com.eltechs.axs.GuestAppActionAdapters.SimpleDragAndDropAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.SimpleMouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
+import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
+
 import java.util.List;
 
 /* loaded from: classes.dex */
@@ -105,7 +107,7 @@ public class State2FDragAndDrop extends AbstractGestureFSMState implements Touch
             return new State2FDragAndDrop(
                     gestureContext,
                     new SimpleDragAndDropAdapter(
-                            new RelativeToCurrentPositionMouseMoveAdapter(
+                            new RelativeMouseMoveCstmSpdAdapter(
                                     new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()),
                                     gestureContext.getViewFacade(), gestureContext.getHostView()),
                             new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 1),

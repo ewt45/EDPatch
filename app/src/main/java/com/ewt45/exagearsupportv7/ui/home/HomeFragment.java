@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +31,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProvider;
 
+import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.ewt45.exagearsupportv7.R;
 import com.ewt45.exagearsupportv7.databinding.FragmentHomeBinding;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.SensitivitySeekBar;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
+import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPopupMenu;
+import com.example.datainsert.exagear.input.SoftInput;
 
 import java.util.ArrayList;
 
@@ -66,12 +71,13 @@ public class HomeFragment extends Fragment {
 
         //点击按钮显示键盘
         binding.toggleInput.setOnClickListener(v -> {
-            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//            InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//
+//            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+//            Log.d(TAG, "onClick: 让touchcontrol变为focus以接收软键盘输入。是否成功：" + binding.touchOuter.getChildAt(0).requestFocus());
+////            binding.editText.requestFocus();
+//            Log.d(TAG, "onClick: 当前顶层布局为" + requireActivity().getWindow().getDecorView());
 
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-            Log.d(TAG, "onClick: 让touchcontrol变为focus以接收软键盘输入。是否成功：" + binding.touchOuter.getChildAt(0).requestFocus());
-//            binding.editText.requestFocus();
-            Log.d(TAG, "onClick: 当前顶层布局为" + requireActivity().getWindow().getDecorView());
         });
 
 //        binding.testBtn.setBackgroundTintMode(PorterDuff.Mode.SRC);

@@ -260,250 +260,256 @@
             android:layout_margin="8dp"
             android:text="@string/fraghelp_title1_func" />
 
-        <android.support.v7.widget.CardView
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/func_recycler"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:contentPadding="8dp">
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            android:layout_height="wrap_content"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--        <android.support.v7.widget.CardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="8dp"-->
+<!--            app:contentPadding="8dp">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/funcname_fab" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingMultiplier="1.2"
-                    android:text="@string/fraghelp_body_fab" />
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="@string/funcname_fab" />-->
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="-8dp">
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Body2"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:lineSpacingMultiplier="1.2"-->
+<!--                    android:text="@string/fraghelp_body_fab" />-->
 
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/fab"
-                        app:layout_constraintDimensionRatio="2.13"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+<!--                <android.support.constraint.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:padding="-8dp">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/funcname_fab_drived"
-                    android:textSize="17sp" />
+<!--                    <pl.droidsonroids.gif.GifImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:src="@drawable/fab"-->
+<!--                        app:layout_constraintDimensionRatio="2.13"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </android.support.constraint.ConstraintLayout>-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingMultiplier="1.2"
-                    android:text="@string/fraghelp_body_drived" />
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="@string/funcname_fab_drived"-->
+<!--                    android:textSize="17sp" />-->
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="-8dp">
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Body2"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:lineSpacingMultiplier="1.2"-->
+<!--                    android:text="@string/fraghelp_body_drived" />-->
 
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/drived"
-                        app:layout_constraintDimensionRatio="1.50"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+<!--                <android.support.constraint.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:padding="-8dp">-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--                    <pl.droidsonroids.gif.GifImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:src="@drawable/drived"-->
+<!--                        app:layout_constraintDimensionRatio="1.50"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </android.support.constraint.ConstraintLayout>-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:contentPadding="8dp">
+<!--            </LinearLayout>-->
+<!--        </android.support.v7.widget.CardView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--        <android.support.v7.widget.CardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="8dp"-->
+<!--            app:contentPadding="8dp">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/funcname_cursorimg" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingMultiplier="1.2"
-                    android:text="@string/fraghelp_body_cursorimg" />
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="@string/funcname_cursorimg" />-->
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="-8dp">
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Body2"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:lineSpacingMultiplier="1.2"-->
+<!--                    android:text="@string/fraghelp_body_cursorimg" />-->
 
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/showcursor"
-                        app:layout_constraintDimensionRatio="1.69"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+<!--                <android.support.constraint.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:padding="-8dp">-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--                    <pl.droidsonroids.gif.GifImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:src="@drawable/showcursor"-->
+<!--                        app:layout_constraintDimensionRatio="1.69"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </android.support.constraint.ConstraintLayout>-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:contentPadding="8dp">
+<!--            </LinearLayout>-->
+<!--        </android.support.v7.widget.CardView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--        <android.support.v7.widget.CardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="8dp"-->
+<!--            app:contentPadding="8dp">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/funcname_prefresl" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingMultiplier="1.2"
-                    android:text="@string/fraghelp_body_prefresl" />
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="@string/funcname_prefresl" />-->
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="-8dp">
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Body2"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:lineSpacingMultiplier="1.2"-->
+<!--                    android:text="@string/fraghelp_body_prefresl" />-->
 
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/customresl"
-                        app:layout_constraintDimensionRatio="1.5"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+<!--                <android.support.constraint.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:padding="-8dp">-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--                    <pl.droidsonroids.gif.GifImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:src="@drawable/customresl"-->
+<!--                        app:layout_constraintDimensionRatio="1.5"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </android.support.constraint.ConstraintLayout>-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:contentPadding="8dp">
+<!--            </LinearLayout>-->
+<!--        </android.support.v7.widget.CardView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--        <android.support.v7.widget.CardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="8dp"-->
+<!--            app:contentPadding="8dp">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/funcname_softinput" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingMultiplier="1.2"
-                    android:text="@string/fraghelp_body_softinput" />
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="@string/funcname_softinput" />-->
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="-8dp">
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Body2"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:lineSpacingMultiplier="1.2"-->
+<!--                    android:text="@string/fraghelp_body_softinput" />-->
 
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/softinput"
-                        app:layout_constraintDimensionRatio="2.22"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+<!--                <android.support.constraint.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:padding="-8dp">-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--                    <pl.droidsonroids.gif.GifImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:src="@drawable/softinput"-->
+<!--                        app:layout_constraintDimensionRatio="2.22"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </android.support.constraint.ConstraintLayout>-->
 
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:contentPadding="8dp">
+<!--            </LinearLayout>-->
+<!--        </android.support.v7.widget.CardView>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+<!--        <android.support.v7.widget.CardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="8dp"-->
+<!--            app:contentPadding="8dp">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Headline6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/funcname_selobb" />
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Body2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingMultiplier="1.2"
-                    android:text="@string/fraghelp_body_selobb" />
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Headline6"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:text="@string/funcname_selobb" />-->
 
-                <android.support.constraint.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:padding="-8dp">
+<!--                <TextView-->
+<!--                    style="@style/TextAppearance.MaterialComponents.Body2"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:lineSpacingMultiplier="1.2"-->
+<!--                    android:text="@string/fraghelp_body_selobb" />-->
 
-                    <pl.droidsonroids.gif.GifImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:src="@drawable/selectobb"
-                        app:layout_constraintDimensionRatio="1.69"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </android.support.constraint.ConstraintLayout>
+<!--                <android.support.constraint.ConstraintLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="8dp"-->
+<!--                    android:padding="-8dp">-->
 
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+<!--                    <pl.droidsonroids.gif.GifImageView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="0dp"-->
+<!--                        android:src="@drawable/selectobb"-->
+<!--                        app:layout_constraintDimensionRatio="1.69"-->
+<!--                        app:layout_constraintTop_toTopOf="parent" />-->
+<!--                </android.support.constraint.ConstraintLayout>-->
+
+<!--            </LinearLayout>-->
+<!--        </android.support.v7.widget.CardView>-->
     </LinearLayout>
 
 

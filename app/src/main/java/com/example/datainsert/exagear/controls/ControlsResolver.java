@@ -32,6 +32,12 @@ public class ControlsResolver {
      * 背景透明度，0-255。文字透明度为该值*2/3+85
      */
     public final static String PREF_KEY_BTN_ALPHA = "btn_alpha";
+
+    /**
+     * 默认值为80。鼠标灵敏度，0.2~3.0. progress设置为0~280. 取出后需要（x+20)/100 方可使用
+     *
+     */
+    public final static String PREF_KEY_MOUSE_SENSITIVITY = "mouse_move_sensitivity";
     public static XServerDisplayActivityInterfaceOverlay getCurrentControls(Controls controls) {
 //        //如果preference不存在，不写入直接获取会出错吗(没问题）
 //        boolean b = Globals.getAppContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE).getBoolean(PREF_KEY_USE_CUSTOM_CONTROL, false);

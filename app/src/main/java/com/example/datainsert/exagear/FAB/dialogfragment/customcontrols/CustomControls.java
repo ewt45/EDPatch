@@ -72,11 +72,8 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         mSerFile2 = new File(requireContext().getFilesDir(), KeyCodes2.KeyStoreFileName);
         mSerFile3 = new File(requireContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
         XServerDisplayActivityConfigurationAware aware = Globals.getApplicationState();
-        if (Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7") && Globals.getApplicationState() != null && ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity) {
-            mUiOverlay = XServerDisplayActivity.myUIOverlayForTest;
-        } else if (aware != null && aware.getXServerDisplayActivityInterfaceOverlay() instanceof FalloutInterfaceOverlay2) {
+        if(aware!=null)
             mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
-        }
 
         if (mUiOverlay != null) {
             mKeyCodes2 = mUiOverlay.getControlsFactory().getKeyCodes2();
@@ -144,10 +141,10 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         rootView.setOrientation(VERTICAL);
         scrollView.addView(rootView);
 
-        StringBuilder tipOverALl = new StringBuilder(getS(RR.cmCtrl_lgPressHint));
-        if(!(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity))
-            tipOverALl.append( "\n- 在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。\n- 启动环境后，可以通过三指触屏调出此界面进行实时修改。"    );
-        rootView.addView(getTextViewWithText(c, tipOverALl.toString()));
+        String tipsOverAll = getS(RR.cmCtrl_lgPressHint);
+        if(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity)
+            tipsOverAll = tipsOverAll.substring(0,tipsOverAll.indexOf('\n'));
+        rootView.addView(getTextViewWithText(c, tipsOverAll));
 
         //标签页滑动视图
         TabLayout tabLayout = new TabLayout(requireContext());

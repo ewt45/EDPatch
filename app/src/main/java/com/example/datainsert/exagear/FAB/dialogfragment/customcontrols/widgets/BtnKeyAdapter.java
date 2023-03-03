@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
@@ -22,7 +23,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
-import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
@@ -65,19 +65,18 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
             Log.d(TAG, "onBindViewHolder: 点击没反应？");
             Context c = v.getContext();
             PopupMenu popupMenu = new PopupMenu(c,v);
-            popupMenu.getMenu().add("编辑").setOnMenuItemClickListener(item -> {
+            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item -> {
                 EditText editText = new EditText(c);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
                 editText.setSingleLine();
                 editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
                 editText.setText(((OneKey) v.getTag()).getName());
                 editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100),-2));
-                LinearLayout renameRootView = getOneLineWithTitle(c,"重命名",editText,false);
+                LinearLayout renameRootView = getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditReName),editText,false);
                 int padding = QH.px(c, RR.attr.dialogPaddingDp);
                 renameRootView.setPadding(padding,0,padding,0);
                 new AlertDialog.Builder(c)
                         .setView(renameRootView)
-                        .setTitle("按钮属性")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             OneKey newSelfKey = ((OneKey) v.getTag()).clone();
                             newSelfKey.setName(editText.getText().toString());
@@ -96,7 +95,7 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
                 return true;
             });
 //            MenuItem itemFixTop=popupMenu.getMenu().add("固定置顶");
-            popupMenu.getMenu().add("删除").setOnMenuItemClickListener(item->{
+            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popDel)).setOnMenuItemClickListener(item->{
                 OneKey selfKey = (OneKey) v.getTag();
                 List<OneKey> newList = getCurrentList();
                 newList.remove(getIndexOfItem(newList,selfKey));

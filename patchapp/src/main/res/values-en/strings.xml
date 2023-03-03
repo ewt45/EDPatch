@@ -10,7 +10,7 @@
     <string name="funcname_cursorimg">show cursor</string>
     <string name="actmsg_funcfab">add function: float action button</string>
     <string name="actmsg_funcresl">add function: custom resolution</string>
-    <string name="funcname_fab">float action button</string>
+    <string name="funcname_fab">float action button\n- Custom location of drive D\n- CUstom Control</string>
     <string name="funcname_prefresl">custom resolution</string>
     <string name="funcname_softinput">android 11+ soft-input no-crashing</string>
     <string name="btntxt_startpatch">start patch</string>
@@ -28,7 +28,7 @@
     <string name="btntxt_selectapkfiles">local files</string>
     <string name="actmsg_funcselobb">add function: manually select obb file</string>
     <string name="funcname_selobb">select obb manually</string>
-    <string name="funcname_fab_drived">Change the location of drive D</string>
+    <string name="funcname_fab_drived">Custom location of drive D</string>
     <string name="fraghelp_title2_steps">Steps</string>
     <string name="fraghelp_body_step_1">Select exagear apk from installed apks list or local files. Wait until decoded session completes.</string>
     <string name="fraghelp_body_step_2">Check the function you want to add. Function descriptions  are described below.</string>
@@ -59,4 +59,6 @@
     <string name="settings_update">Update</string>
     <string name="fraghelp_title2_brief">About</string>
     <string name="fraghelp_body_brief">After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. Even if  a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\nSo I\'m wondering if I can make an application. The user only needs to click a button and wait for the automatic modification to complete, then install the new apk. So this application was born. Due to my limited knowledge, 100% modification success or compatibility with all versions of exagear is not guaranteed.</string>
+    <string name="funcname_fab_cstmCtrl">Custom Control</string>
+    <string name="fraghelp_body_cstmCtrl">funcname_fab</string>
 </resources>

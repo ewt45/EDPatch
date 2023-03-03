@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -24,7 +25,8 @@ public class ExampleUnitTest {
     public void test1(){
 //        clz1 c1=new clz2();
 //        c1.m1();
-        System.out.println(15f / 0);
+//        System.out.println(15f / 0);// infinite
+        System.out.println(Arrays.toString("aaa$bbb$ccc".split("\\$")));
     }
     class clz1{
         public void m1(){

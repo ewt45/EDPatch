@@ -1,4 +1,4 @@
-package com.ewt45.patchapp;
+package com.ewt45.patchapp.fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,6 +15,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ewt45.patchapp.BuildConfig;
+import com.ewt45.patchapp.PatchUtils;
+import com.ewt45.patchapp.R;
 
 import java.io.File;
 import java.util.ArrayList;

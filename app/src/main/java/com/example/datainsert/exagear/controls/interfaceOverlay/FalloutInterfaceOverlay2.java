@@ -3,27 +3,21 @@ package com.example.datainsert.exagear.controls.interfaceOverlay;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.HORIZONTAL;
-import static android.widget.LinearLayout.VERTICAL;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
-import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SHOW_CURSOR;
-import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SIDEBAR_COLOR;
-import static com.example.datainsert.exagear.controls.model.KeyCodes2.KeyStoreFileName;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.TextView;
+
 import com.eltechs.axs.CommonApplicationConfigurationAccessor;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
@@ -33,25 +27,18 @@ import com.eltechs.axs.activities.menus.Quit;
 import com.eltechs.axs.activities.menus.ShowKeyboard;
 import com.eltechs.axs.activities.menus.ShowUsage;
 import com.eltechs.axs.activities.menus.ToggleHorizontalStretch;
-import com.eltechs.axs.activities.menus.ToggleUiOverlaySidePanels;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration;
-import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.actions.AbstractAction;
+import com.eltechs.axs.widgets.popupMenu.AXSPopupMenu;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.RegularKeyBtn;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
-import com.example.datainsert.exagear.controls.menus.EditingControl;
-import com.example.datainsert.exagear.controls.menus.ToggleControlsVisibility;
-import com.example.datainsert.exagear.controls.model.KeyCodes2;
-import com.example.datainsert.exagear.controls.model.OneCol;
-import com.example.datainsert.exagear.controls.model.OneKey;
+import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPopupMenu;
+import com.example.datainsert.exagear.controls.menus.ControlEdit;
+import com.example.datainsert.exagear.controls.menus.ControlToggleVisibility;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,9 +62,10 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
     private ViewOfXServer viewOfXServer;
     private final int buttonWidthPixelsFixup = 30;
     private boolean isToolbarsVisible = true;
-    private final FalloutTouchScreenControlsFactory2 controlsFactory = new FalloutTouchScreenControlsFactory2();;
+    private final FalloutTouchScreenControlsFactory2 controlsFactory = new FalloutTouchScreenControlsFactory2() ;
 
     public static final String TSCWIDGET_TAG="TouchScreenControlsWidget_tag";
+
 
     private static boolean isDisplaySmall(DisplayMetrics displayMetrics) {
         return ((float) displayMetrics.widthPixels) / ((float) displayMetrics.densityDpi) < displaySizeThresholdInches;
@@ -86,9 +74,10 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
     @Override // com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay
     public View attach(XServerDisplayActivity a, ViewOfXServer viewOfXServer) {
         SharedPreferences sp = a.getSharedPreferences(PREF_FILE_NAME_SETTING,Context.MODE_PRIVATE);
-
-
         this.viewOfXServer = viewOfXServer;
+
+        FrameLayout returnLayout = new FrameLayout(a);
+        returnLayout.setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
 
         //先初始化自由位置或两侧栏的按钮容器布局，然后交给factory
         btnContainer = new BtnContainer(a, viewOfXServer);
@@ -106,11 +95,15 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
 
         //把btnContainer传给factory。要在tscWidget添加到布局之前
         controlsFactory.setControlContainers(btnContainer,leftToolbar,rightToolbar);
+        //自定义弹窗菜单
+        TextView textView = new TextView(a);
+        textView.setBackgroundColor(a.getResources().getColor(android.R.color.transparent));
+        returnLayout.addView(textView, new FrameLayout.LayoutParams(0, 0, 5));
+        controlsFactory.setPopupMenu(new SpecialPopupMenu(a,textView));
         //用factory填充布局和toucharea
         controlsFactory.reinflateControlLayout(tscWidget.getContext(),viewOfXServer);
 
-        FrameLayout returnLayout = new FrameLayout(a);
-        returnLayout.setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
+
         //底层先放btnContainer
         returnLayout.addView(btnContainer);
         //然后再放一层，左右侧栏，中间是主画面
@@ -132,9 +125,10 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
             //设置鼠标显隐
             viewOfXServer.getConfiguration().setShowCursor( sp.getBoolean(PREF_KEY_SHOW_CURSOR,true));
             //设置编辑按键的菜单项
-            List<AbstractAction> popupLists = new ArrayList<>(Arrays.asList(new EditingControl(), new ShowKeyboard(), new ToggleHorizontalStretch(), new ToggleControlsVisibility(), new ShowUsage(), new Quit()));
-            a.addDefaultPopupMenu(popupLists);
+//            List<AbstractAction> popupLists = new ArrayList<>(Arrays.asList(new ControlEdit(), new ShowKeyboard(), new ToggleHorizontalStretch(), new ControlToggleVisibility(), new ShowUsage(), new Quit()));
+//            a.addDefaultPopupMenu(popupLists);
         }
+
 
         //之前如果设置过隐藏按键，那就隐藏
         leftToolbar.setVisibility(isToolbarsVisible?VISIBLE:GONE);

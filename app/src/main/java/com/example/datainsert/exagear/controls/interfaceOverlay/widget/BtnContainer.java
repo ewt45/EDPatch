@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay.widget;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -107,19 +109,16 @@ public class BtnContainer extends FrameLayout {
      */
     private void buildMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         Log.d(TAG, "buildMenu: 获取到的id为"+getId());
-        menu.add("显示详细设置").setOnMenuItemClickListener(item -> {
+        menu.add(getS(RR.cmCtrl_editMenu1Dialog)).setOnMenuItemClickListener(item -> {
 //            createSelectKeysDialog();
             CustomControls fragment = new CustomControls();
             fragment.show(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity().getSupportFragmentManager(),CustomControls.TAG);
             return true;
         });
         //退出编辑的时候序列化keycode3
-        menu.add("退出编辑").setOnMenuItemClickListener(item -> {
+        menu.add(getS(RR.cmCtrl_editMenu2Exit)).setOnMenuItemClickListener(item -> {
             //将自己从父布局中移除？
-            FalloutInterfaceOverlay2 ui =
-                    Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7")
-                            ?XServerDisplayActivity.myUIOverlayForTest
-                    : (FalloutInterfaceOverlay2) ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
+            FalloutInterfaceOverlay2 ui = (FalloutInterfaceOverlay2) ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
             ui.endEditing();
             return true;
         });

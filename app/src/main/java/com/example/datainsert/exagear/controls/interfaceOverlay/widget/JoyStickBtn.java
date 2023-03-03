@@ -6,6 +6,7 @@ import static android.graphics.drawable.GradientDrawable.OVAL;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ALPHA;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
@@ -44,6 +45,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.
 import com.example.datainsert.exagear.FAB.widget.SimpleItemSelectedListener;
 import com.example.datainsert.exagear.FAB.widget.SpinArrayAdapterSmSize;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -99,15 +101,23 @@ public class JoyStickBtn extends BaseMoveBtn {
     }
 
     public static JoyStickBtn getSample(Context c) {
+        final int btnDiam = QH.px(c, 50);
+        final int outerDiam = btnDiam*2;
         JoyStickBtn sample = new JoyStickBtn(c, new Params()) {
             @Override
             public boolean onTouchEvent(MotionEvent event) {
                 return true;
             }
         };
+        //设置宽高
+        sample.btnDiam = QH.px(c, 50);
+        sample.outerDiam = sample.btnDiam*2;
+        //设置颜色为黑白
         sample.mBtnPaint.setColor(0xff848484);
+        sample.mBtnPaint.setStrokeWidth(QH.px(c, btnDiam / 30f));
         sample.mOutLinePaint.setColor(0xffc9c9c9);
-        sample.setupStyle(QH.px(c, 50));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(btnDiam*2, btnDiam*2);
+        sample.setLayoutParams(params);
         return sample;
     }
 
@@ -296,8 +306,8 @@ public class JoyStickBtn extends BaseMoveBtn {
 
         //禁止触发斜向按键
         CheckBox check4Direct = new CheckBox(c);
-        check4Direct.setText("仅使用四个方向");
-        setDialogTooltip(check4Direct, "勾选此选项，则同一时刻只会按下一个按键。若不勾选，当移动到斜方向时会触发两个按键，即有八个方向。\n允许斜向会导致判定方向变化的角度从45度变为22.5度，所以在游戏不支持斜向的情况下建议开启此选项。");
+        check4Direct.setText(getS(RR.cmCtrl_JoyEdit4Ways));
+        setDialogTooltip(check4Direct, getS(RR.cmCtrl_JoyEdit4WaysTip));
         check4Direct.setOnCheckedChangeListener((buttonView, isChecked) -> mParams.setFourDirections(isChecked));
         linearRoot.addView(check4Direct);
 
@@ -319,11 +329,11 @@ public class JoyStickBtn extends BaseMoveBtn {
         linearLine3.addView(get1SetKeyBtn(false, -1), new ViewGroup.LayoutParams(btnSize, btnSize));
         linearLine3.addView(get1SetKeyBtn(true, 1), new ViewGroup.LayoutParams(btnSize, btnSize));
         linearCustomKeys.addView(linearLine3, new ViewGroup.LayoutParams(-2, -2));
-        linearCustomOuter = getOneLineWithTitle(c, "自定义按键", linearCustomKeys, true);
+        linearCustomOuter = getOneLineWithTitle(c, null, linearCustomKeys, true);
 
         //选择预设按键，或者自定义
         Spinner spinKeys = new Spinner(c);
-        final String[] spinOptions = new String[]{"W A S D", "↑ ↓ ← →", "自定义"};
+        final String[] spinOptions = new String[]{"W A S D", "↑ ↓ ← →", getS(RR.cmCtrl_JoyEditKeyCstm)};
         final Params.PresetKey[] spinValues = new Params.PresetKey[]{WASD, ARROWS, CUSTOM};
         ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
         spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -339,7 +349,7 @@ public class JoyStickBtn extends BaseMoveBtn {
                 spinKeys.setSelection(i);
         }
         spinKeys.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
-        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, "设置摇杆按键", spinKeys, false);
+        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_JoyEditKeys), spinKeys, false);
 //        setDialogTooltip(oneLineSpinKeyPos.getChildAt(0),"");
         linearRoot.addView(oneLineSpinKeyPos);
 
@@ -385,8 +395,6 @@ public class JoyStickBtn extends BaseMoveBtn {
      * 初始化时设置样式
      */
     private void setupStyle(int presetBtnDiam) {
-        GradientDrawable drawable = new GradientDrawable();
-        drawable.setShape(OVAL);
         //标准按钮背景颜色（带透明度）
         int bgColorARGB = (getPreference().getInt(PREF_KEY_BTN_BG_COLOR, Color.BLACK) & 0x00ffffff)
                 | (getPreference().getInt(PREF_KEY_BTN_ALPHA, 255) << 24);
@@ -396,16 +404,17 @@ public class JoyStickBtn extends BaseMoveBtn {
             btnDiam = QH.px(getContext(), (float) (50 * Math.sqrt(2)));
         outerDiam = btnDiam * 2;
 
-        drawable.setColor(bgColorARGB);
-        //设置按钮边框，降低明度到0.5f
-        float[] tmpHSV = new float[3];
-        Color.colorToHSV(bgColorARGB, tmpHSV);
-        tmpHSV[2] -= 0.2f;
-        if (tmpHSV[2] < 0) tmpHSV[2] += 1.0f;
-        //边框稍微透明一点吧
-        drawable.setStroke(QH.px(getContext(), btnDiam / 30f), Color.HSVToColor((bgColorARGB & 0xff000000) >> 24, tmpHSV));//描边
-
-        setBackground(drawable);
+//        GradientDrawable drawable = new GradientDrawable();
+//        drawable.setShape(OVAL);
+//        drawable.setColor(bgColorARGB);
+//        //设置按钮边框，降低明度到0.5f
+//        float[] tmpHSV = new float[3];
+//        Color.colorToHSV(bgColorARGB, tmpHSV);
+//        tmpHSV[2] -= 0.2f;
+//        if (tmpHSV[2] < 0) tmpHSV[2] += 1.0f;
+//        //边框稍微透明一点吧
+//        drawable.setStroke(QH.px(getContext(), btnDiam / 30f), Color.HSVToColor((bgColorARGB & 0xff000000) >> 24, tmpHSV));//描边
+//        setBackground(drawable);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(outerDiam, outerDiam);
         if (mParams != null)
             params.setMargins(mParams.marginLeft, mParams.marginTop, 0, 0);
@@ -450,7 +459,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         mBtnPaint.setStrokeWidth(QH.px(getContext(), btnDiam / 30f));
         mBtnPaint.setColor(Color.HSVToColor((bgColorARGB & 0xff000000) >> 24, btnHSV));
 
-        mOutLinePaint.setStrokeWidth(QH.px(getContext(), btnDiam / 40f));
+//        mOutLinePaint.setStrokeWidth(QH.px(getContext(), btnDiam / 40f));
         mOutLinePaint.setStyle(FILL);
         mOutLinePaint.setColor(bgColorARGB);
 
@@ -546,7 +555,7 @@ public class JoyStickBtn extends BaseMoveBtn {
             MOUSE_MOVE(new int[]{}, "鼠标移动"),
             MOUSE_LEFT_CLICK(new int[]{1, 1, 1, 1}, "鼠标左键点击"),
             MOUSE_RIGHT_CLICK(new int[]{3, 3, 3, 3}, "鼠标右键点击"),
-            CUSTOM(new int[]{}, "自定义"),
+            CUSTOM(new int[]{17, 31, 30, 32}, "自定义"),
             ;
 
             private final int[] keys;

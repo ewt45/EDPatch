@@ -1,7 +1,5 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.VERTICAL;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
@@ -9,7 +7,6 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SIDEBAR_COLOR;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -19,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.ScrollView;
 
 import com.eltechs.axs.GestureStateMachine.GestureContext;
@@ -63,11 +61,16 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
     private BtnContainer mBtnContainer;
     private LinearLayout mLeftBar;
     private LinearLayout mRightBar;
+    /**
+     * 三指触屏显示的弹窗菜单
+     */
+    PopupMenu mPopupMenu;
 
     /**
      * 用于存储toucharea的列表，从uiOverlay那边更新。
      */
     private final List<BtnTouchArea> mBtnAreaList = new ArrayList<>();
+
 
     @Override // com.eltechs.axs.TouchScreenControlsFactory
     public boolean hasVisibleControls() {
@@ -80,7 +83,9 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
      * 填充内容按钮都在factory里完成
      */
     public void setControlContainers(
-            @NonNull BtnContainer emptyBtnContainer, @NonNull LinearLayout leftToolbar, @NonNull LinearLayout rightToolbar) {
+            @NonNull BtnContainer emptyBtnContainer,
+            @NonNull LinearLayout leftToolbar,
+            @NonNull LinearLayout rightToolbar) {
         mBtnContainer = emptyBtnContainer;
         mLeftBar = leftToolbar;
         mRightBar = rightToolbar;
@@ -106,6 +111,17 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         }
     }
 
+    /**
+     * 自己定义弹窗菜单，可以有二级菜单
+     */
+    public void setPopupMenu(PopupMenu popupMenu){
+        mPopupMenu = popupMenu;
+    }
+
+    public PopupMenu getPopupMenu() {
+        return mPopupMenu;
+    }
+
     @Override // com.eltechs.axs.TouchScreenControlsFactory
     public TouchScreenControls create(View view, ViewOfXServer viewOfXServer) {
         Log.d(TAG, "create: factory新创建了TouchScreenControls");
@@ -125,7 +141,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         TouchArea touchArea = new TouchArea(0.0f, 0.0f, view.getWidth(), view.getHeight(), touchEventMultiplexor);
         //手势操作
         if (viewOfXServer != null) {
-            this.gestureContext = GestureMachineMix.create(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi);
+            this.gestureContext = GestureMachineMix.create(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi,mPopupMenu);
             //GestureMachineConfigurerFallout2.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, () -> ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu());
         }
         //按钮布局和范围相关在reinflate函数里设置好，在这里直接添加上
@@ -262,6 +278,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
             area.updateArea(0,0,0,0);
         }
     }
+
 
 
 }

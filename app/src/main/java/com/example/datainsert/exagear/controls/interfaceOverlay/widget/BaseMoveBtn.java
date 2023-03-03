@@ -9,8 +9,8 @@ import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.PointF;
-import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,6 +32,14 @@ import com.eltechs.axs.GeometryHelpers;
  */
 public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClickListener {
     private static final String TAG = "BaseMoveBtn";
+    /**
+     * 手指第一次按下的位置 rawxy
+     */
+    private final PointF mDownXYPoint = new PointF()  ;;
+    /**
+     * 手指第一次按下时的left和top
+     */
+    private final Point mDownLeftTop = new Point();
     private final PointF mLastXYPoint = new PointF();
     private boolean mMovedWhenTouch = false; //是否正在移动
     private int mActivePointerId =INVALID_POINTER_ID; //原始按下的那根手指，防止后续新按下的手指捣乱
@@ -136,6 +144,12 @@ public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClic
         mLastXYPoint.y =  event.getRawY();
         mLastXYPoint.x = event.getRawX();
 
+        mDownXYPoint.x=event.getRawX();
+        mDownXYPoint.y=event.getRawY();
+
+        mDownLeftTop.x  = getLeft();
+        mDownLeftTop.y=getTop();
+
         return true;
     }
 
@@ -145,7 +159,10 @@ public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClic
     protected boolean onTouchUp(MotionEvent event) {
         //                Log.d(TAG, "onTouchEvent: 距离："+GeometryHelpers.distance(event.getRawX(), event.getRawY(), pressX, pressY));
         setPressed(false);
-        if (!isMoved())
+        //让子类更新自身model
+        updateModelMargins((int) getLeft(), (int) getTop());
+        //如果没移动过就点击
+        if (GeometryHelpers.distance(new PointF(event.getRawX(), event.getRawY()), mDownXYPoint)<=0)
             performClick();
         return true;
     }
@@ -159,24 +176,28 @@ public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClic
         //获取初始按下手指的坐标
         float tempRawX =  event.getRawX();
         float tempRawY = event.getRawY();
-        float moveDistance = GeometryHelpers.distance(new PointF(tempRawX, tempRawY), mLastXYPoint);
-        Log.d(TAG, "onTouchEvent: 移动距离=" + moveDistance);
-        if (moveDistance > 0.01) {
-            setMoved(true);
-        }
 
-        float newLeft = getLeft() + tempRawX - mLastXYPoint.x;
-        float newTop = getTop() + tempRawY - mLastXYPoint.y;
-
-        mLastXYPoint.x = tempRawX;
-        mLastXYPoint.y = tempRawY;
-        //把新的位置 oriLeft, newTop, oriRight, oriBottom设置到控件，实现位置移动和大小变化。
-
+        //设置新的margin
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        lp.setMargins((int) newLeft, (int) newTop, 0, 0);
+        lp.setMargins((int) (mDownLeftTop.x+ event.getRawX()-mDownXYPoint.x), (int) (mDownLeftTop.y+event.getRawY()-mDownXYPoint.y), 0, 0);
         setLayoutParams(lp);
-        //让子类更新自身model
-        updateModelMargins((int) newLeft, (int) newTop);
+//        float moveDistance = GeometryHelpers.distance(new PointF(tempRawX, tempRawY), mDownXYPoint);
+//        Log.d(TAG, "onTouchEvent: 与起始位置距离=" + moveDistance);
+//        if (moveDistance > 0) {
+//            setMoved(true);
+//        }
+//
+//        float newLeft = getLeft() + tempRawX - mLastXYPoint.x;
+//        float newTop = getTop() + tempRawY - mLastXYPoint.y;
+//
+//        mLastXYPoint.x = tempRawX;
+//        mLastXYPoint.y = tempRawY;
+//        //把新的位置 oriLeft, newTop, oriRight, oriBottom设置到控件，实现位置移动和大小变化。
+//
+//        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+//        lp.setMargins((int) newLeft, (int) newTop, 0, 0);
+//        setLayoutParams(lp);
+
 
         return true;
     }

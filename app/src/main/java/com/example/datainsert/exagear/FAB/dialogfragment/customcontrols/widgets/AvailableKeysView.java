@@ -3,6 +3,9 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.Nullable;
@@ -21,7 +24,9 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
+import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
@@ -49,6 +54,8 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             "KP/", "SysRq", "RAlt", "LineFeed", "Home",     //5
             "↑", "PageUp", "←", "→", "End",                 //5
             "↓", "PageDn", "Insert", "Delete",              //4
+            "Left","Middle","Right", "SCROLL_UP","SCROLL_DOWN",
+            "SCROLL_CLICK_LEFT","SCROLL_CLICK_RIGHT",
     };
     public static int[] codes = {
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14
@@ -65,14 +72,20 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             , 98, 99, 100, 101, 102
             , 103, 104, 105, 106, 107
             , 108, 109, 110, 111
+            , 256+1,256+2,256+3,256+4,256+5
+            ,256+6,256+7
     };//存储对应keycode的值
     //这三者的相同下标应该对应同一个key，但是下标并不能看做keycode
-    public boolean[] keySelect = new boolean[101];//存储对应keycode选中情况
+    public boolean[] keySelect = new boolean[names.length];//存储对应keycode选中情况
     private int mBtnSize = -2;
     private int mBtnWidth;
     private int mBtnHeight;
     private boolean mSelectOnlyOne=false; //是否最多只允许选择一个按钮
     CompoundButton mLastCheckedButton; //直接设置button行嘛，会不会赋值的时候乱套
+    /**
+     * 最外层的线性布局
+     */
+    private final LinearLayout rootLinear ;
     /**
      * 是否显示摇杆按钮
      */
@@ -88,11 +101,7 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
 
     /**
      * 自定义位置按键的构建
-     * @param context
-     * @param preSelect
-     * @param joyNum
      */
-
     public AvailableKeysView(Context context, boolean[] preSelect,int joyNum) {
         super(context);
         this.joyStickNum=joyNum;
@@ -104,7 +113,7 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
 //        setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(getContext());
         addView(horizontalScrollView, new ViewGroup.LayoutParams(-2, -2));
-        LinearLayout rootLinear = new LinearLayout(getContext());
+        rootLinear = new LinearLayout(getContext());
         rootLinear.setOrientation(HORIZONTAL);
         int padding8dp = QH.px(context,8);
         rootLinear.setPadding(padding8dp,padding8dp,padding8dp,padding8dp);
@@ -176,9 +185,40 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             linearSetJoyNumParams.gravity= Gravity.CENTER;
             joyBtnFrame.addView(linearSetJoyNum,linearSetJoyNumParams);
 
-            rootLinear.addView(joyBtnFrame,new ViewGroup.LayoutParams(-2,-2));
+            rootLinear.addView(getOneLineWithTitle(getContext(),RR.getS(RR.cmCtrl_allKeysJoyTitle),joyBtnFrame,true));
         }
 
+    }
+
+    /**
+     * 默认没显示鼠标按键，调用这个会显示
+     */
+    public void showMouseBtn(){
+        LinearLayout mouseLinear = new LinearLayout(getContext());
+        mouseLinear.setOrientation(VERTICAL);
+        LinearLayout line1 = getOneKeysLine(101,104);
+        for(int i=0; i<line1.getChildCount(); i++){
+            line1.getChildAt(i).getLayoutParams().width=-2;
+            line1.getChildAt(i).getLayoutParams().height=-2;
+            line1.getChildAt(i).setLayoutParams(line1.getChildAt(i).getLayoutParams());
+        }
+        mouseLinear.addView(line1);
+        LinearLayout line2 = getOneKeysLine(104,106);
+        for(int i=0; i<line2.getChildCount(); i++){
+            line2.getChildAt(i).getLayoutParams().width=-2;
+            line2.getChildAt(i).getLayoutParams().height=-2;
+            line2.getChildAt(i).setLayoutParams(line2.getChildAt(i).getLayoutParams());
+        }
+        mouseLinear.addView(line2);
+        LinearLayout line3 = getOneKeysLine(106,108);
+        for(int i=0; i<line3.getChildCount(); i++){
+            line3.getChildAt(i).getLayoutParams().width=-2;
+            line3.getChildAt(i).getLayoutParams().height=-2;
+            line3.getChildAt(i).setLayoutParams(line3.getChildAt(i).getLayoutParams());
+        }
+        mouseLinear.addView(line3);
+        rootLinear.addView(getOneLineWithTitle(getContext(),RR.getS(RR.cmCtrl_allKeysMouseTitle),mouseLinear,true));
+//        rootLinear.addView(BaseFragment.getOneLineWithTitle(getContext(),"鼠标",));
     }
 
 
@@ -209,7 +249,9 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             button.setSingleLine();
             button.setOnCheckedChangeListener(this);
             TooltipCompat.setTooltipText(button, names[i]);
-            linear.addView(button, new ViewGroup.LayoutParams(mBtnWidth , mBtnHeight));
+//            linear.addView(button, new ViewGroup.LayoutParams(mBtnWidth , mBtnHeight));
+            linear.addView(button, new ViewGroup.LayoutParams(-2 , -2));
+
         }
         return linear;
     }

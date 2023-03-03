@@ -27,7 +27,7 @@ public class BaseFragment extends DialogFragment {
         TextView tv = new TextView(c);
         tv.setText(s);
         tv.setLineSpacing(0,1.5f);
-        tv.setPadding(0, 0, 0, 20);
+        tv.setPadding(0, 20, 0, 0);
         return tv;
     }
 
@@ -57,6 +57,8 @@ public class BaseFragment extends DialogFragment {
                     : new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
             if (linearLayout.getChildCount() > 0)
                 params.setMarginStart(20);
+            if(vertical)
+                params.topMargin=20;
             linearLayout.addView(view, params);
         }
         linearLayout.setPadding(0, 20, 0, 0);

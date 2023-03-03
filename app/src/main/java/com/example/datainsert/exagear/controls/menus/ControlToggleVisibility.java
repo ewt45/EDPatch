@@ -6,8 +6,8 @@ import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware
 import com.eltechs.axs.widgets.actions.AbstractAction;
 import com.example.datainsert.exagear.RR;
 
-public class ToggleControlsVisibility extends AbstractAction {
-    public ToggleControlsVisibility() {
+public class ControlToggleVisibility extends AbstractAction {
+    public ControlToggleVisibility() {
         super(null);
     }
 

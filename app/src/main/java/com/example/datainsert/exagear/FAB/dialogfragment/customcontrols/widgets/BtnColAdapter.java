@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -83,13 +85,13 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                 Context c = v.getContext();
                 PopupMenu popupMenu = new PopupMenu(c, v);
                 Menu menu = popupMenu.getMenu();
-                menu.add(RR.getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item->{
+                menu.add(getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item->{
                     OneCol selfCol = (OneCol) v.getTag();
                     LinearLayout linearRoot = new LinearLayout(c);
                     linearRoot.setPadding(QH.px(c, RR.attr.dialogPaddingDp),QH.px(c, RR.attr.dialogPaddingDp),QH.px(c, RR.attr.dialogPaddingDp),QH.px(c, RR.attr.dialogPaddingDp));
                     linearRoot.setOrientation(LinearLayout.VERTICAL);
                     //提示
-                    linearRoot.addView(BaseFragment.getTextViewWithText(c,RR.getS(RR.cmCtrl_s2_ColEditTip)));
+                    linearRoot.addView(BaseFragment.getTextViewWithText(c,getS(RR.cmCtrl_s2_ColEditTip)));
                     //一列按键
                     BtnKeyRecyclerView recyclerView = new BtnKeyRecyclerView(c,selfCol.getmAllKeys());
                     LinearLayout.LayoutParams recyclerViewParams = new LinearLayout.LayoutParams(-2,-1);
@@ -112,7 +114,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                             .create().show();
                     return true;
                 });
-                menu.add(RR.getS(RR.cmCtrl_s2_popDel)).setOnMenuItemClickListener(item -> {
+                menu.add(getS(RR.cmCtrl_s2_popDel)).setOnMenuItemClickListener(item -> {
                     OneCol selfCol = (OneCol) v.getTag();
                     List<OneCol> newList = getCurrentList();
                     newList.remove(getIndexOfItem(newList,selfCol));

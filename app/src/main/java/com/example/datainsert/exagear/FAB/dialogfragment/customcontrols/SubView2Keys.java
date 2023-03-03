@@ -12,6 +12,7 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.TooltipCompat;
 import android.util.Log;
@@ -91,8 +92,12 @@ public class SubView2Keys extends LinearLayout {
         //左侧栏按键和右侧栏按键
         LinearLayout linearSideColOuter = new LinearLayout(c);
         linearSideColOuter.setOrientation(VERTICAL);
-        linearSideColOuter.addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s2_LSideTitle),getAddSideBarGroup(c,true),true));
-        linearSideColOuter.addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s2_RSideTitle),getAddSideBarGroup(c,false),true));
+        LinearLayout linearLeftSide = getOneLineWithTitle(c,getS(RR.cmCtrl_s2_LSideTitle),getAddSideBarGroup(c,true),true);
+        setDialogTooltip(linearLeftSide.getChildAt(0),getS(RR.cmCtrl_s2_sideTitleTip));
+        linearSideColOuter.addView(linearLeftSide);
+        LinearLayout linearRightSide = getOneLineWithTitle(c,getS(RR.cmCtrl_s2_RSideTitle),getAddSideBarGroup(c,false),true);
+        setDialogTooltip(linearRightSide.getChildAt(0),getS(RR.cmCtrl_s2_sideTitleTip));
+        linearSideColOuter.addView(linearRightSide);
 
         mTwoWaysKeyGroups[0]=linearSideColOuter ;
         addView(linearSideColOuter);
@@ -110,6 +115,7 @@ public class SubView2Keys extends LinearLayout {
             for (int i = 0; i < mKeyCodes3.getKeyList().size(); i++)
                 condition[i] = mKeyCodes3.getKeyList().get(i).isShow();
             AvailableKeysView allKeysView = new AvailableKeysView(getContext(), condition,mKeyCodes3.getJoyList().size());
+            allKeysView.showMouseBtn();
             allKeysView.showWithinDialog((dialog, which) -> {
                 //修改按键个数。判断当前按键是否已存在，不存在的话，按keycode大小插入进去吧
 //                AvailableKeysView.updateKeyCodes3(mKeyCodes3, allKeysView);
@@ -169,6 +175,7 @@ public class SubView2Keys extends LinearLayout {
         //点击添加按钮，新建对话框或fragment？关闭时recyclerview重写submitList
         addBtn.setOnClickListener(v -> {
             AvailableKeysView dialogView = new AvailableKeysView(getContext());
+            dialogView.showMouseBtn();
             dialogView.showWithinDialog((dialog, which) -> {
                 //submit需要新建一个列表，拷贝原列表
                 BtnColAdapter adapter = recyclerView.getAdapter();

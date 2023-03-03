@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/FirstFragment"
-        android:name="com.ewt45.patchapp.FragmentFirst"
+        android:name="com.ewt45.patchapp.fragment.FragmentFirst"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
 
@@ -34,17 +34,17 @@
     </fragment>
     <fragment
         android:id="@+id/fragmentChoosePatch"
-        android:name="com.ewt45.patchapp.FragmentChoosePatch"
+        android:name="com.ewt45.patchapp.fragment.FragmentChoosePatch"
         android:label="@string/fragment_patch_label"
         tools:layout="@layout/fragment_choose_patch" >
             </fragment>
     <fragment
         android:id="@+id/settingPreferences"
-        android:name="com.ewt45.patchapp.FragmentSettings"
+        android:name="com.ewt45.patchapp.fragment.FragmentSettings"
         android:label="@string/action_settings" />
     <fragment
         android:id="@+id/fragmentHelp"
-        android:name="com.ewt45.patchapp.FragmentHelp"
+        android:name="com.ewt45.patchapp.fragment.FragmentHelp"
         android:label="@string/action_guide" />
 
 </navigation>

@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay.widget;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ALPHA;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
@@ -25,22 +26,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
 import com.eltechs.axs.Finger;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.KeyCodesX;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
-import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.OneKey;
-
-import java.util.Locale;
 
 public class RegularKeyBtn extends BaseMoveBtn {
     private static final String TAG = "RegularKeyBtn";
@@ -122,17 +122,18 @@ public class RegularKeyBtn extends BaseMoveBtn {
          */
         if(mViewFacade==null)
             return;
-        if (isModifierKey()) {
-            if (!isModifierPress)
-                mViewFacade.injectKeyPress((byte) (mOneKey.getCode() + 8));
-            else
-                mViewFacade.injectKeyRelease((byte) (mOneKey.getCode() + 8));
-            //修饰键，显示颜色反转
-            setBackgroundTintList(ColorStateList.valueOf(isModifierPress ? mBgColor : mTxColor));
-            setTextColor(isModifierPress ? mTxColor : mBgColor);
-        } else {
-            mViewFacade.injectKeyPress((byte) (mOneKey.getCode() + 8));
-        }
+//        if (isModifierKey()) {
+//            if (!isModifierPress)
+//                mViewFacade.injectKeyPress((byte) (mOneKey.getCode() + 8));
+//            else
+//                mViewFacade.injectKeyRelease((byte) (mOneKey.getCode() + 8));
+//            //修饰键，显示颜色反转
+//            setBackgroundTintList(ColorStateList.valueOf(isModifierPress ? mBgColor : mTxColor));
+//            setTextColor(isModifierPress ? mTxColor : mBgColor);
+//        } else {
+//            mViewFacade.injectKeyPress((byte) (mOneKey.getCode() + 8));
+//        }
+        InjectHelper.press(mViewFacade,mOneKey.getCode());
         isModifierPress = !isModifierPress;
     }
 
@@ -143,15 +144,13 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
     @Override
     public void injectRelease(Finger finger) {
-        //仅供调试
-        if(mOneKey.getName().equalsIgnoreCase("ESC") && Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7")){
-            XServerDisplayActivity.myUIOverlayForTest.startEditing();
-        }
+
         if(mViewFacade==null)
             return;
-        if(!isModifierKey()){
-            mViewFacade.injectKeyRelease((byte) (mOneKey.getCode() + 8));
-        }
+//        if(!isModifierKey()){
+//            mViewFacade.injectKeyRelease((byte) (mOneKey.getCode() + 8));
+//        }
+        InjectHelper.release(mViewFacade,mOneKey.getCode());
 
     }
 
@@ -165,7 +164,7 @@ public class RegularKeyBtn extends BaseMoveBtn {
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setText(mOneKey.getName());
         editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(getContext(),100),-2));
-        LinearLayout rootView = getOneLineWithTitle(getContext(),"重命名",editText,false);
+        LinearLayout rootView = getOneLineWithTitle(getContext(),getS(RR.cmCtrl_BtnEditReName),editText,false);
         int padding = QH.px(getContext(), RR.attr.dialogPaddingDp);
         rootView.setPadding(padding,0,padding,0);
         new AlertDialog.Builder(getContext())
@@ -173,15 +172,11 @@ public class RegularKeyBtn extends BaseMoveBtn {
                     mOneKey.setName(editText.getText().toString());
                     setText(editText.getText().toString());
                 })
-                .setTitle("按钮属性")
                 .setNegativeButton(android.R.string.cancel, null)
                 .setView(rootView).create().show();
     }
 
 
-    public OneKey getmOneKey() {
-        return mOneKey;
-    }
 
     /**
      * 判断这个按钮对应的按键是否为修饰键。如果是的话按键输入用ontouch处理（按下时就注入press），否则用click处理

@@ -70,25 +70,28 @@ public class FuncFAB implements Func {
                     .close();
 
             //自定义操作模式 DefaultControl
-            new SmaliFile()
-                    .findSmali(null, "DefaultControls")
-                    .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method public create()Lcom/eltechs/axs/activities/XServerDisplayActivityInterfaceOverlay;")
-                    .patch(LOCATION_BEFORE, ACTION_DELETE,
-                            new String[]{
-                                    "new-instance v0, Lcom/eltechs/ed/controls/uiOverlays/DefaultUIOverlay;"
-                            },
-                            new String[]{
-                                    "new-instance v0, Lcom/eltechs/ed/controls/uiOverlays/DefaultUIOverlay;",
-                                    "new-instance v1, Lcom/eltechs/ed/controls/touchControls/DefaultTCF;",
-                                    "invoke-direct {v1}, Lcom/eltechs/ed/controls/touchControls/DefaultTCF;-><init>()V",
-                                    "invoke-direct {v0, p0, v1}, Lcom/eltechs/ed/controls/uiOverlays/DefaultUIOverlay;-><init>(Lcom/eltechs/ed/controls/Controls;Lcom/eltechs/ed/controls/touchControls/AbstractTCF;)V"})
-                    .patch(LOCATION_BEFORE, ACTION_INSERT,
-                            new String[]{"return-object v0"},
-                            new String[]{
-                                    "invoke-static {p0}, Lcom/example/datainsert/exagear/controls/ControlsResolver;->getCurrentControls(Lcom/eltechs/ed/controls/Controls;)Lcom/eltechs/axs/activities/XServerDisplayActivityInterfaceOverlay;"
-                                    , "move-result-object v0"}
-                    )
-                    .close();
+            PatcherFile.copy(PatcherFile.TYPE_SMALI,new String[]{
+                    "/com/eltechs/ed/controls/DefaultControls.smali"
+            });
+//            new SmaliFile()
+//                    .findSmali(null, "DefaultControls")
+//                    .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method public create()Lcom/eltechs/axs/activities/XServerDisplayActivityInterfaceOverlay;")
+//                    .patch(LOCATION_BEFORE, ACTION_DELETE,
+//                            new String[]{
+//                                    "new-instance v0, Lcom/eltechs/ed/controls/uiOverlays/DefaultUIOverlay;"
+//                            },
+//                            new String[]{
+//                                    "new-instance v0, Lcom/eltechs/ed/controls/uiOverlays/DefaultUIOverlay;",
+//                                    "new-instance v1, Lcom/eltechs/ed/controls/touchControls/DefaultTCF;",
+//                                    "invoke-direct {v1}, Lcom/eltechs/ed/controls/touchControls/DefaultTCF;-><init>()V",
+//                                    "invoke-direct {v0, p0, v1}, Lcom/eltechs/ed/controls/uiOverlays/DefaultUIOverlay;-><init>(Lcom/eltechs/ed/controls/Controls;Lcom/eltechs/ed/controls/touchControls/AbstractTCF;)V"})
+//                    .patch(LOCATION_BEFORE, ACTION_INSERT,
+//                            new String[]{"return-object v0"},
+//                            new String[]{
+//                                    "invoke-static {p0}, Lcom/example/datainsert/exagear/controls/ControlsResolver;->getCurrentControls(Lcom/eltechs/ed/controls/Controls;)Lcom/eltechs/axs/activities/XServerDisplayActivityInterfaceOverlay;"
+//                                    , "move-result-object v0"}
+//                    )
+//                    .close();
 
             //复制自己的类
             Log.d(TAG, "btnStartPatch: 开始复制自己的smali");

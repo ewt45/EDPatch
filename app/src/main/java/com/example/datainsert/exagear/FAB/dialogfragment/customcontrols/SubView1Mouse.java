@@ -1,24 +1,41 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_MOVE_RELATIVE;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_SENSITIVITY;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SHOW_CURSOR;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
+import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.gesture.State1FMoveRel;
+import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
 
 public class SubView1Mouse extends LinearLayout {
-
+    private static final String TAG= "SubView1Mouse";
     public SubView1Mouse(Context c) {
         super(c);
         setOrientation(VERTICAL);
@@ -37,19 +54,55 @@ public class SubView1Mouse extends LinearLayout {
         setDialogTooltip(showCursorCheck, getS(RR.cmCtrl_s1_showCursorTip));
         addView(showCursorCheck);
 
+        //鼠标灵敏度 0.2~3.0, 设置值从0到280
+        SeekBar seekPointerSpeed = new SeekBar(c);
+        seekPointerSpeed.setMax(280);
+        seekPointerSpeed.setProgress(getPreference().getInt(PREF_KEY_MOUSE_SENSITIVITY,80));
+        seekPointerSpeed.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_SENSITIVITY,progress).apply()));
+        //重置灵敏度按钮
+        Button btnResetSpeed = new Button(c);
+        btnResetSpeed.setText(getS(RR.cmCtrl_reset));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            btnResetSpeed.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
+            btnResetSpeed.setBackground(new RippleDrawable(ColorStateList.valueOf(0x44444444),null,btnResetSpeed.getBackground()));
+        }
+        btnResetSpeed.setOnClickListener(v-> seekPointerSpeed.setProgress(80));
+        LinearLayout linearSeekNBtn = new LinearLayout(c);
+        LayoutParams seekParams = new LayoutParams(0,-2,1);
+        seekParams.gravity= Gravity.CENTER_VERTICAL;
+        linearSeekNBtn.addView(seekPointerSpeed,seekParams);
+        LayoutParams btnResetParams = new LayoutParams(-2,-2);
+        btnResetParams.gravity= Gravity.CENTER_VERTICAL;
+        linearSeekNBtn.addView(btnResetSpeed,btnResetParams);
+        LinearLayout linearSpeed = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msSpd),linearSeekNBtn,true);
+        setDialogTooltip(linearSpeed.getChildAt(0),getS(RR.cmCtrl_s1_msSpdTip));
+        //初始化是否禁用
+        boolean initChecked = getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false);
+        seekPointerSpeed.setEnabled(initChecked);
+        seekPointerSpeed.setFocusable(initChecked);
+        btnResetSpeed.setEnabled(initChecked);
+        btnResetSpeed.setFocusable(initChecked);
+
         //鼠标绝对位置或相对位置
         CheckBox switchMsMoveRel = new CheckBox(c);
         switchMsMoveRel.setText(getS(RR.cmCtrl_s1_relMove));
         switchMsMoveRel.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false));
+        //没法通过setCheck在初始化的时候触发这个，因为false的话没改变。。。
         switchMsMoveRel.setOnCheckedChangeListener((buttonView, isChecked) -> {
             getPreference().edit().putBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, isChecked).apply();
             State1FMoveRel.isRelMove = isChecked;
+            seekPointerSpeed.setEnabled(isChecked);
+            seekPointerSpeed.setFocusable(isChecked);
+            btnResetSpeed.setEnabled(isChecked);
+            btnResetSpeed.setFocusable(isChecked);
         });
+
         setDialogTooltip(switchMsMoveRel, getS(RR.cmCtrl_s1_relMoveTip));
         addView(switchMsMoveRel);
+        addView(linearSpeed);
 
 
-//        //为什么viewpager里的edittext没法调出输入法了啊
+//        //为什么viewpager里的edittext没法调出输入法了啊(dialogfragment里清除一下flag就好了）
 //        MyTextInputEditText editInColor = new MyTextInputEditText(c,null,null,"颜色");
 ////        EditText editInColor = new EditText(c);
 //        editInColor.setSingleLine();

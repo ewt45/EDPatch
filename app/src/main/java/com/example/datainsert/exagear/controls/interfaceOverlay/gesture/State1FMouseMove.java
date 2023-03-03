@@ -10,6 +10,8 @@ import com.eltechs.axs.GuestAppActionAdapters.SimpleMouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.eltechs.axs.helpers.Assert;
+import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
+
 import java.util.List;
 
 /* loaded from: classes.dex */
@@ -77,9 +79,10 @@ public class State1FMouseMove extends AbstractGestureFSMState implements TouchEv
     public static class SimpleBuilder{
         public State1FMouseMove create(GestureContext gestureContext,PointerContext pointerContext,boolean reportIfNewF){
             return  new State1FMouseMove(gestureContext,pointerContext,
-                    new RelativeToCurrentPositionMouseMoveAdapter(
+                    new RelativeMouseMoveCstmSpdAdapter(
                             new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()),
-                            gestureContext.getViewFacade(), gestureContext.getHostView()),reportIfNewF);
+                            gestureContext.getViewFacade(), gestureContext.getHostView()),
+                    reportIfNewF);
         }
     }
 

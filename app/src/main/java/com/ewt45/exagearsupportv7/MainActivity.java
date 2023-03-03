@@ -102,7 +102,7 @@ public class MainActivity extends FrameworkActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Globals.setAppContext(null);
+//        Globals.setAppContext(null);
     }
 
 

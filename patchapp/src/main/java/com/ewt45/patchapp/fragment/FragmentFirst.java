@@ -1,4 +1,4 @@
-package com.ewt45.patchapp;
+package com.ewt45.patchapp.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentFirstBinding;
 
 public class FragmentFirst extends Fragment {
