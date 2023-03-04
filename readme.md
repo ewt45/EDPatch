@@ -38,4 +38,4 @@
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
 
 
-v0.0.2 beta https://wwqv.lanzout.com/im2Ft0p60o9a
+
