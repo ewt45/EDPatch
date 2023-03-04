@@ -36,7 +36,7 @@ public class RR {
     public static int DriveD_NoStrgPmsn = 20;
     public static int SelObb_info = 21;
     public static int SelObb_btn = 22;
-    public static int SelObb_wrongFile = 23;
+    public static int SelObb_selResult = 23;
     public static int CstRsl_swtTxt = 24;
     public static int CstRsl_editW = 25;
     public static int CstRsl_editH = 26;
@@ -97,6 +97,7 @@ public class RR {
     public static int cmCtrl_reset = 81;
     public static int cmCtrl_s1_msSpdTip = 82;
     public static int cmCtrl_s2_sideTitleTip = 83;
+    public static int cmCtrl_s2_selectBtn = 84;
 
     private static String locale;
 
@@ -126,7 +127,7 @@ public class RR {
                 "应用文件存储权限被禁止",      //20
                 "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。",//*安卓11及以上，无法选择Android/obb及Android/data目录内的文件
                 "手动选择",
-                "所选文件不是obb数据包",
+                "所选文件不是obb数据包$选中obb。正在解压中",
                 "使用自定义分辨率",
                 "输入自定义宽度",
                 "输入自定义高度",
@@ -144,7 +145,7 @@ public class RR {
                 "左右侧栏：经典布局，按键位于主画面的左右两侧，每一侧可以有多列，每一列可以有多个按键。\n\n自由位置：按钮可以自由摆放（需要启动容器后，三指触屏调出菜单项，进入编辑模式后才能编辑位置）。可以添加摇杆按钮。",
                 "左侧按键栏",
                 "右侧按键栏",
-                "选取按键",
+                "选取按键",     //40
                 "编辑",
                 "删除",
                 "长按按钮拖拽排序。点击按钮进行编辑。",
@@ -154,7 +155,7 @@ public class RR {
                 "按钮颜色&透明度",
                 "按钮颜色为6位的十六进制颜色，如：2121FA。\n透明度为0-255，当透明度设置到0时，按钮背景完全透明，文字保留1/3的透明度。",
                 "按钮大小",
-                "设置按钮的宽高。范围为10~200dp。小于10为自适应宽/高。",
+                "设置按钮的宽高。范围为10~200dp。小于10为自适应宽/高。",     //50
                 "左右侧栏背景颜色",
                 "该选项对应当“按键 - 布局方式”选择为左右侧栏时，左右侧栏的底色。\n输入格式为6位的十六进制颜色，如000000，透明度固定为255完全不透明。",
                 "编辑按键",
@@ -164,7 +165,7 @@ public class RR {
                 "鼠标右键",
                 "鼠标中键",
                 "摇杆",
-                "鼠标",
+                "鼠标",               //60
                 "显示详细设置",
                 "退出编辑",
                 "重命名",
@@ -174,7 +175,7 @@ public class RR {
                 "自定义",
                 "左键点击$单指点击屏幕$单指点击屏幕", //获取的时候按split("\\$")分割成三段，第一个是标题，第二个是操作1的介绍，第二个是操作2的接受啊
                 "右键点击$单指长按后松开$二指点击屏幕",
-                "鼠标滚轮$单指上下滑动$二指上下滑动",
+                "鼠标滚轮$单指上下滑动$二指上下滑动",               //70
                 "左键拖拽$单指长按后移动$二指长按后移动",
                 "缩放窗口$二指按下并移动，松开1指变为移动窗口$三指按下并移动其中1或2指，松开1或2指变为移动窗口",
                 "弹窗菜单$三指点击屏幕$三指点击屏幕",
@@ -184,10 +185,11 @@ public class RR {
                 "安卓输入法$二指点击屏幕$ ",
                 "手势说明",
                 "自定义操作模式",
-                "鼠标灵敏度",
+                "鼠标灵敏度",                //80
                 "重置",
                 "调整鼠标移动速度，仅在使用“手势控制 2”时生效。",
-                "点击“+”新建一列按键。长按可进行排序。"
+                "点击“+”新建一列按键。长按可进行排序。",
+                "选择按键……"
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -214,7 +216,7 @@ public class RR {
                 "No obb detected, please try Selecting it manually",//                "can't find exagear obb file, please check its name and location or select it manually.\n on Android11+, Android/obb and Android/data directory can't be seen in system file picker.",
 
                 "select manually",
-                "selected file is not an obb file",
+                "Selected file isn't an obb file.$Obb found. Extracting...",
                 "using custom resolution",
                 "input width",
                 "input height",
@@ -275,7 +277,8 @@ public class RR {
                 "Mouse sensitivity",
                 "Reset",
                 "Adjust the pointer speed, effective only in Gesture Mode 2",
-                "Click \"+\" to add one column of buttons. Long press to rearrange them."
+                "Click \"+\" to add one column of buttons. Long press to rearrange them.",
+                "Select keys……"
 
         };
 

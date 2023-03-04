@@ -26,9 +26,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.eltechs.axs.AppConfig;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ApplicationStateObject;
+import com.eltechs.axs.applicationState.DroidApplicationContextAware;
+import com.eltechs.axs.configuration.startup.StartupActionsCollection;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.ed.EDApplicationState;
 import com.ewt45.exagearsupportv7.databinding.ActivityMainBinding;
@@ -41,6 +45,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Calendar;
 
 public class MainActivity extends FrameworkActivity {
     public MainActivity(){
@@ -57,8 +62,22 @@ public class MainActivity extends FrameworkActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Globals.setAppContext(this.getApplicationContext());
-        Globals.setFrameworkActivity(this);
+//        Globals.setAppContext(this.getApplicationContext());
+//        Globals.setFrameworkActivity(this);、
+
+        //ex启动是从EDstartupActivity启动的，先复制一下那里的初始代码吧
+        ApplicationStateBase applicationState = getApplicationState();
+        if (applicationState.getStartupActionsCollection() == null) {
+            ((DroidApplicationContextAware)applicationState).setAndroidApplicationContext(getApplicationContext());
+            applicationState.setStartupActionsCollection(new StartupActionsCollection(getApplicationContext()));
+            AppConfig appConfig = AppConfig.getInstance(this);
+            if (appConfig.getFirstRunTime().getTime() == 0) {
+                appConfig.setFirstRunTime(Calendar.getInstance().getTime());
+            }
+            boolean booleanExtra = getIntent().getBooleanExtra("RUN_AFTER_NOTIFICATION", false);
+            appConfig.setRunAfterNotification(booleanExtra);
+            appConfig.setNotificationName(booleanExtra ? getIntent().getStringExtra("NOTIFICATION_NAME") : null);
+        }
 
 //        Globals.setApplicationState(this);
         binding = ActivityMainBinding.inflate(getLayoutInflater());

@@ -115,6 +115,10 @@ public class ActionPool {
     public interface DoneCallback {
         //actionpool里调用sendmessage传字符串，接口定义在fragment里
 //        public void sendMessage(int resId);
+
+        /**
+         * SignalDone的时候调用，用于恢复视图各选项enable状态
+         */
         public void restoreViewVis();
         public void setMessageStart(int resId);
         public void setMessageFinish(int resId);

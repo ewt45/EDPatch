@@ -91,13 +91,13 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
      */
     public int joyStickNum;
 
-    /**
-     * 两侧按键的构建
-     * @param context
-     */
-    public AvailableKeysView(Context context){
-        this(context,null,-1);
-    }
+//    /**
+//     * 两侧按键的构建
+//     * @param context
+//     */
+//    public AvailableKeysView(Context context){
+//        this(context,null,-1);
+//    }
 
     /**
      * 自定义位置按键的构建

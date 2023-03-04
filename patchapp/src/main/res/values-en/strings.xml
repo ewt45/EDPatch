@@ -51,7 +51,8 @@
     <string name="settings_delpatcherapk">clear patcher apk</string>
     <string name="settings_version">version</string>
     <string name="settings_delpatcherapksummary">Generally not used</string>
-    <string name="please_check_guide">Please check the Guide in action bar\'s menu before patching.</string>
+    <string name="tips_backup">Patched apk can\'t be restored, so please backup first!</string>
+    <string name="tips_check_guide">Please check the Guide in action bar\'s menu before patching.</string>
     <string name="tv_patchstep2">2. check functions</string>
     <string name="tv_patchstep3">3. action</string>
     <string name="fragment_patch_label">Main</string>
@@ -60,5 +61,6 @@
     <string name="fraghelp_title2_brief">About</string>
     <string name="fraghelp_body_brief">After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. Even if  a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\nSo I\'m wondering if I can make an application. The user only needs to click a button and wait for the automatic modification to complete, then install the new apk. So this application was born. Due to my limited knowledge, 100% modification success or compatibility with all versions of exagear is not guaranteed.</string>
     <string name="funcname_fab_cstmCtrl">Custom Control</string>
-    <string name="fraghelp_body_cstmCtrl">funcname_fab</string>
+    <string name="fraghelp_body_cstmCtrl">Most of the options have descriptions that show up when long pressing. Select \"default\" of Control in container\'s properties. After entering the container, three-finger click to edit.\nMouse: Toggle visibility of mouse cursor. Switch gesture modes (default mode and touchpad mode) . Set mouse move speed.\nButtons: Customize buttons ( keys, text and position) . Switch layout mode (sidebar and free position) . Mouse button keys and joystick style buttons are available. \nStyle: Customize button color, transparency, size, sidebar background color.</string>
+    <string name="tips_waiting">Patching apk, please don\'t switch to other interface in case something goes wrong.</string>
 </resources>

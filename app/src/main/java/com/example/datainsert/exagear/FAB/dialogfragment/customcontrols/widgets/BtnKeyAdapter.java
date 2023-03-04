@@ -21,7 +21,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
@@ -33,6 +32,7 @@ import java.util.List;
 
 public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder> {
     private static final String TAG="BtnKeyAdapter";
+    private final boolean isLandScape;
     public static final DiffUtil.ItemCallback<OneKey> DIFF_CALLBACK = new DiffUtil.ItemCallback<OneKey>() {
         @Override
         public boolean areItemsTheSame(@NonNull OneKey oldKey, @NonNull OneKey newKeys) {
@@ -45,8 +45,9 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
         }
     };
 
-    protected BtnKeyAdapter() {
+    protected BtnKeyAdapter(boolean isLandScape) {
         super(DIFF_CALLBACK);
+        this.isLandScape = isLandScape;
     }
 
     @NonNull
@@ -54,7 +55,12 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
     public BtnKeyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Button btn = UnmovableBtn.getSample(viewGroup.getContext());
         SharedPreferences sp = viewGroup.getContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE);
-        btn.setLayoutParams(new ViewGroup.LayoutParams(sp.getInt(PREF_KEY_BTN_WIDTH, -2), sp.getInt(PREF_KEY_BTN_HEIGHT, -2)));
+        //当高=-2且横向布局的时候不知道为什么回收视图会坍缩，只好手动强制设定高度了
+        int height = sp.getInt(PREF_KEY_BTN_HEIGHT, -2);
+        btn.setLayoutParams(new ViewGroup.LayoutParams(
+                sp.getInt(PREF_KEY_BTN_WIDTH, -2),
+                height==-2&&isLandScape?QH.px(viewGroup.getContext(),50):height
+                ));
         return new BtnKeyAdapter.ViewHolder(btn);
     }
     @Override
@@ -64,45 +70,46 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
         viewHolder.getmBtn().setOnClickListener(v -> {
             Log.d(TAG, "onBindViewHolder: 点击没反应？");
             Context c = v.getContext();
-            PopupMenu popupMenu = new PopupMenu(c,v);
-            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item -> {
-                EditText editText = new EditText(c);
-                editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-                editText.setSingleLine();
-                editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-                editText.setText(((OneKey) v.getTag()).getName());
-                editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100),-2));
-                LinearLayout renameRootView = getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditReName),editText,false);
-                int padding = QH.px(c, RR.attr.dialogPaddingDp);
-                renameRootView.setPadding(padding,0,padding,0);
-                new AlertDialog.Builder(c)
-                        .setView(renameRootView)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            OneKey newSelfKey = ((OneKey) v.getTag()).clone();
-                            newSelfKey.setName(editText.getText().toString());
-                            //更新按钮的tag和文字显示
-                            v.setTag(newSelfKey);
-                            ((Button)v).setText(newSelfKey.getName());
-                            //更新adapter的数据列表
-                            List<OneKey> newList = getCurrentList();
-                            int index=getIndexOfItem(newList,newSelfKey);
-                            newList.remove(index);
-                            newList.add(index,newSelfKey);
-                            submitList(newList);
-                        })
-                        .setNegativeButton(android.R.string.cancel,null)
-                        .create().show();
-                return true;
-            });
-//            MenuItem itemFixTop=popupMenu.getMenu().add("固定置顶");
-            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popDel)).setOnMenuItemClickListener(item->{
-                OneKey selfKey = (OneKey) v.getTag();
-                List<OneKey> newList = getCurrentList();
-                newList.remove(getIndexOfItem(newList,selfKey));
-                submitList(newList);
-                return true;
-            });
-            popupMenu.show();
+            EditText editText = new EditText(c);
+            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            editText.setSingleLine();
+            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+            editText.setText(((OneKey) v.getTag()).getName());
+            editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100),-2));
+            LinearLayout renameRootView = getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditReName),editText,false);
+            int padding = QH.px(c, RR.attr.dialogPaddingDp);
+            renameRootView.setPadding(padding,0,padding,0);
+            new AlertDialog.Builder(c)
+                    .setView(renameRootView)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        OneKey newSelfKey = ((OneKey) v.getTag()).clone();
+                        newSelfKey.setName(editText.getText().toString());
+                        //更新按钮的tag和文字显示
+                        v.setTag(newSelfKey);
+                        ((Button)v).setText(newSelfKey.getName());
+                        //更新adapter的数据列表
+                        List<OneKey> newList = getCurrentList();
+                        int index=getIndexOfItem(newList,newSelfKey);
+                        newList.remove(index);
+                        newList.add(index,newSelfKey);
+                        submitList(newList);
+                    })
+                    .setNegativeButton(android.R.string.cancel,null)
+                    .create().show();
+//            PopupMenu popupMenu = new PopupMenu(c,v);
+//            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item -> {
+//
+//                return true;
+//            });
+////            MenuItem itemFixTop=popupMenu.getMenu().add("固定置顶");
+//            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popDel)).setOnMenuItemClickListener(item->{
+//                OneKey selfKey = (OneKey) v.getTag();
+//                List<OneKey> newList = getCurrentList();
+//                newList.remove(getIndexOfItem(newList,selfKey));
+//                submitList(newList);
+//                return true;
+//            });
+//            popupMenu.show();
 
 
         });
@@ -125,6 +132,8 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
                 break;
         return i;
     }
+
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final Button mBtn;

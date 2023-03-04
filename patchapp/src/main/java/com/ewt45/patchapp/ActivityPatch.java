@@ -1,10 +1,13 @@
 package com.ewt45.patchapp;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +56,20 @@ public class ActivityPatch extends AppCompatActivity {
 //            binding.getRoot().setLayoutParams(new ViewGroup.LayoutParams(maxWidth,-1));
 //        }
 
+        //设置内部路径
+        PatchUtils.setExternalFilesDir(getExternalFilesDir(null).getAbsolutePath());
+
+        //判断版本号是否相同，若不同则删除原patcher
+        SharedPreferences sp =  getSharedPreferences("config",MODE_PRIVATE);
+        if(sp.getInt("versionCode",0)!=BuildConfig.VERSION_CODE){
+            File patcher = new File(PatchUtils.getPatchTmpDir(),"patcher.apk");
+            if(patcher.exists()){
+                boolean b=patcher.delete();
+            }
+        }
+        //写入版本号
+        getSharedPreferences("config",MODE_PRIVATE).edit().putInt("versionCode",BuildConfig.VERSION_CODE).apply();
+
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
@@ -60,16 +78,8 @@ public class ActivityPatch extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-//        binding.fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
-        //写入版本号
-        getSharedPreferences("config",MODE_PRIVATE).edit().putInt("versionCode",BuildConfig.VERSION_CODE).apply();
+
 
     }
 
@@ -104,4 +114,5 @@ public class ActivityPatch extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
 }

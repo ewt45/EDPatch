@@ -21,7 +21,7 @@ public class UnmovableBtn extends RegularKeyBtn {
 
     public static UnmovableBtn getSample(Context c) {
         OneKey oneKey = new OneKey(0);
-        UnmovableBtn sample = new UnmovableBtn(c, new OneKey(0), null) {
+        return new UnmovableBtn(c, new OneKey(0), null) {
             final PointF point = new PointF();
 
             @Override
@@ -45,8 +45,20 @@ public class UnmovableBtn extends RegularKeyBtn {
                 }
                 return true;
             }
+
+            @Override
+            public void injectMove(Finger finger) {
+            }
+
+            @Override
+            public void injectRelease(Finger finger) {
+            }
+
+            @Override
+            public void injectPress(Finger finger) {
+
+            }
         };
-        return sample;
     }
 
     @Override

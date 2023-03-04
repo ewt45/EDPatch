@@ -61,7 +61,6 @@
     <string name="settings_delpatcherapk">清除patcher apk</string>
     <string name="settings_version">版本</string>
     <string name="settings_delpatcherapksummary">一般不会用到</string>
-    <string name="please_check_guide">使用本应用修改前，建议先在右上角菜单中点击“指南”查看说明。</string>
     <string name="tv_patchstep2">2. 勾选要添加的功能</string>
     <string name="tv_patchstep3">3. 执行操作</string>
     <string name="fragment_patch_label">主界面</string>
@@ -69,6 +68,8 @@
     <string name="settings_update">更新</string>
     <string name="fraghelp_title2_brief">应用简介</string>
     <string name="fraghelp_body_brief">在为exagear(3.0.2)加了一些小功能之后（主要是通过修改dex实现），我发现手改smali终究还是太麻烦了。即使提供修改代码和位置的傻瓜式教程，也不适用于未接触过apk修改的大部分人群。\n所以我在想，能否做一个应用，用户只需点一个按钮，等待自动修改完成后安装新的apk即可。于是本应用便诞生了。由于能力有限，不保证适用于所有版本的exagear，也不保证100%修改成功。</string>
-
+    <string name="tips_check_guide">修改apk前，请先查看右上角菜单中的“指南”。</string>
+    <string name="tips_backup">apk修改后无法复原，请务必提前备份好原版apk！</string>
+    <string name="tips_waiting">正在修改apk，请勿切换到其他界面，以防出现问题。</string>
 
 </resources>

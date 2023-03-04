@@ -19,6 +19,8 @@ add_library( # Specifies the name of the library.
         # Provides a relative path to your source file(s).
         src/main/cpp/ubt-helpers.cpp )
 
+add_library(fs-helpers SHARED src/main/cpp/fs-helpers.cpp)
+
 # Specifies a path to native header files.
 include_directories(src/main/cpp/)
 

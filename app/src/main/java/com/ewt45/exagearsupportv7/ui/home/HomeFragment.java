@@ -40,6 +40,7 @@ import com.example.datainsert.exagear.controls.SensitivitySeekBar;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPopupMenu;
 import com.example.datainsert.exagear.input.SoftInput;
+import com.example.datainsert.exagear.obb.ProcessInstallObb;
 
 import java.util.ArrayList;
 
@@ -108,7 +109,7 @@ public class HomeFragment extends Fragment {
 //            startActivityForResult(intent, 123);
 
             //解压obb
-//            ProcessInstallObb.startest(this);
+            ProcessInstallObb.startest(this);
 
 
         });

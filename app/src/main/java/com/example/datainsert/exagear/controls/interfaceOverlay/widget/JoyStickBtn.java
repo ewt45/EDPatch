@@ -102,21 +102,37 @@ public class JoyStickBtn extends BaseMoveBtn {
 
     public static JoyStickBtn getSample(Context c) {
         final int btnDiam = QH.px(c, 50);
-        final int outerDiam = btnDiam*2;
+        final int outerDiam = btnDiam * 2;
         JoyStickBtn sample = new JoyStickBtn(c, new Params()) {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouchEvent(MotionEvent event) {
                 return true;
             }
+
+            @Override
+            public void injectMove(Finger finger) {
+
+            }
+
+            @Override
+            public void injectRelease(Finger finger) {
+
+            }
+
+            @Override
+            public void injectPress(Finger finger) {
+
+            }
         };
         //设置宽高
         sample.btnDiam = QH.px(c, 50);
-        sample.outerDiam = sample.btnDiam*2;
+        sample.outerDiam = sample.btnDiam * 2;
         //设置颜色为黑白
         sample.mBtnPaint.setColor(0xff848484);
         sample.mBtnPaint.setStrokeWidth(QH.px(c, btnDiam / 30f));
         sample.mOutLinePaint.setColor(0xffc9c9c9);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(btnDiam*2, btnDiam*2);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(btnDiam * 2, btnDiam * 2);
         sample.setLayoutParams(params);
         return sample;
     }
@@ -246,13 +262,13 @@ public class JoyStickBtn extends BaseMoveBtn {
 
             //不允许斜向
             if (mParams.isFourDirections) {
-                if (tanCurrent<=1 && dy < 0) {
+                if (tanCurrent <= 1 && dy < 0) {
                     thisMovingDirections.add(0);
-                } else if (tanCurrent<=1) {
+                } else if (tanCurrent <= 1) {
                     thisMovingDirections.add(1);
-                } else if (tanCurrent>1 && dx < 0) {
+                } else if (tanCurrent > 1 && dx < 0) {
                     thisMovingDirections.add(2);
-                } else if (tanCurrent>1) {
+                } else if (tanCurrent > 1) {
                     thisMovingDirections.add(3);
                 }
             }
@@ -261,12 +277,12 @@ public class JoyStickBtn extends BaseMoveBtn {
                 //注意dy是向下的大小，如果大于0说明是手指向下移动。。。然后上下和左右之间不要用else，否则没法斜向了
                 if (tanCurrent < cotPiDiv8 && dy < 0) {
                     thisMovingDirections.add(0);//上
-                } else if (tanCurrent < cotPiDiv8 && dy>0) {
+                } else if (tanCurrent < cotPiDiv8 && dy > 0) {
                     thisMovingDirections.add(1);//下
                 }
                 if (tanCurrent > tanPiDiv8 && dx < 0) {
                     thisMovingDirections.add(2);//左
-                } else if (tanCurrent > tanPiDiv8 && dx>0) {
+                } else if (tanCurrent > tanPiDiv8 && dx > 0) {
                     thisMovingDirections.add(3);//右
                 }
             }
@@ -275,14 +291,14 @@ public class JoyStickBtn extends BaseMoveBtn {
 //                assert !isMoved();
             }
             //如果原来有 现在没有，松开
-            for(int i:lastMovingDirections)
-                if(!thisMovingDirections.contains(i) && mViewOfXServer!=null){
+            for (int i : lastMovingDirections)
+                if (!thisMovingDirections.contains(i) && mViewOfXServer != null) {
                     mViewOfXServer.getXServerFacade().injectKeyRelease((byte) (mParams.key4Directions[i] + 8));
                 }
 
             //如果原来没有 现在有，按下
             for (int i : thisMovingDirections) {
-                if (!lastMovingDirections.contains(i) && mViewOfXServer!=null) {
+                if (!lastMovingDirections.contains(i) && mViewOfXServer != null) {
                     mViewOfXServer.getXServerFacade().injectKeyPress((byte) (mParams.key4Directions[i] + 8));
                 }
             }
@@ -546,7 +562,7 @@ public class JoyStickBtn extends BaseMoveBtn {
 
         public void setPresetKey(PresetKey presetKey) {
             this.presetKey = presetKey;
-            this.key4Directions=presetKey.getKeys();
+            this.key4Directions = presetKey.getKeys();
         }
 
         public enum PresetKey {

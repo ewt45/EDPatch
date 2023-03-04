@@ -24,9 +24,8 @@ import com.example.datainsert.exagear.RSIDHelper;
 public class RightDrawer {
     static String TAG = "RightDrawer";
     public static void init() {
-        FrameworkActivity c = Globals.getApplicationState() == null
-                ? Globals.getFrameworkActivity()
-                : ((CurrentActivityAware) Globals.getApplicationState()).getCurrentActivity();
+        FrameworkActivity c = ((CurrentActivityAware) Globals.getApplicationState()).getCurrentActivity();
+//                Globals.getApplicationState() == null ? Globals.getFrameworkActivity() : ((CurrentActivityAware) Globals.getApplicationState()).getCurrentActivity();
         //防止切后台后多次新建
         if(((DrawerLayout) c.findViewById(RSIDHelper.rslvID(R.id.drawer_layout, 0x7f09006f))).getChildCount()>=3){
             return;
@@ -46,9 +45,8 @@ public class RightDrawer {
                         break;
                 }
                 //i是子布局下标
-                FrameworkActivity c = Globals.getApplicationState() == null
-                        ? Globals.getFrameworkActivity()
-                        : ((CurrentActivityAware) Globals.getApplicationState()).getCurrentActivity();
+                FrameworkActivity c = ((CurrentActivityAware) Globals.getApplicationState()).getCurrentActivity();
+
                 //启动fragment
                 RightDrawerFragment fragment = new RightDrawerFragment();
                 Bundle bundle = new Bundle();

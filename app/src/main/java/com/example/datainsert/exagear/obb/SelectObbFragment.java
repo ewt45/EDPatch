@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.obb;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eltechs.axs.helpers.ZipInstallerObb;
 import com.example.datainsert.exagear.RR;
@@ -45,15 +48,14 @@ public class SelectObbFragment extends Fragment {
         root.setOrientation(LinearLayout.VERTICAL);
         root.setTag(TAG); //设置tag，用于在布局树中标识fragment，删除那个隐藏布局的其他子布局的时候会用到
 //        root.setGravity(Gravity.TOP);
-        TextView tv1 = new TextView(requireContext());
-        tv1.setText(RR.getS(RR.SelObb_info));
-        tv1.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
-        root.addView(tv1);
-
         mTv = new TextView(requireContext());
+        mTv.setText(getS(RR.SelObb_info));
         mTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
+        root.addView(mTv);
+//        mTv = new TextView(requireContext());
+//        mTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
         Button btn = new Button(requireContext());
-        btn.setText(RR.getS(RR.SelObb_btn));
+        btn.setText(getS(RR.SelObb_btn));
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +70,7 @@ public class SelectObbFragment extends Fragment {
         l2.setOrientation(LinearLayout.HORIZONTAL);
 //        l2.setVerticalGravity(Gravity.CENTER);
         l2.addView(btn);
-        l2.addView(mTv);
+//        l2.addView(mTv);
 //        l2.setMinimumHeight(50);
         root.addView(l2,new ViewGroup.LayoutParams(-1,-2));
 
@@ -88,10 +90,10 @@ public class SelectObbFragment extends Fragment {
     public void setZipInstallerObb(ZipInstallerObb zipInstallerObb) {
         this.zipInstallerObb = zipInstallerObb;
     }
-    private static boolean isSuffixObb(String name){
-        String[] splits = name.split("\\.");
-        return  splits[splits.length-1].equals("obb");
-    }
+//    private static boolean isSuffixObb(String name){
+//        String[] splits = name.split("\\.");
+//        return  splits[splits.length-1].equals("obb");
+//    }
 
     /**
      * 解压完成后删掉复制的数据包
@@ -129,11 +131,12 @@ public class SelectObbFragment extends Fragment {
                 +", type(ContentResolver().getType):"+fragment.requireContext().getContentResolver().getType(uri)
                 +", type(MimeTypeMap):"+MimeTypeMap.getSingleton().getMimeTypeFromExtension("obb"));
         //判断一下后缀吧，如果不是obb就显示错
-        if(!isSuffixObb(filename)){
-            fragment.mTv.setText(RR.getS(RR.SelObb_wrongFile));
+        Toast.makeText(fragment.requireContext(), filename, Toast.LENGTH_SHORT).show();
+        if(filename.length()>=4 && !filename.endsWith(".obb")){
+            fragment.mTv.setText(getS(RR.SelObb_selResult).split("\\$")[0]);
             return;
         }
-        fragment.mTv.setText(filename);
+        fragment.mTv.setText(getS(RR.SelObb_selResult).split("\\$")[1]);
 
         if (obbFile.exists()) {
             obbFile.delete();

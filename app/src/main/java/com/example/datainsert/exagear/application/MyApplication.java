@@ -2,8 +2,10 @@ package com.example.datainsert.exagear.application;
 
 import android.app.Application;
 
+import java.util.Objects;
+
 public class MyApplication extends Application {
-    boolean logCrash=false;
+    boolean logCrash=true;
     @Override
     public void onCreate() {
         super.onCreate();

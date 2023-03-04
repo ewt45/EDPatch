@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.text.SpannableStringBuilder;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.ewt45.patchapp.ActionPool;
 import com.ewt45.patchapp.PatchUtils;
@@ -52,18 +54,22 @@ import java.util.function.BiConsumer;
 
 
 public class FragmentChoosePatch extends Fragment {
-    String TAG = "FragmentChoosePatch";
-    private FragmentChoosePatchBinding binding;
     // Request code for selecting a apk.
     private static final int PICK_APK_FILE = 2;
+    String TAG = "FragmentChoosePatch";
     //    ExecutorService singleThreadExecutor; //用于处理多线程同步
     ActionPool mActionPool; //用于替代单线程池，并处理返回结果显示
     SpannableStringBuilder spanInfo;
     List<FuncWithCheckBox> funcList = new ArrayList<>(); //记录功能和对应勾选框的列表
+    int CHECK_DISABLE = 0b1; //不允许点击按钮，但没有任务正在执行
+    int CHECK_ENABLE = 0b10; //没有任务正在执行，有ex apk，允许点击按钮
+    int CHECK_DISABLE_WAITING = 0b101; //不允许点击按钮，因为有任务正在执行，需要显示旋转进度条
+    private FragmentChoosePatchBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         binding = FragmentChoosePatchBinding.inflate(inflater, container, false);
         return binding.getRoot();
@@ -72,6 +78,12 @@ public class FragmentChoosePatch extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //提醒先看指南
+        Snackbar snackCheckGuide = Snackbar.make(binding.getRoot(), R.string.tips_check_guide, Snackbar.LENGTH_INDEFINITE);
+        snackCheckGuide.setAction(android.R.string.yes, v -> snackCheckGuide.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
+        snackCheckGuide.show();
+
         //设置外部文件绝对路径
         PatchUtils.setExternalFilesDir(requireContext().getExternalFilesDir(null).getAbsolutePath());
         //初始化textSwitcher
@@ -83,9 +95,11 @@ public class FragmentChoosePatch extends Fragment {
         binding.tvInfolist.setText(spanInfo);
         //初始化线程池
         mActionPool = new ActionPool(new ActionPool.DoneCallback() {
-
             @Override
             public void restoreViewVis() {
+                Snackbar snackWaiting = Snackbar.make(binding.getRoot(), R.string.tips_backup, Snackbar.LENGTH_INDEFINITE);
+                snackWaiting.setAction(android.R.string.yes, v -> snackWaiting.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
+                snackWaiting.show();
                 binding.getRoot().post(() -> changeView(CHECK_ENABLE));
             }
 
@@ -170,8 +184,8 @@ public class FragmentChoosePatch extends Fragment {
 //                    .setNegativeButton("取消", null)
 //                    .create().show();
             new SelectApkDialog()
-                    .setCallback(file -> binding.getRoot().post(()-> deployEDApk(file)))
-                    .show(getChildFragmentManager(),null);
+                    .setCallback(file -> binding.getRoot().post(() -> deployEDApk(file)))
+                    .show(getChildFragmentManager(), null);
         });
         binding.btnSelectApkFiles.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -201,8 +215,8 @@ public class FragmentChoosePatch extends Fragment {
 
             boolean funcModified = false;
             //如果勾选（启用说明是用户自己勾选的）添加功能
-            for(FuncWithCheckBox fnc :funcList){
-                if(fnc.checkBox.isChecked() && fnc.checkBox.isEnabled()){
+            for (FuncWithCheckBox fnc : funcList) {
+                if (fnc.checkBox.isChecked() && fnc.checkBox.isEnabled()) {
                     mActionPool.submit(fnc.func);
                     funcModified = true;
                 }
@@ -275,7 +289,14 @@ public class FragmentChoosePatch extends Fragment {
         }
     }
 
+    /**
+     * 选择apk后，进行解包
+     */
     private void decodeApk() {
+        Snackbar snackbar = Snackbar.make(binding.getRoot(), R.string.tips_backup, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(android.R.string.yes, v -> snackbar.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
+        snackbar.show();
+
         //解包exagear的apk
         Log.d(TAG, "decodeApk: 已复制ed apk到自己目录下，开始解包");
         changeView(CHECK_DISABLE_WAITING);
@@ -288,10 +309,6 @@ public class FragmentChoosePatch extends Fragment {
         super.onDestroy();
         mActionPool = null;
     }
-
-    int CHECK_DISABLE = 0b1; //不允许点击按钮，但没有任务正在执行
-    int CHECK_ENABLE = 0b10; //没有任务正在执行，有ex apk，允许点击按钮
-    int CHECK_DISABLE_WAITING = 0b101; //不允许点击按钮，因为有任务正在执行，需要显示旋转进度条
 
     /**
      * 更新视图。
@@ -309,7 +326,7 @@ public class FragmentChoosePatch extends Fragment {
 
         //禁用全部勾选框和添加按钮
         if (flag == CHECK_DISABLE || flag == CHECK_DISABLE_WAITING) {
-            for(FuncWithCheckBox fnc :funcList){
+            for (FuncWithCheckBox fnc : funcList) {
                 fnc.checkBox.setEnabled(false);
             }
             binding.btnStartPatch.setEnabled(false);
@@ -320,7 +337,7 @@ public class FragmentChoosePatch extends Fragment {
         }
         //根据实际情况开放勾选框
         else {
-            for(FuncWithCheckBox fnc :funcList){
+            for (FuncWithCheckBox fnc : funcList) {
                 boolean added = fnc.func.funcAdded();
                 fnc.checkBox.setChecked(added);
                 fnc.checkBox.setEnabled(!added);
@@ -335,12 +352,13 @@ public class FragmentChoosePatch extends Fragment {
 
     }
 
-    static class FuncWithCheckBox{
+    static class FuncWithCheckBox {
         public Func func;
         public CheckBox checkBox;
-        public FuncWithCheckBox(CheckBox checkBox,Func func){
-            this.func=func;
-            this.checkBox=checkBox;
+
+        public FuncWithCheckBox(CheckBox checkBox, Func func) {
+            this.func = func;
+            this.checkBox = checkBox;
         }
     }
 }
