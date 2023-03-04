@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ED自助补丁</string>
+    <string name="action_settings">设置</string>
+
+    <string name="actmsg_start">…开始</string>
+    <string name="actmsg_finish">…完成</string>
+    <string name="actmsg_buildapk">回编译apk</string>
+    <string name="actmsg_decodeapk">解包apk</string>
+    <string name="actmsg_funccursor">添加功能 光标显示</string>>
+    <string name="actmsg_funcfab">添加功能 悬浮操作按钮</string>
+    <string name="actmsg_funcresl">添加功能 自定义分辨率</string>
+    <string name="actmsg_signapk">apk签名 (apk保存到/storage/emulated/0/Android/data/com.ewt45.patchapp/patchtmp/tmp/dist/apk_sign.apk)</string>
+    <string name="actmsg_signaldone">---====全部任务====---</string>
+    <string name="n1_exagear_apk_n2_n3_apk">使用方法：\n1. 选择exagear的apk文件，等待解包完成\n2. 勾选功能，点击添加按钮，等待回包完成\n3. 点击安装按钮，安装修改后的apk\n注意事项：\n1. 不保证添加功能一定成功。\n2. 修改后签名会变化，如有需要请自行重新签名。</string>
+    <string name="app_info">所选apk：%1$s</string>
+    <string name="actmsg_funcsinput">添加功能 调起输入法修复</string>
+    <string name="actmsg_fail">…失败</string>
+    <string name="tv_patchstep1">1. 选择apk</string>
+    <string name="btntxt_selectapkinstalled">已安装应用</string>
+    <string name="btntxt_selectapkfiles">本地文件</string>
+    <string name="funcname_fab">悬浮操作按钮\n - 自定义D盘路径\n - 自定义操作模式</string>
+    <string name="funcname_fab_drived">自定义D盘路径（悬浮操作按钮）</string>
+    <string name="funcname_fab_cstmCtrl">自定义操作模式（悬浮操作按钮）</string>
+    <string name="funcname_cursorimg">强制显示鼠标光标</string>
+    <string name="funcname_prefresl">自定义分辨率</string>
+    <string name="funcname_softinput">修复安卓11及以上输入法闪退</string>
+    <string name="funcname_selobb">初次启动手动选择obb</string>
+    <string name="btntxt_startpatch">开始修改</string>
+    <string name="btntxt_installnew">安装修改后的apk</string>
+    <string name="tv_patchingprogress">正在执行操作</string>
+    <string name="tv_logtitle">输出信息：</string>
+    <string name="actmsg_funcselobb">添加功能 手动选择obb</string>
+    <string name="action_guide">使用指南</string>
+    <string name="fraghelp_title2_steps">操作步骤</string>
+    <string name="fraghelp_body_step_1">从已安装应用列表，或者本地文件中选择exagear的apk，等待解包完成。</string>
+    <string name="fraghelp_body_step_2">勾选要添加的功能。有关各功能的详细介绍在下面。</string>
+    <string name="fraghelp_body_step_3">点击“开始修改”按钮，耐心等待打包完成。打包进度可以在输出信息中查看。</string>
+    <string name="fraghelp_body_step_4">打包完成后，点击“安装修改后的apk”按钮安装新apk。由于签名变化，可能需要卸载原先的apk。</string>
+    <string name="fraghelp_title2_attention">注意事项</string>
+    <string name="fraghelp_body_attention_1">本apk为实验性项目，出现各种bug都是正常现象。</string>
+    <string name="fraghelp_body_attention_2">在点击“开始修改”按钮后，请不要点击其他按钮或跳转其他界面，否则可能会出现问题。</string>
+    <string name="fraghelp_body_attention_3">打包完成的apk存在于/storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk，可以手动在第三方文件管理器中查看。</string>
+    <string name="fraghelp_body_attention_4">由于打包后重新签名，需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。\n如果需要virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。</string>
+    <string name="fraghelp_title1_func">可添加的功能介绍</string>
+    <string name="fraghelp_body_cursorimg">在某些游戏内鼠标光标只显示一个很小的叉或者完全不显示，本功能将其图标修改为自定义的鼠标图片。图片保存于apk文件内的assets/mouse.png。</string>
+    <string name="fraghelp_body_prefresl">在容器设置里可以自定义进入桌面后的宽高，兼容原本的预设分辨率选择。</string>
+    <string name="fraghelp_body_fab">在主界面右下角显示一个悬浮操作按钮，提供一些额外功能。目前包含的功能有：切换d盘路径。</string>
+    <string name="fraghelp_body_drived">容器内windows的d盘一般对应手机/storage/emulated/0/Donwload或文件夹。\n本功能允许用户修改文件夹所在位置和自定义文件夹名称。设置新的路径后会对路径可用性进行检查。设置成功后需要重启应用才会更新路径。</string>
+    <string name="fraghelp_body_cstmCtrl">大部分选项可通过长按查看说明。环境设置操作模式选择默认，进入环境后三指点击可实时修改。\n鼠标：可调节鼠标光标显示/隐藏，提供两种手势控制（默认模式和触摸板模式），可调节鼠标灵敏度。\n按键：可自定义按钮按键、显示文字、位置。提供两种按键布局（左右侧栏和自由位置）。按钮按键支持鼠标左中右键和滚轮，自由位置支持摇杆样式按钮。\n样式：可自定义按钮颜色、透明度、大小，左右侧栏背景色。</string>
+    <string name="fraghelp_body_softinput">修复安卓11及以上，从四指触屏的弹出菜单里点击显示键盘，输入法会闪退的问题，修复后会延迟一秒再显示键盘。</string>
+    <string name="fraghelp_body_selobb">安装模拟器apk后无法识别到数据包时，允许用户通过系统的文件选择器，手动选取数据包文件。\n安卓11及以上，文件选择器无法进入Android/data和Android/obb目录。</string>
+    <string name="fraghelp_title1_guide">使用方法</string>
+    <string name="settings_delpatcherapk">清除patcher apk</string>
+    <string name="settings_version">版本</string>
+    <string name="settings_delpatcherapksummary">一般不会用到</string>
+    <string name="tv_patchstep2">2. 勾选要添加的功能</string>
+    <string name="tv_patchstep3">3. 执行操作</string>
+    <string name="fragment_patch_label">主界面</string>
+    <string name="settings_credits">第三方项目依赖</string>
+    <string name="settings_update">更新</string>
+    <string name="fraghelp_title2_brief">应用简介</string>
+    <string name="fraghelp_body_brief">在为exagear(3.0.2)加了一些小功能之后（主要是通过修改dex实现），我发现手改smali终究还是太麻烦了。即使提供修改代码和位置的傻瓜式教程，也不适用于未接触过apk修改的大部分人群。\n所以我在想，能否做一个应用，用户只需点一个按钮，等待自动修改完成后安装新的apk即可。于是本应用便诞生了。由于能力有限，不保证适用于所有版本的exagear，也不保证100%修改成功。</string>
+    <string name="tips_check_guide">修改apk前，请先查看右上角菜单中的“指南”。</string>
+    <string name="tips_backup">apk修改后无法复原，请务必提前备份好原版apk！</string>
+    <string name="tips_waiting">正在修改apk，请勿切换到其他界面，以防出现问题。</string>
+
+</resources>
