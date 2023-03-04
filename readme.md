@@ -36,3 +36,6 @@
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 - [apksig](https://android.googlesource.com/platform/tools/apksig)
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
+
+
+v0.0.2 beta https://wwqv.lanzout.com/im2Ft0p60o9a
