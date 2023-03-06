@@ -24,6 +24,7 @@ import com.ewt45.patchapp.ActionPool;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentChoosePatchBinding;
+import com.ewt45.patchapp.thread.Action;
 import com.ewt45.patchapp.thread.BuildApk;
 import com.ewt45.patchapp.thread.DecodeApk;
 import com.ewt45.patchapp.thread.Func;
@@ -306,6 +307,8 @@ public class FragmentChoosePatch extends Fragment {
         changeView(CHECK_DISABLE_WAITING);
         mActionPool.submit(new DecodeApk(DecodeApk.EXAGEAR));
         mActionPool.submit(new SignalDone());
+
+
     }
 
     @Override

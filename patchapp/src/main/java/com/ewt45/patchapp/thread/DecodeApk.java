@@ -8,6 +8,7 @@ import static brut.androlib.ApkDecoder.DECODE_SOURCES_SMALI_ONLY_MAIN_CLASSES;
 
 import android.util.Log;
 
+import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 
 import org.apache.commons.io.FileUtils;
@@ -54,6 +55,12 @@ public class DecodeApk implements Action {
 //                    BuildOptions buildOptions = new BuildOptions();
 //                    new Androlib().build(PatchUtils.getPatchTmpOutDir(requireContext()),null);
 //                Main.main(null);
+
+            if(apkName.equals("tmp")){
+                //每次解包apk后，更新包名
+                PatchUtils.setPackageName("");
+                Log.d(TAG, "decodeApk: 解压完成，重新读取包名"+PatchUtils.getPackageName());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
