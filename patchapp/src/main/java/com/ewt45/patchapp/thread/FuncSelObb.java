@@ -4,14 +4,29 @@ import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.patching.PatcherFile;
 import com.ewt45.patchapp.patching.SmaliFile;
 
+import java.io.IOException;
+
 public class FuncSelObb implements Func {
+
     @Override
     public int getStartMessage() {
         return R.string.actmsg_funcselobb;
     }
+    private static final String TAG = "FuncSelObb";
 
     @Override
-    public boolean funcAdded() {
+    public int getInstalledVersion() {
+        try {
+            int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
+            if (a == INVALID_VERSION && isPatchedOldWay())
+                return 1;
+            else return a;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return INVALID_VERSION;
+        }
+    }
+    private boolean isPatchedOldWay(){
         String[] origin = new String[]{"invoke-virtual {v8}, Lcom/eltechs/axs/helpers/ZipInstallerObb;->installImageFromObbIfNeeded()V"};
         SmaliFile smaliFile = new SmaliFile();
         boolean patched = smaliFile.findSmali("com.eltechs.axs.configuration.startup.actions", "UnpackExagearImageObb")
@@ -21,7 +36,23 @@ public class FuncSelObb implements Func {
     }
 
     @Override
+    public int getLatestVersion() {
+        return 2;
+    }
+    @Override
     public Integer call() throws Exception {
+        if(getInstalledVersion() == INVALID_VERSION)
+            firstInstall();
+
+        //复制自己的类
+        PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
+                "/com/example/datainsert/exagear/obb",
+                "/com/example/datainsert/exagear/RSIDHelper.smali",
+                "/com/example/datainsert/exagear/RR.smali"});
+        return R.string.actmsg_funcselobb;
+    }
+
+    private void firstInstall() throws Exception {
         String[] origin = new String[]{"invoke-virtual {v8}, Lcom/eltechs/axs/helpers/ZipInstallerObb;->installImageFromObbIfNeeded()V"};
 
         String[] dst = new String[]{"invoke-virtual {v8}, Lcom/eltechs/axs/helpers/ZipInstallerObb;->installImageFromObbIfNeededNew()V"};
@@ -60,12 +91,5 @@ public class FuncSelObb implements Func {
                                 "goto :goto_3",
                                 ":cond_3a"})
                 .close();
-
-        //复制自己的类
-        PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
-                "/com/example/datainsert/exagear/obb",
-                "/com/example/datainsert/exagear/RSIDHelper.smali",
-                "/com/example/datainsert/exagear/RR.smali"});
-        return R.string.actmsg_funcselobb;
     }
 }

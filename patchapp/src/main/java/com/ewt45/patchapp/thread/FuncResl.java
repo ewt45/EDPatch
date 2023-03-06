@@ -9,11 +9,27 @@ import com.ewt45.patchapp.patching.PatcherFile;
 import java.io.File;
 
 public class FuncResl implements Func {
-
+    private static final String TAG = "FuncResl";
     @Override
-    public boolean funcAdded() {
+    public int getLatestVersion() {
+        return 1;
+    }
+    @Override
+    public int getInstalledVersion() {
+        try {
+            int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
+            if (a == INVALID_VERSION && isPatchedOldWay())
+                return 1;
+            else return a;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return INVALID_VERSION;
+        }
+    }
+
+    private boolean isPatchedOldWay() {
         File smaliFile = new File(PatchUtils.getPatchTmpDir() + "/tmp/smali/"
-                +PatchUtils.getPackageName()+"/fragments/ContainerSettingsFragment$3.smali");
+                + PatchUtils.getPackageName() + "/fragments/ContainerSettingsFragment$3.smali");
 
         return smaliFile.exists();
     }

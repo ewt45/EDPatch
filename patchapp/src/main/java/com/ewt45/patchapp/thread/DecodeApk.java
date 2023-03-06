@@ -29,6 +29,7 @@ public class DecodeApk implements Action {
     @Override
     public Integer call() throws Exception {
 
+        //先清空上一次解包的目录吧，貌似有些文件不会被自动清除
         try{
             File decodeDir = new File(getPatchTmpDir(),apkName);
             if(decodeDir.exists() && decodeDir.isDirectory()){

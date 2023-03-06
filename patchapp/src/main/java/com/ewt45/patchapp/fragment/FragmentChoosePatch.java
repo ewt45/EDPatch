@@ -1,10 +1,6 @@
 package com.ewt45.patchapp.fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,13 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import com.ewt45.patchapp.ActionPool;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentChoosePatchBinding;
-import com.ewt45.patchapp.thread.Action;
+import com.ewt45.patchapp.patching.PatcherFile;
 import com.ewt45.patchapp.thread.BuildApk;
 import com.ewt45.patchapp.thread.DecodeApk;
 import com.ewt45.patchapp.thread.Func;
@@ -45,10 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 //import brut.androlib.ApkDecoder;
 //import brut.apktool.Main;
@@ -218,12 +210,12 @@ public class FragmentChoosePatch extends Fragment {
                 e.printStackTrace();
             }
 
-            boolean funcModified = false;
+            List<Func> addingFuncList = new ArrayList<>();
             //如果勾选（启用说明是用户自己勾选的）添加功能
             for (FuncWithCheckBox fnc : funcList) {
                 if (fnc.checkBox.isChecked() && fnc.checkBox.isEnabled()) {
                     mActionPool.submit(fnc.func);
-                    funcModified = true;
+                    addingFuncList.add(fnc.func);
                 }
             }
 //
@@ -244,7 +236,8 @@ public class FragmentChoosePatch extends Fragment {
 //                funcModified = true;
 //            }
             changeView(CHECK_DISABLE_WAITING); //操作过程先禁用按钮(草这个要放到判断isEnable下面不然就全是disable了）
-            if (funcModified) {
+            if (addingFuncList.size()>0) {
+                PatcherFile.writeAddedFunVer(addingFuncList);//写入本次安装功能的版本号
                 mActionPool.submit(new BuildApk());//回编译apk
                 mActionPool.submit(new SignApk(requireContext().getAssets()));//签名
             }
@@ -345,7 +338,10 @@ public class FragmentChoosePatch extends Fragment {
         //根据实际情况开放勾选框
         else {
             for (FuncWithCheckBox fnc : funcList) {
-                boolean added = fnc.func.funcAdded();
+                int version = fnc.func.getInstalledVersion();
+                Log.d(TAG, String.format("changeView: 功能%s, 已安装版本 %d，最新版本 %d",fnc.func.getClass().getSimpleName(),version,fnc.func.getLatestVersion()));
+                // 如果已安装功能版本号和最新的相等则自动勾选，否则不勾选
+                boolean added =  version == fnc.func.getLatestVersion() ;
                 fnc.checkBox.setChecked(added);
                 fnc.checkBox.setEnabled(!added);
             }

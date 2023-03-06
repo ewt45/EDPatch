@@ -3,6 +3,7 @@ package com.ewt45.patchapp.patching;
 import android.util.Log;
 
 import com.ewt45.patchapp.PatchUtils;
+import com.ewt45.patchapp.thread.Func;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -196,5 +197,54 @@ public class PatcherFile {
             return new String[0];
         }
         return fileLines.subList(start,end).toArray(new String[0]);
+    }
+
+    /**
+     * 从解包的apk中获取已安装的功能的版本信息
+     * @param funcName 功能名称，为对应类的名称
+     * @return 版本号 INVALID_VERSION为未添加(也可能是初版没有这个txt）
+     */
+    public static int getAddedFuncVer(String funcName)  {
+        File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/assets/EDPatch/utilsVers.txt");
+        if(file.exists()){
+            List<String> infos = new ArrayList<>();
+            //读取所有行
+            try {
+                infos=FileUtils.readLines(file,StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //找到对应行，返回版本号
+            for(String str:infos){
+                String[] nameNVer = str.split(" ");
+                assert  nameNVer.length==2;
+                if(nameNVer[0].equals(funcName))
+                    return Integer.parseInt(nameNVer[1]);
+            }
+
+        }
+        //没有信息或者没找到对应功能，返回INVALID_VERSION
+        return Func.INVALID_VERSION;
+    }
+
+
+    /**
+     * 将本次安装的功能 版本号写入
+     * @param funcList
+     */
+    public static void writeAddedFunVer(List<Func> funcList){
+        File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/assets/EDPatch/utilsVers.txt");
+        if(file.exists())
+            file.delete();
+        try {
+            //获取本次安装的功能的类名和版本号，写入文件
+            List<String> nameNVer = new ArrayList<>();
+            for(Func func:funcList){
+                nameNVer.add(func.getClass().getSimpleName()+" "+func.getLatestVersion());
+            }
+            FileUtils.writeLines(file, String.valueOf(StandardCharsets.UTF_8),nameNVer,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
