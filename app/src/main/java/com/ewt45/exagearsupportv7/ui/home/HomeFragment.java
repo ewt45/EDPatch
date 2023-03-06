@@ -13,8 +13,11 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -42,7 +45,9 @@ import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPo
 import com.example.datainsert.exagear.input.SoftInput;
 import com.example.datainsert.exagear.obb.ProcessInstallObb;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class HomeFragment extends Fragment {
 
@@ -69,6 +74,16 @@ public class HomeFragment extends Fragment {
 //        Log.d(TAG, "onCreate: 能找到button吗"+binding.getRoot());;
 //        binding.touchOuter.addView(new TouchScreenControlsInputWidget(requireContext()), 0,
 //                new ViewGroup.LayoutParams(-1, 50));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.d(TAG, "onViewCreated: 看看togglebutton的drawable：\n"+
+                    "getButtonDrawable= "+binding.testToggleButton.getButtonDrawable()+
+                    "\ngetCompoundDrawables= "+ Arrays.toString(binding.testToggleButton.getCompoundDrawables())+
+                    "\ngetBackground= "+binding.testToggleButton.getBackground());
+        }
+
+        InsetDrawable id=(InsetDrawable)binding.testToggleButton.getBackground();
+        LayerDrawable ld=(LayerDrawable)id.getDrawable();
 
         //点击按钮显示键盘
         binding.toggleInput.setOnClickListener(v -> {
@@ -118,23 +133,12 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(requireContext(), XServerDisplayActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             Class<?> cls = null;
-            intent.putExtra("facadeclass", (java.io.Serializable) null);
+            intent.putExtra("facadeclass", (Serializable) null);
             startActivity(intent);
         });
         //
 
         SensitivitySeekBar.create(binding.getRoot());
-
-//        Log.d(TAG, "onViewCreated: 新建一个小的fragment");
-//        Fragment fragment = new SelectObbFragment();
-//        requireActivity().getSupportFragmentManager().beginTransaction()
-//                .add(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2),fragment).addToBackStack(null).commit();
-//        requireActivity().getSupportFragmentManager().beginTransaction().show(fragment).addToBackStack(null).commit();
-//        ViewGroup linear = requireActivity().findViewById(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2));
-//        linear.setVisibility(View.VISIBLE);
-
-
-
     }
 
     @Override

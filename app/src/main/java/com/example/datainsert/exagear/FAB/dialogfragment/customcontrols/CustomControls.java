@@ -45,9 +45,9 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     private final BtnColRecyclerView[] mSidebarKeyRecyclerView = new BtnColRecyclerView[2];
     ViewGroup[] mPages = new ViewGroup[3];
     FalloutInterfaceOverlay2 mUiOverlay;
-    private File mSerFile2;
+//    private File mSerFile2;
     private KeyCodes2 mKeyCodes2;//用于新建dialog的时候，初始化侧栏按键列表
-    private File mSerFile3;
+//    private File mSerFile3;
     /**
      * 直接反序列化，如果是容器内界面，退出编辑后也从本地反序列化读取新的配置。
      */
@@ -69,8 +69,8 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 //            mDialog=this;
 
         //先尝试从factory直接获取实例（已经在图形界面的情况）。没有再反序列化
-        mSerFile2 = new File(requireContext().getFilesDir(), KeyCodes2.KeyStoreFileName);
-        mSerFile3 = new File(requireContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
+//        mSerFile2 = new File(requireContext().getFilesDir(), KeyCodes2.KeyStoreFileName);
+//        mSerFile3 = new File(requireContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
         XServerDisplayActivityConfigurationAware aware = Globals.getApplicationState();
         if(aware!=null)
             mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
@@ -80,13 +80,13 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             mKeyCodes3 = mUiOverlay.getControlsFactory().getKeyCodes3();
         } else {
             try {
-                mKeyCodes2 = KeyCodes2.deserialize(mSerFile2);
+                mKeyCodes2 = KeyCodes2.deserialize(requireContext());
             } catch (IOException | ClassNotFoundException e) {
                 mKeyCodes2 = new KeyCodes2();
                 Log.d(TAG, "buildUI: KeyCodes2反序列化文件失败");
             }
             try {
-                mKeyCodes3 = KeyCodes3.deserialize(mSerFile3);
+                mKeyCodes3 = KeyCodes3.deserialize(requireContext());
             } catch (IOException | ClassNotFoundException e) {
                 mKeyCodes3 = new KeyCodes3();
                 Log.d(TAG, "buildUI: 反序列化文件失败");
@@ -193,12 +193,12 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             //否则自己序列化
             else {
                 try {
-                    KeyCodes2.serialize(mKeyCodes2, mSerFile2);
+                    KeyCodes2.serialize(mKeyCodes2, requireContext());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    KeyCodes3.serialize(mKeyCodes3, mSerFile3);
+                    KeyCodes3.serialize(mKeyCodes3, requireContext());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -33,8 +33,6 @@ import java.io.IOException;
 public class BtnContainer extends FrameLayout {
     //   自身视图id BTNCONTAINER_RESOURCE_ID = 0x7f095123;//可以通过这个id寻找此视图
     public static final String TAG="BtnContainer";
-    KeyCodes3 mKeyCodes3;
-    private final File serFile;
     private final ViewFacade mViewFacade;
     private final ViewOfXServer mViewOfXServer;
 
@@ -46,17 +44,17 @@ public class BtnContainer extends FrameLayout {
         super(context);
         mViewOfXServer = viewOfXServer;
         this.mViewFacade = viewOfXServer!=null?viewOfXServer.getXServerFacade():null;
-        serFile = new File(getContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
-        //先尝试反序列读取之前的设置，如果没有再新建
-        try {
-            mKeyCodes3 = KeyCodes3.deserialize(serFile);
-        } catch (IOException | ClassNotFoundException e) {
-            mKeyCodes3=new KeyCodes3();
-            Log.d(TAG, "buildUI: 反序列化文件失败");
-        }
+//        serFile = new File(getContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
+//        //先尝试反序列读取之前的设置，如果没有再新建
+//        try {
+//            mKeyCodes3 = KeyCodes3.deserialize(serFile);
+//        } catch (IOException | ClassNotFoundException e) {
+//            mKeyCodes3=new KeyCodes3();
+//            Log.d(TAG, "buildUI: 反序列化文件失败");
+//        }
 
         setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
-        setTag(mKeyCodes3);
+//        setTag(mKeyCodes3);
 
         //反序列化，初始化添加按钮
 //        reAddBtnsFromKeys();
@@ -202,7 +200,4 @@ public class BtnContainer extends FrameLayout {
 //        return condition;
 //    }
 
-    public KeyCodes3 getKeyCodes3() {
-        return mKeyCodes3;
-    }
 }

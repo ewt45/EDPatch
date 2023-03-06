@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 
 public class OneKey implements Serializable {
+    private static final long serialVersionUID = 3575276037755523284L;
     int code; //这个用原始的，不+8//https://elixir.bootlin.com/linux/v4.9/source/include/uapi/linux/input-event-codes.h#L74
     String name;
 
@@ -71,6 +72,7 @@ public class OneKey implements Serializable {
     }
 
     public OneKey clone() {
+        //没复制margin isshow那些，不过keycode3也用不着clone
         return new OneKey(this.code, this.name);
     }
 

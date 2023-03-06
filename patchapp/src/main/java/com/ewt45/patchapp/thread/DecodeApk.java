@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.ewt45.patchapp.R;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 
 import brut.androlib.ApkDecoder;
@@ -26,7 +28,18 @@ public class DecodeApk implements Action {
     @Override
     public Integer call() throws Exception {
 
+        try{
+            File decodeDir = new File(getPatchTmpDir(),apkName);
+            if(decodeDir.exists() && decodeDir.isDirectory()){
+                FileUtils.forceDelete(decodeDir);
+                Log.d(TAG, "call: 删除上一次解压的文件夹成功");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         try {
+
             ApkDecoder decoder = new ApkDecoder();
             decoder.setApkFile(new File(getPatchTmpDir(),apkName+".apk"));
             decoder.setFrameworkDir(getPatchTmpDir().getAbsolutePath());

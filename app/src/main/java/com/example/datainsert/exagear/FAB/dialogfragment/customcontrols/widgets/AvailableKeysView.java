@@ -301,4 +301,11 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
         //如果本次是取消选择，不记录该按钮
         mLastCheckedButton = isChecked?buttonView:null;
     }
+
+    /**
+     * hugo的勾选了和没勾选看不出来，想个办法改一下高对比度的样式
+     */
+    private void setToggleButtonStyle(CompoundButton button, boolean isChecked){
+
+    }
 }

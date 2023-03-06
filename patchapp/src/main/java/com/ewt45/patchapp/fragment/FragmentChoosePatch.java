@@ -97,9 +97,9 @@ public class FragmentChoosePatch extends Fragment {
         mActionPool = new ActionPool(new ActionPool.DoneCallback() {
             @Override
             public void restoreViewVis() {
-                Snackbar snackWaiting = Snackbar.make(binding.getRoot(), R.string.tips_backup, Snackbar.LENGTH_INDEFINITE);
-                snackWaiting.setAction(android.R.string.yes, v -> snackWaiting.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
-                snackWaiting.show();
+                Snackbar snackBackup = Snackbar.make(binding.getRoot(), R.string.tips_backup, Snackbar.LENGTH_INDEFINITE);
+                snackBackup.setAction(android.R.string.yes, v -> snackBackup.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
+                snackBackup.show();
                 binding.getRoot().post(() -> changeView(CHECK_ENABLE));
             }
 
@@ -196,6 +196,10 @@ public class FragmentChoosePatch extends Fragment {
         });
 
         binding.btnStartPatch.setOnClickListener(v -> {
+            //提醒用户等待
+            Snackbar snackWaiting = Snackbar.make(binding.getRoot(), R.string.tips_waiting, Snackbar.LENGTH_INDEFINITE);
+            snackWaiting.setAction(android.R.string.yes, snackbutton -> snackWaiting.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
+            snackWaiting.show();
             //解包自己的代码的apk（最好优化一下，仅当必要的时候才解包）
             try {
                 //将自己的apk拷贝出来

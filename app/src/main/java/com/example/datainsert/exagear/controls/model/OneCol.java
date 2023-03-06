@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class OneCol implements Serializable {
 
+    private static final long serialVersionUID = -8663849085661560546L;
     private int id;//给每列分配一个独有的id吧
     OneKey[] mAllKeys;
 //    public OneCol(OneKey[] allKeys){
@@ -28,7 +29,7 @@ public class OneCol implements Serializable {
     }
 
     public void setmAllKeys(OneKey[] mAllKeys) {
-        this.mAllKeys = mAllKeys;
+        this.mAllKeys = mAllKeys==null?new OneKey[0]: mAllKeys;
     }
 
     /**

@@ -20,6 +20,7 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.Arrays;
@@ -27,16 +28,16 @@ import java.util.Arrays;
 public class BtnKeyRecyclerView extends RecyclerView {
     BtnKeyAdapter mAdapter;
 
-    public BtnKeyRecyclerView(@NonNull Context context, OneKey[] keys, boolean isLandScape) {
+    public BtnKeyRecyclerView(@NonNull Context context, OneCol oneCol, boolean isLandScape) {
         //根据isLandScape判断横向还是纵向，布局也跟着横或竖着摆放
         super(context);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(isLandScape ? HORIZONTAL : VERTICAL);
         setLayoutManager(layoutManager);
 
-        mAdapter = new BtnKeyAdapter(isLandScape);
+        mAdapter = new BtnKeyAdapter(oneCol,isLandScape);
         setAdapter(mAdapter);
-        mAdapter.submitList(Arrays.asList(keys));
+        mAdapter.submitList(Arrays.asList(oneCol.getmAllKeys()));
         //设置拖拽排序
         new ItemTouchHelper(new DragHelperCallback(isLandScape ? LEFT | RIGHT : UP | DOWN, 0)).attachToRecyclerView(this);
         //设置侧栏底色

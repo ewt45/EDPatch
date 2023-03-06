@@ -9,6 +9,7 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
@@ -25,14 +26,13 @@ import android.widget.LinearLayout;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
+import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder> {
-    private static final String TAG="BtnKeyAdapter";
-    private final boolean isLandScape;
     public static final DiffUtil.ItemCallback<OneKey> DIFF_CALLBACK = new DiffUtil.ItemCallback<OneKey>() {
         @Override
         public boolean areItemsTheSame(@NonNull OneKey oldKey, @NonNull OneKey newKeys) {
@@ -44,9 +44,13 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
             return oldKey.equals(newKey);
         }
     };
+    private static final String TAG = "BtnKeyAdapter";
+    private final boolean isLandScape;
+    private final OneCol mOneCol;
 
-    protected BtnKeyAdapter(boolean isLandScape) {
+    protected BtnKeyAdapter(OneCol oneCol, boolean isLandScape) {
         super(DIFF_CALLBACK);
+        this.mOneCol = oneCol;
         this.isLandScape = isLandScape;
     }
 
@@ -59,26 +63,26 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
         int height = sp.getInt(PREF_KEY_BTN_HEIGHT, -2);
         btn.setLayoutParams(new ViewGroup.LayoutParams(
                 sp.getInt(PREF_KEY_BTN_WIDTH, -2),
-                height==-2&&isLandScape?QH.px(viewGroup.getContext(),50):height
-                ));
+                height == -2 && isLandScape ? QH.px(viewGroup.getContext(), 50) : height
+        ));
         return new BtnKeyAdapter.ViewHolder(btn);
     }
+
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         viewHolder.getmBtn().setText(getItem(position).getName());
         viewHolder.getmBtn().setTag(getItem(position));
         viewHolder.getmBtn().setOnClickListener(v -> {
-            Log.d(TAG, "onBindViewHolder: 点击没反应？");
             Context c = v.getContext();
             EditText editText = new EditText(c);
             editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
             editText.setSingleLine();
             editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
             editText.setText(((OneKey) v.getTag()).getName());
-            editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100),-2));
-            LinearLayout renameRootView = getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditReName),editText,false);
+            editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
+            LinearLayout renameRootView = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
             int padding = QH.px(c, RR.attr.dialogPaddingDp);
-            renameRootView.setPadding(padding,0,padding,0);
+            renameRootView.setPadding(padding, 0, padding, 0);
             new AlertDialog.Builder(c)
                     .setView(renameRootView)
                     .setPositiveButton(android.R.string.yes, (dialog, which) -> {
@@ -86,15 +90,15 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
                         newSelfKey.setName(editText.getText().toString());
                         //更新按钮的tag和文字显示
                         v.setTag(newSelfKey);
-                        ((Button)v).setText(newSelfKey.getName());
+                        ((Button) v).setText(newSelfKey.getName());
                         //更新adapter的数据列表
                         List<OneKey> newList = getCurrentList();
-                        int index=getIndexOfItem(newList,newSelfKey);
+                        int index = getIndexOfItem(newList, newSelfKey);
                         newList.remove(index);
-                        newList.add(index,newSelfKey);
+                        newList.add(index, newSelfKey);
                         submitList(newList);
                     })
-                    .setNegativeButton(android.R.string.cancel,null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .create().show();
 //            PopupMenu popupMenu = new PopupMenu(c,v);
 //            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item -> {
@@ -125,15 +129,20 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
         return list;
     }
 
-    public int getIndexOfItem(List<OneKey> newList, OneKey item){
-        int i=0;//找到当前btn对应col所在位置
-        for(; i<newList.size();i++)
-            if(newList.get(i).getCode()== item.getCode())
+    public int getIndexOfItem(List<OneKey> newList, OneKey item) {
+        int i = 0;//找到当前btn对应col所在位置
+        for (; i < newList.size(); i++)
+            if (newList.get(i).getCode() == item.getCode())
                 break;
         return i;
     }
 
+    @Override
+    public void submitList(@Nullable List<OneKey> list) {
 
+        super.submitList(list);
+        this.mOneCol.setmAllKeys(list == null ? new OneKey[0] : list.toArray(new OneKey[0]));
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final Button mBtn;
@@ -147,7 +156,7 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
             return mBtn;
         }
 
-        public void bind(){
+        public void bind() {
 
         }
     }

@@ -93,18 +93,18 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         Context c = emptyBtnContainer.getContext();
         try {
             if (mKeyCodes2 == null)
-                mKeyCodes2 = KeyCodes2.deserialize(new File(c.getFilesDir(), KeyCodes2.KeyStoreFileName));
+                mKeyCodes2 = KeyCodes2.deserialize(c);
             else
-                KeyCodes2.serialize(mKeyCodes2, new File(c.getFilesDir(), KeyCodes2.KeyStoreFileName));
+                KeyCodes2.serialize(mKeyCodes2, c);
         } catch (IOException | ClassNotFoundException e) {
             if (mKeyCodes2 == null) mKeyCodes2 = new KeyCodes2();
             Log.d(TAG, "create: KeyCodes2(反)序列化文件失败");
         }
         try {
             if (mKeyCodes3 == null)
-                mKeyCodes3 = KeyCodes3.deserialize(new File(c.getFilesDir(), KeyCodes3.KeyStoreFileName));
+                mKeyCodes3 = KeyCodes3.deserialize(c);
             else
-                KeyCodes3.serialize(mKeyCodes3, new File(c.getFilesDir(), KeyCodes3.KeyStoreFileName));
+                KeyCodes3.serialize(mKeyCodes3, c);
         } catch (IOException | ClassNotFoundException e) {
             if (mKeyCodes3 == null) mKeyCodes3 = new KeyCodes3();
             Log.d(TAG, "create: KeyCodes3(反)序列化文件失败");
@@ -159,12 +159,12 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
 
     public void serializeKeyCodes2and3(Context c) {
         try {
-            KeyCodes2.serialize(mKeyCodes2, new File(c.getFilesDir(), KeyCodes2.KeyStoreFileName));
+            KeyCodes2.serialize(mKeyCodes2, c);
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
-            KeyCodes3.serialize(mKeyCodes3, new File(c.getFilesDir(), KeyCodes3.KeyStoreFileName));
+            KeyCodes3.serialize(mKeyCodes3, c);
         } catch (IOException e) {
             e.printStackTrace();
         }

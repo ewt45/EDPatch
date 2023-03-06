@@ -68,8 +68,8 @@ public class SubView2Keys extends LinearLayout {
         getPreference().edit().putBoolean(PREF_KEY_USE_CUSTOM_CONTROL, true).apply();
 
         //按键在两侧还是画面上层
-        Spinner spinKeyPosType = new Spinner(c);
-        String[] spinOptions = new String[]{getS(RR.cmCtrl_s2_modeSide), getS(RR.cmCtrl_s2_modeFree)};//≡☰
+        Spinner spinKeyPosType = new Spinner(c); //用unicode字符？ ≡☰ ⇌ ⇄
+        String[] spinOptions = new String[]{getS(RR.cmCtrl_s2_modeSide), getS(RR.cmCtrl_s2_modeFree)};
         ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
         spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinKeyPosType.setAdapter(spinKeyPosAdapter);

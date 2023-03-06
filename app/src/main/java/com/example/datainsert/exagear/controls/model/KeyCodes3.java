@@ -1,5 +1,8 @@
 package com.example.datainsert.exagear.controls.model;
 
+import android.content.Context;
+import android.widget.CompoundButton;
+
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn;
 
@@ -18,6 +21,7 @@ import java.util.List;
  */
 public class KeyCodes3 implements Serializable {
     public static final String KeyStoreFileName = "custom_control3.ser";
+    private static final long serialVersionUID = 4579853863658738317L;
     List<OneKey> mKeyList;
 
     List<JoyStickBtn.Params> mJoyList;
@@ -41,7 +45,9 @@ public class KeyCodes3 implements Serializable {
         return mJoyList;
     }
 
-    public static void serialize(KeyCodes3 keyCodes3, File file) throws IOException {
+    public static void serialize(KeyCodes3 keyCodes3, Context c) throws IOException {
+        File file = new File(c.getExternalFilesDir(null), KeyCodes3.KeyStoreFileName);
+
         if(file.exists())
             file.delete();
         FileOutputStream fos = new FileOutputStream(file);
@@ -49,9 +55,11 @@ public class KeyCodes3 implements Serializable {
         oos.writeObject(keyCodes3);
         oos.close();
         fos.close();
+
     }
 
-    public static KeyCodes3 deserialize(File file) throws IOException, ClassNotFoundException {
+    public static KeyCodes3 deserialize(Context c) throws IOException, ClassNotFoundException {
+        File file = new File(c.getExternalFilesDir(null), KeyCodes3.KeyStoreFileName);
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
         KeyCodes3 keyread = (KeyCodes3) ois.readObject();
         ois.close();

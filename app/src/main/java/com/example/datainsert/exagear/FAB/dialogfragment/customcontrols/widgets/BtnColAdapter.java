@@ -19,6 +19,7 @@ import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder> {
+    private final static String TAG= "BtnColAdapter";
     public static final DiffUtil.ItemCallback<OneCol> DIFF_CALLBACK = new DiffUtil.ItemCallback<OneCol>() {
         @Override
         public boolean areItemsTheSame(
@@ -114,7 +116,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
      */
     private void showEditDialog(ViewHolder viewHolder) {
         Context c = viewHolder.getmBtn().getContext();
-        //一旦进入按键编辑界面，这个selfCol可能就不是最新的了？
+        //一旦进入按键编辑界面，selfCol传递给KeyAdapter，保证key submit的时候会同步更新这个selfCol
         OneCol selfCol = (OneCol) viewHolder.getmBtn().getTag();
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setPadding(QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp));
@@ -127,7 +129,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
         mDisplayManager.getDisplay(DEFAULT_DISPLAY).getRectSize(rect);
         boolean isLandScape = (rect.right - rect.left) > (rect.bottom - rect.top);
         //一列按键
-        BtnKeyRecyclerView btnKeyRecyclerView = new BtnKeyRecyclerView(c, selfCol.getmAllKeys(),isLandScape);
+        BtnKeyRecyclerView btnKeyRecyclerView = new BtnKeyRecyclerView(c, selfCol,isLandScape);
         //新建按钮
         Button selectBtn = new Button(c);
         selectBtn.setText(getS(RR.cmCtrl_s2_selectBtn));
@@ -147,10 +149,16 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
             dialogView.showMouseBtn();
             dialogView.showWithinDialog((dialog, which) -> {
                 OneKey[] newKeys = dialogView.getSelectedKeys();
+                //保留原有key的名字
+                for(OneKey newKey:newKeys){
+                    for(OneKey oldKey:selfCol.getmAllKeys())
+                        if(newKey.getCode()==oldKey.getCode()){
+                            newKey.setName(oldKey.getName());
+                            break;
+                        }
+                }
                 //submit需要新建一个列表，拷贝原列表
                 btnKeyRecyclerView.getAdapter().submitList(Arrays.asList(newKeys));
-                //这里先不更新了，等关闭对话框的时候再从KeyAdapter获取最新的
-                selfCol.setmAllKeys(newKeys);
             });
         });
         LinearLayout.LayoutParams btnViewParams = new LinearLayout.LayoutParams(-2, -2);
@@ -163,9 +171,9 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                 //关闭对话框的时候，通过submitList更新按键model，同步到keycodes2
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     OneCol newSelfCol = selfCol.clone();
-                    //先获取KeyAdapter维护的最新OneKey数组
-                    List<OneKey> newKeyList = btnKeyRecyclerView.getAdapter().getCurrentList();
-                    newSelfCol.setmAllKeys(newKeyList.toArray(new OneKey[0]));
+//                    //先获取KeyAdapter维护的最新OneKey数组
+//                    List<OneKey> newKeyList = btnKeyRecyclerView.getAdapter().getCurrentList();
+//                    newSelfCol.setmAllKeys(newKeyList.toArray(new OneKey[0]));
                     viewHolder.getmBtn().setTag(newSelfCol);
                     List<OneCol> newList = getCurrentList();
                     //OneCol的位置应该是不会变化的, 就通过getAdapterPosition获取吧
