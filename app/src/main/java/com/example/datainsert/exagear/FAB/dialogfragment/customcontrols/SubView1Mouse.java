@@ -21,16 +21,20 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
+import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.interfaceOverlay.gesture.State1FMoveRel;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
 
@@ -101,6 +105,18 @@ public class SubView1Mouse extends LinearLayout {
         addView(switchMsMoveRel);
         addView(linearSpeed);
 
+        CheckBox checkLock = new CheckBox(c);
+        checkLock.setText("Cursor Locked in center");
+        checkLock.setChecked(FalloutInterfaceOverlay2.isCursorLocked);
+        checkLock.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity) {
+                XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
+                if (ui instanceof FalloutInterfaceOverlay2)
+                    ((FalloutInterfaceOverlay2) ui).setCursorLocked(isChecked);
+            }
+        });
+
+        addView(checkLock);
 
 //        //为什么viewpager里的edittext没法调出输入法了啊(dialogfragment里清除一下flag就好了）
 //        MyTextInputEditText editInColor = new MyTextInputEditText(c,null,null,"颜色");

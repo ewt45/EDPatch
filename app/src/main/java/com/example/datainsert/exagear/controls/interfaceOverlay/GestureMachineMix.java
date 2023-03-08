@@ -104,6 +104,9 @@ public class GestureMachineMix {
                 0.05f * TransformationHelpers.getScaleY(viewOfXServer.getViewToXServerTransformationMatrix()),
                 0.0f, false, 0, scrollPeriodMs, true);
 
+        //单指相对移动鼠标位置
+        State1FMouseMove gs1FMoveMouseWaitDrag = new State1FMouseMove.SimpleBuilder().create(gestureContext,pointerContext,true);
+
         //第二个手指的手势检测
         State1FMoveRel gs2ndFMoveRel = new State1FMoveRel(gestureContext, fingerToLongTimeMs, maxMove,false);
         //第三个手指的手势检测
@@ -155,7 +158,6 @@ public class GestureMachineMix {
 
 //        State1FMouseMove gs1FMoveMouseAndGone = new State1FMouseMove.SimpleBuilder().create(gestureContext,pointerContext,false);
 
-        State1FMouseMove gs1FMoveMouseWaitDrag = new State1FMouseMove.SimpleBuilder().create(gestureContext,pointerContext,true);
 
 
 

@@ -102,7 +102,4 @@ public class PatchUtils {
         return  returnLists;
     }
 
-    public enum version{
-//        fab
-    }
 }

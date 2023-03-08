@@ -10,6 +10,7 @@ import com.eltechs.axs.GuestAppActionAdapters.SimpleMouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.eltechs.axs.helpers.Assert;
+import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
 
 import java.util.List;
@@ -57,7 +58,9 @@ public class State1FMouseMove extends AbstractGestureFSMState implements TouchEv
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyMoved(Finger finger, List<Finger> list) {
         if (finger == this.f) {
+
             this.moveAdapter.moveTo(finger.getX(), finger.getY());
+
             this.pointerContext.setLastMoveMethod(PointerContext.MoveMethod.AIM);
         }
     }

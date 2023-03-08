@@ -240,7 +240,7 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
     private LinearLayout getOneKeysLine(int start, int end) {
         LinearLayout linear = new LinearLayout(getContext());
         for (int i = start; i < end; i++) {
-            ToggleButton button = new ToggleButton(getContext());
+            ToggleButton button = new ToggleButtonHighContrast(getContext());
             button.setText(names[i]);
             button.setTextOn(names[i]);
             button.setTextOff(names[i]);

@@ -30,6 +30,7 @@ import com.ewt45.patchapp.thread.FuncSInput;
 import com.ewt45.patchapp.thread.FuncSelObb;
 import com.ewt45.patchapp.thread.SignApk;
 import com.ewt45.patchapp.thread.SignalDone;
+import com.ewt45.patchapp.thread.WriteFuncVer;
 import com.ewt45.patchapp.widget.SelectApkDialog;
 
 import org.apache.commons.io.FileUtils;
@@ -237,7 +238,7 @@ public class FragmentChoosePatch extends Fragment {
 //            }
             changeView(CHECK_DISABLE_WAITING); //操作过程先禁用按钮(草这个要放到判断isEnable下面不然就全是disable了）
             if (addingFuncList.size()>0) {
-                PatcherFile.writeAddedFunVer(addingFuncList);//写入本次安装功能的版本号
+                mActionPool.submit(new WriteFuncVer(addingFuncList));
                 mActionPool.submit(new BuildApk());//回编译apk
                 mActionPool.submit(new SignApk(requireContext().getAssets()));//签名
             }

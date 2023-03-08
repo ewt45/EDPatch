@@ -4,13 +4,11 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +21,10 @@ import android.widget.ProgressBar;
 import com.ewt45.patchapp.R;
 
 import java.io.File;
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class SelectApkDialog extends DialogFragment {
@@ -76,6 +77,17 @@ public class SelectApkDialog extends DialogFragment {
                     mAppNames.add(requireContext().getPackageManager().getApplicationLabel(info).toString());
                 }
             }
+            //排一下序吧受不了了
+//            String[] apkLocations = mFilterApps.toArray(new String[0]);
+//            String[] appNames = mAppNames.toArray(new String[0]);
+//            Arrays.sort(appNames, new Comparator<String>() {
+//                private Collator comparator = Collator.getInstance();
+//                @Override
+//                public int compare(String o1, String o2) {
+//                    return 0;
+//                }
+//            });
+
             changeViewOnUIThread();
         }).start();
     }
@@ -114,4 +126,5 @@ public class SelectApkDialog extends DialogFragment {
 
         }
     }
+
 }

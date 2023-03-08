@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import java.io.Serializable;
 
 public class OneKey implements Serializable {
-    private static final long serialVersionUID = 3575276037755523284L;
+    private static final long serialVersionUID = 3575276037755523285L;
     int code; //这个用原始的，不+8//https://elixir.bootlin.com/linux/v4.9/source/include/uapi/linux/input-event-codes.h#L74
     String name;
 
@@ -13,6 +13,14 @@ public class OneKey implements Serializable {
     boolean mIsShow = true;
     int marginLeft=0;
     int marginTop=0;
+    /**
+     * 用于组合键
+     */
+    int[] subCodes = new int[0];
+    /**
+     * 是否松手后保持按下
+     */
+    boolean mIsPersistPress = false;
 
     public OneKey(int code) {
         this(code, "KEYCODE_"+ code);

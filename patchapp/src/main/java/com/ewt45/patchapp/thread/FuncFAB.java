@@ -38,12 +38,16 @@ public class FuncFAB implements Func {
             int mergeVersion = getInstalledVersion();
 
             //首次安装自身
-            if (mergeVersion == INVALID_VERSION)
+            if (mergeVersion == INVALID_VERSION){
+                Log.d(TAG, "call: 首次安装自身");
                 firstInstall();
+            }
 
             //首次安装子功能
-            if ((mergeVersion & 0x000000f0 >> 4) == INVALID_VERSION)
-                sub2Control.updateSelfPackage();
+            if (((mergeVersion >> 4) & 0x0000000f) == INVALID_VERSION){
+                Log.d(TAG, "call: 首次安装子功能-自定义按键");
+                sub2Control.firstInstall();
+            }
 
             //复制自己的类
             Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
@@ -205,13 +209,19 @@ public class FuncFAB implements Func {
 
     public static class Sub2Control {
         public void firstInstall() throws Exception {
-            //自定义操作模式 DefaultControl
-            PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
-                    "/com/eltechs/ed/controls/DefaultControls.smali"
-            });
+
         }
 
         public void updateSelfPackage() throws Exception {
+            //自定义操作模式 DefaultControl
+            PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
+                    "/com/eltechs/ed/controls/DefaultControls.smali",
+                    //仅供测试用
+                    "/com/eltechs/axs/xserver/Pointer.smali",
+//                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
+//                    "/com/eltechs/axs/xserver/client/XClientWindowListener.smali"
+            });
+
             PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
                     "/com/example/datainsert/exagear/controls",});
         }

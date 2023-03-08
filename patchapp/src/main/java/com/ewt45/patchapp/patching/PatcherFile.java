@@ -205,7 +205,7 @@ public class PatcherFile {
      * @return 版本号 INVALID_VERSION为未添加(也可能是初版没有这个txt）
      */
     public static int getAddedFuncVer(String funcName)  {
-        File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/assets/EDPatch/utilsVers.txt");
+        File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/tmp/assets/EDPatch/utilsVers.txt");
         if(file.exists()){
             List<String> infos = new ArrayList<>();
             //读取所有行
@@ -233,7 +233,7 @@ public class PatcherFile {
      * @param funcList
      */
     public static void writeAddedFunVer(List<Func> funcList){
-        File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/assets/EDPatch/utilsVers.txt");
+        File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/tmp/assets/EDPatch/utilsVers.txt");
         if(file.exists())
             file.delete();
         try {

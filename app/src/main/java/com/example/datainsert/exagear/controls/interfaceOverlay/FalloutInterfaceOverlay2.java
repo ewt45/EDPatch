@@ -33,6 +33,8 @@ import com.eltechs.axs.widgets.actions.AbstractAction;
 import com.eltechs.axs.widgets.popupMenu.AXSPopupMenu;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
+import com.eltechs.axs.xserver.Pointer;
+import com.eltechs.axs.xserver.PointerListener;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPopupMenu;
@@ -66,7 +68,7 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
 
     public static final String TSCWIDGET_TAG="TouchScreenControlsWidget_tag";
 
-
+    private PointerListener mPointerLockListener;
     private static boolean isDisplaySmall(DisplayMetrics displayMetrics) {
         return ((float) displayMetrics.widthPixels) / ((float) displayMetrics.densityDpi) < displaySizeThresholdInches;
     }
@@ -127,6 +129,48 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
             //设置编辑按键的菜单项
 //            List<AbstractAction> popupLists = new ArrayList<>(Arrays.asList(new ControlEdit(), new ShowKeyboard(), new ToggleHorizontalStretch(), new ControlToggleVisibility(), new ShowUsage(), new Quit()));
 //            a.addDefaultPopupMenu(popupLists);
+            //初始化锁定光标居中的鼠标监听
+            mPointerLockListener = new PointerListener() {
+//                final Pointer pointer = viewOfXServer.getXServerFacade().getXServer().getPointer();
+
+                @Override
+                public void pointerButtonPressed(int i) {
+
+                }
+
+                @Override
+                public void pointerButtonReleased(int i) {
+
+                }
+
+                @Override
+                public void pointerMoved(int i, int i2) {
+                    int centerX = viewOfXServer.getWidth()/2;
+                    int centerY = viewOfXServer.getHeight()/2;
+                    Log.d(TAG, String.format("pointerMoved: 监听到移动, 目的地 %d,%d， 视图中心在 %d,%d",i,i2,centerX,centerY));
+
+                    if(i!=centerX || i2!=centerY){
+                        Log.d(TAG, "pointerMoved: 重置到中心");
+                        viewOfXServer.getXServerFacade().injectPointerMove(centerX,centerY);
+//                        pointer.setCoordinates(centerX,centerY);
+                    }
+                }
+
+                @Override
+                public void pointerWarped(int i, int i2) {
+                    //目前来看wrap没触发过
+                    int centerX = viewOfXServer.getWidth()/2;
+                    int centerY = viewOfXServer.getHeight()/2;
+                    Log.d(TAG, String.format("pointerWarped: 监听到Warp, 目的地 %d,%d， 视图中心在 %d,%d",i,i2,centerX,centerY));
+                    if(i!=centerX || i2!=centerY){
+                        Log.d(TAG, "pointerWarped: 重置到中心");
+                        viewOfXServer.getXServerFacade().injectPointerMove(centerX,centerY);
+
+//                        pointer.setCoordinates(centerX,centerY);
+                    }
+
+                }
+            };
         }
 
 
@@ -201,10 +245,29 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
         btnContainer.setElevation(0);
     }
 
+    public static boolean isCursorLocked;
+    /**
+     * 是否锁定cursor到中央
+     * @param isLocked
+     */
+    public void setCursorLocked(boolean isLocked){
+        if(viewOfXServer==null || mPointerLockListener==null)
+            return;
 
-    public static FalloutInterfaceOverlay2 getInstance(){
-        return null;
+        isCursorLocked = isLocked;
+
+        //用自带api不行吧，移动位置的同时linux位置也跟过去了。那只能改动Pointer了
+//        if(isLocked){
+//            viewOfXServer.getXServerFacade().addPointerListener(mPointerLockListener);
+//        }else{
+//            viewOfXServer.getXServerFacade().removePointerListener(mPointerLockListener);
+//        }
     }
+
+
+//    public static FalloutInterfaceOverlay2 getInstance(){
+//        return null;
+//    }
 
     public FalloutTouchScreenControlsFactory2 getControlsFactory() {
         return controlsFactory;

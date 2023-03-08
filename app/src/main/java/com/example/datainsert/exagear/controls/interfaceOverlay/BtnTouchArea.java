@@ -62,6 +62,7 @@ public class BtnTouchArea {
             return false;
         Log.d(TAG, String.format("handleBtnFingerDown: 在toucharea范围内吗%f,%f,%f,%f",topX,topY,bottomX,bottomY));
 
+        //如果finger已经失效，就清空数组。（这样如果按键卡住了，再次按下的时候就可以恢复）
         if(activeFingers.size()==0){
             addFinger(finger);
             this.adapter.notifyTouched(finger, this.immutableActiveFingers);

@@ -44,7 +44,6 @@ public class RelativeMouseMoveCstmSpdAdapter implements MouseMoveAdapter {
     @Override // com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter
     public void moveTo(float x, float y) {
         Assert.state(this.subAdapter != null);
-
         this.subAdapter.moveTo(lastX+(x-lastX)*speedRatio, lastY+(y-lastY)*speedRatio);
     }
 }

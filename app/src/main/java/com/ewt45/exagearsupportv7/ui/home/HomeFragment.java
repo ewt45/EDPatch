@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
@@ -75,15 +76,8 @@ public class HomeFragment extends Fragment {
 //        binding.touchOuter.addView(new TouchScreenControlsInputWidget(requireContext()), 0,
 //                new ViewGroup.LayoutParams(-1, 50));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Log.d(TAG, "onViewCreated: 看看togglebutton的drawable：\n"+
-                    "getButtonDrawable= "+binding.testToggleButton.getButtonDrawable()+
-                    "\ngetCompoundDrawables= "+ Arrays.toString(binding.testToggleButton.getCompoundDrawables())+
-                    "\ngetBackground= "+binding.testToggleButton.getBackground());
-        }
 
-        InsetDrawable id=(InsetDrawable)binding.testToggleButton.getBackground();
-        LayerDrawable ld=(LayerDrawable)id.getDrawable();
+
 
         //点击按钮显示键盘
         binding.toggleInput.setOnClickListener(v -> {
