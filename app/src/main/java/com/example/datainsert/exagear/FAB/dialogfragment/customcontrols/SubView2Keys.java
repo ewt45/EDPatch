@@ -129,6 +129,7 @@ public class SubView2Keys extends LinearLayout {
                     OneKey oneKey = mKeyCodes3.getKeyList().get(i);
                     //如果由隐藏变为显示，那么属性初始化
                     if (!oneKey.isShow() && allKeysView.keySelect[i]) {
+                        oneKey.clearPropertiesWhenShow();
                         oneKey.setMarginTop(0);
                         oneKey.setMarginLeft(0);
                     }

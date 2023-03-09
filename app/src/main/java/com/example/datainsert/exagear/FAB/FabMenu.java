@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,12 +16,13 @@ import android.widget.LinearLayout;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.ewt45.exagearsupportv7.R;
+import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.RSIDHelper;
 import com.example.datainsert.exagear.RR;
 
-public class FabMenu{
+public class FabMenu {
     private static final String TAG = "FabMenu";
 
     @SuppressLint("RtlHardcoded")
@@ -37,34 +39,46 @@ public class FabMenu{
         try {
             Drawable iconDrawable = a.getDrawable(RSIDHelper.rslvID(R.drawable.ic_menu_camera, 0x7f0800aa));
             //设置icon颜色
-            if(fab.getBackgroundTintList()!=null){
+            if (fab.getBackgroundTintList() != null) {
                 int bgColor = fab.getBackgroundTintList().getDefaultColor() | 0xff000000;
-                int icColor = ColorUtils.calculateMinimumAlpha(Color.WHITE,bgColor,4.5f)==-1
-                        ? Color.BLACK : Color.WHITE;
+                int icColor = ColorUtils.calculateMinimumAlpha(Color.BLACK, bgColor, 4.5f) == -1
+                        ? Color.WHITE : Color.BLACK;
                 assert iconDrawable != null;
                 iconDrawable.setTintList(ColorStateList.valueOf(icColor));
-                Log.d(TAG, "FabMenu: 背景色是？"+bgColor+" 选择设置图标颜色为："+icColor);
+                Log.d(TAG, "FabMenu: 背景色是？" + bgColor + " 选择设置图标颜色为：" + icColor);
             }
 //            DrawableCompat.setTint();
             fab.setImageDrawable(iconDrawable);
         } catch (Exception ignored) {
         }
+
+        //用于显示的功能对话框 这个class newInstance不会出问题吧
+//        Class<? extends BaseFragment> clz = DriveD.class;
+        final Class<? extends BaseFragment>[] fragmentClsArray = new Class[]{DriveD.class,CustomControls.class};
+        //先调用一次初次启动需要执行的操作
+        for (Class<? extends BaseFragment> clz : fragmentClsArray) {
+            try {
+                clz.newInstance().callWhenFirstStart();
+                Log.d(TAG, "FabMenu: 启动应用，执行初始化操作"+clz);
+            } catch (IllegalAccessException | InstantiationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //点击时出现菜单
         fab.setOnCreateContextMenuListener((menu, v, menuInfo) -> {
-
-            MenuItem item = menu.add(RR.getS(RR.DriveD_Title));
-            item.setOnMenuItemClickListener(item1 -> {
-                new DriveD().show(a.getSupportFragmentManager(), DriveD.TAG);
-                return true;
-            });
-//            menu.add("测试：vo").setOnMenuItemClickListener(item1->{
-//                new VirGLOverlay().show(a.getSupportFragmentManager(),null);
-//                return true;
-//            });
-            menu.add(RR.getS(RR.cmCtrl_title)).setOnMenuItemClickListener(item12 -> {
-                new CustomControls().show(a.getSupportFragmentManager(),CustomControls.TAG);
-                return true;
-            });
-
+            for (Class<? extends BaseFragment> clz : fragmentClsArray) {
+                try {
+                    BaseFragment fragment = clz.newInstance();
+                    //点击菜单项时显示fragment，用title当tag了
+                    menu.add(fragment.getTitle()).setOnMenuItemClickListener(item1 -> {
+                        fragment.show(a.getSupportFragmentManager(), fragment.getTitle());
+                        return true;
+                    });
+                } catch (IllegalAccessException | InstantiationException e) {
+                    e.printStackTrace();
+                }
+            }
         });
         fab.setOnClickListener(view -> fab.showContextMenu());
         //findViewById找到线性布局，添加fab和params

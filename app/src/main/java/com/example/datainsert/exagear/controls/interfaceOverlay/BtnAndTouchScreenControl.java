@@ -60,6 +60,8 @@ public class BtnAndTouchScreenControl implements TouchScreenControl {
             for (BtnTouchArea touchArea : this.btnTouchAreas) {
                 touchArea.handleBtnFingerUp(finger);
             }
+            //草之前一直都没移出过，那岂不是越来越多
+            btnFingerList.remove(finger);
         }else{
             gestureTouchArea.handleFingerUp(finger);
         }

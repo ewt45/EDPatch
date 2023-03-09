@@ -3,8 +3,12 @@ package com.example.datainsert.exagear.FAB.dialogfragment;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -20,9 +24,30 @@ import com.eltechs.axs.Globals;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
-public class BaseFragment extends DialogFragment {
+public abstract class BaseFragment extends DialogFragment implements DialogInterface.OnClickListener {
     protected final static String SHARED_PREFERENCE_SETTING = "some_settings";
 
+    /**
+     * 重写了onCreateDialog，这样子fragment只需重写buildUI创建视图即可。
+     * @param savedInstanceState
+     * @return
+     */
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        setCancelable(false);//禁止中途退出
+        return new AlertDialog.Builder(requireContext())
+                .setTitle(getTitle())
+                .setPositiveButton(android.R.string.yes, this)//S.get(S.Dialog_PosBtn)
+                .setNegativeButton(android.R.string.cancel, null)//S.get(S.Dialog_NegBtn)
+                .setView(buildUI())
+                .create();
+    }
+
+    /**
+     * onCreateDialog时构建界面
+     */
+    protected abstract ViewGroup buildUI();
     public static TextView getTextViewWithText(Context c, String s) {
         TextView tv = new TextView(c);
         tv.setText(s);
@@ -96,5 +121,11 @@ public class BaseFragment extends DialogFragment {
         });
     }
 
+    /**
+     * 用于初次打开ex应用时，即使不点开对话框，也进行初始化的操作。注意这个时候可能某些成员变量还没有初始化？
+     */
+    public abstract void callWhenFirstStart();
+
+    public abstract String getTitle();
 
 }

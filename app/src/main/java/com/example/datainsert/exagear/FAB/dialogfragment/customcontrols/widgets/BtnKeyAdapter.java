@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.ViewGroupUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
@@ -18,6 +19,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroupOverlay;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,20 +76,20 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
         viewHolder.getmBtn().setTag(getItem(position));
         viewHolder.getmBtn().setOnClickListener(v -> {
             Context c = v.getContext();
-            EditText editText = new EditText(c);
-            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-            editText.setSingleLine();
-            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-            editText.setText(((OneKey) v.getTag()).getName());
-            editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
-            LinearLayout renameRootView = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
-            int padding = QH.px(c, RR.attr.dialogPaddingDp);
-            renameRootView.setPadding(padding, 0, padding, 0);
-            new AlertDialog.Builder(c)
-                    .setView(renameRootView)
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+//            EditText editText = new EditText(c);
+//            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+//            editText.setSingleLine();
+//            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+//            editText.setText(((OneKey) v.getTag()).getName());
+//            editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
+//            LinearLayout renameRootView = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
+//            int padding = QH.px(c, RR.attr.dialogPaddingDp);
+//            renameRootView.setPadding(padding, 0, padding, 0);
+//
+            new BtnPropertiesView(c, (OneKey) v.getTag(), false)
+                    .showWithInDialog((dialog, which) -> {
                         OneKey newSelfKey = ((OneKey) v.getTag()).clone();
-                        newSelfKey.setName(editText.getText().toString());
+                        newSelfKey.setName(newSelfKey.getName());
                         //更新按钮的tag和文字显示
                         v.setTag(newSelfKey);
                         ((Button) v).setText(newSelfKey.getName());
@@ -97,9 +99,7 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
                         newList.remove(index);
                         newList.add(index, newSelfKey);
                         submitList(newList);
-                    })
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .create().show();
+                    });
 //            PopupMenu popupMenu = new PopupMenu(c,v);
 //            popupMenu.getMenu().add(getS(RR.cmCtrl_s2_popEdit)).setOnMenuItemClickListener(item -> {
 //

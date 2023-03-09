@@ -68,11 +68,14 @@ public class ToggleButtonHighContrast extends ToggleButton {
                             new int[]{android.R.attr.state_enabled},
                             new int[]{}
                     },
-                    new int[]{0x8affffff,0x8a000000,0x24000000}
+                    new int[]{0x8a000000,0x8affffff,0x24000000}
             );
-//                colorStateList.getColorForState();
-            int originUncheckColor = 0xff000000| currentColors.getColorForState(new int[]{android.R.attr.enabled,-android.R.attr.state_checked},0xffffffff );
-            int originCheckColor =0xff000000| currentColors.getColorForState(new int[]{android.R.attr.enabled,android.R.attr.state_checked},0xffffffff);
+
+            //stateList有私有成员变量mStateSpec，不过没法直接获取。
+            // 这里通过state获取颜色的话，注意虽然选中时的state colorStateList里只需要写一个enable就行了，
+            // 不过用getColorForState获取颜色的话需要写全enable和checked
+            int originUncheckColor = 0xff000000| currentColors.getColorForState(new int[]{android.R.attr.state_enabled,-android.R.attr.state_checked},0xffffffff );
+            int originCheckColor =0xff000000| currentColors.getColorForState(new int[]{android.R.attr.state_enabled,android.R.attr.state_checked},0xffffffff);
 
             //如果对比度不够就设置成黑白
             if(ColorUtils.calculateContrast(originUncheckColor,originCheckColor)<4.5){

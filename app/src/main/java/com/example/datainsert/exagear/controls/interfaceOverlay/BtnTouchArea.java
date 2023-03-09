@@ -58,6 +58,7 @@ public class BtnTouchArea {
     }
 
     public boolean handleBtnFingerDown(Finger finger) {
+
         if(!isInside(finger))
             return false;
         Log.d(TAG, String.format("handleBtnFingerDown: 在toucharea范围内吗%f,%f,%f,%f",topX,topY,bottomX,bottomY));
@@ -79,6 +80,12 @@ public class BtnTouchArea {
 
     }
 
+    /**
+     * 该区域是否处理了该手指的操作。
+     * 普通按钮返回isInside，摇杆按钮若该手指在down时在范围内则move时始终返回true
+     * @param finger
+     * @return
+     */
     public boolean handleBtnFingerMove(Finger finger) {
 //        Log.d(TAG, "handleBtnFingerMove: ");
         //摇杆的话不判断在不在自身范围内，而是判断是否是按下时的那根手指

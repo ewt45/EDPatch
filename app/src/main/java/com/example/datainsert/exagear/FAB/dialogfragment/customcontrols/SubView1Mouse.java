@@ -106,7 +106,7 @@ public class SubView1Mouse extends LinearLayout {
         addView(linearSpeed);
 
         CheckBox checkLock = new CheckBox(c);
-        checkLock.setText("Cursor Locked in center");
+        checkLock.setText("fps games cursor moves limitless");
         checkLock.setChecked(FalloutInterfaceOverlay2.isCursorLocked);
         checkLock.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity) {
@@ -115,6 +115,7 @@ public class SubView1Mouse extends LinearLayout {
                     ((FalloutInterfaceOverlay2) ui).setCursorLocked(isChecked);
             }
         });
+        setDialogTooltip(checkLock,"勾选此选项，无需设置注册表MouseWarpOverride=force也可以在游戏中无限制移动视角，视角移动不会因为鼠标达到边界而停下。\n\n若想此选项正常工作，需要设置游戏全屏，并且在环境设置中修改分辨率与游戏全屏分辨率完全相同，即画面右下方不能有多余的黑边。");
 
         addView(checkLock);
 

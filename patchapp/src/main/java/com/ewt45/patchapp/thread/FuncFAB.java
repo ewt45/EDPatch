@@ -44,6 +44,10 @@ public class FuncFAB implements Func {
             }
 
             //首次安装子功能
+            if(((mergeVersion & 0x0000000f))==INVALID_VERSION){
+                Log.d(TAG, "call: 首次安装子功能-自定义d盘");
+                sub1DriveD.firstInstall();
+            }
             if (((mergeVersion >> 4) & 0x0000000f) == INVALID_VERSION){
                 Log.d(TAG, "call: 首次安装子功能-自定义按键");
                 sub2Control.firstInstall();
@@ -53,7 +57,6 @@ public class FuncFAB implements Func {
             Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
             PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
                     "/com/example/datainsert/exagear/FAB",
-                    "/com/example/datainsert/exagear/controls",
                     "/com/example/datainsert/exagear/QH.smali",
                     "/com/example/datainsert/exagear/RSIDHelper.smali",
                     "/com/example/datainsert/exagear/RR.smali"});
@@ -144,7 +147,7 @@ public class FuncFAB implements Func {
         //由多个版本号构成，每个占4位
         return
                 //自定义d盘的版本号，如果这个为0说明整个fabmenu没有
-                0x1
+                0x2
                         //自定义按键的版本号
                         | 0x1 << 4;
     }

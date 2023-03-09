@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -79,7 +80,8 @@ public class VirGLOverlay extends BaseFragment {
      * 添加vo布局到ed布局
      */
     @SuppressLint("SetTextI18n")
-    private View buildUI() {
+    @Override
+    protected ViewGroup buildUI() {
         AppCompatActivity a = (AppCompatActivity) requireActivity();
         Log.d("", "OverlayBuildUI: 初始化overlay服务的选项");
 //        this.a=a;
@@ -379,5 +381,20 @@ public class VirGLOverlay extends BaseFragment {
         for (View v : sons) {
             parent.addView(v);
         }
+    }
+
+    @Override
+    public void callWhenFirstStart() {
+
+    }
+
+    @Override
+    public String getTitle() {
+        return "virgl overlay";
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+
     }
 }

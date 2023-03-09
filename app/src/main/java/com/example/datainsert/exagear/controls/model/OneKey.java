@@ -3,9 +3,11 @@ package com.example.datainsert.exagear.controls.model;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OneKey implements Serializable {
-    private static final long serialVersionUID = 3575276037755523285L;
+    private static final long serialVersionUID = 3575276037755523286L;
     int code; //这个用原始的，不+8//https://elixir.bootlin.com/linux/v4.9/source/include/uapi/linux/input-event-codes.h#L74
     String name;
 
@@ -16,11 +18,11 @@ public class OneKey implements Serializable {
     /**
      * 用于组合键
      */
-    int[] subCodes = new int[0];
+    List<Integer> subCodes = new ArrayList<>();
     /**
      * 是否松手后保持按下
      */
-    boolean mIsPersistPress = false;
+    boolean mIsTrigger = false;
 
     public OneKey(int code) {
         this(code, "KEYCODE_"+ code);
@@ -71,6 +73,22 @@ public class OneKey implements Serializable {
         this.marginTop = marginTop;
     }
 
+    public List<Integer> getSubCodes() {
+        return subCodes;
+    }
+
+    public void setSubCodes(List<Integer> subCodes) {
+        this.subCodes = subCodes;
+    }
+
+    public boolean isTrigger() {
+        return mIsTrigger;
+    }
+
+    public void setTrigger(boolean mIsTrigger) {
+        this.mIsTrigger = mIsTrigger;
+    }
+
     @Override
     public boolean equals(@Nullable Object obj) {
         if (!(obj instanceof OneKey))
@@ -81,13 +99,23 @@ public class OneKey implements Serializable {
 
     public OneKey clone() {
         //没复制margin isshow那些，不过keycode3也用不着clone
-        return new OneKey(this.code, this.name);
+        OneKey oneKey = new OneKey(this.code, this.name );
+        oneKey.mIsShow = this.mIsShow;
+        oneKey.marginLeft = this.marginLeft;
+        oneKey.marginTop = this.marginTop;
+        oneKey.mIsTrigger = this.mIsTrigger;
+        oneKey.subCodes = new ArrayList<>(this.subCodes);
+        return  oneKey;
     }
 
-//    /**
-//     * 从按键生成一个按钮，设置好样式。
-//     */
-//    public Button keyToBtn(Button btn,OneKey oneKey, SharedPreferences sp, boolean isCustomLocation){
-//
-//    }
+    /**
+     * 当按钮从隐藏变为显示时，清空之前设置的属性
+     */
+    public void clearPropertiesWhenShow() {
+        marginLeft=0;
+        marginTop=0;
+        subCodes.clear();
+        mIsTrigger=false;
+    }
+
 }

@@ -39,6 +39,7 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.ewt45.exagearsupportv7.R;
 import com.ewt45.exagearsupportv7.databinding.FragmentHomeBinding;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.ToggleButtonHighContrast;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.SensitivitySeekBar;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
@@ -77,6 +78,7 @@ public class HomeFragment extends Fragment {
 //                new ViewGroup.LayoutParams(-1, 50));
 
 
+        new ToggleButtonHighContrast(requireContext());
 
 
         //点击按钮显示键盘

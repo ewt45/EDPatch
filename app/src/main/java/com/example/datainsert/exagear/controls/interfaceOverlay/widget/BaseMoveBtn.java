@@ -159,6 +159,8 @@ public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClic
     protected boolean onTouchUp(MotionEvent event) {
         //                Log.d(TAG, "onTouchEvent: 距离："+GeometryHelpers.distance(event.getRawX(), event.getRawY(), pressX, pressY));
         setPressed(false);
+        //松手这一下也要设置新的margin，否则最后移动的那点会没更新到
+        updateViewMargins(event.getRawX(),event.getRawY());
         //让子类更新自身model
         updateModelMargins((int) getLeft(), (int) getTop());
         //如果没移动过就点击
@@ -173,14 +175,8 @@ public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClic
      */
     protected boolean onTouchMove(MotionEvent event) {
         final int pointerIndex = event.findPointerIndex(mActivePointerId);
-        //获取初始按下手指的坐标
-        float tempRawX =  event.getRawX();
-        float tempRawY = event.getRawY();
-
         //设置新的margin
-        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
-        lp.setMargins((int) (mDownLeftTop.x+ event.getRawX()-mDownXYPoint.x), (int) (mDownLeftTop.y+event.getRawY()-mDownXYPoint.y), 0, 0);
-        setLayoutParams(lp);
+        updateViewMargins(event.getRawX(),event.getRawY());
 //        float moveDistance = GeometryHelpers.distance(new PointF(tempRawX, tempRawY), mDownXYPoint);
 //        Log.d(TAG, "onTouchEvent: 与起始位置距离=" + moveDistance);
 //        if (moveDistance > 0) {
@@ -200,6 +196,15 @@ public abstract class BaseMoveBtn extends AppCompatButton implements View.OnClic
 
 
         return true;
+    }
+
+    /**
+     * 移动和松手时更新自身视图的margin
+     */
+    private void updateViewMargins(float rawX, float rawY){
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        lp.setMargins((int) (mDownLeftTop.x+ rawX-mDownXYPoint.x), (int) (mDownLeftTop.y+rawY-mDownXYPoint.y), 0, 0);
+        setLayoutParams(lp);
     }
 
     /**

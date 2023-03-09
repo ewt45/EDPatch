@@ -65,6 +65,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateDialog: 只用一个fragment，多次显示的时候是否会进入这个onCreateDialog？");//会，那没事了
 //        if(mDialog==null)
 //            mDialog=this;
 
@@ -94,13 +95,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         }
 
 
-        setCancelable(false);
-        return new AlertDialog.Builder(requireContext())
-                .setTitle(RR.getS(RR.cmCtrl_title))
-                .setPositiveButton(android.R.string.yes, this)//S.get(S.Dialog_PosBtn)
-                .setNegativeButton(android.R.string.cancel, null)//S.get(S.Dialog_NegBtn)
-                .setView(buildUI())
-                .create();
+        return super.onCreateDialog(savedInstanceState);
     }
 
 
@@ -131,7 +126,8 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 
     }
 
-    private View buildUI() {
+    @Override
+    protected ViewGroup buildUI() {
         Context c = requireContext();
         ScrollView scrollView = new ScrollView(c);
 //        scrollView.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
@@ -209,6 +205,14 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         }
     }
 
+    @Override
+    public void callWhenFirstStart() {
 
+    }
+
+    @Override
+    public String getTitle() {
+        return getS(RR.cmCtrl_title);
+    }
 }
 

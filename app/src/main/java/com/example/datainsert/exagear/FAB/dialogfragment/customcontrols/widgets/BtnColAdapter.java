@@ -181,6 +181,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                     newList.add(viewHolder.getAdapterPosition(), newSelfCol);
                     submitList(newList);
                 })
+                .setCancelable(false)
                 .setNegativeButton(android.R.string.cancel, null)
                 .create().show();
     }

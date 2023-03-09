@@ -37,10 +37,15 @@ import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnPropertiesView;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.OneKey;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class RegularKeyBtn extends BaseMoveBtn {
     private static final String TAG = "RegularKeyBtn";
@@ -62,11 +67,25 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
 //        setLayoutParams(new ViewGroup.LayoutParams(-2,-2));
         mOneKey = oneKey;
-        this.mViewFacade = viewOfXServer==null?null:viewOfXServer.getXServerFacade();
+        this.mViewFacade = viewOfXServer == null ? null : viewOfXServer.getXServerFacade();
 //        myGestureListener = new GestureDetectorCompat(getContext(), new MyGestureListener());
 
         //先不在内部初始化样式了。之后写个public函数，传入是否是自定义位置的。然后从外部调用进行初始化？
         setupStyle();
+    }
+
+    public static void setupStyleOnly(Button btn) {
+        SharedPreferences sp = btn.getContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE);
+        int mBgColor = sp.getInt(PREF_KEY_BTN_BG_COLOR, Color.WHITE);
+        int mTxColor = sp.getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK);
+        //设置按钮背景样式
+        btn.setBackgroundTintList(ColorStateList.valueOf(mBgColor));
+        btn.setTextColor(mTxColor);
+        RippleDrawable spdrawable = (RippleDrawable) btn.getBackground();
+        spdrawable.setColor(ColorStateList.valueOf(sp.getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK) & 0x50ffffff));
+        spdrawable.setAlpha(sp.getInt(PREF_KEY_BTN_ALPHA, 255));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(sp.getInt(PREF_KEY_BTN_WIDTH, -2), sp.getInt(PREF_KEY_BTN_HEIGHT, -2));
+        btn.setLayoutParams(params);
     }
 
     /**
@@ -89,20 +108,6 @@ public class RegularKeyBtn extends BaseMoveBtn {
         this.setLayoutParams(params);
     }
 
-    public static void setupStyleOnly(Button btn){
-        SharedPreferences sp = btn.getContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE);
-        int mBgColor = sp.getInt(PREF_KEY_BTN_BG_COLOR, Color.WHITE);
-        int mTxColor = sp.getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK);
-        //设置按钮背景样式
-        btn.setBackgroundTintList(ColorStateList.valueOf(mBgColor));
-        btn.setTextColor(mTxColor);
-        RippleDrawable spdrawable = (RippleDrawable) btn.getBackground();
-        spdrawable.setColor(ColorStateList.valueOf(sp.getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK) & 0x50ffffff));
-        spdrawable.setAlpha(sp.getInt(PREF_KEY_BTN_ALPHA, 255));
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(sp.getInt(PREF_KEY_BTN_WIDTH, -2), sp.getInt(PREF_KEY_BTN_HEIGHT, -2));
-        btn.setLayoutParams(params);
-    }
-
 //    public void setInjectKeyListener(InjectKeyListener injectKeyListener) {
 //        this.injectKeyListener = injectKeyListener;
 //    }
@@ -115,26 +120,25 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
     @Override
     public void injectPress(Finger finger) {
-        Log.d(TAG, "injectPress: 按下键"+mOneKey.getName());
+        Log.d(TAG, "injectPress: 按下键" + mOneKey.getName());
          /*
         按键输入，如果是shift这种，按下就触发，交给ontouch处理，否则交给onclick处理
         不如先都交给onclick处理吧。修饰键点击时只按下或抬起，普通键点击时一次完整的按下抬起。
          */
-        if(mViewFacade==null)
+        if (mViewFacade == null)
             return;
-//        if (isModifierKey()) {
-//            if (!isModifierPress)
-//                mViewFacade.injectKeyPress((byte) (mOneKey.getCode() + 8));
-//            else
-//                mViewFacade.injectKeyRelease((byte) (mOneKey.getCode() + 8));
-//            //修饰键，显示颜色反转
-//            setBackgroundTintList(ColorStateList.valueOf(isModifierPress ? mBgColor : mTxColor));
-//            setTextColor(isModifierPress ? mTxColor : mBgColor);
-//        } else {
-//            mViewFacade.injectKeyPress((byte) (mOneKey.getCode() + 8));
-//        }
-        InjectHelper.press(mViewFacade,mOneKey.getCode());
-        isModifierPress = !isModifierPress;
+        //如果是连发键并且已经按下，则松开。否则按下
+        if (mOneKey.isTrigger() && isModifierPress) {
+            InjectHelper.release(mViewFacade, mOneKey.getCode(), mOneKey.getSubCodes());
+        } else {
+            InjectHelper.press(mViewFacade, mOneKey.getCode(), mOneKey.getSubCodes());
+        }
+        //如果是连发，切换颜色
+        if(mOneKey.isTrigger()){
+            isModifierPress = !isModifierPress;
+            setBackgroundTintList(ColorStateList.valueOf(isModifierPress ? mTxColor : mBgColor));
+            setTextColor(isModifierPress ? mBgColor : mTxColor);
+        }
     }
 
     @Override
@@ -145,37 +149,24 @@ public class RegularKeyBtn extends BaseMoveBtn {
     @Override
     public void injectRelease(Finger finger) {
 
-        if(mViewFacade==null)
+        if (mViewFacade == null)
             return;
 //        if(!isModifierKey()){
 //            mViewFacade.injectKeyRelease((byte) (mOneKey.getCode() + 8));
 //        }
-        InjectHelper.release(mViewFacade,mOneKey.getCode());
-
+        //如果是连发则没有操作
+        if(!mOneKey.isTrigger()){
+            InjectHelper.release(mViewFacade, mOneKey.getCode(),mOneKey.getSubCodes());
+        }
     }
 
     //编辑时点击
     @Override
     public void onClick(View v) {
-        Log.d(TAG, "onClick: ");
-        EditText editText = new EditText(getContext());
-        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        editText.setSingleLine();
-        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        editText.setText(mOneKey.getName());
-        editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(getContext(),100),-2));
-        LinearLayout rootView = getOneLineWithTitle(getContext(),getS(RR.cmCtrl_BtnEditReName),editText,false);
-        int padding = QH.px(getContext(), RR.attr.dialogPaddingDp);
-        rootView.setPadding(padding,0,padding,0);
-        new AlertDialog.Builder(getContext())
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    mOneKey.setName(editText.getText().toString());
-                    setText(editText.getText().toString());
-                })
-                .setNegativeButton(android.R.string.cancel, null)
-                .setView(rootView).create().show();
-    }
+        new BtnPropertiesView(getContext(), mOneKey, true)
+                .showWithInDialog((dialog, which) -> setText(mOneKey.getName()));
 
+    }
 
 
     /**
