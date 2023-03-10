@@ -41,6 +41,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //import brut.androlib.ApkDecoder;
@@ -123,14 +124,33 @@ public class FragmentChoosePatch extends Fragment {
 
             @Override
             public void setMessageFail(int resId, Exception e) {
+
                 binding.getRoot().post(() -> {
+                    StringBuilder builder = new StringBuilder(getString(R.string.actmsg_fail));
+                    //添加报错的消息和栈记录
+                    builder.append('\n').append(e.getLocalizedMessage());
+                    for(StackTraceElement element :e.getStackTrace())
+                        builder.append('\n').append(element.toString());
+                    Throwable errorCause = e.getCause();
+                    //添加cause的信息和栈信息
+                    while (errorCause!=null){
+                        builder.append('\n').append("Caused by: ").append(errorCause.getLocalizedMessage());
+                        for(StackTraceElement element:errorCause.getStackTrace())
+                            builder.append('\n').append(element.toString());
+                        errorCause = errorCause.getCause();
+                    }
+                    builder.append('\n');
+
                     String msg = getString(resId) + getString(R.string.actmsg_start);
                     int index = spanInfo.toString().lastIndexOf(msg);
                     if (index == -1) {
-                        spanInfo.append("\n").append(getString(resId)).append(getString(R.string.actmsg_fail)).append(e.getLocalizedMessage());
+                        spanInfo.append("\n").append(getString(resId)).append(builder.toString());
                     } else {
-                        spanInfo.insert(index + msg.length(), getString(R.string.actmsg_fail) + (e.getLocalizedMessage()));
+                        spanInfo.insert(index + msg.length(), builder.toString());
                     }
+
+
+
                     binding.tvInfolist.setText(spanInfo);
                 });
             }
@@ -200,7 +220,7 @@ public class FragmentChoosePatch extends Fragment {
                 File patcherApk = new File(PatchUtils.getPatchTmpDir(), "patcher.apk");
                 //先发现已经有就跳过解包吧。之后单独抽出方法，加个判断好更新
                 if (!patcherApk.exists()) {
-                    InputStream is = requireContext().getAssets().open("patcher.apk");
+                    InputStream is = requireContext().getAssets().open("patcher/release/patcher.apk");
                     FileOutputStream fos = new FileOutputStream(patcherApk);
                     IOUtils.copy(is, fos);
                     fos.close();

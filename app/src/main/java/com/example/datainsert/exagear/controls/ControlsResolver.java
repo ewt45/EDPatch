@@ -35,9 +35,14 @@ public class ControlsResolver {
 
     /**
      * 默认值为80。鼠标灵敏度，0.2~3.0. progress设置为0~280. 取出后需要（x+20)/100 方可使用
-     *
      */
     public final static String PREF_KEY_MOUSE_SENSITIVITY = "mouse_move_sensitivity";
+
+
+    /**
+     * 转动视角模式。允许鼠标移出屏幕. 默认0
+     */
+    public final static String PREF_KEY_MOUSE_OFFWINDOW_DISTANCE = "mouse_off_distance";
     public static XServerDisplayActivityInterfaceOverlay getCurrentControls(Controls controls) {
 //        //如果preference不存在，不写入直接获取会出错吗(没问题）
 //        boolean b = Globals.getAppContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE).getBoolean(PREF_KEY_USE_CUSTOM_CONTROL, false);

@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.controls.interfaceOverlay.widget;
 
 import static android.graphics.Paint.Style.FILL;
 import static android.graphics.Paint.Style.STROKE;
-import static android.graphics.drawable.GradientDrawable.OVAL;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
@@ -24,7 +23,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -48,9 +45,7 @@ import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,6 +58,14 @@ public class JoyStickBtn extends BaseMoveBtn {
     private static final float tanPiDiv8 = 0.414213562f;
     private static final float cotPiDiv8 = 2.414213562f;
     private final static int BTN_INVALID_DIAM = -100;
+    /**
+     * 外部轮廓的宽度是内部按钮宽度的多少倍
+     */
+    private static final float outerDivInnerWidthRatio = 1.85f;
+    /**
+     * 摇杆内部按钮宽度是普通按钮宽度的多少倍
+     */
+    private static final float innerDivBtnWidthRatio = 0.9f;
     private final Params mParams;
     /**
      * 布局圆心在父布局的xy,固定不变。
@@ -95,7 +98,7 @@ public class JoyStickBtn extends BaseMoveBtn {
     public JoyStickBtn(Context context, Params params) {
         super(context);
         mParams = params;
-        setupStyle(BTN_INVALID_DIAM);
+        setupStyle();
 
 
     }
@@ -410,15 +413,15 @@ public class JoyStickBtn extends BaseMoveBtn {
     /**
      * 初始化时设置样式
      */
-    private void setupStyle(int presetBtnDiam) {
+    private void setupStyle() {
         //标准按钮背景颜色（带透明度）
         int bgColorARGB = (getPreference().getInt(PREF_KEY_BTN_BG_COLOR, Color.BLACK) & 0x00ffffff)
                 | (getPreference().getInt(PREF_KEY_BTN_ALPHA, 255) << 24);
         //按钮直径
-        btnDiam = presetBtnDiam != BTN_INVALID_DIAM ? presetBtnDiam : Math.max(getPreference().getInt(PREF_KEY_BTN_WIDTH, -2), getPreference().getInt(PREF_KEY_BTN_HEIGHT, -2));
+        btnDiam = (int) (innerDivBtnWidthRatio*Math.max(getPreference().getInt(PREF_KEY_BTN_WIDTH, -2), getPreference().getInt(PREF_KEY_BTN_HEIGHT, -2)));
         if (btnDiam <= 0)
-            btnDiam = QH.px(getContext(), (float) (50 * Math.sqrt(2)));
-        outerDiam = btnDiam * 2;
+            btnDiam = (int) (innerDivBtnWidthRatio*QH.px(getContext(), (float) (50 * Math.sqrt(2))));
+        outerDiam = (int) (btnDiam * outerDivInnerWidthRatio);
 
 //        GradientDrawable drawable = new GradientDrawable();
 //        drawable.setShape(OVAL);
@@ -500,8 +503,9 @@ public class JoyStickBtn extends BaseMoveBtn {
         float dy = mLastTouchXYPoint.y - mCenterXYPoint.y;
 
         float temptDistance = (float) Math.sqrt(dx * dx + dy * dy);
-        if (temptDistance * 2 > btnDiam) {
-            float ratio = btnDiam / temptDistance / 2f;
+        float maxDistance = (outerDiam-btnDiam)/2f;
+        if (temptDistance > maxDistance) {
+            float ratio = maxDistance/temptDistance;
             dx = dx * ratio;
             dy = dy * ratio;
         }
@@ -511,6 +515,7 @@ public class JoyStickBtn extends BaseMoveBtn {
     }
 
     public static class Params implements Serializable {
+        private static final long serialVersionUID = 5962021171151927361L;
         static String tag = "JoyStickParams";
         //四个方向的按键(0123对应上下左右）
         int[] key4Directions = new int[]{-1, -1, -1, -1};

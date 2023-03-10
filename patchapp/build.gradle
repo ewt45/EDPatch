@@ -12,7 +12,7 @@ android {
         targetSdk 27
         versionCode 2
         versionName "0.0.2"
-        resConfigs "en", "zh"
+        resConfigs "en", "zh","ru"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

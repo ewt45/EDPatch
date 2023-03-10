@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay;
 
+import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.VERTICAL;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
@@ -30,7 +31,9 @@ import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware
 import com.eltechs.axs.graphicsScene.GraphicsSceneConfigurer;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
+import com.eltechs.axs.xserver.LocksManager;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.RegularKeyBtn;
@@ -128,7 +131,26 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         GraphicsSceneConfigurer graphicsSceneConfigurer = new GraphicsSceneConfigurer();
         graphicsSceneConfigurer.setSceneViewport(0.0f, 0.0f, view.getWidth(), view.getHeight());
         TouchScreenControls touchScreenControls = new TouchScreenControls(graphicsSceneConfigurer);
-        fillTouchScreenControls(touchScreenControls, view, viewOfXServer);
+
+        //里面要设置pointer的移出屏幕距离，需要锁一下
+        LocksManager.XLock lockForInputDevicesManipulation = QH.isTesting()? null
+                :viewOfXServer.getXServerFacade().getXServer().getLocksManager().lockForInputDevicesManipulation();
+        try {
+            fillTouchScreenControls(touchScreenControls, view, viewOfXServer);
+            if (lockForInputDevicesManipulation != null) {
+                lockForInputDevicesManipulation.close();
+            }
+        } catch (Throwable th) {
+            if (lockForInputDevicesManipulation != null) {
+                try {
+                    lockForInputDevicesManipulation.close();
+                } catch (Throwable th3) {
+                    th.addSuppressed(th3);
+                }
+            }
+            throw th;
+        }
+
         return touchScreenControls;
     }
 
@@ -145,7 +167,8 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
             //GestureMachineConfigurerFallout2.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, () -> ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu());
         }
         //按钮布局和范围相关在reinflate函数里设置好，在这里直接添加上
-        touchScreenControls.add(new BtnAndTouchScreenControl(mBtnAreaList, touchArea));
+//        mBtnAreaList.clear();//是因为btnarea导致的性能问题吗？（确实）
+        touchScreenControls.add(new BtnAndTouchScreenControl(mBtnAreaList, touchArea));//mBtnAreaList
     }
 
     public KeyCodes3 getKeyCodes3() {

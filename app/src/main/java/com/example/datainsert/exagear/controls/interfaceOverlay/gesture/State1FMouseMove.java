@@ -5,24 +5,31 @@ import com.eltechs.axs.GestureStateMachine.AbstractGestureFSMState;
 import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.GestureStateMachine.PointerContext;
 import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;
-import com.eltechs.axs.GuestAppActionAdapters.RelativeToCurrentPositionMouseMoveAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.SimpleMouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.eltechs.axs.helpers.Assert;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.OffsetMouseAdapter;
 import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
+import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.ViewportMouseAdapter;
 
 import java.util.List;
 
 /* loaded from: classes.dex */
 public class State1FMouseMove extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent("GESTURE_COMPLETED") ;
-    public static FSMEvent NEW_FINGER_TOUCHED = new FSMEvent("NEW_FINGER_TOUCHED") ;
-    private Finger f;
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent("GESTURE_COMPLETED");
+    public static FSMEvent NEW_FINGER_TOUCHED = new FSMEvent("NEW_FINGER_TOUCHED");
     private final MouseMoveAdapter moveAdapter;
-    private PointerContext pointerContext;
     private final boolean reportIfNewF;
+    private Finger f;
+    private PointerContext pointerContext;
+
+    public State1FMouseMove(GestureContext gsContext, PointerContext ptCtxt, MouseMoveAdapter msMoveAdapter, boolean reportIfNewF) {
+        super(gsContext);
+        this.pointerContext = ptCtxt;
+        this.moveAdapter = msMoveAdapter;
+        this.reportIfNewF = reportIfNewF;
+    }
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyMovedIn(Finger finger, List<Finger> list) {
@@ -30,15 +37,8 @@ public class State1FMouseMove extends AbstractGestureFSMState implements TouchEv
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyTouched(Finger finger, List<Finger> list) {
-        if(reportIfNewF) sendEvent(NEW_FINGER_TOUCHED);
+        if (reportIfNewF) sendEvent(NEW_FINGER_TOUCHED);
 
-    }
-
-    public State1FMouseMove(GestureContext gsContext, PointerContext ptCtxt, MouseMoveAdapter msMoveAdapter, boolean reportIfNewF) {
-        super(gsContext);
-        this.pointerContext = ptCtxt;
-        this.moveAdapter = msMoveAdapter;
-        this.reportIfNewF = reportIfNewF;
     }
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
@@ -68,6 +68,7 @@ public class State1FMouseMove extends AbstractGestureFSMState implements TouchEv
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyReleased(Finger finger, List<Finger> list) {
         if (list.isEmpty()) {
+
             sendEvent(GESTURE_COMPLETED);
         }
     }
@@ -79,11 +80,13 @@ public class State1FMouseMove extends AbstractGestureFSMState implements TouchEv
         }
     }
 
-    public static class SimpleBuilder{
-        public State1FMouseMove create(GestureContext gestureContext,PointerContext pointerContext,boolean reportIfNewF){
-            return  new State1FMouseMove(gestureContext,pointerContext,
+    public static class SimpleBuilder {
+        public State1FMouseMove create(GestureContext gestureContext, PointerContext pointerContext, boolean reportIfNewF, boolean isViewport) {
+            return new State1FMouseMove(gestureContext, pointerContext,
                     new RelativeMouseMoveCstmSpdAdapter(
-                            new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()),
+//                            isViewport ? new ViewportMouseAdapter(gestureContext):
+                                    new OffsetMouseAdapter(gestureContext),
+//                             new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()),
                             gestureContext.getViewFacade(), gestureContext.getHostView()),
                     reportIfNewF);
         }

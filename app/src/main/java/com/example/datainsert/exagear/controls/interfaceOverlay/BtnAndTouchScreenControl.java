@@ -41,16 +41,17 @@ public class BtnAndTouchScreenControl implements TouchScreenControl {
     public void handleFingerDown(Finger finger) {
         int inBtnArea=0;
         //如果在按钮区域内，就只交给按钮区域处理。并将手指加入列表中，表示该手指初始按下位置是在按钮区域。后面的操作判断均基于初始按下位置。
+
+        //改一下，找到一个就结束
         for (BtnTouchArea touchArea : this.btnTouchAreas) {
-            if(touchArea.handleBtnFingerDown(finger))
-                inBtnArea++;
+            if(touchArea.handleBtnFingerDown(finger)){
+                btnFingerList.add(finger);
+                return;
+            }
+
         }
         //如果不在任何按钮区域内再交给触屏区域处理。
-        if(inBtnArea==0){
-            gestureTouchArea.handleFingerDown(finger);
-        }else{
-            btnFingerList.add(finger);
-        }
+        gestureTouchArea.handleFingerDown(finger);
     }
 
     @Override // com.eltechs.axs.TouchScreenControl
@@ -70,9 +71,11 @@ public class BtnAndTouchScreenControl implements TouchScreenControl {
     @Override // com.eltechs.axs.TouchScreenControl
     public void handleFingerMove(Finger finger) {
         //如果finger在btnFingerList中，调用全部按钮toucharea的handlemove，否则调用触屏的handlemove
+        //改一下，如果有一个toucharea处理了就返回
         if(btnFingerList.contains(finger)){
             for (BtnTouchArea touchArea : this.btnTouchAreas) {
-                touchArea.handleBtnFingerMove(finger);
+                if(touchArea.handleBtnFingerMove(finger))
+                    return;
             }
         }else{
             gestureTouchArea.handleFingerMove(finger);

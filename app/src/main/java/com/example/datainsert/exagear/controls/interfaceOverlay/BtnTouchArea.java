@@ -22,8 +22,11 @@ public class BtnTouchArea {
     private final TouchEventAdapter adapter;
 
     private final boolean isRound;
-    private final List<Finger> activeFingers = new ArrayList<>();
-    private final List<Finger> immutableActiveFingers = Collections.unmodifiableList(this.activeFingers);
+
+    //按钮区域只能有一个活跃的手指吧. 然后那个immutableActiveFingers直接传null
+    private Finger  activeFinger;
+//    private final List<Finger> activeFingers = new ArrayList<>();
+    private final List<Finger> immutableActiveFingers = null;//Collections.unmodifiableList(this.activeFingers);
 
     /**
      * 矩形边界用的构造函数
@@ -64,7 +67,7 @@ public class BtnTouchArea {
         Log.d(TAG, String.format("handleBtnFingerDown: 在toucharea范围内吗%f,%f,%f,%f",topX,topY,bottomX,bottomY));
 
         //如果finger已经失效，就清空数组。（这样如果按键卡住了，再次按下的时候就可以恢复）
-        if(activeFingers.size()==0){
+        if(activeFinger==null){
             addFinger(finger);
             this.adapter.notifyTouched(finger, this.immutableActiveFingers);
         }
@@ -72,7 +75,7 @@ public class BtnTouchArea {
     }
 
     public boolean handleBtnFingerUp(Finger finger) {
-        if ( this.activeFingers.contains(finger)) {
+        if ( this.activeFinger == finger) {
             removeFinger(finger);
             this.adapter.notifyReleased(finger, this.immutableActiveFingers);
         }
@@ -82,7 +85,7 @@ public class BtnTouchArea {
 
     /**
      * 该区域是否处理了该手指的操作。
-     * 普通按钮返回isInside，摇杆按钮若该手指在down时在范围内则move时始终返回true
+     * 普通按钮返回true代表消耗该事件，摇杆按钮若该手指在down时在范围内则move时始终返回true
      * @param finger
      * @return
      */
@@ -90,24 +93,26 @@ public class BtnTouchArea {
 //        Log.d(TAG, "handleBtnFingerMove: ");
         //摇杆的话不判断在不在自身范围内，而是判断是否是按下时的那根手指
         if(isRound ){
-            if(activeFingers.contains(finger)){
+            if(activeFinger == finger){
                 this.adapter.notifyMoved(finger, this.immutableActiveFingers);
+                return true;
             }
-            return isInside(finger);
+            return false;
         }
         //按钮的话正常判断
         if (isInside(finger)) {
-            if (this.activeFingers.contains(finger)) {
+            if (activeFinger == finger) {
                 this.adapter.notifyMoved(finger, this.immutableActiveFingers);
-            }else if(activeFingers.size()==0){
+            }else if(activeFinger == null){
                 addFinger(finger);
                 this.adapter.notifyMovedIn(finger, this.immutableActiveFingers);
             }
-        } else if (this.activeFingers.contains(finger)) {
+        } else if (activeFinger == finger) {
             removeFinger(finger);
             this.adapter.notifyMovedOut(finger, this.immutableActiveFingers);
-        }
-        return isInside(finger);
+        } else
+            return false; //完全跟自己没关系，返回false
+        return true; //如果进了其他几个if，说明消耗了，返回true
     }
 
     /**
@@ -125,16 +130,19 @@ public class BtnTouchArea {
     }
 
     private void removeFinger(Finger finger) {
-        for (Finger finger2 : this.activeFingers) {
-            finger2.notifyFingersCountChanged();
-        }
-        this.activeFingers.remove(finger);
+        this.activeFinger = null;
+//
+//        for (Finger finger2 : this.activeFingers) {
+//            finger2.notifyFingersCountChanged();
+//        }
+//        this.activeFingers.remove(finger);
     }
 
     private void addFinger(Finger finger) {
-        this.activeFingers.add(finger);
-        for (Finger finger2 : this.activeFingers) {
-            finger2.notifyFingersCountChanged();
-        }
+        this.activeFinger = finger;
+//        this.activeFingers.add(finger);
+//        for (Finger finger2 : this.activeFingers) {
+//            finger2.notifyFingersCountChanged();
+//        }
     }
 }

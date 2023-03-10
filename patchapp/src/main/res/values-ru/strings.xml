@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EDPatch</string>
+    <string name="action_settings">Настройки</string>
+    <string name="actmsg_start">…запущено</string>
+    <string name="actmsg_finish">…завершено</string>
+    <string name="actmsg_buildapk">сборка apk</string>
+    <string name="actmsg_decodeapk">декодинг apk</string>
+    <string name="actmsg_funccursor">добавление функции: отображения курсора</string>
+    <string name="funcname_cursorimg">Отображать курсор</string>
+    <string name="actmsg_funcfab">добавление функции: кнопки настроек</string>
+    <string name="actmsg_funcresl">добавление функции: выбора разрешений экрана</string>
+    <string name="funcname_fab">Кнопка настроек\n- Выбор локации диска D\n- Кастомное управление</string>
+    <string name="funcname_prefresl">Выбор разрешений экрана</string>
+    <string name="funcname_softinput">Исправление работы клавиатуры на android 11+</string>
+    <string name="btntxt_startpatch">запуск исправлений</string>
+    <string name="btntxt_installnew">установить исправленный apk</string>
+    <string name="tv_patchingprogress">исправление…</string>
+    <string name="tv_logtitle">лог:</string>
+    <string name="actmsg_signapk">подпись apk (файл расположен по пути /storage/emulated/0/Android/data/com.ewt45.patchapp/patchtmp/tmp/dist/apk_sign.apk))</string>
+    <string name="actmsg_signaldone">---====все задачи====---</string>
+    <string name="n1_exagear_apk_n2_n3_apk">Инструкция: \n1.Выберите apk exagear и дождитесь завершения декодирования.\n2.Выберите необходимые функции, нажмите кнопку исправления и дождитесь завершения сборки.\n3.Нажмите кнопку "Установить", чтобы установить исправленный apk.\nПримечание:\n1. Не гарантируется, что исправление будет успешным.\n2.После исправления подпись Apk будет другой. При необходимости подпишите апк самостоятельно.</string>
+    <string name="app_info">выбран apk：%1$s</string>
+    <string name="actmsg_funcsinput">добавление функции: Исправление работы клавиатуры на Android 11+</string>
+    <string name="actmsg_fail">…неудача</string>
+    <string name="tv_patchstep1">1. Выбор apk</string>
+    <string name="btntxt_selectapkinstalled">установленный apks</string>
+    <string name="btntxt_selectapkfiles">локальный файл apk</string>
+    <string name="actmsg_funcselobb">добавление функции: выбора файла obb</string>
+    <string name="funcname_selobb">Выбор файла obb</string>
+    <string name="funcname_fab_drived">Выбор локации диска D</string>
+    <string name="fraghelp_title2_steps">Действия</string>
+    <string name="fraghelp_body_step_1">Выберите apk exagear из списка установленных приложений или выберите локальных файл apk. Дождитесь завершения декодирования.</string>
+    <string name="fraghelp_body_step_2">Отметьте функции, которые хотите добавить. Описание функций приведено ниже.</string>
+    <string name="fraghelp_body_step_3">Нажмите кнопку "Запуск исправлений" и терпеливо ожидайте завершения сборки. Информацию о процессе можно увидеть в логе.</string>
+    <string name="fraghelp_body_step_4">После сборки apk нажмите кнопку "Установить исправленный apk", чтобы установить его. Подпись может измениться, поэтому может потребоваться удалить установленный ранее apk.</string>
+    <string name="fraghelp_body_attention_1">Этот apk является экспериментальным, и успешное добавление функции не гарантируется.</string>
+    <string name="fraghelp_title1_func">Описание функций</string>
+    <string name="fraghelp_body_cursorimg">В некоторых играх курсор мыши отображается только в виде маленького крестика или вообще не отображается. Эта функция изменяет курсор на установленное изображение мыши. Изображение хранится в папке в assets/mouse.png вашего apk файла.</string>
+    <string name="fraghelp_body_prefresl">В настройках контейнера добавляет возможность пользователям самим настраивать разрешение рабочего стола. Это полностью совместимо с исходными предустановленными разрешениями.</string>
+    <string name="fraghelp_title1_guide">Применение</string>
+    <string name="action_guide">Гайд</string>
+    <string name="fraghelp_body_attention_2">После нажатия кнопки "Запуск исправлений", пожалуйста, не нажимайте другие кнопки и не сворачивайте приложение, иначе могут возникнуть проблемы.</string>
+    <string name="fraghelp_body_attention_3">"Исправленный apk находится в /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. Вы можете проверить это вручную с помощью любого файлового менеджера. "</string>
+    <string name="fraghelp_body_attention_4">Поскольку пропатченный apk переподписан, вам может потребоваться удалить существующие apk, которые используют то же имя пакета или sharedUserId (встроенный оверлей exagear и virgl) перед его установкой.\nЕсли вам нужен оверлей virgl, подпишите его той же подписью вручную.</string>
+    <string name="fraghelp_body_fab">Добавьте кнопку настроек действия в правом нижнем углу, предоставляющую возможность настроить некоторые дополнительные функции. На данный момент это функции: Изменение местоположения диска D.</string>
+    <string name="fraghelp_body_drived">Расположение диска D внутри контейнера обычно соответствует каталогу /storage/emulated/0/Donwload или Exagear в файловой системе Android.\nЭта функция позволяет пользователю изменить местоположение каталога и настроить его имя. После изменения местоположения будет проверка доступности. В случае успешного изменения приложение необходимо перезапустить, чтобы местоположение было обновлено.</string>
+    <string name="fraghelp_body_softinput">Исправлен сбой при отображении вызова клавиатуры на Android 11 и выше.  После исправления запуск клавиатуры будет задержан на одну секунду.</string>
+    <string name="fraghelp_body_selobb">Если apk установлен и не может обнаружить файл obb, пользователю будет предоставлен возможность выбора файла obb с помощью файлового менеджера. \nВ Android 11 и более поздних версиях файловый менеджер не может просматривать каталог Android/data или Android/obb.</string>
+    <string name="fraghelp_title2_attention">Внимание</string>
+    <string name="settings_delpatcherapk">Очистить исправляемый apk</string>
+    <string name="settings_version">Версия</string>
+    <string name="settings_delpatcherapksummary">Обычно не используется</string>
+    <string name="tips_backup">Исправленный apk нельзя восстановить, создайте копию!</string>
+    <string name="tips_check_guide">Ознакомьтесь с Гайдом в Основном меню</string>
+    <string name="tv_patchstep2">2. Выбор добавляемых функций</string>
+    <string name="tv_patchstep3">3. Действия</string>
+    <string name="fragment_patch_label">Основное меню</string>
+    <string name="settings_credits">Использование сторонних проектов</string>
+    <string name="settings_update">Обновить</string>
+    <string name="fraghelp_title2_brief">O проекте</string>
+    <string name="fraghelp_body_brief">После добавления некоторых небольших функций в exagear (3.0.2) (в основном путем изменения dex) я обнаружил, что вручную изменять smali слишком проблематично.  Даже если предоставлено руководство с указанием измененного местоположения и кодов, оно не подходит для большинства людей, не имеющих опыта модификации apk.\nПоэтому мне интересно, могу ли я создать приложение.  Пользователю нужно только нажать кнопку и дождаться завершения автоматической модификации, а затем установить новый apk.  Так родилось это приложение.  Из-за моих ограниченных знаний 100% успех модификации или совместимость со всеми версиями exagear не гарантируется.</string>
+    <string name="funcname_fab_cstmCtrl">Кастомное управление</string>
+    <string name="fraghelp_body_cstmCtrl">Большинство опций имеют описания, которые появляются при длительном нажатии. Выберите управление "Default" в настройках контейнера. После входа в контейнер тап тремя пальцами вызывает меню для редактирования.\nМышь: переключение видимости курсора мыши.  Переключение режимов жестов (режим по умолчанию и режим сенсорной панели). Установите скорость перемещения мыши.\nКнопки: настройка кнопок (клавиши, текст и положение). Переключение режима управления (боковая панель и свободная позиция кнопок). Доступны кнопки мыши и кнопки в стиле джойстика. \nСтиль: Настройте цвет кнопки, прозрачность, размер, цвет фона боковой панели.</string>
+    <string name="tips_waiting">Исправление apk, пожалуйста, не сворачивайте приложение.</string>
+
+</resources>

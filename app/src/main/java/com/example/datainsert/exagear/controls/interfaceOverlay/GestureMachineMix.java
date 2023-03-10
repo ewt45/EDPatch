@@ -3,6 +3,7 @@ package com.example.datainsert.exagear.controls.interfaceOverlay;
 import static com.eltechs.axs.helpers.AndroidHelpers.toggleSoftInput;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_MOVE_RELATIVE;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_OFFWINDOW_DISTANCE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_SENSITIVITY;
 
 import android.content.Context;
@@ -59,7 +60,8 @@ public class GestureMachineMix {
         PointerContext pointerContext = new PointerContext();
         SharedPreferences sp = viewOfXServer.getContext().getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE);
         //设置是相对移动还是绝对移动
-        State1FMoveRel.isRelMove = sp.getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false);
+        boolean isRelMove = sp.getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false);
+        State1FMoveRel.isRelMove = isRelMove;
         //设置相对移动的速度
         RelativeMouseMoveCstmSpdAdapter.speedRatio = (20+sp.getInt(PREF_KEY_MOUSE_SENSITIVITY,80))/100f;
 
@@ -104,8 +106,13 @@ public class GestureMachineMix {
                 0.05f * TransformationHelpers.getScaleY(viewOfXServer.getViewToXServerTransformationMatrix()),
                 0.0f, false, 0, scrollPeriodMs, true);
 
+        //是否开启视角转动模式。
+        int offsetWindow = sp.getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0);
+        offsetWindow = isRelMove?offsetWindow:0;
+        //将移出距离设置给pointer
+        viewOfXServer.getXServerFacade().getXServer().getPointer().setOffWindowLimit(offsetWindow);
         //单指相对移动鼠标位置
-        State1FMouseMove gs1FMoveMouseWaitDrag = new State1FMouseMove.SimpleBuilder().create(gestureContext,pointerContext,true);
+        State1FMouseMove gs1FMoveMouseWaitDrag = new State1FMouseMove.SimpleBuilder().create(gestureContext,pointerContext,true,isRelMove && offsetWindow!=0);
 
         //第二个手指的手势检测
         State1FMoveRel gs2ndFMoveRel = new State1FMoveRel(gestureContext, fingerToLongTimeMs, maxMove,false);

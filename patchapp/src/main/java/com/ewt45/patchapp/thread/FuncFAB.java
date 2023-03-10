@@ -30,44 +30,38 @@ public class FuncFAB implements Func {
 
     @Override
     public Integer call() throws Exception {
-        try {
+        Sub1DriveD sub1DriveD = new Sub1DriveD();
+        Sub2Control sub2Control = new Sub2Control();
 
-            Sub1DriveD sub1DriveD = new Sub1DriveD();
-            Sub2Control sub2Control = new Sub2Control();
+        int mergeVersion = getInstalledVersion();
 
-            int mergeVersion = getInstalledVersion();
-
-            //首次安装自身
-            if (mergeVersion == INVALID_VERSION){
-                Log.d(TAG, "call: 首次安装自身");
-                firstInstall();
-            }
-
-            //首次安装子功能
-            if(((mergeVersion & 0x0000000f))==INVALID_VERSION){
-                Log.d(TAG, "call: 首次安装子功能-自定义d盘");
-                sub1DriveD.firstInstall();
-            }
-            if (((mergeVersion >> 4) & 0x0000000f) == INVALID_VERSION){
-                Log.d(TAG, "call: 首次安装子功能-自定义按键");
-                sub2Control.firstInstall();
-            }
-
-            //复制自己的类
-            Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
-            PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
-                    "/com/example/datainsert/exagear/FAB",
-                    "/com/example/datainsert/exagear/QH.smali",
-                    "/com/example/datainsert/exagear/RSIDHelper.smali",
-                    "/com/example/datainsert/exagear/RR.smali"});
-
-            //复制子功能自己的类
-            sub1DriveD.updateSelfPackage();
-            sub2Control.updateSelfPackage();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        //首次安装自身
+        if (mergeVersion == INVALID_VERSION) {
+            Log.d(TAG, "call: 首次安装自身");
+            firstInstall();
         }
+
+        //首次安装子功能
+        if (((mergeVersion & 0x0000000f)) == INVALID_VERSION) {
+            Log.d(TAG, "call: 首次安装子功能-自定义d盘");
+            sub1DriveD.firstInstall();
+        }
+        if (((mergeVersion >> 4) & 0x0000000f) == INVALID_VERSION) {
+            Log.d(TAG, "call: 首次安装子功能-自定义按键");
+            sub2Control.firstInstall();
+        }
+
+        //复制自己的类
+        Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
+        PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
+                "/com/example/datainsert/exagear/FAB",
+                "/com/example/datainsert/exagear/QH.smali",
+                "/com/example/datainsert/exagear/RSIDHelper.smali",
+                "/com/example/datainsert/exagear/RR.smali"});
+
+        //复制子功能自己的类
+        sub1DriveD.updateSelfPackage();
+        sub2Control.updateSelfPackage();
         return R.string.actmsg_funcfab;
     }
 
@@ -98,9 +92,8 @@ public class FuncFAB implements Func {
                                 "new-instance v3, Lcom/example/datainsert/exagear/FAB/FabMenu;",
                                 "invoke-direct {v3, p0}, Lcom/example/datainsert/exagear/FAB/FabMenu;-><init>(Landroid/support/v7/app/AppCompatActivity;)V"})
                 .close();
-
-
     }
+
 
     /**
      * //获取的版本是自身版本+全部子功能的版本
@@ -145,11 +138,10 @@ public class FuncFAB implements Func {
     @Override
     public int getLatestVersion() {
         //由多个版本号构成，每个占4位
-        return
-                //自定义d盘的版本号，如果这个为0说明整个fabmenu没有
-                0x2
-                        //自定义按键的版本号
-                        | 0x1 << 4;
+        return 0x2 //自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+                | 0x1 << 4//自定义按键的版本号
+                ;
+
     }
 
     @Override
@@ -221,7 +213,8 @@ public class FuncFAB implements Func {
                     "/com/eltechs/ed/controls/DefaultControls.smali",
                     //仅供测试用
                     "/com/eltechs/axs/xserver/Pointer.smali",
-//                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
+//                    "/com/eltechs/axs/xserver/ViewFacade.smali",
+                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
 //                    "/com/eltechs/axs/xserver/client/XClientWindowListener.smali"
             });
 

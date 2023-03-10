@@ -6,33 +6,6 @@
     app:startDestination="@id/fragmentChoosePatch">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.ewt45.patchapp.fragment.FragmentFirst"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
-
-        <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
-        <action
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim"
-            android:id="@+id/action_FirstFragment_to_fragmentChoosePatch"
-            app:destination="@id/fragmentChoosePatch" />
-    </fragment>
-    <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.ewt45.patchapp.unused.FragmentSecond"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/fragmentChoosePatch"
         android:name="com.ewt45.patchapp.fragment.FragmentChoosePatch"
         android:label="@string/fragment_patch_label"

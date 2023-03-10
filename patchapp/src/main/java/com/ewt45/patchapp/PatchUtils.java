@@ -69,6 +69,10 @@ public class PatchUtils {
     }
 
     public static void setPackageName(String edmainActivitycls){
+        if(edmainActivitycls==null || edmainActivitycls.equals("")){
+            packageName = null  ;
+            return;
+        }
         int endIdx = edmainActivitycls.indexOf("/activities");
         packageName = edmainActivitycls.substring(1,endIdx);
         Log.d(TAG, "setPackageName: 设置包名为："+packageName);

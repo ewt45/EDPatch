@@ -23,27 +23,15 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.activities.XServerDisplayActivityUiOverlaySidePanels;
-import com.eltechs.axs.activities.menus.Quit;
-import com.eltechs.axs.activities.menus.ShowKeyboard;
-import com.eltechs.axs.activities.menus.ShowUsage;
-import com.eltechs.axs.activities.menus.ToggleHorizontalStretch;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration;
-import com.eltechs.axs.widgets.actions.AbstractAction;
-import com.eltechs.axs.widgets.popupMenu.AXSPopupMenu;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.eltechs.axs.xserver.Pointer;
+import com.eltechs.axs.xserver.LocksManager;
 import com.eltechs.axs.xserver.PointerListener;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPopupMenu;
-import com.example.datainsert.exagear.controls.menus.ControlEdit;
-import com.example.datainsert.exagear.controls.menus.ControlToggleVisibility;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * btncontainer和tscwidget为兄弟布局且btncontainer
@@ -230,6 +218,7 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
      */
     public void refreshControlUI(){
         Log.d(TAG, "refreshControlUI: ");
+        //用lockmanager锁一下试试看，会不会解决构建过程就触摸按钮导致卡死的问题
         controlsFactory.serializeKeyCodes2and3(Globals.getAppContext());
         controlsFactory.reinflateControlLayout(tscWidget.getContext(),viewOfXServer);
         if(tscWidget!=null && tscWidget.getChildCount()>0 && tscWidget.getVisibility()==VISIBLE) {
@@ -244,26 +233,6 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
         refreshControlUI();
         btnContainer.setElevation(0);
     }
-
-    public static boolean isCursorLocked;
-    /**
-     * 是否锁定cursor到中央
-     * @param isLocked
-     */
-    public void setCursorLocked(boolean isLocked){
-        if(viewOfXServer==null || mPointerLockListener==null)
-            return;
-
-        isCursorLocked = isLocked;
-
-        //用自带api不行吧，移动位置的同时linux位置也跟过去了。那只能改动Pointer了
-//        if(isLocked){
-//            viewOfXServer.getXServerFacade().addPointerListener(mPointerLockListener);
-//        }else{
-//            viewOfXServer.getXServerFacade().removePointerListener(mPointerLockListener);
-//        }
-    }
-
 
 //    public static FalloutInterfaceOverlay2 getInstance(){
 //        return null;

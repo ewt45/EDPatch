@@ -3,6 +3,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 
+import static com.example.datainsert.exagear.RR.cmCtrl_lgPressHint;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.Manifest;
@@ -32,6 +33,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -332,9 +334,12 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
      */
     @Override
     public void callWhenFirstStart() {
-        File file = new File(Environment.getExternalStorageDirectory(),"Exagear");
-        if(!file.exists())
-            file.mkdir();
+        File file = new File(Environment.getExternalStorageDirectory(),PREF_VAL_DST_NAME);
+        if(!file.exists()){
+            boolean b = file.mkdir();
+            Log.d(TAG, "callWhenFirstStart: 初次安装后启动，尝试创建文件夹结果 "+b);
+        }
+
     }
 
     @Override

@@ -34,7 +34,7 @@ public class FragmentHelp extends Fragment {
         recyclerView.setAdapter(new FuncdescpAdapter(
                 getResources().getStringArray(R.array.func_name),
                 getResources().getStringArray(R.array.func_description),
-                new int[]{R.drawable.drived, 0, R.drawable.showcursor, R.drawable.customresl, R.drawable.softinput, R.drawable.selectobb}
+                new int[]{R.drawable.drived, R.drawable.cstmctrl, R.drawable.showcursor, R.drawable.customresl, R.drawable.softinput, R.drawable.selectobb}
         ));
         return rootView;
     }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.eltechs.axs.Globals;
 import com.example.datainsert.exagear.controls.OneColPrefs;
 
 import java.io.FileInputStream;
@@ -85,5 +86,12 @@ public class QH {
     public static void addAllViews(ViewGroup parent, View... subs){
         for(View v:subs)
             parent.addView(v);
+    }
+
+    /**
+     * 用于判断当前包是否是自己的测试apk而非exagear
+     */
+    public static boolean isTesting(){
+        return  Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7");
     }
 }

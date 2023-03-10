@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ApkChecksum;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -69,6 +70,10 @@ public class ActivityPatch extends AppCompatActivity {
         }
         //写入版本号
         getSharedPreferences("config",MODE_PRIVATE).edit().putInt("versionCode",BuildConfig.VERSION_CODE).apply();
+
+        //通过检查patcher是否是最新的，如果不是就重新解压
+
+
 
         setContentView(binding.getRoot());
 

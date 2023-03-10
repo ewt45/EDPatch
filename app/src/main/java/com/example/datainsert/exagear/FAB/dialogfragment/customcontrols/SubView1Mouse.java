@@ -5,25 +5,19 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.get
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_MOVE_RELATIVE;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_OFFWINDOW_DISTANCE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_SENSITIVITY;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SHOW_CURSOR;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 import com.eltechs.axs.Globals;
@@ -35,10 +29,11 @@ import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
-import com.example.datainsert.exagear.controls.interfaceOverlay.gesture.State1FMoveRel;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
 
 public class SubView1Mouse extends LinearLayout {
+    SeekBar seekPointerSpeed;
+    Button btnResetSpeed;
+    SeekBar seekViewport;
     private static final String TAG= "SubView1Mouse";
     public SubView1Mouse(Context c) {
         super(c);
@@ -59,12 +54,12 @@ public class SubView1Mouse extends LinearLayout {
         addView(showCursorCheck);
 
         //鼠标灵敏度 0.2~3.0, 设置值从0到280
-        SeekBar seekPointerSpeed = new SeekBar(c);
+        seekPointerSpeed = new SeekBar(c);
         seekPointerSpeed.setMax(280);
         seekPointerSpeed.setProgress(getPreference().getInt(PREF_KEY_MOUSE_SENSITIVITY,80));
         seekPointerSpeed.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_SENSITIVITY,progress).apply()));
         //重置灵敏度按钮
-        Button btnResetSpeed = new Button(c);
+        btnResetSpeed = new Button(c);
         btnResetSpeed.setText(getS(RR.cmCtrl_reset));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             btnResetSpeed.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
@@ -79,45 +74,35 @@ public class SubView1Mouse extends LinearLayout {
         btnResetParams.gravity= Gravity.CENTER_VERTICAL;
         linearSeekNBtn.addView(btnResetSpeed,btnResetParams);
         LinearLayout linearSpeed = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msSpd),linearSeekNBtn,true);
+        //再手动设置一下顶部边距为0吧不然距离太远了
+        ((LayoutParams)linearSpeed.getChildAt(1).getLayoutParams()).topMargin = 0;
+        linearSpeed.getChildAt(1).setLayoutParams(linearSpeed.getChildAt(1).getLayoutParams());
         setDialogTooltip(linearSpeed.getChildAt(0),getS(RR.cmCtrl_s1_msSpdTip));
-        //初始化是否禁用
-        boolean initChecked = getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false);
-        seekPointerSpeed.setEnabled(initChecked);
-        seekPointerSpeed.setFocusable(initChecked);
-        btnResetSpeed.setEnabled(initChecked);
-        btnResetSpeed.setFocusable(initChecked);
+
 
         //鼠标绝对位置或相对位置
-        CheckBox switchMsMoveRel = new CheckBox(c);
-        switchMsMoveRel.setText(getS(RR.cmCtrl_s1_relMove));
-        switchMsMoveRel.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false));
+        CheckBox checkMsMoveRel = new CheckBox(c);
+        checkMsMoveRel.setText(getS(RR.cmCtrl_s1_relMove));
+        checkMsMoveRel.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false));
         //没法通过setCheck在初始化的时候触发这个，因为false的话没改变。。。
-        switchMsMoveRel.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            getPreference().edit().putBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, isChecked).apply();
-            State1FMoveRel.isRelMove = isChecked;
-            seekPointerSpeed.setEnabled(isChecked);
-            seekPointerSpeed.setFocusable(isChecked);
-            btnResetSpeed.setEnabled(isChecked);
-            btnResetSpeed.setFocusable(isChecked);
-        });
+        checkMsMoveRel.setOnCheckedChangeListener((buttonView, isChecked) -> clickedCheckMoveRel(isChecked));
 
-        setDialogTooltip(switchMsMoveRel, getS(RR.cmCtrl_s1_relMoveTip));
-        addView(switchMsMoveRel);
+        setDialogTooltip(checkMsMoveRel, getS(RR.cmCtrl_s1_relMoveTip));
+        addView(checkMsMoveRel);
         addView(linearSpeed);
 
-        CheckBox checkLock = new CheckBox(c);
-        checkLock.setText("fps games cursor moves limitless");
-        checkLock.setChecked(FalloutInterfaceOverlay2.isCursorLocked);
-        checkLock.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity) {
-                XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
-                if (ui instanceof FalloutInterfaceOverlay2)
-                    ((FalloutInterfaceOverlay2) ui).setCursorLocked(isChecked);
-            }
-        });
-        setDialogTooltip(checkLock,"勾选此选项，无需设置注册表MouseWarpOverride=force也可以在游戏中无限制移动视角，视角移动不会因为鼠标达到边界而停下。\n\n若想此选项正常工作，需要设置游戏全屏，并且在环境设置中修改分辨率与游戏全屏分辨率完全相同，即画面右下方不能有多余的黑边。");
+        //允许鼠标移出屏幕（视角转动模式） 用户手动调节速度吧
+          //
+        seekViewport = new SeekBar(c);
+        seekViewport.setMax(60);
+        seekViewport.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0));
+        seekViewport.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,progress).apply()));
+        LinearLayout linearSeekViewport = getOneLineWithTitle(c,"允许鼠标移出桌面的距离",seekViewport,true);
+        setDialogTooltip(linearSeekViewport.getChildAt(0),"数值为0~70。一般设置为0，即不允许移到桌面外部。\n某些游戏中，若鼠标移动到边界时视角无法继续转动，可以尝试调大该数值，允许鼠标移到边界外以继续转动视角。\n\n注意若想此功能生效，需要设置游戏全屏，并且在环境设置中修改分辨率与游戏全屏分辨率完全相同，即画面右下方不能有多余的黑边。无需设置注册表MouseWarpOverride=force。");
+        addView(linearSeekViewport);
 
-        addView(checkLock);
+        //初始化是否禁用
+        clickedCheckMoveRel(getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false));
 
 //        //为什么viewpager里的edittext没法调出输入法了啊(dialogfragment里清除一下flag就好了）
 //        MyTextInputEditText editInColor = new MyTextInputEditText(c,null,null,"颜色");
@@ -130,6 +115,17 @@ public class SubView1Mouse extends LinearLayout {
 //        TextInputLayout textInputLayout2 = new TextInputLayout(c);
 //        textInputLayout2.addView(editInColor);
 //        addView(textInputLayout2);
+    }
+
+
+    private void clickedCheckMoveRel(boolean isChecked){
+        getPreference().edit().putBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, isChecked).apply();
+
+        seekPointerSpeed.setEnabled(isChecked);
+        seekPointerSpeed.setFocusable(isChecked);
+        btnResetSpeed.setEnabled(isChecked);
+        btnResetSpeed.setFocusable(isChecked);
+        seekViewport.setEnabled(isChecked );
     }
 
 

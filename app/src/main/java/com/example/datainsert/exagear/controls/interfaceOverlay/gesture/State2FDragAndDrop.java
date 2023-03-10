@@ -12,6 +12,7 @@ import com.eltechs.axs.GuestAppActionAdapters.SimpleDragAndDropAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.SimpleMouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
+import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.OffsetMouseAdapter;
 import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
 
 import java.util.List;
@@ -108,7 +109,7 @@ public class State2FDragAndDrop extends AbstractGestureFSMState implements Touch
                     gestureContext,
                     new SimpleDragAndDropAdapter(
                             new RelativeMouseMoveCstmSpdAdapter(
-                                    new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()),
+                                    new OffsetMouseAdapter(gestureContext),
                                     gestureContext.getViewFacade(), gestureContext.getHostView()),
                             new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 1),
                             () -> gestureContext.getPointerReporter().click(btnCode, mouseActionSleepMs)//3

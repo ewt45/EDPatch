@@ -8,6 +8,8 @@ import com.ewt45.patchapp.patching.PatcherFile;
 
 import java.io.File;
 
+/**
+ * 版本号改为2. 添加了中英双语 */
 public class FuncResl implements Func {
     private static final String TAG = "FuncResl";
     @Override
@@ -19,7 +21,7 @@ public class FuncResl implements Func {
         try {
             int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
             if (a == INVALID_VERSION && isPatchedOldWay())
-                return 1;
+                return 2;
             else return a;
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,9 +40,6 @@ public class FuncResl implements Func {
     public Integer call() throws Exception {
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",
-                "/com/eltechs/ed/fragments/ContainerSettingsFragment$1.smali",
-                "/com/eltechs/ed/fragments/ContainerSettingsFragment$2.smali",
-                "/com/eltechs/ed/fragments/ContainerSettingsFragment$3.smali",
                 "/com/example/datainsert/exagear/RSIDHelper.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
         return R.string.actmsg_funcresl;
