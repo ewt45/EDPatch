@@ -92,14 +92,14 @@ public class BtnPropertiesView extends LinearLayout {
             });
         });
 
-        addView(getOneLineWithTitle(c,"组合键", selectKeyBtn,false));
+        addView(getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditComb), selectKeyBtn,false));
 
         //点击一次 = 保持按下
         CheckBox checkTrigger = new CheckBox(c);
-        checkTrigger.setText("松手后保持按下状态");
+        checkTrigger.setText(getS(RR.cmCtrl_BtnEditTrigger));
         checkTrigger.setChecked(mOneKey.isTrigger());
         checkTrigger.setOnCheckedChangeListener((buttonView, isChecked) -> mOneKey.setTrigger(isChecked));
-        addView(getOneLineWithTitle(c,null,checkTrigger,true));
+        addView(checkTrigger);
     }
 
     /**

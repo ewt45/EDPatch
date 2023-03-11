@@ -18,18 +18,16 @@ import com.example.datainsert.exagear.RR;
 
 public class SubNormalPagerAdapter extends PagerAdapter implements WrapContentViewPager.ItemHelper {
     private static final String TAG= "SubNormalPagerAdapter";
-    private final int mCount;
     private final String[] mTabTitles;
     private final View[] mViewPages;
-    public SubNormalPagerAdapter(int count,View[] viewPages,String[] tabTitles) {
-        mCount=count;
+    public SubNormalPagerAdapter(View[] viewPages,String[] tabTitles) {
         mTabTitles = tabTitles;
         mViewPages = viewPages;
     }
 
     @Override
     public int getCount() {
-        return mCount;
+        return mTabTitles.length;
     }
 
     @Override

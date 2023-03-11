@@ -17,7 +17,7 @@ public class FuncCursor implements Func {
     public int getInstalledVersion() {
         try {
             int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
-            if (a ==  INVALID_VERSION&& isPatchedOldWay())
+            if (a == INVALID_VERSION && isPatchedOldWay())
                 return 1;
             else return a;
         } catch (Exception e) {
@@ -42,11 +42,16 @@ public class FuncCursor implements Func {
                     new String[]{
                             "move-result-object p1",
                             "iput-object p1, p0, Lcom/eltechs/axs/widgets/viewOfXServer/AXSRendererGL;->rootCursorBitmap:Landroid/graphics/Bitmap;"},
-                    new String[]{"invoke-static {}, Lcom/example/datainsert/exagear/cursor/CursorImage;->createBitmap()Landroid/graphics/Bitmap;"});
+                    new String[]{"invoke-static {}, Lcom/example/datainsert/exagear/cursor/CursorImage;->createBitmap()Landroid/graphics/Bitmap;"})
+                    //或者可能直接把函数加到那个类里了
+                    | testFile.containsLine("Resources;->getAssets()");
+
+
         } catch (Exception e) {
             e.printStackTrace();
             patched = true;
         }
+        testFile.close();
         return patched;
     }
 
@@ -54,7 +59,7 @@ public class FuncCursor implements Func {
     @Override
     public Integer call() throws Exception {
         //如果首次安装，修改ex的dex
-        if(getInstalledVersion() == INVALID_VERSION)
+        if (getInstalledVersion() == INVALID_VERSION)
             firstPatch();
 
         //复制自己的类和光标

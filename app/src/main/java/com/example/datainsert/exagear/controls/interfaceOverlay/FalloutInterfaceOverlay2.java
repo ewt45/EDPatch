@@ -27,7 +27,6 @@ import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.eltechs.axs.xserver.LocksManager;
 import com.eltechs.axs.xserver.PointerListener;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
@@ -219,7 +218,7 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
     public void refreshControlUI(){
         Log.d(TAG, "refreshControlUI: ");
         //用lockmanager锁一下试试看，会不会解决构建过程就触摸按钮导致卡死的问题
-        controlsFactory.serializeKeyCodes2and3(Globals.getAppContext());
+        controlsFactory.saveToFileKeyCodes2and3(Globals.getAppContext());
         controlsFactory.reinflateControlLayout(tscWidget.getContext(),viewOfXServer);
         if(tscWidget!=null && tscWidget.getChildCount()>0 && tscWidget.getVisibility()==VISIBLE) {
             tscWidget.requestLayout();

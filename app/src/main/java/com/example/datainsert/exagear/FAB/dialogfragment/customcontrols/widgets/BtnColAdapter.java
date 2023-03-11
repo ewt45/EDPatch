@@ -1,8 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
-import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
-import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 import static android.view.Display.DEFAULT_DISPLAY;
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getTextViewWithText;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView.codes;
 import static com.example.datainsert.exagear.RR.getS;
 
@@ -17,9 +16,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -29,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
-import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
@@ -56,10 +52,10 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
             // NOTE: if you use equals, your object must properly override Object#equals()
             // Incorrectly returning false here will result in too many animations.
             //只有areItemsTheSame返回true才会调用这个方法
-            if (oldUser.getmAllKeys().length != newUser.getmAllKeys().length)
+            if (oldUser.getAllKeys().length != newUser.getAllKeys().length)
                 return false;
-            for (int i = 0; i < oldUser.getmAllKeys().length; i++) {
-                if (oldUser.getmAllKeys()[i].getCode() != newUser.getmAllKeys()[i].getCode())
+            for (int i = 0; i < oldUser.getAllKeys().length; i++) {
+                if (oldUser.getAllKeys()[i].getCode() != newUser.getAllKeys()[i].getCode())
                     return false;
             }
             return true;
@@ -121,8 +117,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setPadding(QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp));
         linearRoot.setOrientation(LinearLayout.VERTICAL);
-        //提示
-        linearRoot.addView(BaseFragment.getTextViewWithText(c, getS(RR.cmCtrl_s2_ColEditTip)));
+
         //如果横屏，回收视图改为横向
         DisplayManager mDisplayManager = (DisplayManager) c.getSystemService(Context.DISPLAY_SERVICE);
         Rect rect = new Rect();
@@ -151,7 +146,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                 OneKey[] newKeys = dialogView.getSelectedKeys();
                 //保留原有key的名字
                 for(OneKey newKey:newKeys){
-                    for(OneKey oldKey:selfCol.getmAllKeys())
+                    for(OneKey oldKey:selfCol.getAllKeys())
                         if(newKey.getCode()==oldKey.getCode()){
                             newKey.setName(oldKey.getName());
                             break;
@@ -164,6 +159,8 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
         LinearLayout.LayoutParams btnViewParams = new LinearLayout.LayoutParams(-2, -2);
         btnViewParams.gravity = Gravity.CENTER_HORIZONTAL;
         linearRoot.addView(selectBtn, btnViewParams);
+        //提示
+        linearRoot.addView(getTextViewWithText(c, getS(RR.cmCtrl_s2_ColEditTip)));
         //回收视图的布局参数在自身 根据横向还是竖向设置好了
         linearRoot.addView(btnKeyRecyclerView);
         new AlertDialog.Builder(c)

@@ -32,7 +32,6 @@ public class FuncResl implements Func {
     private boolean isPatchedOldWay() {
         File smaliFile = new File(PatchUtils.getPatchTmpDir() + "/tmp/smali/"
                 + PatchUtils.getPackageName() + "/fragments/ContainerSettingsFragment$3.smali");
-
         return smaliFile.exists();
     }
 

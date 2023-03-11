@@ -252,6 +252,10 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
 //            linear.addView(button, new ViewGroup.LayoutParams(mBtnWidth , mBtnHeight));
             linear.addView(button, new ViewGroup.LayoutParams(-2 , -2));
 
+            //设置最后一次点击的按钮。在设置摇杆按键的时候会用到
+            if(button.isChecked())
+                mLastCheckedButton = button;
+
         }
         return linear;
     }
@@ -295,11 +299,14 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
         int selfIndex = (int) buttonView.getTag();
         this.keySelect[selfIndex] = isChecked;
         //如果只允许选择一个按键，取消选择上一个按键
-        if(mSelectOnlyOne && mLastCheckedButton !=null ){
-            mLastCheckedButton.setChecked(false);
+        if (mSelectOnlyOne) {
+            //如果本次是选中此按键，那么将上次选择的按键取消选中（在上个按键不是自身的情况下）
+            if(isChecked && mLastCheckedButton!=buttonView)
+                mLastCheckedButton.setChecked(false);
+            //更新最近选中按钮
+            mLastCheckedButton = buttonView;
         }
-        //如果本次是取消选择，不记录该按钮
-        mLastCheckedButton = isChecked?buttonView:null;
+
     }
 
     /**

@@ -211,7 +211,7 @@ public class SmaliFile {
      * - 在之前：
      * - 插入：如果这之前的一句是插入代码的最后一句，则功能已有
      * - 删除：如果这之前的一句不是删除代码的最后一句，则功能已有
-     * delete和before的情况有问题，请勿使用
+     * delete和before的情况有问题，请勿使用本方法，应该使用patchedEarlier(String method, String[] deletedLines)
      */
     public boolean patchedEarlier(String method, int location, int action, String[] origin, String[] patch) {
         boolean methodStart = false; //限制范围的函数是否开始
@@ -344,6 +344,22 @@ public class SmaliFile {
             }
         }
         return true;
+    }
+
+    /**
+     * 在该文件中是否能找到这包含该字符串的一行
+     * @param s 要寻找的字符串
+     */
+    public boolean containsLine(String s) {
+        for(String line:mAllLines){
+            if(line.contains("toggleSoftInput")){
+                Log.d(TAG, "containsLine: ");
+            }
+
+            if(line.contains(PatchUtils.scanAndParsePkgName(new String[]{s}).get(0)))
+                return true;
+        }
+        return  false;
     }
 
 //    public static class ModPosition {

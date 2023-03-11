@@ -4,6 +4,7 @@ import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.widget.LinearLayout.VERTICAL;
 
+import static com.example.datainsert.exagear.RR.cmCtrl_tabOther;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.app.Dialog;
@@ -43,9 +44,9 @@ import java.io.IOException;
 public class CustomControls extends BaseFragment implements DialogInterface.OnClickListener {
     public static final String TAG = "CustomControls";
     private final BtnColRecyclerView[] mSidebarKeyRecyclerView = new BtnColRecyclerView[2];
-    ViewGroup[] mPages = new ViewGroup[3];
+    ViewGroup[] mPages;
     FalloutInterfaceOverlay2 mUiOverlay;
-//    private File mSerFile2;
+    //    private File mSerFile2;
     private KeyCodes2 mKeyCodes2;//用于新建dialog的时候，初始化侧栏按键列表
 //    private File mSerFile3;
     /**
@@ -73,25 +74,15 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 //        mSerFile2 = new File(requireContext().getFilesDir(), KeyCodes2.KeyStoreFileName);
 //        mSerFile3 = new File(requireContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
         XServerDisplayActivityConfigurationAware aware = Globals.getApplicationState();
-        if(aware!=null)
+        if (aware != null)
             mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
 
         if (mUiOverlay != null) {
             mKeyCodes2 = mUiOverlay.getControlsFactory().getKeyCodes2();
             mKeyCodes3 = mUiOverlay.getControlsFactory().getKeyCodes3();
         } else {
-            try {
-                mKeyCodes2 = KeyCodes2.deserialize(requireContext());
-            } catch (IOException | ClassNotFoundException e) {
-                mKeyCodes2 = new KeyCodes2();
-                Log.d(TAG, "buildUI: KeyCodes2反序列化文件失败");
-            }
-            try {
-                mKeyCodes3 = KeyCodes3.deserialize(requireContext());
-            } catch (IOException | ClassNotFoundException e) {
-                mKeyCodes3 = new KeyCodes3();
-                Log.d(TAG, "buildUI: 反序列化文件失败");
-            }
+            mKeyCodes2 = KeyCodes2.read(requireContext());
+            mKeyCodes3 = KeyCodes3.read(requireContext());
         }
 
 
@@ -138,8 +129,8 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         scrollView.addView(rootView);
 
         String tipsOverAll = getS(RR.cmCtrl_lgPressHint);
-        if(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity)
-            tipsOverAll = tipsOverAll.substring(0,tipsOverAll.indexOf('\n'));
+//        if (((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity)
+//            tipsOverAll = tipsOverAll.substring(0, tipsOverAll.indexOf('\n'));
         rootView.addView(getTextViewWithText(c, tipsOverAll));
 
         //标签页滑动视图
@@ -154,12 +145,20 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         rootView.addView(viewPager, viewPagerParams);
 
         //三个标签页
-        mPages[0] = new SubView1Mouse(c);
-        mPages[1] = new SubView2Keys(c, mKeyCodes2, mKeyCodes3);
-        mPages[2] = new SubView3Style(c);
+        mPages = new ViewGroup[]{
+                new SubView1Mouse(c),
+                new SubView2Keys(c, mKeyCodes2, mKeyCodes3),
+                new SubView3Style(c),
+        new SubView4Other(c)};
+
+        String[] tabTitles = new String[]{
+                getS(RR.cmCtrl_tabMouse),
+                getS(RR.cmCtrl_tabKeys),
+                getS(RR.cmCtrl_tabStyle),
+                getS(RR.cmCtrl_tabOther)};
 
         //fragmentAdapter在dialogfragment里有问题，就用普通视图adapter吧
-        viewPager.setAdapter(new SubNormalPagerAdapter(3, mPages, new String[]{getS(RR.cmCtrl_tabMouse), getS(RR.cmCtrl_tabKeys), getS(RR.cmCtrl_tabStyle)}));
+        viewPager.setAdapter(new SubNormalPagerAdapter(mPages, tabTitles));
         tabLayout.setupWithViewPager(viewPager, false);
         return scrollView;
     }
@@ -188,16 +187,8 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             }
             //否则自己序列化
             else {
-                try {
-                    KeyCodes2.serialize(mKeyCodes2, requireContext());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    KeyCodes3.serialize(mKeyCodes3, requireContext());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                KeyCodes2.write(mKeyCodes2,requireContext());
+                KeyCodes3.write(mKeyCodes3,requireContext());
             }
 
         } else if (which == BUTTON_NEGATIVE) {

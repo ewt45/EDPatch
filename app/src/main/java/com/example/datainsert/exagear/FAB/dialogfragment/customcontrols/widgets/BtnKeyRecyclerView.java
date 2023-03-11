@@ -1,7 +1,5 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
-import static android.support.v7.widget.LinearLayoutManager.HORIZONTAL;
-import static android.support.v7.widget.LinearLayoutManager.VERTICAL;
 import static android.support.v7.widget.helper.ItemTouchHelper.DOWN;
 import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
@@ -21,7 +19,6 @@ import android.widget.LinearLayout;
 
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.model.OneCol;
-import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.Arrays;
 
@@ -37,7 +34,7 @@ public class BtnKeyRecyclerView extends RecyclerView {
 
         mAdapter = new BtnKeyAdapter(oneCol,isLandScape);
         setAdapter(mAdapter);
-        mAdapter.submitList(Arrays.asList(oneCol.getmAllKeys()));
+        mAdapter.submitList(Arrays.asList(oneCol.getAllKeys()));
         //设置拖拽排序
         new ItemTouchHelper(new DragHelperCallback(isLandScape ? LEFT | RIGHT : UP | DOWN, 0)).attachToRecyclerView(this);
         //设置侧栏底色
@@ -45,6 +42,7 @@ public class BtnKeyRecyclerView extends RecyclerView {
 
         LinearLayout.LayoutParams recyclerViewParams = new LinearLayout.LayoutParams(isLandScape ? -1 : -2, isLandScape ? -2 : -1);
         recyclerViewParams.gravity = isLandScape ? Gravity.CENTER_VERTICAL : Gravity.CENTER_HORIZONTAL;
+        recyclerViewParams.topMargin = QH.px(getContext(),8);
         setLayoutParams(recyclerViewParams);
 
     }

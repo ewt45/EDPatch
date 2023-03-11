@@ -10,12 +10,12 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
-import static com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn.Params.PresetKey.ARROWS;
-import static com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn.Params.PresetKey.CUSTOM;
-import static com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn.Params.PresetKey.MOUSE_LEFT_CLICK;
-import static com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn.Params.PresetKey.MOUSE_MOVE;
-import static com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn.Params.PresetKey.MOUSE_RIGHT_CLICK;
-import static com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn.Params.PresetKey.WASD;
+import static com.example.datainsert.exagear.controls.model.JoyParams.PresetKey.ARROWS;
+import static com.example.datainsert.exagear.controls.model.JoyParams.PresetKey.CUSTOM;
+import static com.example.datainsert.exagear.controls.model.JoyParams.PresetKey.MOUSE_LEFT_CLICK;
+import static com.example.datainsert.exagear.controls.model.JoyParams.PresetKey.MOUSE_MOVE;
+import static com.example.datainsert.exagear.controls.model.JoyParams.PresetKey.MOUSE_RIGHT_CLICK;
+import static com.example.datainsert.exagear.controls.model.JoyParams.PresetKey.WASD;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -43,8 +43,8 @@ import com.example.datainsert.exagear.FAB.widget.SimpleItemSelectedListener;
 import com.example.datainsert.exagear.FAB.widget.SpinArrayAdapterSmSize;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.model.JoyParams;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +66,7 @@ public class JoyStickBtn extends BaseMoveBtn {
      * 摇杆内部按钮宽度是普通按钮宽度的多少倍
      */
     private static final float innerDivBtnWidthRatio = 0.9f;
-    private final Params mParams;
+    private final JoyParams mParams;
     /**
      * 布局圆心在父布局的xy,固定不变。
      */
@@ -95,7 +95,7 @@ public class JoyStickBtn extends BaseMoveBtn {
     private int btnDiam;
     private int outerDiam;
 
-    public JoyStickBtn(Context context, Params params) {
+    public JoyStickBtn(Context context, JoyParams params) {
         super(context);
         mParams = params;
         setupStyle();
@@ -106,7 +106,7 @@ public class JoyStickBtn extends BaseMoveBtn {
     public static JoyStickBtn getSample(Context c) {
         final int btnDiam = QH.px(c, 50);
         final int outerDiam = btnDiam * 2;
-        JoyStickBtn sample = new JoyStickBtn(c, new Params()) {
+        JoyStickBtn sample = new JoyStickBtn(c, new JoyParams()) {
             @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouchEvent(MotionEvent event) {
@@ -170,14 +170,14 @@ public class JoyStickBtn extends BaseMoveBtn {
         if (mParams == null || mViewOfXServer == null)
             return;
 
-        if (mParams.presetKey == MOUSE_MOVE) {
+        if (mParams.getPresetKey() == MOUSE_MOVE) {
             Log.d(TAG, String.format("handleInjectStart: 中央？传入的坐标是viewofxserver宽高的一半？ %d, %d", mViewOfXServer.getWidth() / 2, mViewOfXServer.getHeight() / 2));
             //设置位置到中央
             mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
-        } else if (mParams.presetKey == MOUSE_LEFT_CLICK || mParams.presetKey == MOUSE_RIGHT_CLICK) {
+        } else if (mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
             //设置位置到中央并按下
             mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
-            mPointReporter.buttonPressed(mParams.presetKey.keys[0]);
+            mPointReporter.buttonPressed(mParams.getPresetKey().getKeys()[0]);
         } else {
 //            injectMultiKeysByDirections(mLastTouchXYPoint.x - mCenterXYPoint.x, mLastTouchXYPoint.y - mCenterXYPoint.y);
         }
@@ -207,8 +207,8 @@ public class JoyStickBtn extends BaseMoveBtn {
         //重置触摸位置
         //设置中心位置
         if (mParams != null) {
-            mCenterXYPoint.x = mParams.marginLeft + outerDiam / 2f;
-            mCenterXYPoint.y = mParams.marginTop + outerDiam / 2f;
+            mCenterXYPoint.x = mParams.getMarginLeft() + outerDiam / 2f;
+            mCenterXYPoint.y = mParams.getMarginTop() + outerDiam / 2f;
         } else {
             mCenterXYPoint.x = outerDiam / 2f;
             mCenterXYPoint.y = outerDiam / 2f;
@@ -219,19 +219,19 @@ public class JoyStickBtn extends BaseMoveBtn {
 
         if (mParams == null || mViewOfXServer == null)
             return;
-        if (mParams.presetKey == MOUSE_MOVE) {
+        if (mParams.getPresetKey() == MOUSE_MOVE) {
             //设置位置到中央
             mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
-        } else if (mParams.presetKey == MOUSE_LEFT_CLICK || mParams.presetKey == MOUSE_RIGHT_CLICK) {
+        } else if (mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
             //松开按键,设置位置到中央
-            mPointReporter.buttonReleased(mParams.presetKey.keys[0]);
+            mPointReporter.buttonReleased(mParams.getPresetKey().getKeys()[0]);
             mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
         } else {
             //松开按键
             for (int i : lastMovingDirections) {
-                mViewOfXServer.getXServerFacade().injectKeyRelease(mParams.presetKey.equals(CUSTOM)
-                        ? (byte) (mParams.key4Directions[i] + 8)
-                        : (byte) (mParams.presetKey.getKeys()[i] + 8));
+                mViewOfXServer.getXServerFacade().injectKeyRelease(mParams.getPresetKey().equals(CUSTOM)
+                        ? (byte) (mParams.getKey4Directions()[i] + 8)
+                        : (byte) (mParams.getPresetKey().getKeys()[i] + 8));
             }
             lastMovingDirections.clear();
         }
@@ -254,7 +254,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         if (dx == 0 && dy == 0)
             return;
 
-        if (mParams.presetKey == MOUSE_MOVE || mParams.presetKey == MOUSE_LEFT_CLICK || mParams.presetKey == MOUSE_RIGHT_CLICK) {
+        if (mParams.getPresetKey() == MOUSE_MOVE || mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
 
 
         } else {
@@ -264,7 +264,7 @@ public class JoyStickBtn extends BaseMoveBtn {
             List<Integer> thisMovingDirections = new ArrayList<>();
 
             //不允许斜向
-            if (mParams.isFourDirections) {
+            if (mParams.isFourDirections()) {
                 if (tanCurrent <= 1 && dy < 0) {
                     thisMovingDirections.add(0);
                 } else if (tanCurrent <= 1) {
@@ -296,13 +296,13 @@ public class JoyStickBtn extends BaseMoveBtn {
             //如果原来有 现在没有，松开
             for (int i : lastMovingDirections)
                 if (!thisMovingDirections.contains(i) && mViewOfXServer != null) {
-                    mViewOfXServer.getXServerFacade().injectKeyRelease((byte) (mParams.key4Directions[i] + 8));
+                    mViewOfXServer.getXServerFacade().injectKeyRelease((byte) (mParams.getKey4Directions()[i] + 8));
                 }
 
             //如果原来没有 现在有，按下
             for (int i : thisMovingDirections) {
                 if (!lastMovingDirections.contains(i) && mViewOfXServer != null) {
-                    mViewOfXServer.getXServerFacade().injectKeyPress((byte) (mParams.key4Directions[i] + 8));
+                    mViewOfXServer.getXServerFacade().injectKeyPress((byte) (mParams.getKey4Directions()[i] + 8));
                 }
             }
 //            if(pressingKeys.length!=0 || releasingKeys.length!=0){
@@ -353,18 +353,18 @@ public class JoyStickBtn extends BaseMoveBtn {
         //选择预设按键，或者自定义
         Spinner spinKeys = new Spinner(c);
         final String[] spinOptions = new String[]{"W A S D", "↑ ↓ ← →", getS(RR.cmCtrl_JoyEditKeyCstm)};
-        final Params.PresetKey[] spinValues = new Params.PresetKey[]{WASD, ARROWS, CUSTOM};
+        final JoyParams.PresetKey[] spinValues = new JoyParams.PresetKey[]{WASD, ARROWS, CUSTOM};
         ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
         spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinKeys.setAdapter(spinKeyPosAdapter);
         spinKeys.setOnItemSelectedListener(new SimpleItemSelectedListener((parent, view, position, id) -> {
             mParams.setPresetKey(spinValues[position]);
-            linearCustomOuter.setVisibility(mParams.presetKey.equals(CUSTOM) ? VISIBLE : GONE);
+            linearCustomOuter.setVisibility(mParams.getPresetKey().equals(CUSTOM) ? VISIBLE : GONE);
         }));
         //设置当前选中
         assert mParams != null;
         for (int i = 0; i < spinValues.length; i++) {
-            if (mParams.presetKey.equals(spinValues[i]))
+            if (mParams.getPresetKey().equals(spinValues[i]))
                 spinKeys.setSelection(i);
         }
         spinKeys.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
@@ -393,7 +393,7 @@ public class JoyStickBtn extends BaseMoveBtn {
             btn.setOnClickListener(v -> {
                 boolean[] preSel = new boolean[AvailableKeysView.codes.length];
                 for (int i = 0; i < preSel.length; i++) {
-                    if (AvailableKeysView.codes[i] == mParams.key4Directions[direction])
+                    if (AvailableKeysView.codes[i] == mParams.getKey4Directions()[direction])
                         preSel[i] = true;
                 }
                 AvailableKeysView availableKeysView = new AvailableKeysView(getContext(), preSel, -1);
@@ -401,7 +401,7 @@ public class JoyStickBtn extends BaseMoveBtn {
                 availableKeysView.showWithinDialog((dialog, which) -> {
                     Button checkedBtn = availableKeysView.getLastCheckedButton();
                     if (checkedBtn != null) {
-                        mParams.key4Directions[direction] = AvailableKeysView.codes[(int) checkedBtn.getTag()];
+                        mParams.getKey4Directions()[direction] = AvailableKeysView.codes[(int) checkedBtn.getTag()];
                         Log.d(TAG, String.format("onClick: 设置mParams.key4Directions[%d]=%s", direction, AvailableKeysView.names[(int) checkedBtn.getTag()]));
                     }
                 });
@@ -436,12 +436,12 @@ public class JoyStickBtn extends BaseMoveBtn {
 //        setBackground(drawable);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(outerDiam, outerDiam);
         if (mParams != null)
-            params.setMargins(mParams.marginLeft, mParams.marginTop, 0, 0);
+            params.setMargins(mParams.getMarginLeft(), mParams.getMarginTop(), 0, 0);
         setLayoutParams(params);
         //设置中心位置
         if (mParams != null) {
-            mCenterXYPoint.x = mParams.marginLeft + outerDiam / 2f;
-            mCenterXYPoint.y = mParams.marginTop + outerDiam / 2f;
+            mCenterXYPoint.x = mParams.getMarginLeft() + outerDiam / 2f;
+            mCenterXYPoint.y = mParams.getMarginTop() + outerDiam / 2f;
         } else {
             mCenterXYPoint.x = outerDiam / 2f;
             mCenterXYPoint.y = outerDiam / 2f;
@@ -512,85 +512,6 @@ public class JoyStickBtn extends BaseMoveBtn {
 //            setTranslationX(dx);
 //            setTranslationY(dy);
         canvas.drawCircle(outerRadius + dx, outerRadius + dy, btnDiam / 2f - btnDiam / 25f, mBtnPaint);
-    }
-
-    public static class Params implements Serializable {
-        private static final long serialVersionUID = 5962021171151927361L;
-        static String tag = "JoyStickParams";
-        //四个方向的按键(0123对应上下左右）
-        int[] key4Directions = new int[]{-1, -1, -1, -1};
-        /**
-         * presetKey为CUSTOM时使用自定义的key4Directions
-         */
-        PresetKey presetKey;
-        //布局位置
-        private int marginLeft;
-        private int marginTop;
-        //是否用4个方向。false的话就是8个方向
-        private boolean isFourDirections;
-
-        /**
-         * 默认上下左右是wasd
-         */
-        public Params() {
-            presetKey = WASD;
-            key4Directions = presetKey.getKeys();
-        }
-
-        public Params(int[] keys) {
-            key4Directions = keys;
-        }
-
-        public int getMarginLeft() {
-            return marginLeft;
-        }
-
-        public void setMarginLeft(int marginLeft) {
-            this.marginLeft = marginLeft;
-        }
-
-        public int getMarginTop() {
-            return marginTop;
-        }
-
-        public void setMarginTop(int marginTop) {
-            this.marginTop = marginTop;
-        }
-
-        public boolean isFourDirections() {
-            return isFourDirections;
-        }
-
-        public void setFourDirections(boolean fourDirections) {
-            isFourDirections = fourDirections;
-        }
-
-        public void setPresetKey(PresetKey presetKey) {
-            this.presetKey = presetKey;
-            this.key4Directions = presetKey.getKeys();
-        }
-
-        public enum PresetKey {
-            WASD(new int[]{17, 31, 30, 32}, "WASD"),
-            ARROWS(new int[]{103, 108, 105, 106}, "方向键上下左右"),
-            MOUSE_MOVE(new int[]{}, "鼠标移动"),
-            MOUSE_LEFT_CLICK(new int[]{1, 1, 1, 1}, "鼠标左键点击"),
-            MOUSE_RIGHT_CLICK(new int[]{3, 3, 3, 3}, "鼠标右键点击"),
-            CUSTOM(new int[]{17, 31, 30, 32}, "自定义"),
-            ;
-
-            private final int[] keys;
-            private final String name;
-
-            PresetKey(int[] ints, String name) {
-                keys = ints;
-                this.name = name;
-            }
-
-            public int[] getKeys() {
-                return keys;
-            }
-        }
     }
 
 

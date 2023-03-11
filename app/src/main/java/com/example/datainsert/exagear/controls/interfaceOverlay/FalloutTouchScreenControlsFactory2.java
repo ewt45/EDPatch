@@ -1,6 +1,5 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay;
 
-import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.VERTICAL;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
@@ -42,8 +41,8 @@ import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
 import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
+import com.example.datainsert.exagear.controls.model.JoyParams;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,27 +52,25 @@ import java.util.List;
  * 如果要设置按钮自定义位置，请在实例化之后调用setBtnContainer
  * 在factory这里维护keycode实例吧
  * 在新建一个touchscreencontrol的时候直接从本地反序列化读取keycodes3，这样不用类之间传来传去（
- *
+ * <p>
  * 在需要刷新视图的时候调用serializeKeyCodes2and3序列化保存一下，然后调用reinflate填充视图和更新toucharea，toucharea在tscWidget的onLayout的时候调用create的时候会被添加（会不会在更新之前就调用create了？）
  */
 public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFactory {
     private static final String TAG = "FalloutTSCFactory2";
-    KeyCodes2 mKeyCodes2;
-    KeyCodes3 mKeyCodes3;
-    private GestureContext gestureContext;
-    private BtnContainer mBtnContainer;
-    private LinearLayout mLeftBar;
-    private LinearLayout mRightBar;
-    /**
-     * 三指触屏显示的弹窗菜单
-     */
-    PopupMenu mPopupMenu;
-
     /**
      * 用于存储toucharea的列表，从uiOverlay那边更新。
      */
     private final List<BtnTouchArea> mBtnAreaList = new ArrayList<>();
-
+    KeyCodes2 mKeyCodes2;
+    KeyCodes3 mKeyCodes3;
+    /**
+     * 三指触屏显示的弹窗菜单
+     */
+    PopupMenu mPopupMenu;
+    private GestureContext gestureContext;
+    private BtnContainer mBtnContainer;
+    private LinearLayout mLeftBar;
+    private LinearLayout mRightBar;
 
     @Override // com.eltechs.axs.TouchScreenControlsFactory
     public boolean hasVisibleControls() {
@@ -94,35 +91,26 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         mRightBar = rightToolbar;
         //如果已经获取实例，就不重新获取了，保证其他人要用都从自己这里拿实例，这样确保自己这是最新的。
         Context c = emptyBtnContainer.getContext();
-        try {
-            if (mKeyCodes2 == null)
-                mKeyCodes2 = KeyCodes2.deserialize(c);
-            else
-                KeyCodes2.serialize(mKeyCodes2, c);
-        } catch (IOException | ClassNotFoundException e) {
-            if (mKeyCodes2 == null) mKeyCodes2 = new KeyCodes2();
-            Log.d(TAG, "create: KeyCodes2(反)序列化文件失败");
-        }
-        try {
-            if (mKeyCodes3 == null)
-                mKeyCodes3 = KeyCodes3.deserialize(c);
-            else
-                KeyCodes3.serialize(mKeyCodes3, c);
-        } catch (IOException | ClassNotFoundException e) {
-            if (mKeyCodes3 == null) mKeyCodes3 = new KeyCodes3();
-            Log.d(TAG, "create: KeyCodes3(反)序列化文件失败");
-        }
+        if (mKeyCodes2 == null)
+            mKeyCodes2 = KeyCodes2.read(c);
+        else
+            KeyCodes2.write(mKeyCodes2, c);
+
+        if (mKeyCodes3 == null)
+            mKeyCodes3 = KeyCodes3.read(c);
+        else
+            KeyCodes3.write(mKeyCodes3, c);
+    }
+
+    public PopupMenu getPopupMenu() {
+        return mPopupMenu;
     }
 
     /**
      * 自己定义弹窗菜单，可以有二级菜单
      */
-    public void setPopupMenu(PopupMenu popupMenu){
+    public void setPopupMenu(PopupMenu popupMenu) {
         mPopupMenu = popupMenu;
-    }
-
-    public PopupMenu getPopupMenu() {
-        return mPopupMenu;
     }
 
     @Override // com.eltechs.axs.TouchScreenControlsFactory
@@ -133,8 +121,8 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         TouchScreenControls touchScreenControls = new TouchScreenControls(graphicsSceneConfigurer);
 
         //里面要设置pointer的移出屏幕距离，需要锁一下
-        LocksManager.XLock lockForInputDevicesManipulation = QH.isTesting()? null
-                :viewOfXServer.getXServerFacade().getXServer().getLocksManager().lockForInputDevicesManipulation();
+        LocksManager.XLock lockForInputDevicesManipulation = QH.isTesting() ? null
+                : viewOfXServer.getXServerFacade().getXServer().getLocksManager().lockForInputDevicesManipulation();
         try {
             fillTouchScreenControls(touchScreenControls, view, viewOfXServer);
             if (lockForInputDevicesManipulation != null) {
@@ -163,7 +151,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         TouchArea touchArea = new TouchArea(0.0f, 0.0f, view.getWidth(), view.getHeight(), touchEventMultiplexor);
         //手势操作
         if (viewOfXServer != null) {
-            this.gestureContext = GestureMachineMix.create(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi,mPopupMenu);
+            this.gestureContext = GestureMachineMix.create(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, mPopupMenu);
             //GestureMachineConfigurerFallout2.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, () -> ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu());
         }
         //按钮布局和范围相关在reinflate函数里设置好，在这里直接添加上
@@ -180,17 +168,9 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
     }
 
 
-    public void serializeKeyCodes2and3(Context c) {
-        try {
-            KeyCodes2.serialize(mKeyCodes2, c);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            KeyCodes3.serialize(mKeyCodes3, c);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void saveToFileKeyCodes2and3(Context c) {
+        KeyCodes2.write(mKeyCodes2, c);
+        KeyCodes3.write(mKeyCodes3, c);
     }
 
     /**
@@ -202,7 +182,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
      */
     public void reinflateControlLayout(Context c, ViewOfXServer viewOfXServer) {
         //先序列化存储当前的model。再清空充填布局容器
-        serializeKeyCodes2and3(c);
+        saveToFileKeyCodes2and3(c);
         //先清空全部按键
         mBtnContainer.removeAllViews();
         mLeftBar.removeAllViews();
@@ -214,7 +194,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
 //        mRightBar.setVisibility(GONE);
         //如果之前设置了隐藏状态，然后退出到后台，再次切换到前台的时候重新构建布局，这时候应该不显示按键
         XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
-        if(ui instanceof FalloutInterfaceOverlay2 && !((FalloutInterfaceOverlay2) ui).isSidePanelsVisible()){
+        if (ui instanceof FalloutInterfaceOverlay2 && !((FalloutInterfaceOverlay2) ui).isSidePanelsVisible()) {
             return;
         }
 
@@ -248,7 +228,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
                 LinearLayout oneColLinear = new LinearLayout(c);
                 oneColLinear.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
                 oneColLinear.setOrientation(VERTICAL);
-                for (OneKey oneKey : oneCol.getmAllKeys())
+                for (OneKey oneKey : oneCol.getAllKeys())
                     oneColLinear.addView(new UnmovableBtn(c, oneKey, viewOfXServer));
                 oneColScroll.addView(oneColLinear);
                 linearLayout.addView(oneColScroll);
@@ -282,7 +262,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
             }
         }
         //添加摇杆
-        for (JoyStickBtn.Params joyParams : mKeyCodes3.getJoyList()) {
+        for (JoyParams joyParams : mKeyCodes3.getJoyList()) {
             JoyStickBtn joyStickBtn = new JoyStickBtn(c, joyParams);
             joyStickBtn.setViewFacade(viewOfXServer);
             //添加视图
@@ -296,12 +276,11 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
     /**
      * 隐藏按键布局的时候，toucharea也要删去
      */
-    public void hideControlPanelsTouchArea(){
-        for(BtnTouchArea area:mBtnAreaList){
-            area.updateArea(0,0,0,0);
+    public void hideControlPanelsTouchArea() {
+        for (BtnTouchArea area : mBtnAreaList) {
+            area.updateArea(0, 0, 0, 0);
         }
     }
-
 
 
 }

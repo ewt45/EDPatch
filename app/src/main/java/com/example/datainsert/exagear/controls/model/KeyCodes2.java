@@ -1,9 +1,9 @@
 package com.example.datainsert.exagear.controls.model;
 
 import android.content.Context;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.widget.AppCompatButton;
-import android.widget.Button;
+import android.support.annotation.NonNull;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,12 +12,15 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 public class KeyCodes2 implements Serializable {
 
-    public static final String KeyStoreFileName = "custom_control2.ser";
+    public static final String KeyStoreFileName = "custom_control2.ser";  //"custom_control2.ser";
+    public static final String KeyStoreFileNameNew = "custom_control2.txt";  //"custom_control2.ser";
+
     private static final long serialVersionUID = -4696658597434288880L;
 
 
@@ -44,6 +47,47 @@ public class KeyCodes2 implements Serializable {
         this.mRightSide = mRightSide;
     }
 
+    /**
+     * 从本地读取按键。若没有文件或读取失败，返回一个空的KeyCodes2
+     * @param c
+     * @return
+     */
+    public static @NonNull KeyCodes2 read(Context c){
+        File file = new File(c.getExternalFilesDir(null),KeyStoreFileNameNew);
+
+        KeyCodes2 keyCodes2  = new KeyCodes2();
+        if(!file.exists())
+            return keyCodes2;
+        List<String> fileLines ;
+        try {
+            fileLines= FileUtils.readLines(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return keyCodes2;
+        }
+        return FormatHelper.stringToKeyCodes2(fileLines);
+
+    }
+    /**
+     * 将按键写入本地。
+
+     */
+    public static void  write(KeyCodes2 keyCodes2,Context c){
+        File file = new File(c.getExternalFilesDir(null),KeyStoreFileNameNew);
+        if(file.exists()){
+            boolean b=file.delete();
+        }
+        try {
+            FileUtils.writeLines(file,StandardCharsets.UTF_8.name(),FormatHelper.keyCodes2ToString(keyCodes2),FormatHelper.lineSeparator,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @deprecated 序列化不好转移。请使用read 和 write方法读写txt
+     */
+    @Deprecated
     public static void serialize(KeyCodes2 keyCodes2, Context c) throws IOException {
         File file = new File(c.getExternalFilesDir(null), KeyCodes2.KeyStoreFileName);
         if(file.exists())
@@ -54,7 +98,10 @@ public class KeyCodes2 implements Serializable {
         oos.close();
         fos.close();
     }
-
+    /**
+     * @deprecated 序列化不好转移。请使用read 和 write方法读写txt
+     */
+    @Deprecated
     public static KeyCodes2 deserialize(Context c) throws IOException, ClassNotFoundException {
         File file = new File(c.getExternalFilesDir(null), KeyCodes2.KeyStoreFileName);
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));

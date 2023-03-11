@@ -33,7 +33,9 @@ public class FuncSInput implements Func{
                 SmaliFile.LOCATION_BEFORE,
                 SmaliFile.ACTION_INSERT,
                 new String[]{"return-void"},
-                new String[]{"invoke-static {}, Lcom/example/datainsert/exagear/input/SoftInput;->toggle()V"});
+                new String[]{"invoke-static {}, Lcom/example/datainsert/exagear/input/SoftInput;->toggle()V"})
+                //还有一个老方法用的是ExagearPrefs
+                | test.containsLine("ExagearPrefs;->showInputCorrect");
         test.close();
         return b;
     }

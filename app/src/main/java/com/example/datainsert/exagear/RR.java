@@ -82,8 +82,8 @@ public class RR {
     public static int cmCtrl_JoyEditKeys = 66;
     public static int cmCtrl_JoyEditKeyCstm = 67;
     public static int cmCtrl_gs_lClick = 68;
-    public static int cmCtrl_gs_rClick=69;
-    public static int cmCtrl_gs_vScroll=70;
+    public static int cmCtrl_gs_rClick = 69;
+    public static int cmCtrl_gs_vScroll = 70;
     public static int cmCtrl_gs_dndLeft = 71;
     public static int cmCtrl_gs_zoom = 72;
     public static int cmCtrl_gs_menu = 73;
@@ -96,8 +96,16 @@ public class RR {
     public static int cmCtrl_s1_msSpd = 80;
     public static int cmCtrl_reset = 81;
     public static int cmCtrl_s1_msSpdTip = 82;
-    public static int cmCtrl_s2_sideTitleTip = 83;
-    public static int cmCtrl_s2_selectBtn = 84;
+    public static int cmCtrl_s1_msOffScr = 83;
+    public static int cmCtrl_s1_msOffScrTip = 84;
+    public static int cmCtrl_s2_sideTitleTip = 85;
+    public static int cmCtrl_s2_selectBtn = 86;
+    public static int cmCtrl_BtnEditTrigger = 87;
+    public static int cmCtrl_BtnEditComb = 88;
+    public static int cmCtrl_tabOther = 89;
+    public static int cmCtrl_s4_tips = 90;
+    public static int cmCtrl_s4_export = 91;
+    public static int cmCtrl_s4_import = 92;
 
     private static String locale;
 
@@ -133,7 +141,7 @@ public class RR {
                 "输入自定义高度",
 
                 "按键设置（自定义操作模式）",
-                "部分选项可以通过长按查看说明\n- 在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。\n- 启动环境后，可以通过三指触屏调出此界面进行实时修改。",
+                "大部分选项可以通过长按查看说明",
                 "鼠标",
                 "按键",  //30
                 "样式",
@@ -188,8 +196,20 @@ public class RR {
                 "鼠标灵敏度",                //80
                 "重置",
                 "调整鼠标移动速度，仅在使用“手势控制 2”时生效。",
+                "视角转动速度（鼠标移到屏幕边界之后）",
+                "数值为0~70。一般设置为0，即不允许鼠标移到桌面外部。\n某些游戏中，若鼠标移动到边界时视角无法继续转动，可以尝试调大该数值，允许鼠标移到边界外以继续转动视角。\n\n注意若想此功能生效，需要设置游戏全屏，并且在环境设置中修改分辨率与游戏全屏分辨率完全相同，即画面右下方不能有多余的黑边。无需设置注册表MouseWarpOverride=force。",
                 "点击“+”新建一列按键。长按可进行排序。",
-                "选择按键……"
+                "选择按键……",
+                "松手时保持按下状态",
+                "组合键",
+                "其他",
+                "    <ul>\n" +
+                        "        <li>在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。</li>\n" +
+                        "        <li>启动环境后，可以通过三指触屏调出此界面进行实时修改。</li>\n" +
+                        "        <li>本功能仅提供基础设置，若想高度自定义按键请使用Input Bridge.</li>\n" +
+                        "    </ul>",
+                "导出",
+                "导入",
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -222,7 +242,7 @@ public class RR {
                 "input height",
 
                 "Controls Settings",
-                "Long click options to check its description.\n- To enable this control, set Control Mode \"default\" in container properties.\n- this dialog can also show up by three-finger click after launching the container.",
+                "Long click options to check its description.",
                 "Mouse",
                 "Keys",
                 "Style",
@@ -277,8 +297,20 @@ public class RR {
                 "Mouse sensitivity",
                 "Reset",
                 "Adjust the pointer speed, effective only in Gesture Mode 2",
+                "Camera Speed(When mouse hits the screen boundary)",
+                "The value is 0~70. Default is 0, that is, the mouse is not allowed to move outside the screen. \nIn some games, if the camera cannot continue to move when the mouse moves to the boundary, you can try to increase the value to allow camera continue to move. \n\nNote that if for function to take effect, you need to full screen the game, and adjust the resolution in the container's properties to be exactly the same as the full screen resolution of the game, that is, there should be no extra black frame at the bottom right of the screen. There is no need to set the registry MouseWarpOverride=force.",
                 "Click \"+\" to add one column of buttons. Long press to rearrange them.",
-                "Select keys……"
+                "Select keys……",
+                "Keep pressed after releasing the finger",
+                "Combination",
+                "Others",
+                "    <ul>\n" +
+                        "        <li>To enable this control, set Control Mode \"default\" in container properties</li>\n" +
+                        "        <li>This dialog can also show up by three-finger click after launching the container.</li>\n" +
+                        "        <li>This function provides only basic settings. For better customization Input Bridge is preferred.</li>\n" +
+                        "    </ul>",
+                "Export",
+                "Import",
 
         };
 

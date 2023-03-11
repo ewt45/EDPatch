@@ -1,7 +1,5 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
-import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
@@ -10,23 +8,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.ViewGroupUtils;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.recyclerview.extensions.ListAdapter;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroupOverlay;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
 import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
@@ -76,16 +65,6 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
         viewHolder.getmBtn().setTag(getItem(position));
         viewHolder.getmBtn().setOnClickListener(v -> {
             Context c = v.getContext();
-//            EditText editText = new EditText(c);
-//            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-//            editText.setSingleLine();
-//            editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-//            editText.setText(((OneKey) v.getTag()).getName());
-//            editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
-//            LinearLayout renameRootView = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
-//            int padding = QH.px(c, RR.attr.dialogPaddingDp);
-//            renameRootView.setPadding(padding, 0, padding, 0);
-//
             new BtnPropertiesView(c, (OneKey) v.getTag(), false)
                     .showWithInDialog((dialog, which) -> {
                         OneKey newSelfKey = ((OneKey) v.getTag()).clone();
@@ -141,7 +120,7 @@ public class BtnKeyAdapter extends ListAdapter<OneKey, BtnKeyAdapter.ViewHolder>
     public void submitList(@Nullable List<OneKey> list) {
 
         super.submitList(list);
-        this.mOneCol.setmAllKeys(list == null ? new OneKey[0] : list.toArray(new OneKey[0]));
+        this.mOneCol.setAllKeys(list == null ? new OneKey[0] : list.toArray(new OneKey[0]));
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

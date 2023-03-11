@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getTextViewWithText;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ON_WIDGET;
@@ -14,18 +13,12 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.TooltipCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
@@ -34,11 +27,11 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.
 import com.example.datainsert.exagear.FAB.widget.SimpleItemSelectedListener;
 import com.example.datainsert.exagear.FAB.widget.SpinArrayAdapterSmSize;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
 import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
+import com.example.datainsert.exagear.controls.model.JoyParams;
 
 import java.util.List;
 
@@ -140,7 +133,7 @@ public class SubView2Keys extends LinearLayout {
                     mKeyCodes3.getJoyList().remove(mKeyCodes3.getJoyList().size() - 1);
                 }
                 while (allKeysView.joyStickNum > mKeyCodes3.getJoyList().size()) {
-                    mKeyCodes3.getJoyList().add(new JoyStickBtn.Params());
+                    mKeyCodes3.getJoyList().add(new JoyParams());
                 }
             });
         });

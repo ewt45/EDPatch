@@ -24,11 +24,11 @@ public class OneCol implements Serializable {
         this.id = id;
     }
 
-    public OneKey[] getmAllKeys() {
+    public OneKey[] getAllKeys() {
         return mAllKeys;
     }
 
-    public void setmAllKeys(OneKey[] mAllKeys) {
+    public void setAllKeys(OneKey[] mAllKeys) {
         this.mAllKeys = mAllKeys==null?new OneKey[0]: mAllKeys;
     }
 
