@@ -99,6 +99,8 @@ public class GestureMachineMix {
                                 pointerContext,
                                 densityDpi * clickAlignThresholdInches),
                         pointerContext, 200));
+
+        //1指滚动
         GestureState1FingerMoveToScrollSync gs1FAbsScroll = new GestureState1FingerMoveToScrollSync(
                 gestureContext,
                 new ScrollAdapterMouseWheel(gestureContext.getPointerReporter()),

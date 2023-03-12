@@ -4,6 +4,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -23,9 +24,10 @@ import android.widget.TextView;
 import com.eltechs.axs.Globals;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.ControlsResolver;
 
 public abstract class BaseFragment extends DialogFragment implements DialogInterface.OnClickListener {
-    protected final static String SHARED_PREFERENCE_SETTING = "some_settings";
+    protected final static String SHARED_PREFERENCE_SETTING = ControlsResolver.PREF_FILE_NAME_SETTING;
 
     /**
      * 重写了onCreateDialog，这样子fragment只需重写buildUI创建视图即可。

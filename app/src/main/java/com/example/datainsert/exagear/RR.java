@@ -106,6 +106,11 @@ public class RR {
     public static int cmCtrl_s4_tips = 90;
     public static int cmCtrl_s4_export = 91;
     public static int cmCtrl_s4_import = 92;
+    public static int cmCtrl_s4_trsportTitle = 93;
+    public static int cmCtrl_s4_trsportTip = 94;
+    public static int cmCtrl_s4_exportResult = 95;
+    public static int cmCtrl_s4_importResult = 96;
+    public static int cmCtrl_s2_txtSize = 97;
 
     private static String locale;
 
@@ -140,7 +145,7 @@ public class RR {
                 "输入自定义宽度",
                 "输入自定义高度",
 
-                "按键设置（自定义操作模式）",
+                "自定义操作模式",
                 "大部分选项可以通过长按查看说明",
                 "鼠标",
                 "按键",  //30
@@ -210,6 +215,11 @@ public class RR {
                         "    </ul>",
                 "导出",
                 "导入",
+                "数据转移",
+                "用户可以将自定义按键功能相关数据导入或导出，但不保证此功能升级后兼容旧版数据。\n点击导出，将数据以文本格式复制到剪切板；点击导入，将尝试从剪切板读取文本转为数据。",
+                "已复制",
+                "导入成功$导入失败",
+                "文字大小",
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -241,7 +251,7 @@ public class RR {
                 "input width",
                 "input height",
 
-                "Controls Settings",
+                "Custom Controls",
                 "Long click options to check its description.",
                 "Mouse",
                 "Keys",
@@ -311,6 +321,11 @@ public class RR {
                         "    </ul>",
                 "Export",
                 "Import",
+                "Data Transfer",
+                "Users can import or export data of Custom Controls, but it is not guaranteed that it will be compatible in the future.\nClick Export to copy the data to the clipboard in text format. Click Import to try to read text from the clipboard into data.",
+                "Copied to clipboard",
+                "Import succeeded$Import failed",
+                "Text Size"
 
         };
 

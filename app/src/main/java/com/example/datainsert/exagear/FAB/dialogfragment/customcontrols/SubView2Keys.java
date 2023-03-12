@@ -4,9 +4,7 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.get
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.getS;
-import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ON_WIDGET;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
-import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_USE_CUSTOM_CONTROL;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -57,8 +55,8 @@ public class SubView2Keys extends LinearLayout {
         mKeyCodes2 = keyCodes2;
         mKeyCodes3 = keyCodes3;
 
-        //是否使用自定义操作模式(不使用会创建DefaultCTF）
-        getPreference().edit().putBoolean(PREF_KEY_USE_CUSTOM_CONTROL, true).apply();
+//        //是否使用自定义操作模式(不使用会创建DefaultCTF）
+//        getPreference().edit().putBoolean(PREF_KEY_USE_CUSTOM_CONTROL, true).apply();
 
         //按键在两侧还是画面上层
         Spinner spinKeyPosType = new Spinner(c); //用unicode字符？ ≡☰ ⇌ ⇄
@@ -99,7 +97,7 @@ public class SubView2Keys extends LinearLayout {
         addView(linearSideColOuter);
 
         //按钮与容器画面重叠（思路有问题，这个废弃）
-        getPreference().getBoolean(PREF_KEY_BTN_ON_WIDGET, false);
+//        getPreference().getBoolean(PREF_KEY_BTN_ON_WIDGET, false);
 
         //自定义按键栏。点击显示对话框选择按键，关闭时序列化
         Button csPosKeyBtn = new Button(c);

@@ -13,6 +13,7 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_TXT_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN__TXT_SIZE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SIDEBAR_COLOR;
 
@@ -22,9 +23,11 @@ import android.graphics.Color;
 import android.graphics.drawable.RippleDrawable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.TextViewCompat;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +62,9 @@ public class SubView3Style extends LinearLayout {
         //样例按钮
         Button btnSample = new Button(c);
         btnSample.setText(getS(RR.cmCtrl_s3_sampleBtn));
+        btnSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,getPreference().getInt(PREF_KEY_BTN__TXT_SIZE,4)+10);
+        //设置一下自动缩放文字大小
+//        TextViewCompat.setAutoSizeTextTypeWithDefaults(btnSample,TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM);
 //        btnSample.setBackground(getPreference().getBoolean(PREF_KEY_BTN_BG_RIPPLE,false)
 //                ?new RippleDrawable(ColorStateList.valueOf(getPreference().getInt(PREF_KEY_BTN_BG_COLOR,0xffffffff)),null,null)
 //                :new ColorDrawable(getPreference().getInt(PREF_KEY_BTN_BG_COLOR,0xffffffff)));
@@ -82,6 +88,7 @@ public class SubView3Style extends LinearLayout {
         //垂直居中且水平平分的线性布局参数，使用的时候用generateParams复制一个新的出来吧
 
         EditText editInColor = new EditText(c);
+        editInColor.setMaxWidth(QH.px(c,100));
         editInColor.setSingleLine();
         editInColor.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editInColor.setFilters(new InputFilter[]{new HexInputFilter(), new InputFilter.LengthFilter(6)});
@@ -181,8 +188,21 @@ public class SubView3Style extends LinearLayout {
             getPreference().edit().putInt(PREF_KEY_SIDEBAR_COLOR, sideBgColor).apply();
         }));
         LinearLayout linearSideColor = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),editSideColor,true);
+
         setDialogTooltip(linearSideColor.getChildAt(0),getS(RR.cmCtrl_s3_sideColorTip));
         addView(linearSideColor);
+
+        SeekBar seekTxtSize = new SeekBar(c);
+        //10sp~30sp 默认14sp . progress在0~20
+
+        seekTxtSize.setMax(20);
+        seekTxtSize.setProgress(getPreference().getInt(PREF_KEY_BTN__TXT_SIZE,4));
+        seekTxtSize.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> {
+            btnSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,progress+10);
+            getPreference().edit().putInt(PREF_KEY_BTN__TXT_SIZE,progress).apply();
+        }));
+        LinearLayout linearTxtSize = getOneLineWithTitle(c,"文字大小",seekTxtSize,true);
+        addView(linearTxtSize);
     }
 
 

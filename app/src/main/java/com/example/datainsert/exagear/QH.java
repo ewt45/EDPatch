@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,6 +32,14 @@ public class QH {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+    /**
+     * convert sp to its equivalent px
+     */
+    public static int sp2px(Context c,int sp){
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,c.getResources().getDisplayMetrics());
+    }
+
+
     /**
      * 反序列化，获取NewKeyPrefs数组
      *

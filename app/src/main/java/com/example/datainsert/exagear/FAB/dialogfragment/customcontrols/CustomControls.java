@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.widget.LinearLayout.VERTICAL;
@@ -8,6 +9,8 @@ import static com.example.datainsert.exagear.RR.cmCtrl_tabOther;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -23,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
@@ -35,11 +39,13 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.model.FormatHelper;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class CustomControls extends BaseFragment implements DialogInterface.OnClickListener {
     public static final String TAG = "CustomControls";
@@ -144,12 +150,14 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         rootView.addView(tabLayout, new ViewGroup.LayoutParams(-1, -2));
         rootView.addView(viewPager, viewPagerParams);
 
+
         //三个标签页
         mPages = new ViewGroup[]{
                 new SubView1Mouse(c),
                 new SubView2Keys(c, mKeyCodes2, mKeyCodes3),
                 new SubView3Style(c),
-        new SubView4Other(c)};
+                new SubView4Other(c)};
+        addTransferCallback((SubView4Other) mPages[3]);
 
         String[] tabTitles = new String[]{
                 getS(RR.cmCtrl_tabMouse),
@@ -187,13 +195,60 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             }
             //否则自己序列化
             else {
-                KeyCodes2.write(mKeyCodes2,requireContext());
-                KeyCodes3.write(mKeyCodes3,requireContext());
+                KeyCodes2.write(mKeyCodes2, requireContext());
+                KeyCodes3.write(mKeyCodes3, requireContext());
             }
 
         } else if (which == BUTTON_NEGATIVE) {
 //            Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), S.get(S.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    private void addTransferCallback(SubView4Other subView4Other) {
+        subView4Other.setCallback(new SubView4Other.TransferCallback() {
+            @Override
+            public void exportData() {
+                String data = FormatHelper.dataExport(mKeyCodes2, mKeyCodes3);
+                ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(getS(RR.cmCtrl_title), data);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_exportResult), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void importData() {
+                try {
+                    ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    String data = "";
+                    if (!(clipboard.hasPrimaryClip())) {
+                        throw new Exception("剪切板没有数据");
+                    } else if (!(Objects.requireNonNull(clipboard.getPrimaryClipDescription()).hasMimeType(MIMETYPE_TEXT_PLAIN))) {
+                        throw new Exception("剪切板数据类型不是文本");
+                        // This disables the paste menu item, since the clipboard has data but it is not plain text
+                    }
+
+                    // Examines the item on the clipboard. If getText() does not return null, the clip item contains the text.
+                    // Assumes that this application can only handle one item at a time.
+                    ClipData.Item item = Objects.requireNonNull(clipboard.getPrimaryClip()).getItemAt(0);
+                    data = (String) item.getText(); // Gets the clipboard as text.
+                    if (data == null)
+                        throw new Exception("剪切板有文本，但不是普通文本。可能是URI？");// The clipboard does not contain text. If it contains a URI, attempts to get data from it
+
+                    //尝试转换为按键数据
+                    FormatHelper.dataImport(data);
+                    //如果成功了，关闭对话框，并且设置本次存储新数据 (最好直接关闭了，不知道在中途修改model整体实例，会不会导致其他功能未更新而出错）
+//                    mKeyCodes2 = KeyCodes2.read(requireContext());
+//                    mKeyCodes3 = KeyCodes3.read(requireContext());
+                    getDialog().dismiss();//这个貌似不会调用positive button的onclicklisntenr，好耶
+                    Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_importResult).split("\\$")[0], Toast.LENGTH_SHORT).show();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_importResult).split("\\$")[1], Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
     }
 
     @Override

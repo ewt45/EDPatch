@@ -1,51 +1,33 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay.widget;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
-import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ALPHA;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_TXT_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN__TXT_SIZE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.RippleDrawable;
-import android.support.v7.app.AlertDialog;
-import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 
 import com.eltechs.axs.Finger;
-import com.eltechs.axs.Globals;
 import com.eltechs.axs.KeyCodesX;
-import com.eltechs.axs.activities.XServerDisplayActivity;
-import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
-import com.eltechs.axs.applicationState.ApplicationStateBase;
-import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnPropertiesView;
-import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.OneKey;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class RegularKeyBtn extends BaseMoveBtn {
     private static final String TAG = "RegularKeyBtn";
@@ -56,8 +38,9 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
     private int touchAreaLength = 60;
 
+    private MouseWheelInject mouseWheelInject;
 
-    private boolean isModifierPress = false; //修饰键，用来判断应该按下还是松开
+    private boolean isKeepingPress = false; //修饰键，用来判断应该按下还是松开
     //用于修饰键切换状态时，反转颜色
     private int mBgColor = Color.WHITE;
     private int mTxColor = Color.BLACK;
@@ -72,6 +55,7 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
         //先不在内部初始化样式了。之后写个public函数，传入是否是自定义位置的。然后从外部调用进行初始化？
         setupStyle();
+        mouseWheelInject = new MouseWheelInject(mViewFacade,30, (byte) (mOneKey.getCode()-256));
     }
 
     public static void setupStyleOnly(Button btn) {
@@ -97,6 +81,8 @@ public class RegularKeyBtn extends BaseMoveBtn {
         mTxColor = sp.getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK);
         this.setText(mOneKey.getName());
         this.setTag(mOneKey);
+//        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(this,QH.sp2px(getContext(),12),QH.sp2px(getContext(),32),5, TypedValue.COMPLEX_UNIT_PX);
+        setTextSize(TypedValue.COMPLEX_UNIT_SP,getPreference().getInt(PREF_KEY_BTN__TXT_SIZE,4)+10);
         //设置按钮背景样式
         this.setBackgroundTintList(ColorStateList.valueOf(mBgColor));
         this.setTextColor(mTxColor);
@@ -128,16 +114,16 @@ public class RegularKeyBtn extends BaseMoveBtn {
         if (mViewFacade == null)
             return;
         //如果是连发键并且已经按下，则松开。否则按下
-        if (mOneKey.isTrigger() && isModifierPress) {
-            InjectHelper.release(mViewFacade, mOneKey.getCode(), mOneKey.getSubCodes());
+        if (mOneKey.isTrigger() && isKeepingPress) {
+            InjectHelper.release(mViewFacade, mOneKey.getCode(), mOneKey.getSubCodes(),mouseWheelInject);
         } else {
-            InjectHelper.press(mViewFacade, mOneKey.getCode(), mOneKey.getSubCodes());
+            InjectHelper.press(mViewFacade, mOneKey.getCode(), mOneKey.getSubCodes(),mouseWheelInject);
         }
         //如果是连发，切换颜色
         if(mOneKey.isTrigger()){
-            isModifierPress = !isModifierPress;
-            setBackgroundTintList(ColorStateList.valueOf(isModifierPress ? mTxColor : mBgColor));
-            setTextColor(isModifierPress ? mBgColor : mTxColor);
+            isKeepingPress = !isKeepingPress;
+            setBackgroundTintList(ColorStateList.valueOf(isKeepingPress ? mTxColor : mBgColor));
+            setTextColor(isKeepingPress ? mBgColor : mTxColor);
         }
     }
 
@@ -156,7 +142,7 @@ public class RegularKeyBtn extends BaseMoveBtn {
 //        }
         //如果是连发则没有操作
         if(!mOneKey.isTrigger()){
-            InjectHelper.release(mViewFacade, mOneKey.getCode(),mOneKey.getSubCodes());
+            InjectHelper.release(mViewFacade, mOneKey.getCode(),mOneKey.getSubCodes(),mouseWheelInject);
         }
     }
 
