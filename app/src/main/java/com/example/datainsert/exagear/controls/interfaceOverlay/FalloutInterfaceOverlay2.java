@@ -69,7 +69,7 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
         returnLayout.setLayoutParams(new ViewGroup.LayoutParams(-1,-1));
 
         //先初始化自由位置或两侧栏的按钮容器布局，然后交给factory
-        btnContainer = new BtnContainer(a, viewOfXServer);
+        btnContainer = new BtnContainer(a);
 
         leftToolbar = new LinearLayout(a);
         leftToolbar.setLayoutParams(new LinearLayout.LayoutParams(-2, -1, 0.0f));
@@ -116,48 +116,7 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
             //设置编辑按键的菜单项
 //            List<AbstractAction> popupLists = new ArrayList<>(Arrays.asList(new ControlEdit(), new ShowKeyboard(), new ToggleHorizontalStretch(), new ControlToggleVisibility(), new ShowUsage(), new Quit()));
 //            a.addDefaultPopupMenu(popupLists);
-            //初始化锁定光标居中的鼠标监听
-            mPointerLockListener = new PointerListener() {
-//                final Pointer pointer = viewOfXServer.getXServerFacade().getXServer().getPointer();
 
-                @Override
-                public void pointerButtonPressed(int i) {
-
-                }
-
-                @Override
-                public void pointerButtonReleased(int i) {
-
-                }
-
-                @Override
-                public void pointerMoved(int i, int i2) {
-                    int centerX = viewOfXServer.getWidth()/2;
-                    int centerY = viewOfXServer.getHeight()/2;
-                    Log.d(TAG, String.format("pointerMoved: 监听到移动, 目的地 %d,%d， 视图中心在 %d,%d",i,i2,centerX,centerY));
-
-                    if(i!=centerX || i2!=centerY){
-                        Log.d(TAG, "pointerMoved: 重置到中心");
-                        viewOfXServer.getXServerFacade().injectPointerMove(centerX,centerY);
-//                        pointer.setCoordinates(centerX,centerY);
-                    }
-                }
-
-                @Override
-                public void pointerWarped(int i, int i2) {
-                    //目前来看wrap没触发过
-                    int centerX = viewOfXServer.getWidth()/2;
-                    int centerY = viewOfXServer.getHeight()/2;
-                    Log.d(TAG, String.format("pointerWarped: 监听到Warp, 目的地 %d,%d， 视图中心在 %d,%d",i,i2,centerX,centerY));
-                    if(i!=centerX || i2!=centerY){
-                        Log.d(TAG, "pointerWarped: 重置到中心");
-                        viewOfXServer.getXServerFacade().injectPointerMove(centerX,centerY);
-
-//                        pointer.setCoordinates(centerX,centerY);
-                    }
-
-                }
-            };
         }
 
 
@@ -212,7 +171,7 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
     }
 
     /**
-     * (仅刷新，不退出编辑）
+     * (仅刷新，不退出编辑）（隐藏按键的情况下会退出编辑）
      * 更新按钮布局和toucharea(先序列化，待会factory会从本地反序列化读取最新的）
      */
     public void refreshControlUI(){
@@ -223,6 +182,10 @@ public class FalloutInterfaceOverlay2 implements XServerDisplayActivityInterface
         if(tscWidget!=null && tscWidget.getChildCount()>0 && tscWidget.getVisibility()==VISIBLE) {
             tscWidget.requestLayout();
         }
+
+        //如果隐藏按键的话直接退出编辑
+        if(!isToolbarsVisible)
+            btnContainer.setElevation(0);
     }
 
     /**

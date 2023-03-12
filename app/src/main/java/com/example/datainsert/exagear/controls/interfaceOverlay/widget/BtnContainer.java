@@ -33,17 +33,13 @@ import java.io.IOException;
 public class BtnContainer extends FrameLayout {
     //   自身视图id BTNCONTAINER_RESOURCE_ID = 0x7f095123;//可以通过这个id寻找此视图
     public static final String TAG="BtnContainer";
-    private final ViewFacade mViewFacade;
-    private final ViewOfXServer mViewOfXServer;
 
-    public BtnContainer(Context context){
-        this(context,null);
-    }
 
-    public BtnContainer(@NonNull Context context, ViewOfXServer viewOfXServer) {
+
+    public BtnContainer(@NonNull Context context) {
         super(context);
-        mViewOfXServer = viewOfXServer;
-        this.mViewFacade = viewOfXServer!=null?viewOfXServer.getXServerFacade():null;
+//        mViewOfXServer = viewOfXServer;
+//        this.mViewFacade = viewOfXServer!=null?viewOfXServer.getXServerFacade():null;
 //        serFile = new File(getContext().getFilesDir(), KeyCodes3.KeyStoreFileName);
 //        //先尝试反序列读取之前的设置，如果没有再新建
 //        try {

@@ -45,4 +45,14 @@
         android:defaultValue="false"
         android:key="DEFAULT_RESOLUTION_NOT_SHORTCUT"
         android:title="未从快捷方式启动时采用默认分辨率" />
-</PreferenceScreen>
+
+    <PreferenceScreen
+        android:title="调起intent">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.eltechs.axs.activities"
+            android:targetClass="com.eltechs.axs.activities.XServerDisplayActivity" />
+    </PreferenceScreen>
+
+
+    </PreferenceScreen>

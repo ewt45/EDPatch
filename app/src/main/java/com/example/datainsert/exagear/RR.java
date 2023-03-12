@@ -243,7 +243,7 @@ public class RR {
                 "App is allowed to read the directory",
                 "App is allowed to write to the directory",
                 "App's storage permission is not granted",
-                "No obb detected, please try Selecting it manually",//                "can't find exagear obb file, please check its name and location or select it manually.\n on Android11+, Android/obb and Android/data directory can't be seen in system file picker.",
+                "No obb detected, please try selecting it manually",//                "can't find exagear obb file, please check its name and location or select it manually.\n on Android11+, Android/obb and Android/data directory can't be seen in system file picker.",
 
                 "select manually",
                 "Selected file isn't an obb file.$Obb found. Extracting...",
