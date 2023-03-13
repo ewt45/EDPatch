@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
@@ -40,6 +41,7 @@ public class SelectObbFragment extends Fragment {
     final static String TAG = "SelectObbFragment";
     static final int PICK_OBB_FILE = 123;
     TextView mTv;
+    Button mBtn;
     public static File obbFile=null; //用于zipinstallerobb获取和删除临时obb
     private ZipInstallerObb zipInstallerObb;
 
@@ -62,9 +64,9 @@ public class SelectObbFragment extends Fragment {
         addTextToOriHintPlace(getS(RR.SelObb_info));
 //        mTv = new TextView(requireContext());
 //        mTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
-        Button btn = new Button(requireContext());
-        btn.setText(getS(RR.SelObb_btn));
-        btn.setOnClickListener(new View.OnClickListener() {
+        mBtn = new Button(requireContext());
+        mBtn.setText(getS(RR.SelObb_btn));
+        mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                requireActivity().getSupportFragmentManager().popBackStack();
@@ -77,7 +79,7 @@ public class SelectObbFragment extends Fragment {
         LinearLayout l2 = new LinearLayout(requireContext());
         l2.setOrientation(LinearLayout.HORIZONTAL);
 //        l2.setVerticalGravity(Gravity.CENTER);
-        l2.addView(btn);
+        l2.addView(mBtn);
 //        l2.addView(mTv);
 //        l2.setMinimumHeight(50);
         root.addView(l2,new ViewGroup.LayoutParams(-1,-2));
@@ -159,15 +161,25 @@ public class SelectObbFragment extends Fragment {
         //如果选择了一个obb,将其复制到内部目录下,并开始解压
         //获取文件名
         Uri uri = data.getData();
-        List<String> list = uri.getPathSegments();
-        String[] names = list.get(list.size() - 1).split("/");
-        String filename = names[names.length - 1]; //文件
+        String filename = null;
+        //如果是从“最近”分类下打开的话，uri里不包含文件名，需要通过这个获取
+        DocumentFile documentFile = DocumentFile.fromSingleUri(activity,uri);
+        if(documentFile!=null)
+            filename = documentFile.getName();
+        //保留原来的从uri提取文件名的方法吧
+        if(filename == null){
+            List<String> list = uri.getPathSegments();
+            String[] names = list.get(list.size() - 1).split("/");
+            filename = names[names.length - 1]; //文件
+        }
+
         Log.d(TAG, "onActivityResult: 所选文件属性" + filename + ", " + uri.getPathSegments().toString()
                 +", type(ContentResolver().getType):"+fragment.requireContext().getContentResolver().getType(uri)
                 +", type(MimeTypeMap):"+MimeTypeMap.getSingleton().getMimeTypeFromExtension("obb"));
         //判断一下后缀吧，如果不是obb就显示错
         Toast.makeText(fragment.requireContext(), filename, Toast.LENGTH_SHORT).show();
-        if(filename.length()>=4 && !filename.endsWith(".obb")){
+
+        if(filename.length()<4 || !filename.endsWith(".obb")){
             fragment.mTv.setText(getS(RR.SelObb_selResult).split("\\$")[0]);
             return;
         }
@@ -176,6 +188,8 @@ public class SelectObbFragment extends Fragment {
         if (obbFile.exists()) {
             obbFile.delete();
         }
+        //禁用选择按钮
+        fragment.mBtn.setEnabled(false);
         //新建线程复制数据包
         new Thread(new Runnable() {
             @Override

@@ -17,6 +17,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExagearSupportV7包"
         tools:targetApi="31">
+
+        <activity android:name="com.eltechs.ed.activities.EDStartupActivity"
+            android:theme="@style/ThemeDefaultDialogNoTitle"
+            android:label="EDStartupActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,8 +35,7 @@
             android:theme="@style/Theme.ExagearSupportV7包.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
 
             <meta-data
@@ -35,14 +45,7 @@
 
         <activity android:name="com.eltechs.axs.activities.XServerDisplayActivity"
             android:screenOrientation="sensorLandscape"/>
-        <activity android:name="com.eltechs.ed.activities.EDStartupActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-
-        </activity>
 
 <!--        <provider-->
 <!--            android:name="android.support.v4.content.FileProvider"-->

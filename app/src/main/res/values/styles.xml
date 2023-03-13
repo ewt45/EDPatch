@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="ThemeDefaultDialog" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/primary</item>
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+    <style name="ThemeDefaultDialogNoTitle" parent="@style/ThemeDefaultDialog">
+        <item name="windowNoTitle">true</item>
+    </style>
+
+
+</resources>
