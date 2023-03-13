@@ -4,8 +4,10 @@ package com.example.datainsert.exagear.controls.model;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ALPHA;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_BG_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_ROUND_SHAPE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_TXT_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN__TXT_SIZE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_MOVE_RELATIVE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_OFFWINDOW_DISTANCE;
@@ -550,6 +552,12 @@ public class FormatHelper {
                     case PREF_KEY_MOUSE_OFFWINDOW_DISTANCE:
                         editor.putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE, Integer.parseInt(kv[1]));
                         break;
+                    case PREF_KEY_BTN__TXT_SIZE:
+                        editor.putInt(PREF_KEY_BTN__TXT_SIZE,Integer.parseInt(kv[1]));
+                        break;
+                    case PREF_KEY_BTN_ROUND_SHAPE:
+                        editor.putBoolean(PREF_KEY_BTN_ROUND_SHAPE, Boolean.parseBoolean(kv[1]));
+                        break;
                 }
             }
             editor.apply();
@@ -571,7 +579,9 @@ public class FormatHelper {
                     + propSeparator + PREF_KEY_MOUSE_MOVE_RELATIVE + kvSeparator +sp.getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false)
                     + propSeparator + PREF_KEY_BTN_ALPHA + kvSeparator +sp.getInt(PREF_KEY_BTN_ALPHA, 255)
                     + propSeparator + PREF_KEY_MOUSE_SENSITIVITY + kvSeparator +sp.getInt(PREF_KEY_MOUSE_SENSITIVITY,80)
-                    + propSeparator + PREF_KEY_MOUSE_OFFWINDOW_DISTANCE + kvSeparator +sp.getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0);
+                    + propSeparator + PREF_KEY_MOUSE_OFFWINDOW_DISTANCE + kvSeparator +sp.getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0)
+                    + propSeparator + PREF_KEY_BTN__TXT_SIZE + kvSeparator + sp.getInt(PREF_KEY_BTN__TXT_SIZE,4)
+                    + propSeparator + PREF_KEY_BTN_ROUND_SHAPE + kvSeparator + sp.getBoolean(PREF_KEY_BTN_ROUND_SHAPE,false);
 
             lines.add(line);
             lines.add(0,blockPrefix+"Pref"+propSeparator+getVersion()+propSeparator+lines.size());

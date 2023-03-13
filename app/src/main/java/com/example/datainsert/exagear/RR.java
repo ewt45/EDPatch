@@ -111,6 +111,7 @@ public class RR {
     public static int cmCtrl_s4_exportResult = 95;
     public static int cmCtrl_s4_importResult = 96;
     public static int cmCtrl_s2_txtSize = 97;
+    public static int cmCtrl_s3_btnRoundShape = 98;
 
     private static String locale;
 
@@ -138,7 +139,7 @@ public class RR {
                 "具有该文件夹的读取权限",
                 "具有该文件夹的写入权限",
                 "应用文件存储权限被禁止",      //20
-                "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。",//*安卓11及以上，无法选择Android/obb及Android/data目录内的文件
+                "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。",
                 "手动选择",
                 "所选文件不是obb数据包$选中obb。正在解压中",
                 "使用自定义分辨率",
@@ -155,7 +156,7 @@ public class RR {
                 "鼠标移动使用相对定位（手势控制 2）",
                 "勾选后采用第二种手势控制。\n\n**手势控制 1**：\n- 单指点击 = 鼠标在手指位置左键点击\n- 单指按下后立刻移动 = 鼠标滚轮\n- 单指长按后移动 = 鼠标在手指位置左键按下（拖拽）\n- 单指长按后松开 = 鼠标在手指位置右键点击\n- 双指点击 = 显示/隐藏安卓输入法\n- 双指按下后移动 = 缩放窗口（松开一根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单\n\n**手势控制 2**：\n- 单指点击 = 鼠标原处左键点击\n- 单指移动 = 鼠标位置移动\n- 二指点击 = 鼠标原处右键点击\n- 二指按下后立刻移动 = 鼠标滚轮\n- 二指长按后移动 = 鼠标在当前位置左键按下（拖拽）\n- 三指按下并移动1或2根手指 = 缩放窗口（松开1或2根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单",
                 "布局方式",
-                "左右侧栏：经典布局，按键位于主画面的左右两侧，每一侧可以有多列，每一列可以有多个按键。\n\n自由位置：按钮可以自由摆放（需要启动容器后，三指触屏调出菜单项，进入编辑模式后才能编辑位置）。可以添加摇杆按钮。\n\n两种布局数据分开存储，位于手机存储目录/Android/data/包名/custom_control2(3).ser，可以手动备份，但不保证日后的更新能兼容。",
+                "左右侧栏：经典布局，按键位于主画面的左右两侧，每一侧可以有多列，每一列可以有多个按键。\n\n自由位置：按钮可以自由摆放（需要启动容器后，三指触屏调出菜单项，进入编辑模式后才能编辑位置）。可以添加摇杆按钮。\n\n两种布局数据分开存储，位于手机存储目录/Android/data/包名/files/custom_control2(3).txt，可以手动备份，但不保证日后的更新能兼容。",
                 "左侧按键栏",
                 "右侧按键栏",
                 "选取按键",     //40
@@ -217,9 +218,10 @@ public class RR {
                 "导入",
                 "数据转移",
                 "用户可以将自定义按键功能相关数据导入或导出，但不保证此功能升级后兼容旧版数据。\n点击导出，将数据以文本格式复制到剪切板；点击导入，将尝试从剪切板读取文本转为数据。",
-                "已复制",
+                "已复制到剪切板",
                 "导入成功$导入失败",
                 "文字大小",
+                "圆形按钮",
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -259,9 +261,9 @@ public class RR {
                 "Display mouse Cursor",
                 "Display or hide the mouse cursor in containers.\nIf there are two cursors in game checking this option may help to hide one.",
                 "Move mouse relatively (Gesture Mode 2)",
-                "If checked, the second Gesture mode will be used.\n\n**Gesture Mode 1**:\n- One finger click = Mouse left click at finger's position\n- One finger press and move = Mouse scroll\n- One finger long press and move = Mouse left button press (drag)\n- One finger long click = Mouse right click\n- Two fingers click = toggle android keyboard\n- Two fingers press and move = resize the window (release one finger to move the window)\n- Three fingers click = Show popup menu\n\n**Gesture Mode 2**:\n- One finger click = Mouse left click at its own position\n- One finger move = Mouse move with finger's movement\n- Two fingers click = Mouse right click\n- Two fingers press and move = Mouse scroll\n- Tow fingers long press and move = Mouse left button press (drag)\n- Three fingers press and move 1 or 2 of them = Resize the window (release 1 or 2 of them to move the window)\n- Three fingers click = Show popup menu",
+                "If checked, the second Gesture mode will be used.\n\n**Gesture Mode 1**:\n- One finger click = Mouse left click at finger's position\n- One finger press and move = Mouse wheel scroll\n- One finger long press and move = Mouse left button press (drag)\n- One finger long click = Mouse right click\n- Two fingers click = toggle android keyboard\n- Two fingers press and move = resize the window (release one finger to move the window)\n- Three fingers click = Show popup menu\n\n**Gesture Mode 2**:\n- One finger click = Mouse left click at its own position\n- One finger move = Mouse move with finger's movement\n- Two fingers click = Mouse right click\n- Two fingers press and move = Mouse wheel scroll\n- Tow fingers long press and move = Mouse left button press (drag)\n- Three fingers press and move 1 or 2 of them = Resize the window (release 1 or 2 of them to move the window)\n- Three fingers click = Show popup menu",
                 "Layout Mode",
-                "Left&Right Sidebar: Classic layout. Key buttons are put in the sidebar and the main frame won't be overlaid.\n\nFree Position: Buttons can be placed anywhere (you need to enter a container, three-fingers click to edit a button's position). The joystick-style button is available.\n\nCustom data is stored on device at Android/data/PACKAGE_NAME/custom_control2(3).ser. They can be backed up manually, but may not be compatible with future updates (if there is any).",
+                "Left&Right Sidebar: Classic layout. Key buttons are put in the sidebar and the main frame won't be overlaid.\n\nFree Position: Buttons can be placed anywhere (you need to enter a container, three-fingers click to edit a button's position). The joystick-style button is available.\n\nCustom data is stored on device at Android/data/PACKAGE_NAME/files/custom_control2(3).txt. They can be backed up manually, but may not be compatible with future updates (if there is any).",
                 "Left Sidebar",
                 "Right Sidebar",
                 "Select buttons",
@@ -325,12 +327,121 @@ public class RR {
                 "Users can import or export data of Custom Controls, but it is not guaranteed that it will be compatible in the future.\nClick Export to copy the data to the clipboard in text format. Click Import to try to read text from the clipboard into data.",
                 "Copied to clipboard",
                 "Import succeeded$Import failed",
-                "Text Size"
+                "Text Size",
+                "Round Button"
+        };
 
+        String[] ruStrings = new String[]{
+                "подтвердить",
+                "отмена",
+                "Изменить расположение диска D",
+                "External Storage(Папки каталога Android)",
+                "External Storage(Папка каталога Android/data)",
+                "SD Card(Папка каталога SD/Android/data)",
+                "Выберите каталог Android для расположения диска D",
+                "Рекомендация",
+                "На Android11+ скорость чтения/записи в каталоге Android может быть очень низкой. Чтобы решить эту проблему, установите диск D в каталог Android/data или скопируйте игру на диск C или Z.",
+                "перезапустить",
+                "Расположение диска D изменено",
+                "Настройки не изменились",
+                "Имя папки",
+                "Местоположение каталога",
+                "Невозможно найти путь",
+                "Корневой каталог существует",
+                "Конечная папка существует",
+                "Выбранный файл является папкой",
+                "Приложению разрешено читать каталог",
+                "Приложению разрешено записывать в каталог",
+                "У приложения нет разрешения на доступ к Хранилищу",
+                "Выберите файл obb вручную",//                "не удается найти файл obb, проверьте его имя и местоположение или выберите его вручную.\n на Android11+ каталоги Android/obb и Android/data не видны в средстве выбора системных файлов.",
+
+                "выбрать вручную",
+                "Выбранный файл не является файлом obb.$Obb найден. Распаковка...",
+                "Использовать кастомное разрешение",
+                "ширина",
+                "высота",
+
+                "Кастомное Управление",
+                "Удерживайте долгий тап для получения описания функций.",
+                "Мышь",
+                "Ключи",
+                "Стиль",
+                "Отображать курсор мыши",
+                "Отображать или скрывать курсор мыши в контейнерах.\nЕсли в игре два курсора, включение этой опции может помочь скрыть один.",
+                "Отображение курсора как тачпада (Режим жестов 2)",
+                "Если флаг установлен, будет использоваться Режим жестов 2.\n\n**Режим жестов 1**:\n- Тап одним пальцем = Клик левой кнопкой мыши на позиции пальца\n- Тап и перемещение одним пальцем = Прокрутка мышью\n- Долгий тап одним пальцем и перемещение = Нажатие левой кнопки мыши (Перетаскивание)\n- Тап одним пальцем с удержанием = Клик правой кнопкой мыши\n- Тап двумя пальцами = Вызов клавиатуры Android\n- Тап двумя пальцами с удержанием и движение в разные стороны = Изменить размер окна (отпустите один палец, чтобы переместить окно)\n- Тап тремя пальцами = Показать меню\n\n**Режим жестов 2**:\n- Тап одним пальцем = Клик левой кнопкой мыши в позиции положения курсора\n- Движение одним пальцем = Движение курсора мыши\n- Тап двумя пальцами = Клик правой кнопкой мыши\n- Тап двумя пальцами и движение = Прокрутка колесика мыши\n- Тап двумя пальцами с удержанием и перемещение = Нажатие левой кнопки мыши (перетаскивание)\n- Тап тремя пальцами и перемещение 1 или 2 из них = Изменение размера окна (отпустите 1 или 2 пальца, чтобы переместить окно)\n- Тап тремя пальцами = Показать меню",
+                "Режим макета",
+                "Левая и правая боковые панели это классический макет. Кнопки ключей размещаются на боковых панелях, и основной экран не перекрывается.\n\nСвободная позиция: кнопки можно размещать где угодно (тап тремя пальцами для вызова меню, выбрать редактировать и изменить положение кнопки).  Доступна кнопка в виде джойстика.\n\nПользовательские данные хранятся на устройстве в Android/data/ИМЯ_ПАКЕТА/custom_control2(3).txt. Их можно создать как резервную копию вручную. Они могут быть несовместимы с будущими обновлениями(если они будут).",
+                "Левая боковая панель",
+                "Правая боковая панель",
+                "Выбор кнопок",
+                "Изменить",
+                "Удалить",
+                "Нажмите и удерживайте на кнопки, чтобы переставить их. Однократное нажатие, чтобы редактировать.",
+                "Левая и Правая боковая панель",
+                "Свободная позиция",
+                "Текст",
+                "Цвет и Прозрачность кнопок",
+                "Цвет - это шестнадцатеричное значение RGB, например 2121FA. \nПрозрачность варьируется от 0 до 255. Если Прозрачность равна 0 то фон кнопки прозрачен, а текст кнопки сохраняет 1/3 видимости.",
+                "Размер кнопок",
+                "Установите ширину и высоту кнопки в диапазоне от 10 до 200 dp. Значение меньше 10 будет адаптивно по ширине и высоте.",
+                "Цвет боковых панелей",
+                "Когда для параметра \"Кнопки - Режим макета\" выбрано значение \"Левая и Правая боковая панель\", этот цвет будет использоваться в качестве цвета фона боковых панелей. Цвет - это шестнадцатеричное значение RGB, например 000000, а Прозрачность всегда 255.",
+                "Редактировать Управление",
+                "Показать Управление",
+                "Скрыть Управление",
+                "Левая кнопка мыши",
+                "Правая кнопка мыши",
+                "Средняя кнопка мыши",
+                "Джойстик",
+                "Мышь",
+                "Показать диалог редактирования",
+                "Выход",
+                "Переименовать",
+                "Использовать 4 направления вместо 8-ми направлений",
+                "Если флаг установлен, за один раз будет нажата только одна клавиша. Если флаг не установлен, при перемещении в диагональном направлении будут срабатывать две кнопки, т. е. существует 8 направлений.\nРазрешение диагонального направления приведет к изменению угла направления определения с 45° на 22,5°, поэтому рекомендуется включить эту опцию, если игра не поддерживает диагональ.",
+                "Ключи кнопок",
+                "Кастомные",
+                "Левый клик мыши$Тап одним пальцем$Тап одним пальцем", //комментарий: после получения это разделит его на три части, первая - заголовок, вторая - описание режима 1, третья - описание режима 2.
+                "Правый клик мыши$Долгий тап и отпустить одним пальцем$Тап двумя пальцами",
+                "Колёсико (прокрутка мыши)$Движение одним пальцем$Движение двумя пальцами",
+                "Левый клик мыши (Перетаскивание)$Долгий тап одним пальцем и перемещение$Долгий тап двумя пальцами и перемещение",
+                "Приблизить$Тап двумя пальцами и перемещение$Тап тремя пальцами и перемещение 1 или 2 из них",
+                "Меню$Тап тремя пальцами$Тап тремя пальцами",
+                "Режим жестов 1$Оригинальный режим Default",
+                "Режим жестов 2$Режим TouchPad",
+                "Переместить курсор$ $Движение одним пальцем",
+                "Клавиатура$Тап двумя пальцами$ ",
+                "Рекомендации жестов",
+                "Кастомное Управление",
+                "Чувствительность мыши",
+                "Сброс",
+                "Отрегулируйте скорость указателя мыши, работает только в Режиме жестов 2",
+                "Скорость Камеры(Когда мышь достигает границы экрана)",
+                "Этот параметр имеет значения в диапазоне 0~70. По умолчанию 0, т. е. мышь не может перемещаться за пределы экрана. \nВ некоторых играх, если камера не может продолжать двигаться, когда мышь приближается к границе, вы можете попытаться увеличить это значение, чтобы камера продолжала двигаться. \n\nОбратите внимание, для того, чтобы функция заработала, вам необходимо развернуть игру на весь экран, а разрешение в свойствах контейнера настроить так, чтобы оно было точно таким же, как полноэкранное разрешение игры, то есть не должно быть лишних черных рамок в правом и нижнем углу экрана. При этом устанавливать в реестре \"MouseWarpOverride=force\" не нужно",
+                "Нажмите \"+\" чтобы добавить один столбец кнопок. Нажмите и удерживайте, чтобы изменить их порядок.",
+                "Выбрать ключи……",
+                "Продолжать нажатие после того как отпустили палец(Удержание)",
+                "Комбинация",
+                "Прочее",
+                "    <ul>\n" +
+                        "        <li>Чтобы включить Катомное Управление - выберите режим управления\"Default\" в настройках контейнера.</li>\n" +
+                        "        <li>Это окно также можно открыть, тапнув тремя пальцами в запущенном контейнере.</li>\n" +
+                        "        <li>Эта функция обеспечивает только основные настройки. Для лучшей и более точной настройки рекомендуется использовать Input Bridge.</li>\n" +
+                        "    </ul>",
+                "Экспорт",
+                "Импорт",
+                "Обмен данными",
+                "Пользователи могут импортировать или экспортировать конфиги элементов управления, но их совместимость в будущем не гарантируется.\nНажмите \"Экспорт\", чтобы скопировать данные в буфер обмена в текстовом формате. Нажмите \"Импорт\", чтобы попытаться загрузить текст из буфера обмена в данные.",
+                "Скопировано в буфер обмена",
+                "Импорт выполнен успешно$Не удалось импортировать",
+                "Размер текста",
+                "Круглая кнопка"
         };
 
         stringMap.put("zh", zhStrings);
         stringMap.put("en", enStrings);
+        stringMap.put("ru",ruStrings);
     }
 
     public static String getS(int id) {

@@ -26,20 +26,20 @@
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:hint="hint"
-                    android:focusable="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:hint="hint"
                     android:inputType="none" />
             </android.support.design.widget.TextInputLayout>
 
             <EditText
-                android:focusable="false"
-
                 android:id="@+id/edit_text"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:autofillHints="111"
+                android:focusable="false"
                 android:inputType="text" />
 
             <TextView
@@ -66,21 +66,24 @@
                     android:text="aaaaaaaa" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
+
                 <Button
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="?android:attr/buttonBarButtonStyle" />
+                    android:layout_height="wrap_content" />
 
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+
                 <ToggleButton
                     android:id="@+id/testToggleButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
         </LinearLayout>
@@ -102,13 +105,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/start_xserveractivity_btn"
-        app:layout_constraintLeft_toRightOf="@id/test_btn"
-        app:layout_constraintTop_toTopOf="@id/test_btn"
-        android:text="启动XServerActivity"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:text="启动XServerActivity"
+        app:layout_constraintLeft_toRightOf="@id/test_btn"
+        app:layout_constraintTop_toTopOf="@id/test_btn" />
+
+
     <!--    <RelativeLayout-->
     <!--        android:id="@+id/parentRelative"-->
     <!--        app:layout_constraintTop_toBottomOf="@id/test_btn"-->
@@ -135,13 +141,13 @@
 
         <TextView
             android:id="@+id/tv"
-            android:elevation="100dp"
-            android:translationZ="100dp"
-
             android:layout_width="300dp"
             android:layout_height="200dp"
+
             android:layout_gravity="center"
-            android:background="#14202020" />
+            android:background="#14202020"
+            android:elevation="100dp"
+            android:translationZ="100dp" />
 
         <!--        一个纵向滚动，宽高match_parent，，在里面放一个横向滚动，宽高wrap_content,再里面都是wrap。就可以横向纵向都可以滑动了-->
     </FrameLayout>

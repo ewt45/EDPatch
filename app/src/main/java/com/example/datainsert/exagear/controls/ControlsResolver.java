@@ -24,7 +24,7 @@ public class ControlsResolver {
      */
     public final static String PREF_KEY_BTN_HEIGHT="btn_height";
     /**
-     * 按钮文字大小，单位sp 范围10sp~30sp 默认14sp . 数据存储在0~20，计算大小时记得+10
+     * 按钮文字大小，单位sp 范围10sp~30sp 默认14sp . 数据存储为0~20 默认4，计算大小时记得+10
      */
     public final static String PREF_KEY_BTN__TXT_SIZE="btn_text_size";
 //    public final static String PREF_KEY_BTN_ON_WIDGET="btn_on_widget";
@@ -47,6 +47,10 @@ public class ControlsResolver {
      * 鼠标滚轮滚动速度
      */
     public final static String PREF_KEY_MS_SCROLL_SPD = "mouse_scroll_speed";
+    /**
+     * 按钮是否使用圆形。默认为false，即形状使用默认样式的方形。
+     */
+    public final static String PREF_KEY_BTN_ROUND_SHAPE = "btn_round_shape";
 
     public static XServerDisplayActivityInterfaceOverlay getCurrentControls(Controls controls) {
 //        //如果preference不存在，不写入直接获取会出错吗(没问题）

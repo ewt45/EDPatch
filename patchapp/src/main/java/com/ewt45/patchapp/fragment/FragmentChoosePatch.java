@@ -42,7 +42,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //import brut.androlib.ApkDecoder;
 //import brut.apktool.Main;
@@ -129,13 +131,13 @@ public class FragmentChoosePatch extends Fragment {
                     StringBuilder builder = new StringBuilder(getString(R.string.actmsg_fail));
                     //添加报错的消息和栈记录
                     builder.append('\n').append(e.getLocalizedMessage());
-                    for(StackTraceElement element :e.getStackTrace())
+                    for (StackTraceElement element : e.getStackTrace())
                         builder.append('\n').append(element.toString());
                     Throwable errorCause = e.getCause();
                     //添加cause的信息和栈信息
-                    while (errorCause!=null){
+                    while (errorCause != null) {
                         builder.append('\n').append("Caused by: ").append(errorCause.getLocalizedMessage());
-                        for(StackTraceElement element:errorCause.getStackTrace())
+                        for (StackTraceElement element : errorCause.getStackTrace())
                             builder.append('\n').append(element.toString());
                         errorCause = errorCause.getCause();
                     }
@@ -148,7 +150,6 @@ public class FragmentChoosePatch extends Fragment {
                     } else {
                         spanInfo.insert(index + msg.length(), builder.toString());
                     }
-
 
 
                     binding.tvInfolist.setText(spanInfo);
@@ -231,33 +232,22 @@ public class FragmentChoosePatch extends Fragment {
                 e.printStackTrace();
             }
 
-            List<Func> addingFuncList = new ArrayList<>();
+
+            Map<Func, Integer> addingFuncList = new HashMap<>();
+            boolean patchNew = false;
             //如果勾选（启用说明是用户自己勾选的）添加功能
             for (FuncWithCheckBox fnc : funcList) {
                 if (fnc.checkBox.isChecked() && fnc.checkBox.isEnabled()) {
+                    patchNew = true;
                     mActionPool.submit(fnc.func);
-                    addingFuncList.add(fnc.func);
                 }
+                //所有功能都添加版本号，如果勾选了那么肯定要升到最新，没勾选可能是没添加也可能是老版本，然后func查一下就行了
+                // 因为没有卸载补丁功能，所以不会出现从勾选到取消勾选（已安装功能但是修改后的apk没有该功能）的情况
+                addingFuncList.put(fnc.func, fnc.checkBox.isChecked() ? fnc.func.getLatestVersion() : fnc.func.getInstalledVersion());
             }
-//
-//            if (binding.checkFab.isChecked() && binding.checkFab.isEnabled()) {
-//                mActionPool.submit(new FuncFAB());//添加功能
-//                funcModified = true;
-//            }
-//            if (binding.checkCursor.isChecked() && binding.checkCursor.isEnabled()) {
-//                mActionPool.submit(new FuncCursor());
-//                funcModified = true;
-//            }
-//            if (binding.checkResl.isChecked() && binding.checkResl.isEnabled()) {
-//                mActionPool.submit(new FuncResl());
-//                funcModified = true;
-//            }
-//            if (binding.checkInput.isChecked() && binding.checkInput.isEnabled()) {
-//                mActionPool.submit(new FuncSInput());
-//                funcModified = true;
-//            }
+
             changeView(CHECK_DISABLE_WAITING); //操作过程先禁用按钮(草这个要放到判断isEnable下面不然就全是disable了）
-            if (addingFuncList.size()>0) {
+            if (patchNew) {
                 mActionPool.submit(new WriteFuncVer(addingFuncList));
                 mActionPool.submit(new BuildApk());//回编译apk
                 mActionPool.submit(new SignApk(requireContext().getAssets()));//签名
@@ -360,9 +350,9 @@ public class FragmentChoosePatch extends Fragment {
         else {
             for (FuncWithCheckBox fnc : funcList) {
                 int version = fnc.func.getInstalledVersion();
-                Log.d(TAG, String.format("changeView: 功能%s, 已安装版本 %d，最新版本 %d",fnc.func.getClass().getSimpleName(),version,fnc.func.getLatestVersion()));
+                Log.d(TAG, String.format("changeView: 功能%s, 已安装版本 %d，最新版本 %d", fnc.func.getClass().getSimpleName(), version, fnc.func.getLatestVersion()));
                 // 如果已安装功能版本号和最新的相等则自动勾选，否则不勾选
-                boolean added =  version == fnc.func.getLatestVersion() ;
+                boolean added = version == fnc.func.getLatestVersion();
                 fnc.checkBox.setChecked(added);
                 fnc.checkBox.setEnabled(!added);
             }

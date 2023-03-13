@@ -23,7 +23,7 @@ public class ProcessInstallObb {
      */
     public static void start(ZipInstallerObb zipInstallerObb){
         Log.d(TAG, "start: 开始新建选择obb的fragment");
-        ApplicationStateBase applicationStateBase = (ApplicationStateBase) Globals.getApplicationState();
+        ApplicationStateBase applicationStateBase = Globals.getApplicationState();
         if(applicationStateBase==null){
             Log.d(TAG, "start: Globals.getApplicationState()为null，无法获取acitivity");
             return;

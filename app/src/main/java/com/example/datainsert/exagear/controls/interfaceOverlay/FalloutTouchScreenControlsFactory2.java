@@ -268,7 +268,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
             //添加视图
             mBtnContainer.addView(joyStickBtn);
             //添加对应toucharea
-            btnAreaList.add(new BtnTouchArea(joyParams.getMarginLeft(), joyParams.getMarginTop(), joyStickBtn.getLayoutParams().width / 2f, new BtnKeyPressAdapter(joyStickBtn)));
+            btnAreaList.add(new BtnTouchAreaJoyStick(joyParams.getMarginLeft(), joyParams.getMarginTop(), joyStickBtn.getLayoutParams().width / 2f, new BtnKeyPressAdapter(joyStickBtn)));
 //                Log.d(TAG, "reAddBtnsFromKeys: 摇杆的margin 左="+((FrameLayout.LayoutParams)joyStickBtn.getLayoutParams()).leftMargin+" 上="+((FrameLayout.LayoutParams)joyStickBtn.getLayoutParams()).topMargin);
         }
     }

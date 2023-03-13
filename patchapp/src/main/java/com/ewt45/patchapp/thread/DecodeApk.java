@@ -13,7 +13,12 @@ import com.ewt45.patchapp.R;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 
 import brut.androlib.ApkDecoder;
 
@@ -36,6 +41,9 @@ public class DecodeApk implements Action {
             Log.d(TAG, "call: 删除上一次解压的文件夹成功");
         }
 
+
+//        testExec();
+
         ApkDecoder decoder = new ApkDecoder();
         decoder.setApkFile(new File(getPatchTmpDir(),apkName+".apk"));
         decoder.setFrameworkDir(getPatchTmpDir().getAbsolutePath());
@@ -51,6 +59,7 @@ public class DecodeApk implements Action {
 //                    new Androlib().build(PatchUtils.getPatchTmpOutDir(requireContext()),null);
 //                Main.main(null);
 
+
         if(apkName.equals("tmp")){
             //每次解包apk后，更新包名
             PatchUtils.setPackageName("");
@@ -62,5 +71,47 @@ public class DecodeApk implements Action {
     @Override
     public int getStartMessage() {
         return R.string.actmsg_decodeapk;
+    }
+
+
+    private void testExec() throws IOException, InterruptedException {
+        File filesDir = new File("/data/user/0/com.ewt45.patchapp/files");
+        for(File file:filesDir.listFiles()){
+            Log.d(TAG, "test4: 看看都有什么文件"+file.getName());
+        }
+        Log.d(TAG, "call: 看看能不能正常运行");
+        System.out.println(" 看看能不能正常运行");
+        Process process =Runtime.getRuntime().exec(
+                new String[]{
+                        "./apktool_2.7.0.jar"//原来指定工作路径之后要加./否则会找不到文件
+//                        filesDir.getAbsolutePath()+"/apktool_2.7.0.jar"
+                        , "-h"
+                },
+                null,
+                filesDir);
+
+        setInStream(process.getInputStream(), System.out);
+        setInStream(process.getErrorStream(), System.err);
+        int exitCode = process.waitFor();
+        Log.d(TAG, "test4: 子进程结束+"+exitCode);
+    }
+    private void setInStream(InputStream inputStream, PrintStream out){
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.println(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

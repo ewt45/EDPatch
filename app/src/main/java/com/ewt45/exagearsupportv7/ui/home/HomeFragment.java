@@ -36,7 +36,9 @@ import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProvider;
 
 import com.eltechs.axs.Globals;
+import com.eltechs.axs.activities.FatalErrorActivity;
 import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.eltechs.ed.activities.EDStartupActivity;
 import com.ewt45.exagearsupportv7.R;
 import com.ewt45.exagearsupportv7.databinding.FragmentHomeBinding;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.ToggleButtonHighContrast;
@@ -132,6 +134,7 @@ public class HomeFragment extends Fragment {
             intent.putExtra("facadeclass", (Serializable) null);
             startActivity(intent);
         });
+
         //
 
         SensitivitySeekBar.create(binding.getRoot());

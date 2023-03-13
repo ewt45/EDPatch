@@ -29,7 +29,6 @@ public class BtnAndTouchScreenControl implements TouchScreenControl {
 
     @Override // com.eltechs.axs.TouchScreenControl
     public void attachedToGLContext(SceneOfRectangles sceneOfRectangles) {
-
     }
 
     @Override // com.eltechs.axs.TouchScreenControl

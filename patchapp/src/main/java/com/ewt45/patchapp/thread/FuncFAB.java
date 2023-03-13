@@ -138,7 +138,13 @@ public class FuncFAB implements Func {
     @Override
     public int getLatestVersion() {
         //由多个版本号构成，每个占4位
-        return 0x2 //自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+
+        /*
+        自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+        1：初版（旧版没写入版本号）
+        2：初次安装后会自动创建Exagear文件夹
+         */
+        return 0x2
                 | 0x1 << 4//自定义按键的版本号
                 ;
 
@@ -214,7 +220,7 @@ public class FuncFAB implements Func {
                     //仅供测试用
                     "/com/eltechs/axs/xserver/Pointer.smali",
 //                    "/com/eltechs/axs/xserver/ViewFacade.smali",
-                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
+//                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
 //                    "/com/eltechs/axs/xserver/client/XClientWindowListener.smali"
             });
 

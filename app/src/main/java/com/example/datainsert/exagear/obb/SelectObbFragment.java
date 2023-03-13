@@ -20,8 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eltechs.axs.Globals;
+import com.eltechs.axs.activities.FrameworkActivity;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.helpers.ZipInstallerObb;
+import com.eltechs.ed.activities.EDStartupActivity;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.RSIDHelper;
 
 import org.apache.commons.io.IOUtils;
 
@@ -52,6 +57,9 @@ public class SelectObbFragment extends Fragment {
         mTv.setText(getS(RR.SelObb_info));
         mTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
         root.addView(mTv);
+
+        //试试能不能添加到原本的文字显示位置上(不行，要重写UnpackExagearImageObb，里面新建ZipInstallerObb时，传入的callback，reportProgress方法是传递文本的）
+        addTextToOriHintPlace(getS(RR.SelObb_info));
 //        mTv = new TextView(requireContext());
 //        mTv.setTextSize(TypedValue.COMPLEX_UNIT_DIP,10);
         Button btn = new Button(requireContext());
@@ -79,6 +87,20 @@ public class SelectObbFragment extends Fragment {
         root.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         return root;
     }
+    private static final String PROGRESS_FILE_NAME = "ed_progress";
+    private void addTextToOriHintPlace(String str) {
+        FrameworkActivity a = ((ApplicationStateBase)Globals.getApplicationState()).getCurrentActivity();
+        if(!(a instanceof EDStartupActivity))
+            return;
+//        EDStartupActivity activity = (EDStartupActivity) a;
+//        TextView textView = activity.findViewById(RSIDHelper.rslvID(com.ewt45.exagearsupportv7.R.id.sa_step_description,com.eltechs.axs.R.id.sa_step_description));
+//        if(textView == null)
+//            return;
+//
+//        textView.setText(str);
+
+        File file = new File(Globals.getAppContext().getFilesDir(), PROGRESS_FILE_NAME);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -96,11 +118,24 @@ public class SelectObbFragment extends Fragment {
 //    }
 
     /**
-     * 解压完成后删掉复制的数据包
+     * 解压完成后删掉复制的数据包(顺便隐藏视图，否则初次解压之后启动容器时这个还会显示）
      */
     public static void delCopiedObb(){
-        if(obbFile!=null)
+        //删obb
+        if(obbFile!=null){
             obbFile.delete();
+            obbFile = null;
+        }
+
+        //将选择obb部分的视图移除。
+        FrameworkActivity a = ((ApplicationStateBase)Globals.getApplicationState()).getCurrentActivity();
+        SelectObbFragment fragment = (SelectObbFragment) a.getSupportFragmentManager().findFragmentByTag(SelectObbFragment.TAG);
+        if(fragment==null) {
+            Log.d(TAG, "receiveResultManually: 未找到fragment，无法隐藏视图");
+            return;
+        }
+        a.getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
     }
 
     public static void receiveResultManually(AppCompatActivity activity, int requestCode, int resultCode, Intent data){

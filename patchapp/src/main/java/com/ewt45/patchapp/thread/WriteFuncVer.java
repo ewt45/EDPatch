@@ -5,11 +5,12 @@ import android.util.Log;
 import com.ewt45.patchapp.patching.PatcherFile;
 
 import java.util.List;
+import java.util.Map;
 
 public class WriteFuncVer implements Action{
     private final static String TAG="WriteFuncVer";
-    private final List<Func> mFuncList;
-    public WriteFuncVer(List<Func> mFuncList){
+    private final Map<Func,Integer> mFuncList;
+    public WriteFuncVer(Map<Func,Integer> mFuncList){
         this.mFuncList = mFuncList;
     }
 
