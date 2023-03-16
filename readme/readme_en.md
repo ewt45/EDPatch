@@ -19,7 +19,8 @@
 1. This apk is an experimental project, and it is not guaranteed that the function will be added successfully
 2. After clicking"start patch" button, please don't click or move to other view, otherwise problems may occur.
 3. The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. You can check it manually with third-party file manager app. 
-4. Since the patched apk is resigned, you may need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) before installing it. \nIf you need virgl overlay, please resign them with the same signature manually.
+4. Since the patched apk is resigned, you may need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) before installing it. \
+If you need virgl overlay, please resign them with the same signature manually.
 
 
 ## 目前可添加的功能
