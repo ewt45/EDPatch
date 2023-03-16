@@ -15,7 +15,7 @@
 3. 点击“开始修改”按钮，耐心等待打包完成。打包进度可以在输出信息中查看。
 4. 打包完成后，点击“安装修改后的apk”按钮安装新apk。由于签名变化，可能需要卸载原先的apk。
 
-### 注意事项：
+### 注意事项
 1. 本apk为实验性项目，出现各种bug都是正常现象。
 2. 在点击“开始修改”按钮后，请不要点击其他按钮或跳转其他界面，否则可能会出现问题。
 3. 打包完成的apk存在于/storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk，可以手动在第三方文件管理器中查看。
@@ -32,6 +32,7 @@
 
 ## 鸣谢
 感谢俄语翻译提供：Ēlochnik
+感谢测试和提出建议的众多朋友们
 ### 第三方依赖
 **用到的第三方项目都没传上来，编译是没法通过的。去release里下现成的apk就行了。**
 - [apktool](https://ibotpeaches.github.io/Apktool/)
