@@ -1,5 +1,7 @@
 ![icon](/patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
+[中文](../readme.md)    [English](./readme_en.md)      [Русский](./readme_ru.md)
+
 ## O проекте
 После добавления некоторых небольших функций в exagear (3.0.2) (в основном путем изменения dex) я обнаружил, что вручную изменять smali слишком проблематично.  Даже если предоставлено руководство с указанием измененного местоположения и кодов, оно не подходит для большинства людей, не имеющих опыта модификации apk.
 Поэтому мне интересно, могу ли я создать приложение.  Пользователю нужно только нажать кнопку и дождаться завершения автоматической модификации, а затем установить новый apk.  Так родилось это приложение.  Из-за моих ограниченных знаний 100% успех модификации или совместимость со всеми версиями exagear не гарантируется.
@@ -30,10 +32,10 @@
 - [Выбор файла obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
 
 
-## Благодарность
+## Acknowledgement
 - Русский перевод：Ēlochnik
 - Многие друзья тестируют и предлагают идеи
-### Использование сторонних проектов
+### Third-party project dependencies
 - [apktool](https://ibotpeaches.github.io/Apktool/)
 - [common-io](https://commons.apache.org/proper/commons-io/)
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
@@ -44,7 +46,7 @@
 
 
 
-## Update History
+## Change Log
 
 ### v0.0.2
 - EDPatch interface and available functions supports Russian now, thanks to Ēlochnik.

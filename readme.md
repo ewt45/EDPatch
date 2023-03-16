@@ -1,5 +1,7 @@
 ![icon](/patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
+[中文](./readme.md)    [English](./readme/readme_en.md)      [Русский](./readme/readme_ru.md)
+
 ## 介绍
 靠着仅有的一点java基础知识，在为exagear(3.0.2)加了一些小功能之后（主要是通过修改dex实现），我发现手改smali终究还是太麻烦了。
 即使提供了修改代码和位置的傻瓜式教程，还是有很多人因为完全不了解apk编辑/dex修改/smali语法而看不懂教程。

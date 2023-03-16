@@ -1,5 +1,7 @@
 ![icon](/patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
+[中文](../readme.md)    [English](./readme_en.md)    [Русский](./readme_ru.md)
+
 ## About
 After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. \
 Even if a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\
@@ -44,7 +46,7 @@ If you need virgl overlay, please resign them with the same signature manually.
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
 
 
-## Update History
+## Change Log
 
 ### v0.0.2
 - EDPatch interface and available functions supports Russian now, thanks to Ēlochnik.
