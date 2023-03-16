@@ -4,8 +4,8 @@
 После добавления некоторых небольших функций в exagear (3.0.2) (в основном путем изменения dex) я обнаружил, что вручную изменять smali слишком проблематично.  Даже если предоставлено руководство с указанием измененного местоположения и кодов, оно не подходит для большинства людей, не имеющих опыта модификации apk.
 Поэтому мне интересно, могу ли я создать приложение.  Пользователю нужно только нажать кнопку и дождаться завершения автоматической модификации, а затем установить новый apk.  Так родилось это приложение.  Из-за моих ограниченных знаний 100% успех модификации или совместимость со всеми версиями exagear не гарантируется.
 
-- 视频演示：[Youtube](https://youtu.be/t0y_AcWhZxI), [哔哩哔哩](https://www.bilibili.com/video/BV1mY411X7Nn/)
-- 下载：[release](https://github.com/ewt45/EDPatch/releases)
+- Видео: [Youtube](https://youtu.be/t0y_AcWhZxI), [哔哩哔哩](https://www.bilibili.com/video/BV1mY411X7Nn/)
+- Скачать: [release](https://github.com/ewt45/EDPatch/releases)
 ## Применение
 ### Действия
 1. Выберите apk exagear из списка установленных приложений или выберите локальных файл apk. Дождитесь завершения декодирования.
@@ -20,7 +20,7 @@
 4. После добавления некоторых небольших функций в exagear (3.0.2) (в основном путем изменения dex) я обнаружил, что вручную изменять smali слишком проблематично.  Даже если предоставлено руководство с указанием измененного местоположения и кодов, оно не подходит для большинства людей, не имеющих опыта модификации apk.\
    Поэтому мне интересно, могу ли я создать приложение.  Пользователю нужно только нажать кнопку и дождаться завершения автоматической модификации, а затем установить новый apk.  Так родилось это приложение.  Из-за моих ограниченных знаний 100% успех модификации или совместимость со всеми версиями exagear не гарантируется.
 
-## 目前可添加的功能
+## функций
 - [Кнопка настроек](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
   - Выбор локации диска D
   - Кастомное управление
@@ -31,8 +31,8 @@
 
 
 ## Благодарность
-Русский перевод：Ēlochnik
-Многие друзья тестируют и предлагают идеи
+- Русский перевод：Ēlochnik
+- Многие друзья тестируют и предлагают идеи
 ### Использование сторонних проектов
 - [apktool](https://ibotpeaches.github.io/Apktool/)
 - [common-io](https://commons.apache.org/proper/commons-io/)
@@ -42,3 +42,28 @@
 
 
 
+
+
+## Update History
+
+### v0.0.2
+- EDPatch interface and available functions supports Russian now, thanks to Ēlochnik.
+- Add a new function: Кастомное управление
+  - Большинство опций имеют описания, которые появляются при длительном нажатии. Выберите управление Default в настройках контейнера. После входа в контейнер тап тремя пальцами вызывает меню для редактирования.
+  - Мышь: переключение видимости курсора мыши.  Переключение режимов жестов (режим по умолчанию и режим сенсорной панели). Установите скорость перемещения мыши.
+  - Кнопки: настройка кнопок (клавиши, текст и положение). Переключение режима управления (боковая панель и свободная позиция кнопок). Доступны кнопки мыши и кнопки в стиле джойстика.
+  - Стиль: Настройте цвет кнопки, прозрачность, размер, цвет фона боковой панели.
+- Update old functions：
+  - android 11+ soft-input no-crashing：Android 11 and above show/hide logic fix, use `toggleSoftInput()` method (In this way the input method can't hide by clicking from the popup menu, not a big problem, the android back key will be able to hide it). Change the time delay of calling out the input method from 1 second to 0.2 seconds.
+  - select obb manually：The position of the text prompt is changed. Now after selecting the file, the text will be replaced by `obb selected, decompressing` or `the selected file is not obb`, in case the user selects the right obb without the correct prompt and selects something again. Display the selected file name as a toast. Disable the select button when unpacking.
+  - Custom location of drive D：After the app starts, if there is no preset folder (default is `Exagear`), it will try to create it automatically.
+  - custom resolution：Added multi-language support, probably fix the issue that crashing when container_prefs.xml contains a preferenceScreen of an external keyboard link.
+
+
+### v0.0.1
+- First release. Available functions:
+  - float action button (Custom location of drive D)
+  - show cursor
+  - custom resolution
+  - android 11+ soft-input no-crashing
+  - select obb manually

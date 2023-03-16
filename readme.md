@@ -23,16 +23,17 @@
 
 ## 目前可添加的功能
 - [悬浮操作按钮](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
-  -  修改d盘路径
+  - 自定义d盘路径
+  - 自定义操作模式
 - [强制显示鼠标光标](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [手动选择obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
 
 
-## 鸣谢
-感谢俄语翻译提供：Ēlochnik
-感谢测试和提出建议的众多朋友们
+## 感谢
+- 俄语翻译：Ēlochnik
+- 众多帮忙测试和提供建议的朋友们
 ### 第三方依赖
 **用到的第三方项目都没传上来，编译是没法通过的。去release里下现成的apk就行了。**
 - [apktool](https://ibotpeaches.github.io/Apktool/)
@@ -40,6 +41,32 @@
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 - [apksig](https://android.googlesource.com/platform/tools/apksig)
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
+
+
+## 更新历史
+
+### v0.0.2
+- ED自助补丁界面和支持打入的功能添加了对俄语的支持，感谢 Ēlochnik
+- 添加新功能：自定义操作模式
+  - 大部分选项可通过长按查看说明。环境设置操作模式选择默认，进入环境后三指点击可实时修改。
+  - 鼠标：可调节鼠标光标显示/隐藏，提供两种手势控制（默认模式和触摸板模式），可调节鼠标灵敏度。允许鼠标移出屏幕外以在游戏内继续转动视角。
+  - 按键：可自定义按钮按键、显示文字、位置。提供两种按键布局（左右侧栏和自由位置）。按钮按键支持鼠标左中右键和滚轮，支持组合键和自动长按。自由位置支持摇杆样式按钮。
+  - 样式：可自定义按钮颜色、透明度、大小、形状（圆形/方形），左右侧栏背景色，文字大小。
+
+- 更新旧功能：
+  - 显示输入法：安卓11及以上的显示/隐藏逻辑修正，使用toggleSoftInput()方法（不过这样会导致从弹窗菜单点击时无法隐藏输入法，问题不大，手机返回键就能隐藏）。调出输入法时间延迟从1秒改为0.2秒。
+  - 手动选择obb：文字提示位置改变，现在选择文件后会在原先“未找到obb，请手动选择”的那里替换掉该文本，显示“选中obb，正在解压”或“所选文件不是obb”，以防用户选对了obb缺没有正确提示而又去选择了一遍。同时以toast形式显示所选文件名。解压时禁用选择按钮。
+  - 自定义d盘路径：应用启动后，若没有预设文件夹（默认是Exagear）会尝试自动创建
+  - 自定义容器分辨率：添加了多语言支持，应该修复在container_prefs.xml中含有小雨伯爵键盘的preferenceScreen的时候会闪退的问题。
+
+
+### v0.0.1
+- 初次发布ED自助补丁。添加功能 
+  - 悬浮操作按钮（自定义d盘路径）
+  - 强制显示鼠标光标
+  - 自定义分辨率
+  - 安卓11+调起输入法
+  - 手动选择obb
 
 
 
