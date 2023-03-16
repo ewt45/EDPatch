@@ -1,6 +1,8 @@
 ![icon](/patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png)
 
-[中文](../readme.md)    [English](./readme_en.md)    [Русский](./readme_ru.md)
+🌐[中文](../readme.md)\
+🌐[English](./readme_en.md)\
+🌐[Русский](./readme_ru.md)
 
 ## About
 After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. \
