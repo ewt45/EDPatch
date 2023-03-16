@@ -1,6 +1,8 @@
 package com.example.datainsert.exagear.controls.interfaceOverlay;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT;
+import static com.eltechs.axs.GestureStateMachine.GestureStateCheckJoyStickMode.JOYSTICK_MODE_OFF;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_HEIGHT;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
@@ -20,13 +22,18 @@ import android.widget.PopupMenu;
 import android.widget.ScrollView;
 
 import com.eltechs.axs.GestureStateMachine.GestureContext;
+import com.eltechs.axs.GestureStateMachine.GestureJoyStickMode;
+import com.eltechs.axs.GestureStateMachine.GestureMouseMode;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.TouchArea;
 import com.eltechs.axs.TouchEventMultiplexor;
 import com.eltechs.axs.TouchScreenControls;
 import com.eltechs.axs.TouchScreenControlsFactory;
+import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
+import com.eltechs.axs.gamesControls.GestureMachineConfigurerDiablo;
 import com.eltechs.axs.graphicsScene.GraphicsSceneConfigurer;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
@@ -71,6 +78,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
     private BtnContainer mBtnContainer;
     private LinearLayout mLeftBar;
     private LinearLayout mRightBar;
+    private boolean useDiabloGesture = false;
 
     @Override // com.eltechs.axs.TouchScreenControlsFactory
     public boolean hasVisibleControls() {
@@ -151,7 +159,15 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         TouchArea touchArea = new TouchArea(0.0f, 0.0f, view.getWidth(), view.getHeight(), touchEventMultiplexor);
         //手势操作
         if (viewOfXServer != null) {
-            this.gestureContext = GestureMachineMix.create(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, mPopupMenu);
+            this.gestureContext = useDiabloGesture
+                    ? GestureMachineConfigurerDiablo.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, new GestureMouseMode(MOUSE_MODE_LEFT), new GestureJoyStickMode(GestureJoyStickMode.JoyStickModeState.JOYSTICK_MODE_OFF),
+                    () -> {
+                        if (mPopupMenu != null) {
+                            mPopupMenu.getMenu().clear();
+                            mPopupMenu.show();
+                        }
+                    })
+                    : GestureMachineMix.create(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, mPopupMenu);
             //GestureMachineConfigurerFallout2.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, () -> ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu());
         }
         //按钮布局和范围相关在reinflate函数里设置好，在这里直接添加上

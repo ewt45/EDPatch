@@ -216,12 +216,13 @@ public class FuncFAB implements Func {
         public void updateSelfPackage() throws Exception {
             //自定义操作模式 DefaultControl
             PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
-                    "/com/eltechs/ed/controls/DefaultControls.smali",
+                    "/com/eltechs/ed/controls/DefaultControls.smali", //覆盖原有的默认操作模式
+                    "/com/eltechs/axs/xserver/Pointer.smali", //控制鼠标是否允许移出屏幕
                     //仅供测试用
-                    "/com/eltechs/axs/xserver/Pointer.smali",
 //                    "/com/eltechs/axs/xserver/ViewFacade.smali",
 //                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
 //                    "/com/eltechs/axs/xserver/client/XClientWindowListener.smali"
+//                    "/com/eltechs/axs/finiteStateMachine/FiniteStateMachine.smali"
             });
 
             PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{

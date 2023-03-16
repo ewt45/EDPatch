@@ -52,17 +52,17 @@ import java.io.File;
 
 public class DriveD extends BaseFragment implements DialogInterface.OnClickListener {
     public final static String TAG = "DriveD";
-    //sharedpreference里记录父路径和文件夹的key
-    public static String PREF_KEY_PAR_IND = "PREF_KEY_PAR_IND"; //值为int
-    public static String PREF_KEY_DST_NAME = "PREF_KEY_DST_IND"; //值为string
-    public static String PREF_VAL_DST_NAME = "Exagear";//没有自定义的时候，默认的文件夹名,可以改这个默认的路径
     private static final String[] dstDirArrKeys = new String[]{"Exagear", "Download"};
     private static final String[] dstDirArrVals = new String[]{"Exagear", "Download"};
     private static final String[] parDirArrKeys = new String[]{getS(RR.DriveD_ParDirKey_1), getS(RR.DriveD_ParDirKey_2), getS(RR.DriveD_ParDirKey_3)};
     private static final ParDirEnum[] parDirArrVals = new ParDirEnum[]{ParDirEnum.ExternalStorage, ParDirEnum.ExternalFilesDir, ParDirEnum.SDCardExternalFilesDir};
+    //sharedpreference里记录父路径和文件夹的key
+    public static String PREF_KEY_PAR_IND = "PREF_KEY_PAR_IND"; //值为int
+    public static String PREF_KEY_DST_NAME = "PREF_KEY_DST_IND"; //值为string
+    public static String PREF_VAL_DST_NAME = "Exagear";//没有自定义的时候，默认的文件夹名,可以改这个默认的路径
+    String[] testCheckStr = new String[]{getS(RR.DriveD_check_1), getS(RR.DriveD_check_2), getS(RR.DriveD_check_3), getS(RR.DriveD_check_4), getS(RR.DriveD_check_5)};
     //用于动态显示父目录和测试结果的textview
     private TextView tvTestResult;
-
     private MyTextInputEditText tvInputParDir;
     //用于编辑文件夹名的edittext
     private MyTextInputEditText tvInputDstDir;
@@ -70,11 +70,43 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     private int currentParDir; //考虑到持久化保存，还是用enum好一些，也许外部路径会有变化？
     private String currentDstDirName;
 
+    /**
+     * 根据parDirEnum生成对应文件路径字符串并返回
+     *
+     * @param parDirEnum enum
+     * @return 文件字符串，
+     */
+    private static File dirEnumToFile(ParDirEnum parDirEnum) {
+        File parDir = null;
+        try {
+            if (parDirEnum == ParDirEnum.ExternalFilesDir) {
+                parDir = Globals.getAppContext().getExternalFilesDir(null);
+            } else if (parDirEnum == ParDirEnum.ExternalStorage) {
+                parDir = Environment.getExternalStorageDirectory();
+            } else if (parDirEnum == ParDirEnum.SDCardExternalFilesDir) {
+                parDir = Globals.getAppContext().getExternalFilesDirs(null)[1];
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return parDir;
+    }
 
-    private enum ParDirEnum {
-        ExternalStorage,
-        ExternalFilesDir,
-        SDCardExternalFilesDir
+    /**
+     * 在StartGuest中初始化d盘路径时调用，返回对应的file
+     *
+     * @return file
+     */
+    public static File getDriveDDir() {
+        if (getPreference() == null)
+            return null;
+        File parFile = dirEnumToFile(parDirArrVals[getPreference().getInt(PREF_KEY_PAR_IND, 0)]);
+        try {
+            return new File(parFile, getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @NonNull
@@ -86,13 +118,10 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     @Override
     protected ViewGroup buildUI() {
         Context c = requireContext();
-        tvTestResult = getTextViewWithText(c,"");
+        tvTestResult = getTextViewWithText(c, "");
 
-        ScrollView rootScrollView = new ScrollView(c);
-        rootScrollView.setPadding(40, 40, 40, 40);
         LinearLayout rootView = new LinearLayout(c);
         rootView.setOrientation(LinearLayout.VERTICAL);
-        rootScrollView.addView(rootView);
         rootView.addView(getTextViewWithText(c, getS(RR.DriveD_Explain)));
 
         TextInputLayout textInputLayout = new TextInputLayout(c);
@@ -111,7 +140,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         //初始化当前路径
         tvInputDstDir.setText(getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
         updateCurrentParDir(getPreference().getInt(PREF_KEY_PAR_IND, 0));
-        return rootScrollView;
+        return rootView;
     }
 
     /**
@@ -121,7 +150,13 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     public void onClick(DialogInterface dialog, int which) {
         if (which == BUTTON_POSITIVE) {
             //将设置更新到preference。整个dialog应该只有此时向pref中写入数据
-            if (checkCurrDirAvailable()) {
+            if (checkCurrDirAvailable()
+                    //如果当前路径可用，且设置与之前设置不一样了
+                    && (currentParDir != getPreference().getInt(PREF_KEY_PAR_IND, 0)
+                    || !currentDstDirName.equals(getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME))
+            )
+
+            ) {
                 getPreference().edit().putInt(PREF_KEY_PAR_IND, currentParDir).putString(PREF_KEY_DST_NAME, currentDstDirName).apply();
 //                Toast.makeText(requireActivity(), "设置已更新", Toast.LENGTH_SHORT).show();
                 Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), getS(RR.DriveD_SncBrTxt), Snackbar.LENGTH_LONG)
@@ -134,7 +169,6 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
             Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), getS(RR.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
         }
     }
-
 
     /**
      * 设置文件夹名称的edittext
@@ -209,29 +243,6 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     }
 
     /**
-     * 根据parDirEnum生成对应文件路径字符串并返回
-     *
-     * @param parDirEnum enum
-     * @return 文件字符串，
-     */
-    private static File dirEnumToFile(ParDirEnum parDirEnum) {
-        File parDir = null;
-        try {
-            if (parDirEnum == ParDirEnum.ExternalFilesDir) {
-                parDir = Globals.getAppContext().getExternalFilesDir(null);
-            } else if (parDirEnum == ParDirEnum.ExternalStorage) {
-                parDir = Environment.getExternalStorageDirectory();
-            } else if (parDirEnum == ParDirEnum.SDCardExternalFilesDir) {
-                parDir = Globals.getAppContext().getExternalFilesDirs(null)[1];
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return parDir;
-    }
-
-
-    /**
      * 检查当前设置的文件夹是否有效，并将检查结果显示到textview上
      *
      * @return 是否有效
@@ -240,12 +251,12 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         int result = 0;
         //先更新一下文件夹名（不允许文件夹名为空，如果为""就改成Download) （不更新了，最后点击确定的时候再说吧）
         //如果文件夹或父目录获取不到返回false。
-        if (currentDstDirName == null || currentDstDirName.equals("") || dirEnumToFile(parDirArrVals[currentParDir])==null) {
+        if (currentDstDirName == null || currentDstDirName.equals("") || dirEnumToFile(parDirArrVals[currentParDir]) == null) {
 //            tvInputDstDir.setText(dstDirArrVals[0]);
             setTvTestResult(null, result);
             return false;
         }
-       String str = null;
+        String str = null;
         try {
             File dstFile = new File(dirEnumToFile(parDirArrVals[currentParDir]), currentDstDirName);
             //用位记录吧.从低位到高位：父目录是否存在，文件夹是否存在，是否为文件夹，是否可读，是否可写
@@ -261,8 +272,6 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         return result == 0b00011111;
     }
 
-    String[] testCheckStr = new String[]{getS(RR.DriveD_check_1), getS(RR.DriveD_check_2), getS(RR.DriveD_check_3), getS(RR.DriveD_check_4), getS(RR.DriveD_check_5)};
-
     /**
      * 设置测试结果的文字到tv
      *
@@ -274,19 +283,19 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
         //有报错，或者没权限，或者无法获取路径，不进行下一步测试，直接红色消息显示商。
         if (s != null) {
             str.append(s);
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()-s.length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length() - s.length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         //检查是否有存储权限
         else if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             str.append(getS(RR.DriveD_NoStrgPmsn));
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()- getS(RR.DriveD_NoStrgPmsn).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length() - getS(RR.DriveD_NoStrgPmsn).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireContext().getPackageName(), null));
             startActivity(intent);
         }
         //如果父路径或子路径为null
-        else if( dirEnumToFile(parDirArrVals[currentParDir]) ==null || currentDstDirName==null || "".equals(currentDstDirName)){
+        else if (dirEnumToFile(parDirArrVals[currentParDir]) == null || currentDstDirName == null || "".equals(currentDstDirName)) {
             str.append(getS(RR.DriveD_getPathFail));
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length()- getS(RR.DriveD_getPathFail).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length() - getS(RR.DriveD_getPathFail).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
         //获取文件夹file，并检查是否可用
         else {
@@ -313,31 +322,14 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     }
 
     /**
-     * 在StartGuest中初始化d盘路径时调用，返回对应的file
-     *
-     * @return file
-     */
-    public static File getDriveDDir() {
-        if (getPreference() == null)
-            return null;
-        File parFile = dirEnumToFile(parDirArrVals[getPreference().getInt(PREF_KEY_PAR_IND, 0)]);
-        try {
-            return new File(parFile, getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * 初始化时，创建Exagear文件夹
      */
     @Override
     public void callWhenFirstStart() {
-        File file = new File(Environment.getExternalStorageDirectory(),PREF_VAL_DST_NAME);
-        if(!file.exists()){
+        File file = new File(Environment.getExternalStorageDirectory(), PREF_VAL_DST_NAME);
+        if (!file.exists()) {
             boolean b = file.mkdir();
-            Log.d(TAG, "callWhenFirstStart: 初次安装后启动，尝试创建文件夹结果 "+b);
+            Log.d(TAG, "callWhenFirstStart: 初次安装后启动，尝试创建文件夹结果 " + b);
         }
 
     }
@@ -345,6 +337,12 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
     @Override
     public String getTitle() {
         return getS(RR.DriveD_Title);
+    }
+
+    private enum ParDirEnum {
+        ExternalStorage,
+        ExternalFilesDir,
+        SDCardExternalFilesDir
     }
 
 

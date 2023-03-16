@@ -110,8 +110,12 @@ public class RR {
     public static int cmCtrl_s4_trsportTip = 94;
     public static int cmCtrl_s4_exportResult = 95;
     public static int cmCtrl_s4_importResult = 96;
-    public static int cmCtrl_s2_txtSize = 97;
+    public static int cmCtrl_s3_txtSize = 97;
     public static int cmCtrl_s3_btnRoundShape = 98;
+    public static int cmCtrl_actionRotate = 99;
+    public static int abtFab_title = 100;
+    public static int abtFab_info = 101;
+
 
     private static String locale;
 
@@ -141,7 +145,7 @@ public class RR {
                 "应用文件存储权限被禁止",      //20
                 "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。",
                 "手动选择",
-                "所选文件不是obb数据包$选中obb。正在解压中",
+                "所选文件不是obb数据包$选中obb。正在解压，请耐心等待……",
                 "使用自定义分辨率",
                 "输入自定义宽度",
                 "输入自定义高度",
@@ -209,11 +213,11 @@ public class RR {
                 "松手时保持按下状态",
                 "组合键",
                 "其他",
-                "    <ul>\n" +
-                        "        <li>在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。</li>\n" +
-                        "        <li>启动环境后，可以通过三指触屏调出此界面进行实时修改。</li>\n" +
-                        "        <li>本功能仅提供基础设置，若想高度自定义按键请使用Input Bridge.</li>\n" +
-                        "    </ul>",
+                "<ul>\n" +
+                        "  <li>在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。</li>\n" +
+                        "  <li>启动环境后，可以通过三指触屏调出此界面进行实时修改。</li>\n" +
+                        "  <li>本功能仅提供基础设置，若有更复杂的需求请使用Input Bridge.</li>\n" +
+                        "</ul>",
                 "导出",
                 "导入",
                 "数据转移",
@@ -222,6 +226,12 @@ public class RR {
                 "导入成功$导入失败",
                 "文字大小",
                 "圆形按钮",
+                "旋转屏幕",
+                "关于",
+                "<ul>\n" +
+                        "  <li>Exagear模拟器官方（Eltechs）已停止开发。本菜单为第三方补丁，旨在添加一些便捷功能。</li>\n" +
+                        "  <li>您可以通过“ED自助补丁”将本菜单或更多第三方功能加入Exagear：https://github.com/ewt45/EDPatch/releases</li>\n" +
+                        "</ul>",
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -328,7 +338,13 @@ public class RR {
                 "Copied to clipboard",
                 "Import succeeded$Import failed",
                 "Text Size",
-                "Round Button"
+                "Round Button",
+                "Rotate Screen",
+                "About",
+                "<ul>\n" +
+                        "  <li>Exagear Android (Eltechs) project has been closed. This menu is a third-party patch designed to add some handy features.</li>\n" +
+                        "  <li>You can add this and more features into Exagear by EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
+                        "</ul>",
         };
 
         String[] ruStrings = new String[]{
@@ -436,10 +452,17 @@ public class RR {
                 "Скопировано в буфер обмена",
                 "Импорт выполнен успешно$Не удалось импортировать",
                 "Размер текста",
-                "Круглая кнопка"
+                "Круглая кнопка",
+                "Поворот экрана",
+                "О приложении",
+                "<ul>\n" +
+                        "  <li>Exagear Android (Eltechs) проект закрыт. Это меню представляет собой сторонний патч, предназначенный для добавления некоторых удобных функций.</li>\n" +
+                        "  <li>Вы можете добавить эту и другие функции в Exagear с помощью EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
+                        "</ul>",
         };
 
         stringMap.put("zh", zhStrings);
+
         stringMap.put("en", enStrings);
         stringMap.put("ru", ruStrings);
     }

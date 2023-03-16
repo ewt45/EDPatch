@@ -16,10 +16,19 @@ import com.eltechs.axs.helpers.InfiniteTimer;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 
+import org.apache.commons.compress.archivers.dump.DumpArchiveConstants;
+
 import java.util.List;
 
-/* loaded from: classes.dex */
-public class State2FScrollSyncRel extends AbstractGestureFSMState  {
+/**
+ * 相对滚动？
+ * 比原先多一个FINGER_TOUCHED（参考的GestureState1FingerMoveToMouseDragAndDrop), 在有新手指按下的时候会向外部报告
+ *
+ * 在松开1根手指之后发送GESTURE_COMPLETED
+ * 在新手指按下后发送FINGER_TOUCHED
+ */
+public class State2FScrollSyncRel extends AbstractGestureFSMState implements TouchEventAdapter {
+    public static final FSMEvent FINGER_TOUCHED = new FSMEvent("FINGER_TOUCHED");
     public static FSMEvent GESTURE_COMPLETED = new FSMEvent("GESTURE_COMPLETED");
 
     private final boolean breakIfFingerReleased;
@@ -52,6 +61,8 @@ public class State2FScrollSyncRel extends AbstractGestureFSMState  {
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
+        getContext().getFingerEventsSource().addListener(this);
+
         this.timer = new InfiniteTimer(this.fingerLocationPollIntervalMs) {
             @Override // android.os.CountDownTimer
             public void onTick(long j) {
@@ -78,6 +89,8 @@ public class State2FScrollSyncRel extends AbstractGestureFSMState  {
     public void notifyBecomeInactive() {
         this.scrollAdapter.notifyStop();
         this.timer.cancel();
+        getContext().getFingerEventsSource().removeListener(this);
+
     }
 
     private void scrollImpl(
@@ -137,13 +150,41 @@ public class State2FScrollSyncRel extends AbstractGestureFSMState  {
             changeMovementUnits(this.movementY, this.savedFinger.getY());
         }
 
-        //返回是送一个手指还是两个都松？
-        if (getContext().getFingers().isEmpty()) {
+        //返回是送一个手指还是两个都松？(如果接收触摸事件了那这个也用不到了吧）
+        if (getContext().getFingers().size()<2) {
             if (!this.breakIfFingerReleased && (isXAccumulate || isYAccumulate)) {
                 return;
             }
             sendEvent(GESTURE_COMPLETED);
         }
+    }
+
+    @Override
+    public void notifyMoved(Finger finger, List<Finger> list) {
+    }
+
+    @Override
+    public void notifyMovedIn(Finger finger, List<Finger> list) {
+        notifyTouched(finger,list);
+    }
+
+    @Override
+    public void notifyMovedOut(Finger finger, List<Finger> list) {
+        notifyReleased(finger,list);
+    }
+
+    @Override
+    public void notifyReleased(Finger finger, List<Finger> list) {
+        this.scrollAdapter.notifyStop();
+        this.timer.cancel();
+        sendEvent(GESTURE_COMPLETED);
+    }
+
+    @Override
+    public void notifyTouched(Finger finger, List<Finger> list) {
+        this.scrollAdapter.notifyStop();
+        this.timer.cancel();
+        sendEvent(FINGER_TOUCHED);
     }
 
 

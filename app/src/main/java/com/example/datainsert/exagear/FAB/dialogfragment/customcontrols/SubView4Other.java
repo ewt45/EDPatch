@@ -28,18 +28,16 @@ public class SubView4Other extends LinearLayout {
         TextView textView = new TextView(c);
         textView.setLineSpacing(0,1.2f);
         textView.setText(Html.fromHtml(getS(RR.cmCtrl_s4_tips)));
+//        textView.setClickable(true);
+//        textView.setTextIsSelectable(true);
         addView(textView);
 
         Button btnExport = new Button(c);
         btnExport.setText(getS(RR.cmCtrl_s4_export));
-        btnExport.setOnClickListener(v->{
-        mCallback.exportData();
-        });
+        btnExport.setOnClickListener(v-> mCallback.exportData());
         Button btnImport  = new Button(c);
         btnImport.setText(getS(RR.cmCtrl_s4_import));
-        btnImport.setOnClickListener(v->{
-            mCallback.importData();
-        });
+        btnImport.setOnClickListener(v-> mCallback.importData());
         LinearLayout linear2Btn = new LinearLayout(c);
         linear2Btn.addView(btnExport,new LayoutParams(-2,-2));
         linear2Btn.addView(btnImport,new LayoutParams(-2,-2));

@@ -326,6 +326,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         //禁止触发斜向按键
         CheckBox check4Direct = new CheckBox(c);
         check4Direct.setText(getS(RR.cmCtrl_JoyEdit4Ways));
+        check4Direct.setChecked(mParams.isFourDirections());
         setDialogTooltip(check4Direct, getS(RR.cmCtrl_JoyEdit4WaysTip));
         check4Direct.setOnCheckedChangeListener((buttonView, isChecked) -> mParams.setFourDirections(isChecked));
         linearRoot.addView(check4Direct);

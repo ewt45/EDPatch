@@ -126,13 +126,10 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     @Override
     protected ViewGroup buildUI() {
         Context c = requireContext();
-        ScrollView scrollView = new ScrollView(c);
 //        scrollView.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
-        int dialogPadding = QH.px(c, RR.attr.dialogPaddingDp);
-        scrollView.setPadding(dialogPadding, 0, dialogPadding, 0);
+
         LinearLayout rootView = new LinearLayout(c);
         rootView.setOrientation(VERTICAL);
-        scrollView.addView(rootView);
 
         String tipsOverAll = getS(RR.cmCtrl_lgPressHint);
 //        if (((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity)
@@ -168,7 +165,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         //fragmentAdapter在dialogfragment里有问题，就用普通视图adapter吧
         viewPager.setAdapter(new SubNormalPagerAdapter(mPages, tabTitles));
         tabLayout.setupWithViewPager(viewPager, false);
-        return scrollView;
+        return rootView;
     }
 
 
@@ -217,33 +214,30 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 
             @Override
             public void importData() {
+                //先获取一下当前的数据，如果导入失败了，恢复当前的数据
+                String currentData = FormatHelper.dataExport(mKeyCodes2, mKeyCodes3);
                 try {
                     ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    String data = "";
-                    if (!(clipboard.hasPrimaryClip())) {
-                        throw new Exception("剪切板没有数据");
-                    } else if (!(Objects.requireNonNull(clipboard.getPrimaryClipDescription()).hasMimeType(MIMETYPE_TEXT_PLAIN))) {
-                        throw new Exception("剪切板数据类型不是文本");
-                        // This disables the paste menu item, since the clipboard has data but it is not plain text
+                    String data;
+                    if (clipboard.getPrimaryClip() == null || !(clipboard.hasPrimaryClip())
+                            || !(Objects.requireNonNull(clipboard.getPrimaryClipDescription()).hasMimeType(MIMETYPE_TEXT_PLAIN))) {
+                        throw new Exception("剪切板没有数据 或者剪切板数据类型不是文本");
                     }
 
                     // Examines the item on the clipboard. If getText() does not return null, the clip item contains the text.
                     // Assumes that this application can only handle one item at a time.
-                    ClipData.Item item = Objects.requireNonNull(clipboard.getPrimaryClip()).getItemAt(0);
-                    data = (String) item.getText(); // Gets the clipboard as text.
+                    data = (String) clipboard.getPrimaryClip().getItemAt(0).getText(); // Gets the clipboard as text.
                     if (data == null)
                         throw new Exception("剪切板有文本，但不是普通文本。可能是URI？");// The clipboard does not contain text. If it contains a URI, attempts to get data from it
 
                     //尝试转换为按键数据
                     FormatHelper.dataImport(data);
                     //如果成功了，关闭对话框，并且设置本次存储新数据 (最好直接关闭了，不知道在中途修改model整体实例，会不会导致其他功能未更新而出错）
-//                    mKeyCodes2 = KeyCodes2.read(requireContext());
-//                    mKeyCodes3 = KeyCodes3.read(requireContext());
                     getDialog().dismiss();//这个貌似不会调用positive button的onclicklisntenr，好耶
                     Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_importResult).split("\\$")[0], Toast.LENGTH_SHORT).show();
-
                 } catch (Exception e) {
                     e.printStackTrace();
+                    FormatHelper.dataImport(currentData);
                     Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_importResult).split("\\$")[1], Toast.LENGTH_SHORT).show();
                 }
 

@@ -22,6 +22,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -131,6 +132,7 @@ public class RegularKeyBtn extends BaseMoveBtn {
         按键输入，如果是shift这种，按下就触发，交给ontouch处理，否则交给onclick处理
         不如先都交给onclick处理吧。修饰键点击时只按下或抬起，普通键点击时一次完整的按下抬起。
          */
+
         if (mViewFacade == null)
             return;
         //如果是连发键并且已经按下，则松开。否则按下
@@ -149,7 +151,6 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
     @Override
     public void injectMove(Finger finger) {
-
     }
 
     @Override

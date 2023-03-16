@@ -1,6 +1,5 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
-import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
@@ -15,39 +14,28 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_TXT_COLOR;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN_WIDTH;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_BTN__TXT_SIZE;
-import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_CUSTOM_BTN_POS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SIDEBAR_COLOR;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
-import android.os.Build;
 import android.support.v4.graphics.ColorUtils;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.TextViewCompat;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.eltechs.axs.Globals;
-import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.helpers.AndroidHelpers;
 //import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.ColorPickerView;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
@@ -55,9 +43,6 @@ import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class SubView3Style extends LinearLayout {
     public static final String TAG = "SubView3Style";
@@ -109,18 +94,6 @@ public class SubView3Style extends LinearLayout {
         LinearLayout oneLineWHSeek = getOneLineWithTitle(c, getS(RR.cmCtrl_s3_btnSize), linearWHSeek, true);
         setDialogTooltip(oneLineWHSeek.getChildAt(0), getS(RR.cmCtrl_s3_btnSizeTip));
         addView(oneLineWHSeek);
-
-        //文字大小
-        SeekBar seekTxtSize = new SeekBar(c);
-        //10sp~30sp 默认14sp . progress在0~20
-        seekTxtSize.setMax(20);
-        seekTxtSize.setProgress(getPreference().getInt(PREF_KEY_BTN__TXT_SIZE,4));
-        seekTxtSize.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> {
-            btnSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,progress+10);
-            getPreference().edit().putInt(PREF_KEY_BTN__TXT_SIZE,progress).apply();
-        }));
-        LinearLayout linearTxtSize = getOneLineWithTitle(c,getS(RR.cmCtrl_s2_txtSize),seekTxtSize,true);
-        addView(linearTxtSize);
 
         //按钮颜色
 
@@ -192,8 +165,6 @@ public class SubView3Style extends LinearLayout {
         addView(linearCAOuter);
 
 
-
-
         //侧栏背景颜色
         EditText editSideColor = new EditText(c);
         editSideColor.setSingleLine();
@@ -207,11 +178,38 @@ public class SubView3Style extends LinearLayout {
             int sideBgColor = Color.parseColor("#ff" + s1);
             getPreference().edit().putInt(PREF_KEY_SIDEBAR_COLOR, sideBgColor).apply();
         }));
-        LinearLayout linearSideColor = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),editSideColor,true);
-        ((LayoutParams)linearSideColor.getChildAt(1).getLayoutParams()).topMargin=0;
-        linearSideColor.getChildAt(1).setLayoutParams(linearSideColor.getChildAt(1).getLayoutParams());
-        setDialogTooltip(linearSideColor.getChildAt(0),getS(RR.cmCtrl_s3_sideColorTip));
-        addView(linearSideColor);
+//        LinearLayout linearSideColor = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),editSideColor,true);
+//        ((LayoutParams)linearSideColor.getChildAt(1).getLayoutParams()).topMargin=0;
+//        linearSideColor.getChildAt(1).setLayoutParams(linearSideColor.getChildAt(1).getLayoutParams());
+//        setDialogTooltip(linearSideColor.getChildAt(0),getS(RR.cmCtrl_s3_sideColorTip));
+//        addView(linearSideColor);
+
+        //文字大小
+        SeekBar seekTxtSize = new SeekBar(c);
+        //10sp~30sp 默认14sp . progress在0~20
+        seekTxtSize.setMax(20);
+        seekTxtSize.setProgress(getPreference().getInt(PREF_KEY_BTN__TXT_SIZE,4));
+        seekTxtSize.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> {
+            btnSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,progress+10);
+            getPreference().edit().putInt(PREF_KEY_BTN__TXT_SIZE,progress).apply();
+        }));
+
+//        addView(linearTxtSize);
+        //二者标题
+        LinearLayout linearShapeNTSizeTitle = new LinearLayout(c);
+        LinearLayout tvShapeTitle = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),null,false);
+        setDialogTooltip(tvShapeTitle,getS(RR.cmCtrl_s3_sideColorTip));
+        linearShapeNTSizeTitle.addView(tvShapeTitle,generateLayoutParams(eqWidthParams));
+        linearShapeNTSizeTitle.addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s3_txtSize),null,false),generateLayoutParams(eqWidthParams));
+        addView(linearShapeNTSizeTitle);
+        //二者内容
+        LinearLayout linearShapeNTSize = new LinearLayout(c);
+        linearShapeNTSize.addView(editSideColor,generateLayoutParams(eqWidthParams));
+        linearShapeNTSize.addView(seekTxtSize,generateLayoutParams(eqWidthParams));
+        LayoutParams linearShapeNTSizeParams = new LayoutParams(-1,-2);
+        linearShapeNTSizeParams.setMarginStart(20);
+        addView(linearShapeNTSize,linearShapeNTSizeParams);
+
 
         //按钮形状（方形、圆形）
         CheckBox checkShapeRound = new CheckBox(c);

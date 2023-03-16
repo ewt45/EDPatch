@@ -14,7 +14,6 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.view.Gravity;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -22,13 +21,10 @@ import android.widget.SeekBar;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
-import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
-import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
 public class SubView1Mouse extends LinearLayout {
     SeekBar seekPointerSpeed;

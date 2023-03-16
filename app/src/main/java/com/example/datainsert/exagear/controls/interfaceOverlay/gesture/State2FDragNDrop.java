@@ -7,9 +7,7 @@ import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.GestureStateMachine.PointerContext;
 import com.eltechs.axs.GuestAppActionAdapters.DragAndDropAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.PressAndHoldMouseClickAdapter;
-import com.eltechs.axs.GuestAppActionAdapters.RelativeToCurrentPositionMouseMoveAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.SimpleDragAndDropAdapter;
-import com.eltechs.axs.GuestAppActionAdapters.SimpleMouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAdapters.OffsetMouseAdapter;
@@ -17,25 +15,29 @@ import com.example.datainsert.exagear.controls.interfaceOverlay.GuestAppActionAd
 
 import java.util.List;
 
-/* loaded from: classes.dex */
-public class State2FDragAndDrop extends AbstractGestureFSMState implements TouchEventAdapter {
+/**
+ * 可以设置手指个数变化时是否上报
+ */
+public class State2FDragNDrop extends AbstractGestureFSMState implements TouchEventAdapter {
     public static FSMEvent GESTURE_COMPLETED = new FSMEvent("GESTURE_COMPLETED") ;
+    public static FSMEvent FINGER_TOUCHED = new FSMEvent("FINGER_TOUCHED") ;
+    public static FSMEvent FINGER_RELEASED = new FSMEvent("FINGER_RELEASED") ;
     private final DragAndDropAdapter adapter;
-    private final boolean cancelBy3ndFinger;
+    private final boolean reportFingerNumChange;
     private Finger f;
     private final float moveThreshold;
     private boolean moveThresholdExceeded;
     final PointerContext pointerContext;
     private final boolean useMoveThreshold;
 
-    public State2FDragAndDrop(
+    public State2FDragNDrop(
             GestureContext gestureContext, DragAndDropAdapter dragAndDropAdapter, PointerContext pointerContext,
-            boolean cancelBy3ndFinger, float moveThreshold) {
+            boolean reportFingerNumChange, float moveThreshold) {
         super(gestureContext);
         this.pointerContext = pointerContext;
 
         this.adapter = dragAndDropAdapter;
-        this.cancelBy3ndFinger = cancelBy3ndFinger;
+        this.reportFingerNumChange = reportFingerNumChange;
         this.moveThreshold = moveThreshold;
         this.useMoveThreshold = moveThreshold != 0.0f;
     }
@@ -77,8 +79,10 @@ public class State2FDragAndDrop extends AbstractGestureFSMState implements Touch
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyReleased(Finger finger, List<Finger> list) {
-
-        if (list.isEmpty()) {
+        if (reportFingerNumChange) {
+            this.adapter.stop(finger.getX(), finger.getY());
+            sendEvent(FINGER_RELEASED);
+        }else if (list.isEmpty()) {
             this.adapter.stop(finger.getX(), finger.getY());
             sendEvent(GESTURE_COMPLETED);
         }
@@ -91,9 +95,11 @@ public class State2FDragAndDrop extends AbstractGestureFSMState implements Touch
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyTouched(Finger finger, List<Finger> list) {
-        if (this.cancelBy3ndFinger) {
-            this.adapter.cancel(this.f.getX(), this.f.getY());
-            sendEvent(GESTURE_COMPLETED);
+        if (this.reportFingerNumChange) {
+            //不要取消了，不然三指触屏的时候会触发取消，弹窗菜单和右键同时触发了
+//            this.adapter.cancel(this.f.getX(), this.f.getY());
+            this.adapter.stop(finger.getX(), finger.getY());
+            sendEvent(FINGER_TOUCHED);
         }
     }
 
@@ -104,17 +110,20 @@ public class State2FDragAndDrop extends AbstractGestureFSMState implements Touch
 
 
     public static class SimpleBuilder{
-        public State2FDragAndDrop create(GestureContext gestureContext,int btnCode,int mouseActionSleepMs,PointerContext pointerContext){
-            return new State2FDragAndDrop(
+        public State2FDragNDrop create(GestureContext gestureContext, PointerContext pointerContext, boolean reportFingerNumChange){
+            return new State2FDragNDrop(
                     gestureContext,
                     new SimpleDragAndDropAdapter(
                             new RelativeMouseMoveCstmSpdAdapter(
                                     new OffsetMouseAdapter(gestureContext),
                                     gestureContext.getViewFacade(), gestureContext.getHostView()),
                             new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 1),
-                            () -> gestureContext.getPointerReporter().click(btnCode, mouseActionSleepMs)//3
+//                            ()->{}
+                            () -> gestureContext.getPointerReporter().click(3, 50)//用于取消移动的按键，默认是左键拖拽 所以取消是右键
                     ),
-                    pointerContext, false, 0.0f);
+                    pointerContext,
+                    reportFingerNumChange,
+                    0.0f);
         }
     }
 }

@@ -57,11 +57,12 @@ public class FragmentChoosePatch extends Fragment {
     //    ExecutorService singleThreadExecutor; //用于处理多线程同步
     ActionPool mActionPool; //用于替代单线程池，并处理返回结果显示
     SpannableStringBuilder spanInfo;
-    List<FuncWithCheckBox> funcList = new ArrayList<>(); //记录功能和对应勾选框的列表
+    List<FuncWithCheckBox> funcList; //记录功能和对应勾选框的列表
     int CHECK_DISABLE = 0b1; //不允许点击按钮，但没有任务正在执行
     int CHECK_ENABLE = 0b10; //没有任务正在执行，有ex apk，允许点击按钮
     int CHECK_DISABLE_WAITING = 0b101; //不允许点击按钮，因为有任务正在执行，需要显示旋转进度条
     private FragmentChoosePatchBinding binding;
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -69,6 +70,14 @@ public class FragmentChoosePatch extends Fragment {
 
         // Inflate the layout for this fragment
         binding = FragmentChoosePatchBinding.inflate(inflater, container, false);
+
+        //初始化功能和对应勾选框的列表。在changeview之前初始化 (这一段还不能加到onViewCreated里，从另一个fragment返回到这里的时候那个函数会重新进入，导致重复添加fuc）
+        funcList= new ArrayList<>();
+        funcList.add(new FuncWithCheckBox(binding.checkFab, new FuncFAB()));
+        funcList.add(new FuncWithCheckBox(binding.checkCursor, new FuncCursor()));
+        funcList.add(new FuncWithCheckBox(binding.checkResl, new FuncResl()));
+        funcList.add(new FuncWithCheckBox(binding.checkInput, new FuncSInput()));
+        funcList.add(new FuncWithCheckBox(binding.checkSelobb, new FuncSelObb()));
         return binding.getRoot();
     }
 
@@ -157,12 +166,7 @@ public class FragmentChoosePatch extends Fragment {
             }
         });
 
-        //初始化功能和对应勾选框的列表。在changeview之前初始化
-        funcList.add(new FuncWithCheckBox(binding.checkFab, new FuncFAB()));
-        funcList.add(new FuncWithCheckBox(binding.checkCursor, new FuncCursor()));
-        funcList.add(new FuncWithCheckBox(binding.checkResl, new FuncResl()));
-        funcList.add(new FuncWithCheckBox(binding.checkInput, new FuncSInput()));
-        funcList.add(new FuncWithCheckBox(binding.checkSelobb, new FuncSelObb()));
+
 
 //        //先初始化包名(调用的时候自己去检查然后初始化吧）
 //        SmaliFile pkgSmali = new SmaliFile();
@@ -248,7 +252,7 @@ public class FragmentChoosePatch extends Fragment {
 
             changeView(CHECK_DISABLE_WAITING); //操作过程先禁用按钮(草这个要放到判断isEnable下面不然就全是disable了）
             if (patchNew) {
-                mActionPool.submit(new WriteFuncVer(addingFuncList));
+                mActionPool.submit(new WriteFuncVer(addingFuncList));//添加功能时要获取旧的版本号，所以等功能添加完了，再写入版本号（获取和写入都是写到解包apk的asset里，打包的时候会自动加进去
                 mActionPool.submit(new BuildApk());//回编译apk
                 mActionPool.submit(new SignApk(requireContext().getAssets()));//签名
             }

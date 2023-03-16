@@ -5,22 +5,20 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.ewt45.exagearsupportv7.R;
+import com.example.datainsert.exagear.FAB.dialogfragment.AboutFab;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.RSIDHelper;
-import com.example.datainsert.exagear.RR;
 
 public class FabMenu {
     private static final String TAG = "FabMenu";
@@ -54,7 +52,7 @@ public class FabMenu {
 
         //用于显示的功能对话框 这个class newInstance不会出问题吧
 //        Class<? extends BaseFragment> clz = DriveD.class;
-        final Class<? extends BaseFragment>[] fragmentClsArray = new Class[]{DriveD.class,CustomControls.class};
+        final Class<? extends BaseFragment>[] fragmentClsArray = new Class[]{DriveD.class,CustomControls.class, AboutFab.class};
         //先调用一次初次启动需要执行的操作
         for (Class<? extends BaseFragment> clz : fragmentClsArray) {
             try {

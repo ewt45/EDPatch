@@ -239,8 +239,11 @@ public class PatcherFile {
      */
     public static void writeAddedFunVer(Map<Func, Integer> funcList) {
         File file = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/tmp/assets/EDPatch/utilsVers.txt");
-        if (file.exists())
-            file.delete();
+        if (file.exists()){
+            boolean b = file.delete();
+            if(!b)
+                Log.e(TAG, "writeAddedFunVer: ", new Throwable("utilsVers.txt无法删除，能正常写入吗？"));
+        }
         try {
             //获取本次安装的功能的类名和版本号，写入文件
             List<String> nameNVer = new ArrayList<>();

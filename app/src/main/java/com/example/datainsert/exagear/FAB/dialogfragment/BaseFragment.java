@@ -38,16 +38,22 @@ public abstract class BaseFragment extends DialogFragment implements DialogInter
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         setCancelable(false);//禁止中途退出
+        ViewGroup rootUI = buildUI();
+        int dialogPadding = QH.px(requireContext(), RR.attr.dialogPaddingDp);
+        rootUI.setPadding(dialogPadding, 0, dialogPadding, 0);
+        ScrollView rootScrollView = new ScrollView(requireContext());
+        rootScrollView.addView(rootUI);
+
         return new AlertDialog.Builder(requireContext())
                 .setTitle(getTitle())
                 .setPositiveButton(android.R.string.yes, this)//S.get(S.Dialog_PosBtn)
                 .setNegativeButton(android.R.string.cancel, null)//S.get(S.Dialog_NegBtn)
-                .setView(buildUI())
+                .setView(rootScrollView)
                 .create();
     }
 
     /**
-     * onCreateDialog时构建界面
+     * onCreateDialog时构建界面。无需创建最外层scrollview和最外层view的padding
      */
     protected abstract ViewGroup buildUI();
     public static TextView getTextViewWithText(Context c, String s) {

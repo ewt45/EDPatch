@@ -9,14 +9,17 @@ import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.eltechs.axs.helpers.OneShotTimer;
-//import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import java.util.List;
 
 /**
  * 用于检测手指动作的gestureState。会根据当前是否为相对移动 返回不同的事件
  * 原本是有assert，必须要要当前手指个数为1个。不知道有什么用，我要用多个，去掉吧。
+ *
+ * @deprecated 太复杂了，还是用原有的吧。这个当时主要是不知道能在启动XServerDisplayActivity之后还可以动态切换状态机，所以都写到一个里面了。
+ *
  */
-public class State1FMoveRel extends AbstractGestureFSMState implements TouchEventAdapter {
+@Deprecated
+public class State1FMoveRelDontUse extends AbstractGestureFSMState implements TouchEventAdapter {
     final static String TAG="State1FMoveRel";
     public static boolean isRelMove;  //是否是相对定位
 //    public static FSMEvent FINGER_STANDING = new FSMEvent();
@@ -44,7 +47,7 @@ public class State1FMoveRel extends AbstractGestureFSMState implements TouchEven
     private long touchTime;
     private final boolean reportLongPress;
 
-    public State1FMoveRel(GestureContext gestureContext, int measureTime, float tappingFingerMaxMove,  boolean rptLgPrsIfRel) {
+    public State1FMoveRelDontUse(GestureContext gestureContext, int measureTime, float tappingFingerMaxMove, boolean rptLgPrsIfRel) {
         super(gestureContext);
         this.measureTime = measureTime;
         this.tappingFingerMaxMove = tappingFingerMaxMove;
@@ -62,7 +65,7 @@ public class State1FMoveRel extends AbstractGestureFSMState implements TouchEven
             this.timer = new OneShotTimer(this.measureTime) { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.9
                 @Override // android.os.CountDownTimer
                 public void onFinish() {
-                    if (getContext().getMachine().isActiveState(State1FMoveRel.this)
+                    if (getContext().getMachine().isActiveState(State1FMoveRelDontUse.this)
                             && getContext().getFingers().size() == 1) {
                         recalcDistance(getContext().getFingers().get(0));
                         if(distance<tappingFingerMaxMove)
