@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
@@ -75,13 +77,10 @@ public class SubView2Keys extends LinearLayout {
         setDialogTooltip(oneLineSpinKeyPos.getChildAt(0), getS(RR.cmCtrl_s2_layoutModeTip));
         addView(oneLineSpinKeyPos);
 
-//        //按键在两侧还是画面上层(旧版，开关样式）自定义按键位置
-//        Switch switchCsPos = new Switch(c);
-//        switchCsPos.setText("自定义按键位置");
-//        switchCsPos.setChecked(getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false));
-//        switchCsPos.setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(PREF_KEY_CUSTOM_BTN_POS, isChecked).apply());
-//        setDialogTooltip(switchCsPos, "如果使用自定义按键位置，下方的侧栏按键键位和布局将不会生效。请进入容器后四指触屏->菜单->编辑按键，然后点击空白处添加按钮并移动按钮位置。设定好后再次点击空白处退出编辑");
-//        addView(switchCsPos);
+        RadioGroup radioKeyPos = new RadioGroup(c);
+        RadioButton rdBtnSideBar = new RadioButton(c);
+        rdBtnSideBar.setText(getS(RR.cmCtrl_s2_modeSide));
+
 
         //左侧栏按键和右侧栏按键
         LinearLayout linearSideColOuter = new LinearLayout(c);

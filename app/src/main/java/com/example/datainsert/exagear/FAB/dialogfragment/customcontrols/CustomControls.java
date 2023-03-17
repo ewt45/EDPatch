@@ -19,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -246,7 +247,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     }
 
     @Override
-    public void callWhenFirstStart() {
+    public void callWhenFirstStart(AppCompatActivity activity) {
 
     }
 

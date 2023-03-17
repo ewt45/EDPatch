@@ -29,8 +29,8 @@ public class FabMenu {
         //不知道为什么，下面设置了customSize，这里如果是wrap content 宽高都变成0
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(AndroidHelpers.dpToPx(60), AndroidHelpers.dpToPx(60));//AndroidHelpers.dpToPx(60),AndroidHelpers.dpToPx(60)
         params.gravity = Gravity.TOP | Gravity.RIGHT;
-        params.rightMargin = AndroidHelpers.dpToPx(20);
-        fab.setTranslationY(-AndroidHelpers.dpToPx(80));//不知道为啥margin那里说应该是正数，那用translation吧
+        params.rightMargin = AndroidHelpers.dpToPx(40);
+        fab.setTranslationY(-AndroidHelpers.dpToPx(120));//不知道为啥margin那里说应该是正数，那用translation吧
         fab.setElevation(100); //感觉高度舍不设置都无所谓
         fab.setCustomSize(AndroidHelpers.dpToPx(60)); //要用这个设置一遍否则图片不居中
         //设置图标
@@ -56,7 +56,7 @@ public class FabMenu {
         //先调用一次初次启动需要执行的操作
         for (Class<? extends BaseFragment> clz : fragmentClsArray) {
             try {
-                clz.newInstance().callWhenFirstStart();
+                clz.newInstance().callWhenFirstStart(a);
                 Log.d(TAG, "FabMenu: 启动应用，执行初始化操作"+clz);
             } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();

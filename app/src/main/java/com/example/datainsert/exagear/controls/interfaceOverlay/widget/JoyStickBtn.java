@@ -363,7 +363,6 @@ public class JoyStickBtn extends BaseMoveBtn {
             linearCustomOuter.setVisibility(mParams.getPresetKey().equals(CUSTOM) ? VISIBLE : GONE);
         }));
         //设置当前选中
-        assert mParams != null;
         for (int i = 0; i < spinValues.length; i++) {
             if (mParams.getPresetKey().equals(spinValues[i]))
                 spinKeys.setSelection(i);

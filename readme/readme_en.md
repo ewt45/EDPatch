@@ -36,10 +36,7 @@ If you need virgl overlay, please resign them with the same signature manually.
 - [select obb manually](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
 
 
-## Acknowledgement
-- Russian Translation：Ēlochnik
-- Many friends for testing and providing ideas
-### Third-party project dependencies
+## Third-party project dependencies
 **These part of files are not uploaded yet, so compilation won't succeed.**
 - [apktool](https://ibotpeaches.github.io/Apktool/)
 - [common-io](https://commons.apache.org/proper/commons-io/)
@@ -51,17 +48,17 @@ If you need virgl overlay, please resign them with the same signature manually.
 ## Change Log
 
 ### v0.0.2
-- EDPatch interface and available functions supports Russian now, thanks to Ēlochnik.
+- EDPatch interface and available functions support Russian now, thanks to Ēlochnik.
 - Add a new function: Custom Control
   - Most of the options have descriptions that show up when long pressing. Select "default" of Control in container's properties. After entering the container, three-finger click to edit.
   - Mouse: Toggle visibility of mouse cursor. Switch gesture modes (default mode and touchpad mode) . Set mouse move speed.
   - Buttons: Customize buttons ( keys, text and position) . Switch layout mode (sidebar and free position) . Mouse button keys and joystick style buttons are available.
   - Style: Customize button color, transparency, size, sidebar background color.
-- Update old functions：
-  - android 11+ soft-input no-crashing：Android 11 and above show/hide logic fix, use `toggleSoftInput()` method (In this way the input method can't hide by clicking from the popup menu, not a big problem, the android back key will be able to hide it). Change the time delay of calling out the input method from 1 second to 0.2 seconds.
-  - select obb manually：The position of the text prompt is changed. Now after selecting the file, the text will be replaced by `obb selected, decompressing` or `the selected file is not obb`, in case the user selects the right obb without the correct prompt and selects something again. Display the selected file name as a toast. Disable the select button when unpacking.
-  - Custom location of drive D：After the app starts, if there is no preset folder (default is `Exagear`), it will try to create it automatically.
-  - custom resolution：Added multi-language support, probably fix the issue that crashing when container_prefs.xml contains a preferenceScreen of an external keyboard link.
+- Update old functions: 
+  - android 11+ soft-input no-crashing: Android 11 and above show/hide logic fix, use `toggleSoftInput()` method (In this way the input method can't hide by clicking from the popup menu, not a big problem, the android back key will be able to hide it). Change the time delay of calling out the input method from 1 second to 0.2 seconds.
+  - select obb manually: The position of the text prompt is changed. Now after selecting the file, the text will be replaced by `obb selected, decompressing` or `the selected file is not obb`, in case the user selects the right obb without the correct prompt and selects something again. Display the selected file name as a toast. Disable the select button when unpacking.
+  - Custom location of drive D: After the app starts, if there is no preset folder (default is `Exagear`), it will try to create it automatically.
+  - custom resolution: Added multi-language support, probably fix the issue that crashing when container_prefs.xml contains a preferenceScreen of an external keyboard link.
 
 
 ### v0.0.1

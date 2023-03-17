@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.eltechs.axs.Globals;
+import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.model.FormatHelper;
 
@@ -43,8 +46,11 @@ public class SubView4Other extends LinearLayout {
         linear2Btn.addView(btnImport,new LayoutParams(-2,-2));
         LinearLayout linearTransfer = getOneLineWithTitle(c,getS(RR.cmCtrl_s4_trsportTitle),linear2Btn,true);
         setDialogTooltip(linearTransfer.getChildAt(0),getS(RR.cmCtrl_s4_trsportTip));
-
         addView(linearTransfer);
+
+        //如果在xserver界面，禁止导入（否则退出的时候还会重新把旧的存一次）
+        if(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity() instanceof XServerDisplayActivity)
+            btnImport.setEnabled(false);
 
     }
 

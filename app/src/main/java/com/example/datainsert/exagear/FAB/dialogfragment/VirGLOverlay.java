@@ -384,7 +384,7 @@ public class VirGLOverlay extends BaseFragment {
     }
 
     @Override
-    public void callWhenFirstStart() {
+    public void callWhenFirstStart(AppCompatActivity activity) {
 
     }
 

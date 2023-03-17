@@ -96,6 +96,7 @@ public class FormatHelper {
 
     /**
      * 将全部数据导入（写入本地），从剪切板获取文本，
+     * 需要退出XServerDisplayActivity后再使用这个方法，否则会导致导入失败
      */
     public static void dataImport(String data) {
         List<String> linesArray = Arrays.asList(data.split(lineSeparator));

@@ -325,7 +325,7 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
      * 初始化时，创建Exagear文件夹
      */
     @Override
-    public void callWhenFirstStart() {
+    public void callWhenFirstStart(AppCompatActivity activity) {
         File file = new File(Environment.getExternalStorageDirectory(), PREF_VAL_DST_NAME);
         if (!file.exists()) {
             boolean b = file.mkdir();

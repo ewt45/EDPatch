@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -130,9 +131,9 @@ public abstract class BaseFragment extends DialogFragment implements DialogInter
     }
 
     /**
-     * 用于初次打开ex应用时，即使不点开对话框，也进行初始化的操作。注意这个时候可能某些成员变量还没有初始化？
+     * 用于初次打开ex应用时，即使不点开对话框，也进行初始化的操作。注意这个时候可能某些成员变量还没有初始化？还是传一个activity进去吧，这时候global获取不到
      */
-    public abstract void callWhenFirstStart();
+    public abstract void callWhenFirstStart(AppCompatActivity activity);
 
     public abstract String getTitle();
 

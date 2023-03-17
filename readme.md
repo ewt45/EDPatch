@@ -34,11 +34,7 @@
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [手动选择obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
 
-
-## 感谢
-- 俄语翻译：Ēlochnik
-- 众多帮忙测试和提供建议的朋友们
-### 第三方依赖
+## 第三方依赖
 **用到的第三方项目都没传上来，编译是没法通过的。去release里下现成的apk就行了。**
 - [apktool](https://ibotpeaches.github.io/Apktool/)
 - [common-io](https://commons.apache.org/proper/commons-io/)
