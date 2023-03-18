@@ -57,7 +57,7 @@ public class AboutFab extends BaseFragment{
            return;
        getPreference().edit().putBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN,true).apply();
 
-       Snackbar snackbar = Snackbar.make(FabMenu.getMainFrameView(activity),"自定义D盘路径、操作模式等功能可以在右下齿轮按钮中找到。",Snackbar.LENGTH_INDEFINITE);
+       Snackbar snackbar = Snackbar.make(FabMenu.getMainFrameView(activity),getS(RR.firstLaunch_snack),Snackbar.LENGTH_INDEFINITE);
        snackbar.setAction(android.R.string.yes, v -> snackbar.dismiss());
        snackbar.show();
     }

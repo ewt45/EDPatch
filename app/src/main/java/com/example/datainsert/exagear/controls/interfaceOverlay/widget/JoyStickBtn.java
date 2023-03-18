@@ -352,7 +352,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         linearCustomOuter = getOneLineWithTitle(c, null, linearCustomKeys, true);
 
         //选择预设按键，或者自定义
-        Spinner spinKeys = new Spinner(c);
+        Spinner spinKeys = new Spinner(c,Spinner.MODE_DIALOG);
         final String[] spinOptions = new String[]{"W A S D", "↑ ↓ ← →", getS(RR.cmCtrl_JoyEditKeyCstm)};
         final JoyParams.PresetKey[] spinValues = new JoyParams.PresetKey[]{WASD, ARROWS, CUSTOM};
         ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);

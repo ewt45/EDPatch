@@ -115,6 +115,7 @@ public class RR {
     public static int cmCtrl_actionRotate = 99;
     public static int abtFab_title = 100;
     public static int abtFab_info = 101;
+    public static int firstLaunch_snack = 102;
 
 
     private static String locale;
@@ -230,8 +231,9 @@ public class RR {
                 "关于",
                 "<ul>\n" +
                         "  <li>Exagear模拟器官方（Eltechs）已停止开发。本菜单为第三方补丁，旨在添加一些便捷功能。</li>\n" +
-                        "  <li>您可以通过“ED自助补丁”将本菜单或更多第三方功能加入Exagear：https://github.com/ewt45/EDPatch/releases</li>\n" +
+                        "  <li>您可以通过“ED自助补丁”将第三方功能加入原版apk中：https://github.com/ewt45/EDPatch/releases。请勿用于商业用途。</li>\n" +
                         "</ul>",
+                "额外功能可以在右下操作按钮中找到。",
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -345,6 +347,7 @@ public class RR {
                         "  <li>Exagear Android (Eltechs) project has been closed. This menu is a third-party patch designed to add some handy features.</li>\n" +
                         "  <li>You can add this and more features into Exagear by EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
                         "</ul>",
+                "Extra features can be found in the bottom left button.",
         };
 
         String[] ruStrings = new String[]{
@@ -459,6 +462,7 @@ public class RR {
                         "  <li>Exagear Android (Eltechs) проект закрыт. Это меню представляет собой сторонний патч, предназначенный для добавления некоторых удобных функций.</li>\n" +
                         "  <li>Вы можете добавить эту и другие функции в Exagear с помощью EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
                         "</ul>",
+                "Для изменения расположения диска D нажать ⚙️",
         };
 
         stringMap.put("zh", zhStrings);

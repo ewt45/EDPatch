@@ -11,6 +11,7 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -61,26 +62,46 @@ public class SubView2Keys extends LinearLayout {
 //        getPreference().edit().putBoolean(PREF_KEY_USE_CUSTOM_CONTROL, true).apply();
 
         //按键在两侧还是画面上层
-        Spinner spinKeyPosType = new Spinner(c); //用unicode字符？ ≡☰ ⇌ ⇄
-        String[] spinOptions = new String[]{getS(RR.cmCtrl_s2_modeSide), getS(RR.cmCtrl_s2_modeFree)};
-        ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
-        spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinKeyPosType.setAdapter(spinKeyPosAdapter);
-        spinKeyPosType.setSelection(getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false) ? 1 : 0);
-        spinKeyPosType.setOnItemSelectedListener(new SimpleItemSelectedListener((parent, view, position, id) -> {
+//        Spinner spinKeyPosType = new Spinner(c); //用unicode字符？ ≡☰ ⇌ ⇄
+//        String[] spinOptions = new String[]{getS(RR.cmCtrl_s2_modeSide), getS(RR.cmCtrl_s2_modeFree)};
+//        ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
+//        spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinKeyPosType.setAdapter(spinKeyPosAdapter);
+//        spinKeyPosType.setSelection(getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false) ? 1 : 0);
+//        spinKeyPosType.setOnItemSelectedListener(new SimpleItemSelectedListener((parent, view, position, id) -> {
+//            getPreference().edit().putBoolean(PREF_KEY_CUSTOM_BTN_POS, position == 1).apply();
+//            mTwoWaysKeyGroups[position].setVisibility(VISIBLE);
+//            mTwoWaysKeyGroups[(position + 1) % 2].setVisibility(GONE);
+//        }));
+//        spinKeyPosType.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
+//        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_layoutMode), spinKeyPosType, false);
+//        setDialogTooltip(oneLineSpinKeyPos.getChildAt(0), getS(RR.cmCtrl_s2_layoutModeTip));
+//        addView(oneLineSpinKeyPos);
+
+        //spinner在开全面屏的时候显示有问题，换radiobutton吧
+        RadioButton rdBtnSideBar = new RadioButton(c);
+        final int rdBtnSideBarID = View.generateViewId(); //自动分配一个id吧
+        rdBtnSideBar.setId(rdBtnSideBarID);
+        rdBtnSideBar.setText(getS(RR.cmCtrl_s2_modeSide));
+
+        RadioButton rdBtnFreePos = new RadioButton(c);
+        final int rdBtnFreePosID = View.generateViewId();
+        rdBtnFreePos.setId(rdBtnFreePosID);
+        rdBtnFreePos.setText(getS(RR.cmCtrl_s2_modeFree));
+        RadioGroup radioKeyPos = new RadioGroup(c);
+
+        radioKeyPos.setOrientation(HORIZONTAL);
+        radioKeyPos.addView(rdBtnSideBar);
+        radioKeyPos.addView(rdBtnFreePos);
+        radioKeyPos.setOnCheckedChangeListener((group, checkedId) -> {
+            int position = checkedId == rdBtnSideBarID?0:1;
             getPreference().edit().putBoolean(PREF_KEY_CUSTOM_BTN_POS, position == 1).apply();
             mTwoWaysKeyGroups[position].setVisibility(VISIBLE);
             mTwoWaysKeyGroups[(position + 1) % 2].setVisibility(GONE);
-        }));
-        spinKeyPosType.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
-        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_layoutMode), spinKeyPosType, false);
+        });
+        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_layoutMode), radioKeyPos, true);
         setDialogTooltip(oneLineSpinKeyPos.getChildAt(0), getS(RR.cmCtrl_s2_layoutModeTip));
         addView(oneLineSpinKeyPos);
-
-        RadioGroup radioKeyPos = new RadioGroup(c);
-        RadioButton rdBtnSideBar = new RadioButton(c);
-        rdBtnSideBar.setText(getS(RR.cmCtrl_s2_modeSide));
-
 
         //左侧栏按键和右侧栏按键
         LinearLayout linearSideColOuter = new LinearLayout(c);
@@ -141,10 +162,8 @@ public class SubView2Keys extends LinearLayout {
         addView(mTwoWaysKeyGroups[1]);
 
         //设置按键布局方式 两种方式显示一个，另一个隐藏
+        radioKeyPos.check(getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false) ? rdBtnFreePosID : rdBtnSideBarID);
 
-        boolean customBtnPos = getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false);
-        mTwoWaysKeyGroups[0].setVisibility(customBtnPos ? GONE : VISIBLE);
-        mTwoWaysKeyGroups[1].setVisibility(customBtnPos ? VISIBLE : GONE);
 
 
     }
@@ -211,5 +230,12 @@ public class SubView2Keys extends LinearLayout {
     public void syncKeyCodes2() {
         mKeyCodes2.setLeftSide(mTwoSideBars[0].getAdapter().getCurrentList());
         mKeyCodes2.setRightSide(mTwoSideBars[1].getAdapter().getCurrentList());
+    }
+
+    /**
+     * radiobutton 选中哪个布局模式 . 0是左右侧栏  1是自由布局
+     */
+    public void checkLayoutMode(int index){
+
     }
 }
