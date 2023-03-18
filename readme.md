@@ -27,8 +27,8 @@
 
 ## 目前可添加的功能
 - [悬浮操作按钮](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
-  - 自定义d盘路径
-  - 自定义操作模式
+  - [自定义d盘路径](https://ewt45.github.io/blogs/2022/winter/exagearFab/driveD.html)
+  - [自定义操作模式](https://www.bilibili.com/video/BV1fL41167Ji/)
 - [强制显示鼠标光标](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
