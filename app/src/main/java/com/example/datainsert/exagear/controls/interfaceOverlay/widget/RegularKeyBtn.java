@@ -127,7 +127,7 @@ public class RegularKeyBtn extends BaseMoveBtn {
 
     @Override
     public void injectPress(Finger finger) {
-        Log.d(TAG, "injectPress: 按下键" + mOneKey.getName());
+//        Log.d(TAG, "injectPress: 按下键" + mOneKey.getName());
          /*
         按键输入，如果是shift这种，按下就触发，交给ontouch处理，否则交给onclick处理
         不如先都交给onclick处理吧。修饰键点击时只按下或抬起，普通键点击时一次完整的按下抬起。
