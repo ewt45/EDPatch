@@ -37,7 +37,8 @@ If you need virgl overlay, please resign them with the same signature manually.
 
 
 ## Third-party project dependencies
-**These part of files are not uploaded yet, so compilation won't succeed.**
+
+[//]: # (**These part of files are not uploaded yet, so compilation won't succeed.**)
 - [apktool](https://ibotpeaches.github.io/Apktool/)
 - [common-io](https://commons.apache.org/proper/commons-io/)
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
