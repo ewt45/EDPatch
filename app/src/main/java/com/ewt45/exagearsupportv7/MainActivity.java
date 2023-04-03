@@ -35,6 +35,7 @@ import com.eltechs.axs.applicationState.DroidApplicationContextAware;
 import com.eltechs.axs.configuration.startup.StartupActionsCollection;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.ed.EDApplicationState;
+import com.eltechs.ed.startupActions.WDesktop;
 import com.ewt45.exagearsupportv7.databinding.ActivityMainBinding;
 import com.example.datainsert.SymlinkLib;
 import com.example.datainsert.exagear.FAB.FabMenu;
@@ -42,6 +43,7 @@ import com.example.datainsert.exagear.rightdrawer.RightDrawer;
 import com.example.datainsert.exagear.virgloverlay.OverlayBuildUI;
 
 import java.io.File;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -145,5 +147,10 @@ public class MainActivity extends FrameworkActivity {
         
         Log.d(TAG, "onActivityResult:activity requestCode:"+requestCode+", resultCode"+resultCode);
 
+    }
+
+
+    public void signalUserInteractionFinished(int i, WDesktop.UserRequestedAction goFurther) {
+        signalUserInteractionFinished(goFurther);
     }
 }

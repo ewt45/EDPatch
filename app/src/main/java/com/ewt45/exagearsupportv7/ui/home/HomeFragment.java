@@ -6,6 +6,8 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.eltechs.axs.Globals.getApplicationState;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -35,10 +37,28 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProvider;
 
+import com.eltechs.axs.ExagearImageConfiguration.ExagearImage;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FatalErrorActivity;
+import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.axs.applicationState.EnvironmentAware;
+import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.eltechs.axs.configuration.XServerViewConfiguration;
+import com.eltechs.axs.configuration.startup.EnvironmentCustomisationParameters;
+import com.eltechs.axs.configuration.startup.StartupAction;
+import com.eltechs.axs.configuration.startup.actions.CreateTypicalEnvironmentConfiguration;
+import com.eltechs.axs.configuration.startup.actions.StartEnvironmentService;
+import com.eltechs.axs.environmentService.AXSEnvironment;
+import com.eltechs.axs.environmentService.TrayConfiguration;
+import com.eltechs.axs.environmentService.components.XServerComponent;
+import com.eltechs.axs.helpers.UiThread;
+import com.eltechs.axs.network.SocketPaths;
+import com.eltechs.axs.xconnectors.epoll.UnixSocketConfiguration;
 import com.eltechs.ed.activities.EDStartupActivity;
+import com.eltechs.ed.startupActions.WDesktop;
+import com.ewt45.exagearsupportv7.MainActivity;
 import com.ewt45.exagearsupportv7.R;
 import com.ewt45.exagearsupportv7.databinding.FragmentHomeBinding;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.ToggleButtonHighContrast;
@@ -128,11 +148,41 @@ public class HomeFragment extends Fragment {
         });
 
         binding.startXserveractivityBtn.setOnClickListener(v->{
-            Intent intent = new Intent(requireContext(), XServerDisplayActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-            Class<?> cls = null;
-            intent.putExtra("facadeclass", (Serializable) null);
-            startActivity(intent);
+
+            //CreateTypicalEnvironmentConfiguration,本来应该在startGuest里写的，没调用，只好在这里写了
+
+//        arrayList.add(new CreateTypicalEnvironmentConfiguration(12, false));
+//
+            EnvironmentAware environmentAware = (EnvironmentAware) getApplicationState();
+            EnvironmentCustomisationParameters environmentCustomisationParameters = new EnvironmentCustomisationParameters();
+//                ((SelectedExecutableFileAware) environmentAware).getSelectedExecutableFile().getEnvironmentCustomisationParameters();
+            AXSEnvironment aXSEnvironment = new AXSEnvironment(requireContext());
+//        aXSEnvironment.addComponent(new SysVIPCEmulatorComponent(ProductIDs.getPackageName(this.productId)));
+            aXSEnvironment.addComponent(new XServerComponent(environmentCustomisationParameters.getScreenInfo(), 12,
+                    UnixSocketConfiguration.createRegularSocket(requireContext().getFilesDir().getAbsolutePath(), String.format("%s%d", SocketPaths.XSERVER, Integer.valueOf(12)))));
+////        aXSEnvironment.addComponent(new ALSAServerComponent(createALSASocketConf()));
+////        aXSEnvironment.addComponent(new DirectSoundServerComponent(createDSoundServerSocketConf()));
+////        aXSEnvironment.addComponent(new GuestApplicationsTrackerComponent(createGATServerSocketConf()));
+            ExagearImage exagearImage = ((ExagearImageAware) environmentAware).getExagearImage();
+////        aXSEnvironment.addComponent(new TempDirMaintenanceComponent(exagearImage));
+////        aXSEnvironment.addComponent(new EtcHostsFileUpdaterComponent(exagearImage));
+            environmentAware.setEnvironment(aXSEnvironment);
+            environmentAware.setXServerViewConfiguration(XServerViewConfiguration.DEFAULT);
+
+
+            ArrayList arrayList = new ArrayList();
+            arrayList.add(new StartEnvironmentService(new TrayConfiguration(R.drawable.tray, R.string.ed_host_app_name, R.string.ed_host_app_name)));
+            // from class: com.eltechs.ed.startupActions.StartGuest.2
+// java.lang.Runnable
+            UiThread.post(() -> ((ApplicationStateBase) getApplicationState()).getStartupActionsCollection().addActions(arrayList));
+
+            ((MainActivity)requireActivity()).signalUserInteractionFinished(0,WDesktop.UserRequestedAction.GO_FURTHER);
+
+//            Intent intent = new Intent(requireContext(), XServerDisplayActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//            Class<?> cls = null;
+//            intent.putExtra("facadeclass", (Serializable) null);
+//            startActivity(intent);
         });
 
         //
@@ -151,6 +201,10 @@ public class HomeFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "onActivityResult:fragment requestCode:" + requestCode + ", resultCode" + resultCode);
     }
+
+
+
+
 
     /**
      * * 获取Selector

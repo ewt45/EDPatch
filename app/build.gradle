@@ -31,7 +31,6 @@ android {
 
             // Provides a relative path to your CMake build script.
             path "CMakeLists.txt"
-
         }
     }
 
@@ -96,6 +95,9 @@ dependencies {
 
     implementation 'commons-io:commons-io:2.7'
     implementation 'org.apache.commons:commons-compress:1.21'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+
 //    implementation project(path: ':edapi')
     testImplementation 'junit:junit:4.13.2'
 //    implementation project(path: ':overlayapp')

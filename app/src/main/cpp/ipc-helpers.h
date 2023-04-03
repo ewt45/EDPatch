@@ -1,0 +1,8 @@
+//
+// Created by localAccount on 2023/4/1.
+//
+
+#ifndef EXAGEAR_SUPPORT_V7包_IPC_HELPERS_H
+#define EXAGEAR_SUPPORT_V7包_IPC_HELPERS_H
+
+#endif //EXAGEAR_SUPPORT_V7包_IPC_HELPERS_H

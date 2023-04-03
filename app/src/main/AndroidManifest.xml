@@ -20,7 +20,7 @@
 
         <activity android:name="com.eltechs.ed.activities.EDStartupActivity"
             android:theme="@style/ThemeDefaultDialogNoTitle"
-            android:label="EDStartupActivity"
+            android:label="模拟ED启动"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,9 +42,17 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:theme="@style/ThemeDefaultDialogNoTitle" android:name="com.eltechs.axs.activities.FatalErrorActivity"/>
 
         <activity android:name="com.eltechs.axs.activities.XServerDisplayActivity"
             android:screenOrientation="sensorLandscape"/>
+        <service android:name="com.eltechs.axs.environmentService.AXSEnvironmentService"
+            android:permission="TODO"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </service>
 
 
 <!--        <provider-->

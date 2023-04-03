@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">VirGL Overlay</string>
+    <string name="socket_path_text">Socket path (/tmp/.virgl_test):</string>
+    <string name="protocol_version_text">Use VTEST protocol 2 (Mesa 19.1.0 v3 or newer needed)</string>
+    <string name="start_text">Start services</string>
+    <string name="clean_text">Clean services</string>
+    <string name="restart_services_text">Auto restart services</string>
+    <string name="use_gles_text">Use OpenGL ES 3.x instead of OpenGL</string>
+    <string name="use_threads_text">Use multi-thread egl access</string>
+    <string name="overlay_position_text">Overlay position:</string>
+    <string name="overlay_topleft_text">Top-left</string>
+    <string name="overlay_centered_text">Centered</string>
+    <string name="overlay_hide_text">Invisible *</string>
+    <string name="overlay_hide_info_text">* Use with VTEST_WIN=1 to draw in X11 window instead of overlay</string>
+    <string name="dxtn_decompress_text">DXTn (S3TC) decompress (needed for some games)</string>
+    <string name="information1">Original APK with native library by mittorn</string>
+    <string name="information2">https://github.com/mittorn/virglrenderer-android</string>
+    <string name="information3">https://github.com/mittorn/virglrenderer</string>
+    <string name="information4">Rebuild APK v.0.0.9 (mod) by alexvorxx</string>
+    <string name="information5">The following code was used in this version:</string>
+    <string name="information6">virglrenderer-0.10.0</string>
+    <string name="information7">https://github.com/freedesktop/virglrenderer</string>
+    <string name="information8">libepoxy-1.5.10</string>
+    <string name="information9">https://github.com/anholt/libepoxy</string>
+    <string name="information10">gl4es-1.1.4</string>
+    <string name="information11">https://github.com/ptitSeb/gl4es</string>
+    <string name="information12">Special thanks to mittorn for help and advices</string>
+    <string name="information13">Thanks to gabreek for the useful option</string>
+    <string name="information14">https://github.com/gabreek/VirGL-Overlay-Rebuild_mod</string>
+</resources>

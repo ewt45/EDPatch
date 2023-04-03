@@ -23,4 +23,7 @@
     <string name="no_obb_file_found">没找到obb文件</string>
 
     <string name="show_keyboard">显示键盘</string>
+
+    <string name="ed_host_app_name">ExaGear ED302</string>
+
 </resources>

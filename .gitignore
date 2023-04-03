@@ -30,11 +30,11 @@ google-services.json
 *.hprof
 
 # other project 
-/apksig/
-/edapi/
-/overlayapp/
-/xml/
-/app/src/main/java/com/eltechs
+#/apksig/
+#/edapi/
+#/overlayapp/
+#/xml/
+#/app/src/main/java/com/eltechs
 
 #smali
 *.smali

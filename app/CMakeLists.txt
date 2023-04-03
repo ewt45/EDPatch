@@ -22,7 +22,8 @@ add_library( # Specifies the name of the library.
 add_library(fs-helpers SHARED src/main/cpp/fs-helpers.cpp)
 
 add_library(axs-helpers SHARED src/main/cpp/axs-helpers.cpp)
-
+add_library(ipc-helpers SHARED src/main/cpp/ipc-helpers.cpp)
+add_library(xconnector-fairepoll SHARED src/main/cpp/xconnector-fairepoll.cpp)
 
 # Specifies a path to native header files.
 include_directories(src/main/cpp/)

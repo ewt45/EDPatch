@@ -1,0 +1,12 @@
+package com.eltechs.axs.requestHandlers.xtest;
+
+/* loaded from: classes.dex */
+public abstract class Opcodes {
+    public static final int CompareCursor = 1;
+    public static final int FakeInput = 2;
+    public static final int GetVersion = 0;
+    public static final int GrabControl = 3;
+
+    private Opcodes() {
+    }
+}
