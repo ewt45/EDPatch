@@ -28,7 +28,7 @@ public class FuncCursor implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 1;
+        return 2;
     }
 
     private boolean isPatchedOldWay() {

@@ -50,8 +50,11 @@
     <string name="fraghelp_body_selobb">If apk is installed and it can\'t detect obb file, a method will be provided for user to select the obb file with system file picker. \nOn android 11 and above system file picker cannot view the Android/data or Android/obb directory.</string>
     <string name="fraghelp_title2_attention">Attention</string>
     <string name="settings_delpatcherapk">clear patcher apk</string>
-    <string name="settings_version">version</string>
     <string name="settings_delpatcherapksummary">Generally not used</string>
+    <string name="settings_version">version</string>
+    <string name="settings_usedefaultkey">Use the default signature</string>
+    <string name="settings_usedefaultkeysummary">If checked, the patched APK can usually be installed without unsintalling first or resigning manually , but it may be recognized as a virus.</string>
+
     <string name="tips_backup">Patched apk can\'t be restored, so please backup first!</string>
     <string name="tips_check_guide">Please check the Guide in action bar\'s menu before patching.</string>
     <string name="tv_patchstep2">2. check functions</string>

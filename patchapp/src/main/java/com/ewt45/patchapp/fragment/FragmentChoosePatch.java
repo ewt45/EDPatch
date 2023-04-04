@@ -1,6 +1,8 @@
 package com.ewt45.patchapp.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 
 import com.ewt45.patchapp.ActionPool;
+import com.ewt45.patchapp.MyApplication;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentChoosePatchBinding;
@@ -254,7 +257,8 @@ public class FragmentChoosePatch extends Fragment {
             if (patchNew) {
                 mActionPool.submit(new WriteFuncVer(addingFuncList));//添加功能时要获取旧的版本号，所以等功能添加完了，再写入版本号（获取和写入都是写到解包apk的asset里，打包的时候会自动加进去
                 mActionPool.submit(new BuildApk());//回编译apk
-                mActionPool.submit(new SignApk(requireContext().getAssets()));//签名
+                boolean useDefaultKey = requireActivity().getSharedPreferences(MyApplication.PREFERENCE,Context.MODE_PRIVATE).getBoolean("use_default_signature",false);
+                mActionPool.submit(new SignApk(requireContext().getAssets(),useDefaultKey));//签名
             }
             mActionPool.submit(new SignalDone()); //恢复按钮可用
         });

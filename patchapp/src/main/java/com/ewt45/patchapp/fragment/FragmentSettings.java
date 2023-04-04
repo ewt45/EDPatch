@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ewt45.patchapp.BuildConfig;
+import com.ewt45.patchapp.MyApplication;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 
@@ -26,6 +27,12 @@ import java.util.List;
 
 public class FragmentSettings extends PreferenceFragmentCompat {
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //设置 数据存到的文件名
+        getPreferenceManager().setSharedPreferencesName(MyApplication.PREFERENCE);
+    }
 
     //如果想自定义点击一个preference的操作：
     // xml中新建checkbox，widgetLayout设置一个空的布局。这里通过key获取对应preference，设置setOnPreferenceClickListener
@@ -94,4 +101,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public void onDisplayPreferenceDialog(Preference preference) {
         super.onDisplayPreferenceDialog(preference);
     }
+
+
 }

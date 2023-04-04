@@ -1,9 +1,12 @@
 package com.eltechs.axs.xserver.impl;
 
+import android.util.Log;
+
 import com.eltechs.axs.xserver.EventsInjector;
 import com.eltechs.axs.xserver.XServer;
 
 public class EventsInjectorImpl implements EventsInjector {
+    private  static final String TAG= "EventsInjectorImpl";
     private final XServer xServer;
 
     public EventsInjectorImpl(XServer xServer) {
@@ -17,6 +20,7 @@ public class EventsInjectorImpl implements EventsInjector {
 
     @Override // com.eltechs.axs.xserver.EventsInjector
     public void injectKeyRelease(byte b, int i) {
+        Log.d(TAG, "injectKeyRelease: 松开按键：keycode="+b+", keysym="+i);
         this.xServer.getKeyboard().keyReleased(b, i);
     }
 

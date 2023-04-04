@@ -26,9 +26,11 @@ import java.util.List;
 
 
 public class SignApk implements Action {
+    boolean useDefaultKey ;
     AssetManager mAssetManager;
-    public SignApk(AssetManager assetManager){
+    public SignApk(AssetManager assetManager, boolean useDefaultKey){
         mAssetManager = assetManager;
+        this.useDefaultKey = useDefaultKey;
     }
 
     @Override
@@ -56,12 +58,13 @@ public class SignApk implements Action {
     }
 
     private ApkSigner.SignerConfig getSignerConfig(){
-
         byte[] encoded; //rsa-2048.pk8
         try{
-            encoded=IOUtils.toByteArray(mAssetManager.open("rsa.pk8"));
+            String pk8Filename = useDefaultKey?"rsa_testkey.pk8":"rsa.pk8";
+            String x509Filename = useDefaultKey?"rsa_testkey.x509.pem":"rsa.x509.pem";
+            encoded=IOUtils.toByteArray(mAssetManager.open(pk8Filename));
             PrivateKey privateKey = KeyFactory.getInstance("rsa").generatePrivate(new PKCS8EncodedKeySpec(encoded));
-            InputStream in = mAssetManager.open("rsa.x509.pem");//new FileInputStream("rsa-2048.x509.pem");//"rsa-2048.x509.pem" "rsa-2048_negmod.x509.der"
+            InputStream in = mAssetManager.open(x509Filename);//new FileInputStream("rsa-2048.x509.pem");//"rsa-2048.x509.pem" "rsa-2048_negmod.x509.der"
             Collection<? extends Certificate> certs0 = X509CertificateUtils.generateCertificates(in);
             in.close();
             List<X509Certificate> certs = new ArrayList<>(certs0.size());

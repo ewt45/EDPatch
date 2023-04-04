@@ -64,5 +64,7 @@
     <string name="tips_check_guide">修改apk前，请先查看右上角菜单中的“指南”。</string>
     <string name="tips_backup">apk修改后无法复原，请务必提前备份好原版apk！</string>
     <string name="tips_waiting">正在修改apk，请勿切换到其他界面，以防出现问题。</string>
+    <string name="settings_usedefaultkey">使用默认签名</string>
+    <string name="settings_usedefaultkeysummary">若勾选，则通常情况下修改后的apk可以直接覆盖安装，但可能会被误报为病毒。</string>
 
 </resources>

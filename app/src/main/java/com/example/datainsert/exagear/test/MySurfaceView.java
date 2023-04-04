@@ -5,11 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.LinearLayout;
 
 public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+    static String TAG= "MySurfaceView";
     private DrawThread mDrawThread;
 
     public MySurfaceView(Context context) {
@@ -64,17 +67,33 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         public void run() {
             super.run();
 
+            int left = 0;
+            int top = 0;
+            int width = 100;
+            int height = 100;
+            int verticalFlag = 5;
+            int horizontalFlag = 5;
             while (mRunning) {
                 Canvas canvas = mSurface.lockCanvas(null);
                 canvas.drawColor(Color.WHITE);
-                canvas.drawRect(0, 0, 100, 100, mPaint);
+                canvas.drawRect(left, top, left + width, top + height, mPaint);
                 mSurface.unlockCanvasAndPost(canvas);
+//                Log.d(TAG, String.format("run: canvas.width=%d, height=%d",canvas.getWidth(),canvas.getHeight()));
 
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+                if(((top + height) >= 400) || top<0)
+                    verticalFlag = - verticalFlag;
+
+                if(((left + width) >= 800) || left<0)
+                    horizontalFlag = - horizontalFlag;
+
+                left += horizontalFlag;
+                top += verticalFlag;
+//                try {
+//                    Thread.sleep(50);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
             }
         }
     }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
         android:key="clear_patcher_apk"
@@ -11,6 +13,11 @@
 <!--        android:key="apk_debuggable"-->
 <!--        android:title="生成的apk允许调试"-->
 <!--        />-->
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="use_default_signature"
+        android:summary="@string/settings_usedefaultkeysummary"
+        android:title="@string/settings_usedefaultkey" />
     <CheckBoxPreference
         android:key="credits"
         android:title="@string/settings_credits"

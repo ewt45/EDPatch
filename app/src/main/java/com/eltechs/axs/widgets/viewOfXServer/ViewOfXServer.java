@@ -3,6 +3,7 @@ package com.eltechs.axs.widgets.viewOfXServer;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.opengl.GLSurfaceView;
+import android.view.SurfaceView;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -20,8 +21,10 @@ import com.eltechs.axs.xserver.WindowLifecycleListener;
 import com.eltechs.axs.xserver.XServer;
 import com.eltechs.axs.xserver.impl.masks.Mask;
 
+import javax.microedition.khronos.opengles.GL;
+
 /* loaded from: classes.dex */
-public class ViewOfXServer extends GLSurfaceView {
+public class ViewOfXServer extends SurfaceView {
     private final XServerViewConfiguration configuration;
     private final WindowContentModificationListener contentModificationListener;
     private final PointerListener pointerListener;
@@ -34,86 +37,92 @@ public class ViewOfXServer extends GLSurfaceView {
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowGeometryChanged(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.5
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowGeometryChanged(window);
-            }
-        });
-        requestRender();
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.5
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.windowGeometryChanged(window);
+//            }
+//        });
+//        requestRender();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowAttributesChanged(final Window window, final Mask<WindowAttributeNames> mask) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.6
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowAttributesChanged(window, mask);
-            }
-        });
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.6
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.windowAttributesChanged(window, mask);
+//            }
+//        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowMapped(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.7
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowMapped(window);
-            }
-        });
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.7
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.windowMapped(window);
+//            }
+//        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowUnmapped(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.8
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowUnmapped(window);
-            }
-        });
-        requestRender();
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.8
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.windowUnmapped(window);
+//            }
+//        });
+//        requestRender();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowZOrderChanged(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.9
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowZOrderChanged(window);
-            }
-        });
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.9
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.windowZOrderChanged(window);
+//            }
+//        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowContentChanged(final Window window, final int i, final int i2, final int i3, final int i4) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.10
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.contentChanged(window, i, i2, i3, i4);
-            }
-        });
-        requestRender();
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.10
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.contentChanged(window, i, i2, i3, i4);
+//            }
+//        });
+//        requestRender();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowBufferReplaced(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.11
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.frontBufferReplaced(window);
-            }
-        });
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.11
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.frontBufferReplaced(window);
+//            }
+//        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueCursorPositionChanged() {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.12
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.cursorChanged();
-            }
-        });
-        requestRender();
+//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.12
+//            @Override // java.lang.Runnable
+//            public void run() {
+//                ViewOfXServer.this.renderer.cursorChanged();
+//            }
+//        });
+//        requestRender();
+    }
+
+    public static native void  start();
+
+    static {
+        System.loadLibrary("fakexvfb");
     }
 
     public ViewOfXServer(Context context, XServer xServer, ViewFacade viewFacade, XServerViewConfiguration xServerViewConfiguration) {
@@ -187,8 +196,8 @@ public class ViewOfXServer extends GLSurfaceView {
                 ViewOfXServer.this.queueWindowAttributesChanged(window, mask);
             }
         };
-        setEGLContextClientVersion(2);
-        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+//        setEGLContextClientVersion(2);
+//        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         getHolder().setFormat(1);
         this.configuration = xServerViewConfiguration;
         if (viewFacade == null) {
@@ -197,8 +206,8 @@ public class ViewOfXServer extends GLSurfaceView {
             this.xServerFacade = viewFacade;
         }
         this.renderer = new AXSRendererGL(this, this.xServerFacade);
-        setRenderer(this.renderer);
-        setRenderMode(RENDERMODE_WHEN_DIRTY);
+//        setRenderer(this.renderer);
+//        setRenderMode(RENDERMODE_WHEN_DIRTY);
         this.transformationViewToXServer = new Matrix();
         this.zoomController = new XZoomController(this, xServer.getScreenInfo());
         setFocusable(true);
@@ -229,17 +238,17 @@ public class ViewOfXServer extends GLSurfaceView {
         editorInfo.imeOptions = 6;
         return baseInputConnection;
     }
-
-    @Override // android.opengl.GLSurfaceView
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override // android.opengl.GLSurfaceView
-    public void onPause() {
-        this.renderer.onPause();
-        super.onPause();
-    }
+//
+//    @Override // android.opengl.GLSurfaceView
+//    public void onResume() {
+//        super.onResume();
+//    }
+//
+//    @Override // android.opengl.GLSurfaceView
+//    public void onPause() {
+//        this.renderer.onPause();
+//        super.onPause();
+//    }
 
     @Override // android.opengl.GLSurfaceView, android.view.SurfaceView, android.view.View
     protected void onAttachedToWindow() {
@@ -276,7 +285,7 @@ public class ViewOfXServer extends GLSurfaceView {
 
     public void setXViewport(RectangleF rectangleF) {
         this.renderer.setXViewport(rectangleF);
-        requestRender();
+//        requestRender();
     }
 
     public XZoomController getZoomController() {
@@ -320,4 +329,6 @@ public class ViewOfXServer extends GLSurfaceView {
             this.renderer.unFreeze();
         }
     }
+
+
 }
