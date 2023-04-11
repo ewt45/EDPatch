@@ -3,6 +3,7 @@ package com.eltechs.axs.xserver.impl;
 import android.util.Log;
 
 import com.eltechs.axs.xserver.EventsInjector;
+import com.eltechs.axs.xserver.RealXServer;
 import com.eltechs.axs.xserver.XServer;
 
 public class EventsInjectorImpl implements EventsInjector {
@@ -13,29 +14,35 @@ public class EventsInjectorImpl implements EventsInjector {
         this.xServer = xServer;
     }
 
-    @Override // com.eltechs.axs.xserver.EventsInjector
-    public void injectKeyPress(byte b, int i) {
-        this.xServer.getKeyboard().keyPressed(b, i);
+    public void injectKeyPress(byte keyCode, int keySym) {
+        if (keyCode != 0 && keySym == 0)
+            RealXServer.key(keyCode,1);
+        else if (keyCode == 0 && keySym != 0)
+            RealXServer.keySym(keyCode,keySym,1);
+        else
+            Log.e("EventsInjectorImpl", "injectKeyPress: Something is wrong. keyCode is " + keyCode + " and keySym is " + keySym);
     }
 
-    @Override // com.eltechs.axs.xserver.EventsInjector
-    public void injectKeyRelease(byte b, int i) {
-        Log.d(TAG, "injectKeyRelease: 松开按键：keycode="+b+", keysym="+i);
-        this.xServer.getKeyboard().keyReleased(b, i);
+    public void injectKeyRelease(byte keyCode, int keySym) {
+        if (keyCode != 0 && keySym == 0)
+            RealXServer.key(keyCode,1);
+        else if (keyCode == 0 && keySym != 0)
+            RealXServer.keySym(keyCode,keySym, 0);
+        else
+            Log.e("EventsInjectorImpl", "injectKeyRelease: Something is wrong. keyCode is " + keyCode + " and keySym is " + keySym);
     }
 
-    @Override // com.eltechs.axs.xserver.EventsInjector
     public void injectPointerMove(int x, int y) {
-        this.xServer.getPointer().setCoordinates(x, y);
+        Log.d(TAG, String.format("injectPointerMove: 移动坐标 (%d,%d)",x,y));
+
+        RealXServer.motion(x, y);
     }
 
-    @Override // com.eltechs.axs.xserver.EventsInjector
     public void injectPointerButtonPress(int i) {
-        this.xServer.getPointer().setButton(i, true);
+        RealXServer.click(i, 1);
     }
 
-    @Override // com.eltechs.axs.xserver.EventsInjector
     public void injectPointerButtonRelease(int i) {
-        this.xServer.getPointer().setButton(i, false);
+        RealXServer.click(i, 0);
     }
 }

@@ -178,7 +178,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
     protected void onResume() {
         super.onResume();
         buildUI();
-//        this.viewOfXServer.onResume();
+        this.viewOfXServer.onResume();
         this.uiOverlayView.requestFocus();
 
         AXSEnvironment environment = getApplicationState().getEnvironment();

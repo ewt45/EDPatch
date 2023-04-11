@@ -5,8 +5,8 @@ import android.util.Log;
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.helpers.Assert;
-import com.eltechs.axs.xserver.LocksManager;
 import com.eltechs.axs.xserver.helpers.WindowHelpers;
+
 import java.util.ArrayList;
 
 /* loaded from: classes.dex */
@@ -328,7 +328,7 @@ public class ViewFacade {
     }
 
     public void injectPointerMove(int x, int y) {
-        Log.d("ViewFacade", String.format("injectPointerMove: 移动坐标 (%d,%d)",x,y));
+//        Log.d("ViewFacade", String.format("injectPointerMove: 移动坐标 (%d,%d)",x,y));
         LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
         try {
             this.xServer.getEventsInjector().injectPointerMove(x, y);
