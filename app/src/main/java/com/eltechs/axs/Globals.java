@@ -1,6 +1,8 @@
 package com.eltechs.axs;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ApplicationStateObject;
 import com.eltechs.axs.helpers.Assert;

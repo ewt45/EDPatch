@@ -54,7 +54,12 @@ android {
         baseline = file("lint-baseline.xml")
     }
 
-
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/00jniLibs']
+            jni.srcDirs = []
+        }
+    }
 }
 
 // 自定义打包名称

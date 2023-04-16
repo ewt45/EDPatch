@@ -52,11 +52,11 @@ public class EDStartupActivity extends StartupActivity<EDApplicationState> {
         StartupActionsCollection<EDApplicationState> startupActionsCollection = eDApplicationState.getStartupActionsCollection();
         eDApplicationState.setMemsplitConfiguration(new MemsplitConfiguration(true));
         eDApplicationState.setExagearImage(ExagearImage.find(applicationContext, GENERIC_IMAGE_DIRECTORY_NAME, true));
-        startupActionsCollection.addAction(new RequestPermissions(this, StartupActivity.REQUEST_CODE_GET_PERMISSIONS));
+        startupActionsCollection.addAction(new RequestPermissions<>(this, StartupActivity.REQUEST_CODE_GET_PERMISSIONS));
         startupActionsCollection.addAction(new UnpackExagearImageObb<>(true, new String[]{"/home"}, new File(applicationContext.getFilesDir(), PROGRESS_FILE_NAME).getAbsolutePath()));
-        startupActionsCollection.addAction(new InstallRecipesFromAssets());
-        startupActionsCollection.addAction(new InitGuestContainersManager());
-        startupActionsCollection.addAction(new WDesktop());
+        startupActionsCollection.addAction(new InstallRecipesFromAssets<>());
+        startupActionsCollection.addAction(new InitGuestContainersManager<>());
+        startupActionsCollection.addAction(new WDesktop<>());
 
 
 

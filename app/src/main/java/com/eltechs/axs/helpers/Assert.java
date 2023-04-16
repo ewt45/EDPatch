@@ -52,13 +52,16 @@ public abstract class Assert {
     }
 
     public static void state(boolean z, String str) {
-        if (!z) {
-            if(!QH.isTesting())
-                throw new IllegalStateException(str);
-            else{
-                Log.e(TAG, "state false: "+str, null);
-            }
+        if(!z){
+            throw new IllegalStateException(str);
         }
+//        if (!z) {
+//            if(!QH.isTesting())
+//                throw new IllegalStateException(str);
+//            else{
+//                Log.e(TAG, "state false: "+str, null);
+//            }
+//        }
     }
 
     public static void unreachable() {
