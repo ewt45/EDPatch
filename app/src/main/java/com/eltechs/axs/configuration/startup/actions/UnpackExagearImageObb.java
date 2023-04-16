@@ -90,14 +90,12 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
                         try {
                             AtomicFile atomicFile = new AtomicFile(file);
                             FileOutputStream startWrite = atomicFile.startWrite();
-                            startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX +
-//                                    UnpackExagearImageObb.this.getString(R.string.sa_unpacking_guest_image)
-                                            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-                                    ).getBytes());
+                            startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX + "解压中，请等待...").getBytes());
                             atomicFile.finishWrite(startWrite);
-                        } catch (IOException unused2) {
+                        } catch (IOException ignored) {
                         }
                     }
+
                 }
             }, this.keepOldFiles).installImageFromObbIfNeededNew();
         } catch (IOException e) {

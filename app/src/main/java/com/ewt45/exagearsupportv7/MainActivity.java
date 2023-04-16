@@ -51,9 +51,9 @@ import java.util.Calendar;
 
 public class MainActivity extends FrameworkActivity {
     public MainActivity(){
-        if (Globals.getApplicationState() == null) {
-            Globals.setApplicationState(new ApplicationStateObject(EDApplicationState.class));
-        }
+//        if (Globals.getApplicationState() == null) {
+//            Globals.setApplicationState(new ApplicationStateObject(EDApplicationState.class));
+//        }
 
     }
 

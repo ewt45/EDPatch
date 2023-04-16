@@ -70,22 +70,22 @@ public class ZipInstallerObb {
                             } else {
                                 Assert.isTrue(path.isDirectory());
                             }
-//                            SafeFileHelpers.doWithFiles(path, 1, (file, str) -> {
-//                                File file2 = new File(file, str);
-//                                for (String str2 : ZipInstallerObb.this.keepOldFiles) {
-//                                    if (file2.getName().equals(str2)) {
-//                                        return false;
-//                                    }
-//                                }
-//                                return true;
-//                            }, (file, str) -> {
-//                                File file2 = new File(file, str);
-//                                if (file2.isDirectory()) {
-//                                    SafeFileHelpers.removeDirectory(file2);
-//                                } else {
-//                                    file2.delete();
-//                                }
-//                            });
+                            SafeFileHelpers.doWithFiles(path, 1, (file, str) -> {
+                                File file2 = new File(file, str);
+                                for (String str2 : ZipInstallerObb.this.keepOldFiles) {
+                                    if (file2.getName().equals(str2)) {
+                                        return false;
+                                    }
+                                }
+                                return true;
+                            }, (file, str) -> {
+                                File file2 = new File(file, str);
+                                if (file2.isDirectory()) {
+                                    SafeFileHelpers.removeDirectory(file2);
+                                } else {
+                                    file2.delete();
+                                }
+                            });
                         }
                         ZipUnpacker.unpackZip(findObbFile, path, ZipInstallerObb.this.callbacks);
                         FileHelpers.createDirectory(path, ExagearImagePaths.DOT_EXAGEAR);
