@@ -2,7 +2,7 @@ package com.eltechs.axs.widgets.viewOfXServer;
 
 import android.content.Context;
 import android.graphics.Matrix;
-import android.view.SurfaceView;
+import android.opengl.GLSurfaceView;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -10,7 +10,6 @@ import com.eltechs.axs.configuration.XServerViewConfiguration;
 import com.eltechs.axs.geom.RectangleF;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.xserver.PointerListener;
-import com.eltechs.axs.xserver.RealXServer;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.eltechs.axs.xserver.Window;
@@ -22,106 +21,100 @@ import com.eltechs.axs.xserver.XServer;
 import com.eltechs.axs.xserver.impl.masks.Mask;
 
 /* loaded from: classes.dex */
-public class ViewOfXServer extends SurfaceView {
+public class ViewOfXServer extends GLSurfaceView {
     private final XServerViewConfiguration configuration;
     private final WindowContentModificationListener contentModificationListener;
     private final PointerListener pointerListener;
-//    private final AXSRendererGL renderer;
+    private final AXSRendererGL renderer;
     private Matrix transformationViewToXServer;
     private final WindowChangeListener windowChangeListener;
     private final WindowLifecycleListener windowLifecycleListener;
     private final ViewFacade xServerFacade;
     private XZoomController zoomController;
 
-    private RealXServer realXServer;
-
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowGeometryChanged(final Window window) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.5
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.windowGeometryChanged(window);
-//            }
-//        });
-//        requestRender();
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.5
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.windowGeometryChanged(window);
+            }
+        });
+        requestRender();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowAttributesChanged(final Window window, final Mask<WindowAttributeNames> mask) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.6
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.windowAttributesChanged(window, mask);
-//            }
-//        });
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.6
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.windowAttributesChanged(window, mask);
+            }
+        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowMapped(final Window window) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.7
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.windowMapped(window);
-//            }
-//        });
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.7
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.windowMapped(window);
+            }
+        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowUnmapped(final Window window) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.8
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.windowUnmapped(window);
-//            }
-//        });
-//        requestRender();
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.8
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.windowUnmapped(window);
+            }
+        });
+        requestRender();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowZOrderChanged(final Window window) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.9
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.windowZOrderChanged(window);
-//            }
-//        });
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.9
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.windowZOrderChanged(window);
+            }
+        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowContentChanged(final Window window, final int i, final int i2, final int i3, final int i4) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.10
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.contentChanged(window, i, i2, i3, i4);
-//            }
-//        });
-//        requestRender();
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.10
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.contentChanged(window, i, i2, i3, i4);
+            }
+        });
+        requestRender();
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueWindowBufferReplaced(final Window window) {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.11
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.frontBufferReplaced(window);
-//            }
-//        });
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.11
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.frontBufferReplaced(window);
+            }
+        });
     }
 
     /* JADX INFO: Access modifiers changed from: private */
     private void queueCursorPositionChanged() {
-//        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.12
-//            @Override // java.lang.Runnable
-//            public void run() {
-//                ViewOfXServer.this.renderer.cursorChanged();
-//            }
-//        });
-//        requestRender();
+        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.12
+            @Override // java.lang.Runnable
+            public void run() {
+                ViewOfXServer.this.renderer.cursorChanged();
+            }
+        });
+        requestRender();
     }
-
-
-
-
 
     public ViewOfXServer(Context context, XServer xServer, ViewFacade viewFacade, XServerViewConfiguration xServerViewConfiguration) {
         super(context);
@@ -194,11 +187,8 @@ public class ViewOfXServer extends SurfaceView {
                 ViewOfXServer.this.queueWindowAttributesChanged(window, mask);
             }
         };
-//        setEGLContextClientVersion(2);
-//        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-
-
-
+        setEGLContextClientVersion(2);
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         getHolder().setFormat(1);
         this.configuration = xServerViewConfiguration;
         if (viewFacade == null) {
@@ -206,18 +196,13 @@ public class ViewOfXServer extends SurfaceView {
         } else {
             this.xServerFacade = viewFacade;
         }
-//        this.renderer = new AXSRendererGL(this, this.xServerFacade);
-//        setRenderer(this.renderer);
-//        setRenderMode(RENDERMODE_WHEN_DIRTY);
+        this.renderer = new AXSRendererGL(this, this.xServerFacade);
+        setRenderer(this.renderer);
+        setRenderMode(RENDERMODE_WHEN_DIRTY);
         this.transformationViewToXServer = new Matrix();
         this.zoomController = new XZoomController(this, xServer.getScreenInfo());
         setFocusable(true);
         setFocusableInTouchMode(true);
-
-        //设置surfaceholder的callback
-        realXServer = new RealXServer();
-        realXServer.addCallback(this);
-        RealXServer.start();
     }
 
     public Matrix getViewToXServerTransformationMatrix() {
@@ -245,15 +230,15 @@ public class ViewOfXServer extends SurfaceView {
         return baseInputConnection;
     }
 
-//    @Override // android.opengl.GLSurfaceView
+    @Override // android.opengl.GLSurfaceView
     public void onResume() {
-//        super.onResume();
+        super.onResume();
     }
 
-//    @Override // android.opengl.GLSurfaceView
+    @Override // android.opengl.GLSurfaceView
     public void onPause() {
-//        this.renderer.onPause();
-//        super.onPause();
+        this.renderer.onPause();
+        super.onPause();
     }
 
     @Override // android.opengl.GLSurfaceView, android.view.SurfaceView, android.view.View
@@ -290,8 +275,8 @@ public class ViewOfXServer extends SurfaceView {
     }
 
     public void setXViewport(RectangleF rectangleF) {
-//        this.renderer.setXViewport(rectangleF);
-//        requestRender();
+        this.renderer.setXViewport(rectangleF);
+        requestRender();
     }
 
     public XZoomController getZoomController() {
@@ -325,94 +310,14 @@ public class ViewOfXServer extends SurfaceView {
     }
 
     public void freezeRenderer() {
-//        if (this.renderer != null) {
-//            this.renderer.freeze();
-//        }
+        if (this.renderer != null) {
+            this.renderer.freeze();
+        }
     }
 
     public void unfreezeRenderer() {
-//        if (this.renderer != null) {
-//            this.renderer.unFreeze();
-//        }
+        if (this.renderer != null) {
+            this.renderer.unFreeze();
+        }
     }
-
-//
-//    DrawThread mDrawThread;
-//    //surfaceholder的callback
-//    @Override
-//    public void surfaceCreated(SurfaceHolder holder) {
-//        mDrawThread = new DrawThread(holder.getSurface());
-//        mDrawThread.start();
-//
-//        //
-//        X11ServerHelpers.start();
-//    }
-//
-//    @Override
-//    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-//        X11ServerHelpers.windowChanged(holder.getSurface(),width,height);
-//    }
-//
-//    @Override
-//    public void surfaceDestroyed(SurfaceHolder holder) {
-//        mDrawThread.stopDraw();
-//        try {
-//            mDrawThread.join();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//
-//    /**
-//     * 渲染画面的线程，
-//     */
-//    private static class DrawThread extends Thread {
-//        private final Surface mSurface;
-//        private boolean mRunning = true;
-//        private final Paint mPaint = new Paint();
-//
-//        DrawThread(Surface surface) {
-//            mSurface = surface;
-//            mPaint.setColor(Color.RED);
-//        }
-//
-//        void stopDraw() {
-//            mRunning = false;
-//        }
-//
-//        @Override
-//        public void run() {
-//            super.run();
-//
-//            int left = 0;
-//            int top = 0;
-//            int width = 100;
-//            int height = 100;
-//            int verticalFlag = 5;
-//            int horizontalFlag = 5;
-//            while (mRunning) {
-//                Canvas canvas = mSurface.lockCanvas(null);
-//                canvas.drawColor(Color.WHITE);
-//                canvas.drawRect(left, top, left + width, top + height, mPaint);
-//                mSurface.unlockCanvasAndPost(canvas);
-////                Log.d(TAG, String.format("run: canvas.width=%d, height=%d",canvas.getWidth(),canvas.getHeight()));
-//
-//
-//                if(((top + height) >= 400) || top<0)
-//                    verticalFlag = - verticalFlag;
-//
-//                if(((left + width) >= 800) || left<0)
-//                    horizontalFlag = - horizontalFlag;
-//
-//                left += horizontalFlag;
-//                top += verticalFlag;
-////                try {
-////                    Thread.sleep(50);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-//            }
-//        }
-//    }
 }
