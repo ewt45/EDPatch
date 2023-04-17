@@ -8,6 +8,7 @@
 <!--    android:name="com.example.datainsert.exagear.application.MyApplication"-->
 
     <application
+        android:testOnly="true"
         tools:replace="android:theme"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
