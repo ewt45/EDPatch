@@ -11,6 +11,6 @@ public class RSIDHelper {
      * @return 应该使用的资源id
      */
     public static int rslvID(int my, int ori){
-        return Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7")? my : ori;
+        return QH.isTesting()? my : ori;
     }
 }

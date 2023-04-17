@@ -27,7 +27,8 @@ public abstract class AutowiredPropertiesScanner {
                     arrayList.add(new AutowiringRequest(parameterTypes[0], method));
                 }
             }, ReflectionHelpers.Filters.instanceMethodsBearingAnnotation(Autowired.class));
-        } catch (IllegalAccessException unused) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
             Assert.unreachable();
         }
         arrayList.trimToSize();

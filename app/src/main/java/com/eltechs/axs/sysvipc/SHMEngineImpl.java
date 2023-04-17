@@ -51,7 +51,8 @@ public class SHMEngineImpl implements SHMEngine {
                 return new AttachedSHMSegmentImpl(mapAshmemSegment, j);
             }
             return null;
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }

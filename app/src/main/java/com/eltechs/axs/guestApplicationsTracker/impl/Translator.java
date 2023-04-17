@@ -74,7 +74,8 @@ public class Translator {
     public void sendEmptyPacket() {
         try {
             this.connection.sendEmptyPacket();
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
             this.owner.killTranslator(this);
         }
     }

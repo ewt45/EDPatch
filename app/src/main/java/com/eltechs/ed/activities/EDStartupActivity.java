@@ -33,14 +33,10 @@ public class EDStartupActivity extends StartupActivity<EDApplicationState> {
         builder.setTitle("WARNING!!!");
         builder.setIcon(R.drawable.ic_warning_24dp);
         builder.setMessage("Shutdown while startup in progress may corrupt application state!\n\nAre you sure you want to exit?");
-        // from class: com.eltechs.ed.activities.EDStartupActivity.1
-// android.content.DialogInterface.OnClickListener
         builder.setPositiveButton("OK", (dialogInterface, i) -> {
             StartupActivity.shutdownAXSApplication(true);
             dialogInterface.dismiss();
         });
-        // from class: com.eltechs.ed.activities.EDStartupActivity.2
-// android.content.DialogInterface.OnClickListener
         builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
         builder.show();
     }

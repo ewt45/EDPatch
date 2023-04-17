@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
+import com.eltechs.ed.fragments.help.HelpControlsFragment;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;

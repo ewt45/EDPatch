@@ -12,7 +12,7 @@
         tools:replace="android:theme"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -30,7 +30,7 @@
 
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.ewt45.exagearsupportv7.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ExagearSupportV7包.NoActionBar">
@@ -43,20 +43,24 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity android:theme="@style/ThemeDefault" android:name="com.eltechs.ed.activities.EDMainActivity" android:parentActivityName="com.eltechs.ed.activities.EDStartupActivity"/>
+        <activity android:theme="@style/ThemeDefault" android:name="com.eltechs.ed.activities.EDHelpActivity" android:parentActivityName="com.eltechs.ed.activities.EDMainActivity"/>
+        <activity android:theme="@style/ThemeDefaultFullscreen" android:name="com.eltechs.axs.activities.XServerDisplayActivity" android:screenOrientation="sensorLandscape"/>
         <activity android:theme="@style/ThemeDefaultDialogNoTitle" android:name="com.eltechs.axs.activities.FatalErrorActivity"/>
-
-        <activity android:name="com.eltechs.axs.activities.XServerDisplayActivity"
-            android:screenOrientation="sensorLandscape"/>
-        <service android:name="com.eltechs.axs.environmentService.AXSEnvironmentService"
-            android:permission="TODO"
-            android:exported="false">
+        <activity android:name="com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+        <service android:name="com.eltechs.axs.environmentService.AXSEnvironmentService">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </service>
 
 
-<!--        <provider-->
+
+        <!--        <provider-->
 <!--            android:name="android.support.v4.content.FileProvider"-->
 <!--            android:authorities="${applicationId}.provider"-->
 <!--            android:exported="false"-->

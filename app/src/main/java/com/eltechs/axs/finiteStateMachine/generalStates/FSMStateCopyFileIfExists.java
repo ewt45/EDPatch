@@ -31,7 +31,8 @@ public class FSMStateCopyFileIfExists extends AbstractFSMState {
                 FileHelpers.copyFile(this.from, this.to);
                 sendEvent(COMPLETED);
                 return;
-            } catch (IOException unused) {
+            } catch (IOException e) {
+                e.printStackTrace();
                 sendEvent(FAILED);
                 return;
             }

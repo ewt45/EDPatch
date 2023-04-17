@@ -8,7 +8,7 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.helpers.ZipInstallerObb;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.ewt45.exagearsupportv7.ui.home.HomeFragment;
 import com.example.datainsert.exagear.RSIDHelper;
 

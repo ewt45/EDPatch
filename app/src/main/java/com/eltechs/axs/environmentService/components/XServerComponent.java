@@ -53,7 +53,8 @@ public class XServerComponent extends EnvironmentComponent {
         Assert.state(this.connector != null, "X-server component is not yet started.");
         try {
             this.connector.stop();
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.xServer = null;
         this.desktopExperience = null;

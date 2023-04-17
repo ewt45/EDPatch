@@ -43,7 +43,7 @@ import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.eltechs.axs.xserver.XServer;
 import com.eltechs.ed.controls.DefaultControls;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutTouchScreenControlsFactory2;
@@ -188,7 +188,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
     }
 
     private void buildUI() {
-        setContentView(com.ewt45.exagearsupportv7.R.layout.main);
+        setContentView(R.layout.main);
 
         if (this.viewOfXServer.getParent() != null) {
             ((ViewGroup) this.viewOfXServer.getParent()).removeView(this.viewOfXServer);

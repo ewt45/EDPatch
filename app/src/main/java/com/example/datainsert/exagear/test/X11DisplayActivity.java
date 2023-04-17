@@ -34,7 +34,7 @@
 //import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 //import com.eltechs.axs.xserver.ViewFacade;
 //import com.eltechs.ed.controls.DefaultControls;
-//import com.ewt45.exagearsupportv7.R;
+//import com.eltechs.ed.R;
 //import com.example.datainsert.exagear.controls.menus.ControlEdit;
 //import com.example.datainsert.exagear.controls.menus.ControlToggleVisibility;
 //

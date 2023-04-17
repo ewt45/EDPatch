@@ -23,7 +23,7 @@ public class StartupActionsCollection<StateClass> {
     private static final String LOG_TAG = "StartupActions";
     private final Context applicationContext;
     private boolean isFinished;
-    private final Deque<StartupAction> actions = new ArrayDeque();
+    private final Deque<StartupAction> actions = new ArrayDeque<>();
     private ActionState currentActionState = ActionState.NOT_YET_STARTED;
     private final BufferedListenerInvoker<StartupActionCompletionListener> actionCompletionReporter = new BufferedListenerInvoker<>(StartupActionCompletionListener.class);
     private final BufferedListenerInvoker<UserInteractionRequestListener> userInteractionRequester = new BufferedListenerInvoker<>(UserInteractionRequestListener.class);
@@ -64,7 +64,7 @@ public class StartupActionsCollection<StateClass> {
     public boolean runAction() {
         UiThread.check();
         if (this.actions.isEmpty()) {
-            logDebug("runAction() found no more startup actions\n", new Object[0]);
+            logDebug("runAction() found no more startup actions\n");
             this.isFinished = true;
             return false;
         } else if (this.currentActionState != ActionState.NOT_YET_STARTED) {
@@ -75,19 +75,9 @@ public class StartupActionsCollection<StateClass> {
             final StartupAction currentAction = getCurrentAction();
             setStepInfo(currentAction.getInfo());
             if (!isAsyncAction(currentAction)) {
-                UiThread.post(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.1
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        currentAction.execute();
-                    }
-                });
+                UiThread.post(currentAction::execute);
             } else {
-                this.asyncStartupActionsExecutor.execute(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.2
-                    @Override // java.lang.Runnable
-                    public void run() {
-                        currentAction.execute();
-                    }
-                });
+                this.asyncStartupActionsExecutor.execute(currentAction::execute);
             }
             return true;
         }
@@ -97,8 +87,8 @@ public class StartupActionsCollection<StateClass> {
         UiThread.post(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.3
             @Override // java.lang.Runnable
             public void run() {
-                StartupActionsCollection.this.logDebug("actionDone(%s)\n", startupAction);
-                Assert.state(StartupActionsCollection.this.currentActionState == ActionState.RUNNING, String.format("actionDone() called with the current action in invalid state %s.", StartupActionsCollection.this.currentActionState));
+                StartupActionsCollection.this.logDebug("actionDone(%s), current action = %s", startupAction,getCurrentAction());
+                Assert.state(StartupActionsCollection.this.currentActionState == ActionState.RUNNING, String.format("actionDone() called with the current action in invalid state %s. Current action is %s", StartupActionsCollection.this.currentActionState,getCurrentAction()));
                 Assert.state(startupAction == StartupActionsCollection.this.getCurrentAction(), "An invalid action has reported the completion of itself.");
                 StartupActionsCollection.this.actions.removeFirst();
                 StartupActionsCollection.this.currentActionState = ActionState.NOT_YET_STARTED;
@@ -123,7 +113,7 @@ public class StartupActionsCollection<StateClass> {
 
     public void userInteractionFinished(Serializable serializable) {
         UiThread.check();
-        logDebug("userInteractionFinished()\n", new Object[0]);
+        logDebug("userInteractionFinished()\n");
         Assert.state(this.currentActionState == ActionState.AWAITING_RESPONSE, "userInteractionFinished() called but the current action expects no user input.");
         this.currentActionState = ActionState.RUNNING;
         Assert.state(getCurrentAction() instanceof InteractiveStartupAction, "Only interactive startup actions can receive nontrivial user responses.");
@@ -132,7 +122,7 @@ public class StartupActionsCollection<StateClass> {
 
     public void userInteractionCanceled() {
         UiThread.check();
-        logDebug("userInteractionCanceled()\n", new Object[0]);
+        logDebug("userInteractionCanceled()\n");
         Assert.state(this.currentActionState == ActionState.AWAITING_RESPONSE, "userInteractionCanceled() called but the current action expects no user input.");
         this.currentActionState = ActionState.RUNNING;
         Assert.state(getCurrentAction() instanceof InteractiveStartupAction, "Only interactive startup actions can receive nontrivial user responses.");
@@ -144,25 +134,19 @@ public class StartupActionsCollection<StateClass> {
     }
 
     public void requestUserInput(final Class<? extends FrameworkActivity> cls, final Serializable serializable) {
-        UiThread.post(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.5
-            @Override // java.lang.Runnable
-            public void run() {
-                Assert.state(StartupActionsCollection.this.currentActionState == ActionState.RUNNING, String.format("User input has been requested in state %s; can do it only in RUNNING state.", StartupActionsCollection.this.currentActionState));
-                Assert.state(StartupActionsCollection.this.getCurrentAction() instanceof InteractiveStartupAction, "Only interactive startup actions can request user input.");
-                StartupActionsCollection.this.currentActionState = ActionState.AWAITING_RESPONSE;
-                ((UserInteractionRequestListener) StartupActionsCollection.this.userInteractionRequester.getProxy()).requestUserInput(cls, serializable);
-            }
+        UiThread.post(() -> {
+            Assert.state(StartupActionsCollection.this.currentActionState == ActionState.RUNNING, String.format("User input has been requested in state %s; can do it only in RUNNING state.", StartupActionsCollection.this.currentActionState));
+            Assert.state(StartupActionsCollection.this.getCurrentAction() instanceof InteractiveStartupAction, "Only interactive startup actions can request user input.");
+            StartupActionsCollection.this.currentActionState = ActionState.AWAITING_RESPONSE;
+            ((UserInteractionRequestListener) StartupActionsCollection.this.userInteractionRequester.getProxy()).requestUserInput(cls, serializable);
         });
     }
 
     public void requestUserInput() {
-        UiThread.post(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.6
-            @Override // java.lang.Runnable
-            public void run() {
-                Assert.state(StartupActionsCollection.this.currentActionState == ActionState.RUNNING, String.format("User input has been requested in state %s; can do it only in RUNNING state.", StartupActionsCollection.this.currentActionState));
-                Assert.state(StartupActionsCollection.this.getCurrentAction() instanceof InteractiveStartupAction, "Only interactive startup actions can request user input.");
-                StartupActionsCollection.this.currentActionState = ActionState.AWAITING_RESPONSE;
-            }
+        UiThread.post(() -> {
+            Assert.state(StartupActionsCollection.this.currentActionState == ActionState.RUNNING, String.format("User input has been requested in state %s; can do it only in RUNNING state.", StartupActionsCollection.this.currentActionState));
+            Assert.state(StartupActionsCollection.this.getCurrentAction() instanceof InteractiveStartupAction, "Only interactive startup actions can request user input.");
+            StartupActionsCollection.this.currentActionState = ActionState.AWAITING_RESPONSE;
         });
     }
 
@@ -177,7 +161,7 @@ public class StartupActionsCollection<StateClass> {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public StartupAction getCurrentAction() {
+    private StartupAction getCurrentAction() {
         UiThread.check();
         return this.actions.getFirst();
     }
@@ -191,7 +175,7 @@ public class StartupActionsCollection<StateClass> {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public void logDebug(String str, Object... objArr) {
+    private void logDebug(String str, Object... objArr) {
         Log.d(LOG_TAG, String.format(str, objArr));
     }
 }

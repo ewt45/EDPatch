@@ -33,7 +33,8 @@ public class TempDirMaintenanceComponent extends EnvironmentComponent {
         if (tempDir.isDirectory()) {
             try {
                 SafeFileHelpers.cleanupDirectory(tempDir);
-            } catch (IOException unused) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

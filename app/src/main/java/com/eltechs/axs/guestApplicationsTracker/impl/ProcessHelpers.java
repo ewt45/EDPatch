@@ -7,11 +7,10 @@ public abstract class ProcessHelpers {
     public static final int SIGSTOP = 19;
     public static final int SIGTERM = 15;
 
-    //native
     private static native void sendSignal(int i, int i2);
 
     static {
-        System.loadLibrary("ubt_helpers");
+        System.loadLibrary("ubt-helpers");
     }
 
     private ProcessHelpers() {

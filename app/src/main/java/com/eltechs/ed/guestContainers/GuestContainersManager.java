@@ -67,7 +67,8 @@ public class GuestContainersManager {
                 openPrivateFileForReading.close();
             }
             return screenInfo;
-        } catch (IOException | ClassNotFoundException unused) {
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             return null;
         }
     }

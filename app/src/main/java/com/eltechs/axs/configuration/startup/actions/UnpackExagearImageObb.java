@@ -6,7 +6,7 @@ import android.util.AtomicFile;
 import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.eltechs.axs.configuration.startup.StartupActionInfo;
 import com.eltechs.axs.helpers.ZipInstallerObb;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RSIDHelper;
 import com.example.datainsert.exagear.obb.SelectObbFragment;
 
@@ -58,7 +58,8 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
                     file.delete();
                 }
                 file.createNewFile();
-            } catch (IOException unused) {
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
         try {

@@ -72,7 +72,8 @@ public abstract class AndroidHelpers {
         }
         try {
             return (Class<? extends Activity>) Class.forName(launchIntentForPackage.getComponent().getClassName());
-        } catch (ClassNotFoundException unused) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
             return null;
         }
     }

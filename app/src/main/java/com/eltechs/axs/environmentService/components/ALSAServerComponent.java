@@ -32,7 +32,8 @@ public class ALSAServerComponent extends EnvironmentComponent {
         Assert.state(this.connector != null, "ALSA server component not yet started.");
         try {
             this.connector.stop();
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.connector = null;
     }

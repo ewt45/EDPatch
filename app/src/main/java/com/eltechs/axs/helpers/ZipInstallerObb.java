@@ -133,7 +133,8 @@ public class ZipInstallerObb {
     private File findObbFile() {
         try {
             this.foundObbVersion = this.context.getPackageManager().getPackageInfo(this.context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException unused) {
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
             this.foundObbVersion = 0;
         }
         while (this.foundObbVersion >= 0) {

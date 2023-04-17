@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.AboutFab;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;

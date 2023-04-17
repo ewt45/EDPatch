@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/container_run_explorer" android:title="Run Explorer"/>
+    <item android:id="@+id/container_install_package" android:title="Install packages"/>
+    <item android:id="@+id/container_properties" android:title="Properties"/>
+    <item android:id="@+id/container_clone" android:title="Clone"/>
+    <item android:id="@+id/container_delete" android:title="Delete"/>
+</menu>

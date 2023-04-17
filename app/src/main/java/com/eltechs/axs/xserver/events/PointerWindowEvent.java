@@ -36,7 +36,7 @@ public abstract class PointerWindowEvent extends Event {
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public PointerWindowEvent(int i, Detail detail, Mode mode, int i2, Window window, Window window2, Window window3, short s, short s2, short s3, short s4, Mask<KeyButNames> mask, boolean z) {
+    protected PointerWindowEvent(int i, Detail detail, Mode mode, int i2, Window window, Window window2, Window window3, short s, short s2, short s3, short s4, Mask<KeyButNames> mask, boolean z) {
         super(i);
         this.detail = detail;
         this.mode = mode;

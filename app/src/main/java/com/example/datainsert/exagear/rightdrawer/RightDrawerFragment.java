@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RSIDHelper;
 
 public class RightDrawerFragment extends Fragment {

@@ -42,7 +42,7 @@ public class AxsActivity extends AppCompatActivity {
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public AxsActivity() {
+    protected AxsActivity() {
         this.TAG = "AxsActivity";
         this.TAG = getClass().getSimpleName();
         try {
@@ -50,7 +50,8 @@ public class AxsActivity extends AppCompatActivity {
             if (str != null) {
                 this.TAG = str;
             }
-        } catch (IllegalAccessException | NoSuchFieldException unused) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+//            e.printStackTrace();
         }
     }
 

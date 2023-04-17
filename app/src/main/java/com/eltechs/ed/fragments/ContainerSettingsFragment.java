@@ -24,7 +24,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.eltechs.ed.guestContainers.GuestContainerConfig;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RSIDHelper;
 import com.example.datainsert.exagear.RR;
 

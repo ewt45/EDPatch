@@ -24,7 +24,7 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
-import com.eltechs.ed.R;
+import com.eltechs.ed.R_original;
 import com.eltechs.ed.controls.Controls;
 import com.eltechs.ed.controls.touchControls.AbstractTCF;
 
@@ -96,41 +96,41 @@ public class DefaultUIOverlay implements XServerDisplayActivityInterfaceOverlay 
     }
 
     private View createToolbar() {
-        ConstraintLayout constraintLayout = (ConstraintLayout) this.mHostActivity.getLayoutInflater().inflate(R.layout.default_ui_overlay_toolbar, (ViewGroup) null);
-        final ImageButton imageButton = (ImageButton) constraintLayout.findViewById(R.id.button_fullscreen);
+        ConstraintLayout constraintLayout = (ConstraintLayout) this.mHostActivity.getLayoutInflater().inflate(R_original.layout.default_ui_overlay_toolbar, (ViewGroup) null);
+        final ImageButton imageButton = (ImageButton) constraintLayout.findViewById(R_original.id.button_fullscreen);
         imageButton.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.1
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 boolean z = !DefaultUIOverlay.this.mViewOfXServer.isHorizontalStretchEnabled();
                 DefaultUIOverlay.this.mViewOfXServer.setHorizontalStretchEnabled(z);
-                imageButton.setImageResource(z ? R.drawable.ic_fullscreen_exit_24dp : R.drawable.ic_fullscreen_24dp);
+                imageButton.setImageResource(z ? R_original.drawable.ic_fullscreen_exit_24dp : R_original.drawable.ic_fullscreen_24dp);
             }
         });
-        ((ImageButton) constraintLayout.findViewById(R.id.button_sidetoolbars)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.2
+        ((ImageButton) constraintLayout.findViewById(R_original.id.button_sidetoolbars)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.2
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 DefaultUIOverlay.this.toggleRightToolbar();
                 DefaultUIOverlay.this.toggleLeftToolbar();
             }
         });
-        ((ImageButton) constraintLayout.findViewById(R.id.button_kbd)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.3
+        ((ImageButton) constraintLayout.findViewById(R_original.id.button_kbd)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.3
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 AndroidHelpers.toggleSoftInput();
             }
         });
-        ((ImageButton) constraintLayout.findViewById(R.id.button_help)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.4
+        ((ImageButton) constraintLayout.findViewById(R_original.id.button_help)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.4
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 DefaultUIOverlay.this.mControls.createInfoDialog().show(DefaultUIOverlay.this.mHostActivity.getSupportFragmentManager(), "CONTROLS_INFO");
             }
         });
-        ((ImageButton) constraintLayout.findViewById(R.id.button_close)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.5
+        ((ImageButton) constraintLayout.findViewById(R_original.id.button_close)).setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.5
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(DefaultUIOverlay.this.mHostActivity);
                 builder.setTitle("Confirm Exit");
-                builder.setIcon(R.drawable.ic_warning_24dp);
+                builder.setIcon(R_original.drawable.ic_warning_24dp);
                 builder.setMessage("Are you sure you want to exit?");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.eltechs.ed.controls.uiOverlays.DefaultUIOverlay.5.1
                     @Override // android.content.DialogInterface.OnClickListener
@@ -191,11 +191,11 @@ public class DefaultUIOverlay implements XServerDisplayActivityInterfaceOverlay 
     /* JADX INFO: Access modifiers changed from: protected */
     public void setButtonStyleByState(Button button, boolean z) {
         if (z) {
-            button.setBackgroundResource(R.drawable.side_tb_button_pressed);
+            button.setBackgroundResource(R_original.drawable.side_tb_button_pressed);
             button.setTextColor(-2236963);
             return;
         }
-        button.setBackgroundResource(R.drawable.side_tb_button_normal);
+        button.setBackgroundResource(R_original.drawable.side_tb_button_normal);
         button.setTextColor(-14540254);
     }
 
@@ -245,7 +245,7 @@ public class DefaultUIOverlay implements XServerDisplayActivityInterfaceOverlay 
 
     /* JADX INFO: Access modifiers changed from: protected */
     public void setToolbarSideToolbarsButtonVisibility(boolean z) {
-        ((ImageButton) this.mToolbar.findViewById(R.id.button_sidetoolbars)).setVisibility(z ? VISIBLE : GONE);
+        ((ImageButton) this.mToolbar.findViewById(R_original.id.button_sidetoolbars)).setVisibility(z ? VISIBLE : GONE);
     }
 
     public void toggleToolbar() {

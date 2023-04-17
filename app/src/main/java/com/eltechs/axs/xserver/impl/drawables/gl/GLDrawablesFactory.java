@@ -15,7 +15,7 @@ import java.util.Collection;
 
 /* loaded from: classes.dex */
 public class GLDrawablesFactory extends DrawablesFactoryImplBase {
-    private static final ReferenceQueue<Reference<Drawable>> finalisedDrawablesReferenceQueue = new ReferenceQueue<>();
+    private static final ReferenceQueue<Drawable> finalisedDrawablesReferenceQueue = new ReferenceQueue<>();
     private static final GLDrawablesFinaliserThread drawablesFinalisationThread = new GLDrawablesFinaliserThread(finalisedDrawablesReferenceQueue);
 
     static {
@@ -28,10 +28,10 @@ public class GLDrawablesFactory extends DrawablesFactoryImplBase {
 
     public static GLDrawablesFactory create32Depth() {
         Visual makeDisplayableVisual = Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(), 32, 24, 16711680, MotionEventCompat.ACTION_POINTER_INDEX_MASK, 255);
-        ArrayList arrayList = new ArrayList();
+        ArrayList<Visual> arrayList = new ArrayList<>();
         arrayList.add(makeDisplayableVisual);
         arrayList.add(Visual.makeNonDisplayableVisual(SmallIdsGenerator.generateId(), 1));
-        ArrayList arrayList2 = new ArrayList();
+        ArrayList<ImageFormat> arrayList2 = new ArrayList<>();
         arrayList2.add(new ImageFormat(1, 1, 32));
         arrayList2.add(new ImageFormat(24, 32, 32));
         arrayList2.add(new ImageFormat(32, 32, 32));
@@ -40,10 +40,10 @@ public class GLDrawablesFactory extends DrawablesFactoryImplBase {
 
     public static GLDrawablesFactory create16Depth() {
         Visual makeDisplayableVisual = Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(), 16, 16, 63488, 2016, 31);
-        ArrayList arrayList = new ArrayList();
+        ArrayList<Visual> arrayList = new ArrayList<>();
         arrayList.add(makeDisplayableVisual);
         arrayList.add(Visual.makeNonDisplayableVisual(SmallIdsGenerator.generateId(), 1));
-        ArrayList arrayList2 = new ArrayList();
+        ArrayList<ImageFormat> arrayList2 = new ArrayList<>();
         arrayList2.add(new ImageFormat(1, 1, 16));
         arrayList2.add(new ImageFormat(16, 16, 16));
         return new GLDrawablesFactory(arrayList, arrayList2, makeDisplayableVisual);
@@ -51,10 +51,10 @@ public class GLDrawablesFactory extends DrawablesFactoryImplBase {
 
     public static GLDrawablesFactory create15Depth() {
         Visual makeDisplayableVisual = Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(), 15, 16, 31744, 992, 31);
-        ArrayList arrayList = new ArrayList();
+        ArrayList<Visual> arrayList = new ArrayList<>();
         arrayList.add(makeDisplayableVisual);
         arrayList.add(Visual.makeNonDisplayableVisual(SmallIdsGenerator.generateId(), 1));
-        ArrayList arrayList2 = new ArrayList();
+        ArrayList<ImageFormat> arrayList2 = new ArrayList<>();
         arrayList2.add(new ImageFormat(1, 1, 16));
         arrayList2.add(new ImageFormat(15, 16, 16));
         return new GLDrawablesFactory(arrayList, arrayList2, makeDisplayableVisual);

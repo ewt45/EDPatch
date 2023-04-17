@@ -21,7 +21,7 @@ public class AutowiringRequest {
     public void inject(Object obj, Object obj2) {
         try {
             this.setter.invoke(obj, obj2);
-        } catch (IllegalAccessException unused) {
+        } catch (IllegalAccessException e) {
             Assert.state(false, "@Autowired setter methods are always marked accessible; can't get IllegalAccessException.");
         } catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException();

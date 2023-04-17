@@ -2,15 +2,25 @@
 <resources>
     <color name="purple_200">#FFBB86FC</color>
 <!--    purple_500-->
-    <color name="primary">#FF6200EE</color>
-<!--    purple_700-->
-    <color name="primary_dark">#FF3700B3</color>
-<!--    teal_200-->
-    <color name="accent">#FF03DAC5</color>
+<!--    <color name="primary">#FF6200EE</color>-->
+    <color name="primary">#ff2196f3</color>
+
+    <!--    purple_700-->
+<!--    <color name="primary_dark">#FF3700B3</color>-->
+    <color name="primary_dark">#ff1976d2</color>
+
+    <!--    teal_200-->
+<!--    <color name="accent">#FF03DAC5</color>-->
+    <color name="accent">#ff03a9f4</color>
+
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="primary_text">#ff212121</color>
+    <color name="icons">#ffffffff</color>
+    <color name="primary_light">#ffbbdefb</color>
+    <color name="secondary_text">#ff757575</color>
 
 <!--    <color name="accent">#FFFFFFFF</color>-->
 <!--    <color name="primary">#FFFFFFFF</color>-->
