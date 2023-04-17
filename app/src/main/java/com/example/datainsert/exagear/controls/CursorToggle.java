@@ -10,7 +10,7 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 
 @SuppressLint("ViewConstructor")
 public class CursorToggle extends ToggleButton {

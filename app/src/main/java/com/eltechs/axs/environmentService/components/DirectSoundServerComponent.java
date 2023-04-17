@@ -45,12 +45,14 @@ public class DirectSoundServerComponent extends EnvironmentComponent {
         resumePlayback();
         try {
             this.connector.stop();
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.connector = null;
         try {
             this.directSoundBufferFactory.destroy();
-        } catch (IOException unused2) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.directSoundBufferFactory = null;
         this.connectionHandler = null;

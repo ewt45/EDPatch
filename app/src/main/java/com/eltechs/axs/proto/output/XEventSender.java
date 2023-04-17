@@ -42,7 +42,7 @@ public class XEventSender {
 
     /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    public interface EventWriter<E extends Event> {
+    private interface EventWriter<E extends Event> {
         void sendEvent(XResponse xResponse, E e) throws IOException;
     }
 
@@ -323,7 +323,8 @@ public class XEventSender {
         }
         try {
             eventWriter.sendEvent(this.response, event);
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

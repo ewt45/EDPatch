@@ -18,7 +18,7 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.CurrentActivityAware;
 import com.eltechs.ed.activities.EDMainActivity;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RSIDHelper;
 
 public class RightDrawer {

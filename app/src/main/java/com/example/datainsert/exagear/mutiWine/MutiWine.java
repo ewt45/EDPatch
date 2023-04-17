@@ -12,7 +12,7 @@ import android.view.SubMenu;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.ed.fragments.ManageContainersFragment;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RSIDHelper;
 
 
@@ -57,7 +57,7 @@ public class MutiWine {
         subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         subMenu.getItem().setTitle("New");//当subMenu和其对应的menuItem都设置了title，显示的以menuItem为准
 
-        Drawable d = Globals.getAppContext().getDrawable(RSIDHelper.rslvID(R.drawable.side_nav_bar, 0x7f08009b));
+        Drawable d = Globals.getAppContext().getDrawable(RSIDHelper.rslvID(R.drawable.ic_add_24dp, 0x7f08009b));
         subMenu.getItem().setIcon(d);
 //        //添加图标，这个id直接写成ed里的了，省的来回改
 //        try{

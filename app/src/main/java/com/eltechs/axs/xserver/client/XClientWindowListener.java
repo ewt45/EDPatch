@@ -26,8 +26,8 @@ public class XClientWindowListener implements WindowListener {
     /* JADX WARN: Multi-variable type inference failed */
     @Override // com.eltechs.axs.xserver.WindowListener
     public void onEvent(Window window, Event event) {
-        if (isInterestedIn((Class<? extends Event>) event.getClass())) {
-            Log.d(TAG, "onEvent: 窗口接收到事件：id应该为6的motionnotify"+(event.getId()==6));
+        if (isInterestedIn(event.getClass())) {
+            Log.d(TAG, String.format("onEvent: 窗口接收到事件：id=%d, class=%s",event.getId(),Event.idToClassName(event.getId())));
             this.client.createEventSender().sendEvent(event);
         }
     }

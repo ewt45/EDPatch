@@ -27,7 +27,8 @@ public class OpenSLDirectSoundBufferFactoryImpl implements DirectSoundBufferFact
     public DirectSoundBuffer createBuffer(AttachedSHMSegment attachedSHMSegment) {
         try {
             return new OpenSLDirectSoundBufferImpl(this.engine, attachedSHMSegment.getContent());
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
             return null;
         }
     }

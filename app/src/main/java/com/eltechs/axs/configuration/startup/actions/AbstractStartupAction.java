@@ -1,6 +1,8 @@
 package com.eltechs.axs.configuration.startup.actions;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.configuration.startup.StartupAction;
 import com.eltechs.axs.configuration.startup.StartupActionInfo;
@@ -26,44 +28,44 @@ public abstract class AbstractStartupAction<StateClass> implements StartupAction
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public StartupActionsCollection<StateClass> getStartupActions() {
+    protected StartupActionsCollection<StateClass> getStartupActions() {
         return this.startupActions;
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public StateClass getApplicationState() {
+    protected StateClass getApplicationState() {
         return (StateClass) Globals.getApplicationState();
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public Context getAppContext() {
+    protected Context getAppContext() {
         return this.startupActions.getAndroidApplicationContext();
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public final String getString(int i) {
+    protected final String getString(int i) {
         return getAppContext().getString(i);
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public final void sendDone() {
+    protected final void sendDone() {
         this.startupActions.actionDone(this);
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public final void sendError(String str) {
+    protected final void sendError(String str) {
         sendErrorHtml(String.format("<html><body>%s</body></html>", StringEscapeUtils.escapeHtml4(str)));
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public final void sendError(String str, Throwable th) {
+    protected final void sendError(String str, Throwable th) {
         StringWriter stringWriter = new StringWriter();
         th.printStackTrace(new PrintWriter(stringWriter));
         sendErrorHtml(String.format("<html><body>%s<br><br><pre>%s</pre></body></html>", StringEscapeUtils.escapeHtml4(str), StringEscapeUtils.escapeHtml4(stringWriter.toString())));
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public final void sendErrorHtml(String str) {
+    protected final void sendErrorHtml(String str) {
         this.startupActions.actionFailed(this, str);
     }
 

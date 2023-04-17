@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="ThemeDefault" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
 
     <style name="ThemeDefaultDialog" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/primary</item>
@@ -10,6 +16,9 @@
     </style>
     <style name="ThemeDefaultDialogNoTitle" parent="@style/ThemeDefaultDialog">
         <item name="windowNoTitle">true</item>
+    </style>
+    <style name="ThemeDefaultFullscreen" parent="@style/ThemeDefault">
+        <item name="android:windowFullscreen">true</item>
     </style>
 
 

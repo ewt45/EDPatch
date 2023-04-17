@@ -30,11 +30,13 @@ public class SysVIPCEmulatorComponent extends EnvironmentComponent {
         Assert.state(this.emulator != null, "Sys V IPC emulator is not yet started.");
         try {
             this.shmEngine.stop();
-        } catch (Exception unused) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         try {
             this.emulator.stop();
-        } catch (Exception unused2) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         this.emulator = null;
         this.shmEngine = null;

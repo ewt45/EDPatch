@@ -38,7 +38,8 @@ public class GuestApplicationsTrackerComponent extends EnvironmentComponent {
         this.tracker.killGuestApplications();
         try {
             this.tracker.stop();
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         this.tracker = null;
     }

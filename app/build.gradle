@@ -3,17 +3,17 @@ plugins {
 }
 
 android {
-    namespace 'com.ewt45.exagearsupportv7'
+    namespace 'com.eltechs.ed'
     compileSdk 28
 
     defaultConfig {
-        applicationId "com.ewt45.exagearsupportv7"
+        applicationId "com.eltechs.ed"
         minSdk 21
         //noinspection ExpiredTargetSdkVersion
         targetSdk 27
         //noinspection ExpiredTargetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 31
+        versionName "3.0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {

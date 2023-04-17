@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/ed_main_menu_desktop"
+            android:icon="@drawable/ic_desktop_windows_24dp"
+            android:title="@string/ed_main_menu_desktop" />
+        <item
+            android:id="@+id/ed_main_menu_start_menu"
+            android:icon="@drawable/ic_menu_24dp"
+            android:title="@string/ed_main_menu_start_menu" />
+        <item
+            android:id="@+id/ed_main_menu_install_new"
+            android:icon="@drawable/ic_add_24dp"
+            android:title="@string/ed_main_menu_install_new" />
+        <item
+            android:id="@+id/ed_main_menu_manage_containers"
+            android:icon="@drawable/ic_archive_24dp"
+            android:title="@string/ed_main_menu_select_container" />
+        <item
+            android:id="@+id/ed_main_menu_help"
+            android:icon="@drawable/ic_help_24dp"
+            android:title="@string/ed_main_menu_help" />
+    </group>
+</menu>

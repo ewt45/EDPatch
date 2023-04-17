@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.helpers.AndroidHelpers;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.RSIDHelper;
 
 import java.io.BufferedReader;

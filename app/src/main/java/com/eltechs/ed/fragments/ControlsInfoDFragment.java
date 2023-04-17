@@ -15,7 +15,7 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 //import com.eltechs.ed.R;
 import com.eltechs.ed.controls.Controls;
 import com.eltechs.ed.controls.ControlsInfoElem;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 
 import java.util.List;
 

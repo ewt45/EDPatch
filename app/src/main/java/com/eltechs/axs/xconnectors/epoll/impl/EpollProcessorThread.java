@@ -75,20 +75,20 @@ public class EpollProcessorThread<Context> extends Thread {
         this.batchSize = i;
         if (this.epollFd < 0) {
             connectionListener.close();
-            throw new IOException(String.format("epoll() has failed; errno = %d", -this.epollFd));
+            throw new IOException(String.format("epoll() has failed; errno = %d", Integer.valueOf(-this.epollFd)));
         }
         this.shutdownRequestFd = createShutdownRequestFd();
         if (this.shutdownRequestFd < 0) {
             connectionListener.close();
             closeEpollFd();
-            throw new IOException(String.format("Failed to create the shutdown request notifier; errno = %d", -this.shutdownRequestFd));
+            throw new IOException(String.format("Failed to create the shutdown request notifier; errno = %d", Integer.valueOf(-this.shutdownRequestFd)));
         }
         this.fdToClientMap = createFdToClientMap();
         if (this.fdToClientMap == 0) {
             connectionListener.close();
             closeEpollFd();
             closeShutdownRequestFd();
-            throw new IOException("Failed to allocate the list of connected clients.");
+            throw new IOException(String.format("Failed to allocate the list of connected clients.", new Object[0]));
         }
         int addServerSocketToEpoll = addServerSocketToEpoll(connectionListener.getFd());
         if (addServerSocketToEpoll < 0) {

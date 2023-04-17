@@ -25,7 +25,7 @@ import com.eltechs.axs.widgets.popupMenu.AXSPopupMenu;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.eltechs.axs.xserver.XServer;
-import com.eltechs.ed.R;
+import com.eltechs.ed.R_original;
 import java.util.List;
 import java.util.Set;
 
@@ -70,7 +70,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         if (cls != null) {
             try {
                 viewFacade = (ViewFacade) cls.getDeclaredConstructor(XServer.class, ApplicationStateBase.class).newInstance(xServerComponent.getXServer(), applicationState);
-            } catch (Exception unused) {
+            } catch (Exception e) {
                 Assert.state(false);
             }
 

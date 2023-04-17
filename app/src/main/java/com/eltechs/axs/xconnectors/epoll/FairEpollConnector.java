@@ -70,7 +70,8 @@ public class FairEpollConnector<Context> {
         while (this.processorThread.isAlive()) {
             try {
                 this.processorThread.join();
-            } catch (InterruptedException unused) {
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         this.processorThread = null;

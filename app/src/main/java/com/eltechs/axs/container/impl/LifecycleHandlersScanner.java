@@ -26,7 +26,8 @@ public abstract class LifecycleHandlersScanner {
                     arrayList.add(new LifecycleHandlerMethod(method));
                 }
             }, ReflectionHelpers.Filters.instanceMethodsBearingAnnotation(PostAdd.class));
-        } catch (IllegalAccessException unused) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
             Assert.unreachable();
         }
         arrayList.trimToSize();
@@ -46,7 +47,8 @@ public abstract class LifecycleHandlersScanner {
                     arrayList.add(new LifecycleHandlerMethod(method));
                 }
             }, ReflectionHelpers.Filters.instanceMethodsBearingAnnotation(PreRemove.class));
-        } catch (IllegalAccessException unused) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
             Assert.unreachable();
         }
         arrayList.trimToSize();

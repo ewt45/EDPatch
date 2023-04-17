@@ -1,5 +1,7 @@
 package com.eltechs.axs.requestHandlers.core;
 
+import android.util.Log;
+
 import com.eltechs.axs.proto.input.XProtocolError;
 import com.eltechs.axs.proto.input.annotations.Locks;
 import com.eltechs.axs.proto.input.annotations.NewXId;
@@ -26,7 +28,20 @@ public class CursorManipulationRequests extends HandlerObjectBase {
 
     @Locks({"CURSORS_MANAGER", "PIXMAPS_MANAGER", "DRAWABLES_MANAGER"})
     @RequestHandler(opcode = 93)
-    public void CreateCursor(XClient xClient, @RequestParam @NewXId int i, @RequestParam Pixmap pixmap, @SpecialNullValue(0) @RequestParam Pixmap pixmap2, @RequestParam @Unsigned @Width(2) int i2, @RequestParam @Unsigned @Width(2) int i3, @RequestParam @Unsigned @Width(2) int i4, @RequestParam @Unsigned @Width(2) int i5, @RequestParam @Unsigned @Width(2) int i6, @RequestParam @Unsigned @Width(2) int i7, @RequestParam @Unsigned @Width(2) int i8, @RequestParam @Unsigned @Width(2) int i9) throws XProtocolError {
+    public void CreateCursor(
+            XClient xClient,
+            @RequestParam @NewXId int i,
+            @RequestParam Pixmap pixmap,
+            @SpecialNullValue(0) @RequestParam Pixmap pixmap2,
+            @RequestParam @Unsigned @Width(2) int i2,
+            @RequestParam @Unsigned @Width(2) int i3,
+            @RequestParam @Unsigned @Width(2) int i4,
+            @RequestParam @Unsigned @Width(2) int i5,
+            @RequestParam @Unsigned @Width(2) int i6,
+            @RequestParam @Unsigned @Width(2) int i7,
+            @RequestParam @Unsigned @Width(2) int i8,
+            @RequestParam @Unsigned @Width(2) int i9) throws XProtocolError {
+//        Log.e("", "CreateCursor: opcode外部调用能logcat到吗");
         Drawable backingStore = pixmap.getBackingStore();
         if (pixmap2 != null) {
             Drawable backingStore2 = pixmap2.getBackingStore();

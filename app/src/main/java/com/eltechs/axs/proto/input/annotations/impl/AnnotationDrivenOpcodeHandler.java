@@ -45,24 +45,17 @@ public class AnnotationDrivenOpcodeHandler implements OpcodeHandler {
                 }
                 lock.close();
             } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    if (lock != null) {
-                        if (th != null) {
-                            try {
-                                lock.close();
-                            } catch (Throwable th3) {
-                                th.addSuppressed(th3);
-                            }
-                        } else {
-                            lock.close();
-                        }
+                if (lock != null) {
+                    try {
+                        lock.close();
+                    } catch (Throwable th3) {
+                        th.addSuppressed(th3);
                     }
-                    throw th2;
                 }
+                throw th;
             }
-        } catch (IllegalAccessException unused) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         } catch (InvocationTargetException e) {
             Throwable targetException = e.getTargetException();
             if (targetException instanceof IOException) {

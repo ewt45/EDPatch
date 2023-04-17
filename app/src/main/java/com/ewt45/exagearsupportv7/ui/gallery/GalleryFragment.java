@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProvider;
 
-import com.ewt45.exagearsupportv7.databinding.FragmentGalleryBinding;
+import com.eltechs.ed.databinding.FragmentGalleryBinding;
 
 public class GalleryFragment extends Fragment {
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.eltechs.axs.AppConfig;
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.R;
+import com.eltechs.ed.R;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ApplicationStateObject;
 import com.eltechs.axs.applicationState.DroidApplicationContextAware;
@@ -140,8 +140,8 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
     }
 
     private void resetProgressToDefault() {
-        ((ProgressBar) findViewById(com.ewt45.exagearsupportv7.R.id.startupProgressBar)).setIndeterminate(true);
-        ((TextView) findViewById(com.ewt45.exagearsupportv7.R.id.sa_step_description)).setText(this.progressDescription);
+        ((ProgressBar) findViewById(R.id.startupProgressBar)).setIndeterminate(true);
+        ((TextView) findViewById(R.id.sa_step_description)).setText(this.progressDescription);
     }
 
     private void updateProgressPost() {
@@ -173,23 +173,25 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
                 bufferedReader.close();
                 try {
                     i = Math.min(Integer.parseInt(readLine), 100);
-                } catch (Exception unused) {
+                } catch (Exception e) {
+//                    e.printStackTrace();
                     i = -1;
                 }
-                ProgressBar progressBar = (ProgressBar) findViewById(com.ewt45.exagearsupportv7.R.id.startupProgressBar);
+                ProgressBar progressBar = (ProgressBar) findViewById(R.id.startupProgressBar);
                 if (i == -1) {
                     progressBar.setIndeterminate(true);
                 } else {
                     progressBar.setIndeterminate(false);
                     progressBar.setProgress(i);
                 }
-                TextView textView = (TextView) findViewById(com.ewt45.exagearsupportv7.R.id.sa_step_description);
+                TextView textView = (TextView) findViewById(R.id.sa_step_description);
                 if (readLine2 != null && !readLine2.equals("")) {
                     textView.setText(readLine2);
                 } else {
                     textView.setText((CharSequence) null);
                 }
-            } catch (IOException unused2) {
+            } catch (IOException e) {
+//                e.printStackTrace();
             }
             updateProgressPost();
         }
@@ -241,7 +243,7 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
 
     private void setupUI() {
         //R.layout.startup
-        setContentView(com.ewt45.exagearsupportv7.R.layout.ed_startup);
+        setContentView(R.layout.ed_startup);
     }
 
     private void sendStatisticsForGA() {

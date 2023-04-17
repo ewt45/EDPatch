@@ -20,7 +20,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.widget.ToggleButton;
 
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.QH;
 

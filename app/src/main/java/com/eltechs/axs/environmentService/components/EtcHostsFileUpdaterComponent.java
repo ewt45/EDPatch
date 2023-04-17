@@ -31,7 +31,8 @@ public class EtcHostsFileUpdaterComponent extends EnvironmentComponent {
                     PrintWriter printWriter = new PrintWriter(file);
                     printWriter.printf("%s\t%s\n", str, "localhost");
                     printWriter.close();
-                } catch (FileNotFoundException unused) {
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
                     Assert.unreachable();
                 }
             }

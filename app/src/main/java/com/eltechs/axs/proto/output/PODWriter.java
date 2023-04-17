@@ -19,7 +19,8 @@ public class PODWriter {
     public static void write(ByteBuffer byteBuffer, Object obj) {
         try {
             PODVisitor.visit(obj, new BufferWriter(byteBuffer));
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,9 +1,11 @@
 package com.example.datainsert.exagear.mutiWine;
 
 import com.eltechs.axs.Globals;
+import com.eltechs.axs.applicationState.ExagearImageAware;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,12 +28,13 @@ public class WineVersionConfig {
     public static void initList(){
         if(Globals.getAppContext()==null)
             return;
-        //读取assets下的txt
+        //读取assets下的txt (改成读rootfs下的吧）
         try {
             //用reader，正好能使用inputStream，不用转成文件了
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(
-                            Globals.getAppContext().getAssets().open("WinesVersionInfo.txt"),
+                            new FileInputStream(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath().getAbsolutePath()+"/opt/WinesVersionInfo.txt"),
+//                            Globals.getAppContext().getAssets().open("WinesVersionInfo.txt"),
                             StandardCharsets.UTF_8)
             );
             wineList = new ArrayList<>();
@@ -57,6 +60,9 @@ public class WineVersionConfig {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if(wineList == null)
+                wineList = new ArrayList<>();
         }
 
 

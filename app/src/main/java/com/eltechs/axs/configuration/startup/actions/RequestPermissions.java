@@ -16,6 +16,7 @@ public class RequestPermissions<StateClass> extends SimpleInteractiveStartupActi
 
     @Override // com.eltechs.axs.configuration.startup.StartupAction
     public void execute() {
+
         if (ContextCompat.checkSelfPermission(this.thisActivity, "android.permission.WRITE_EXTERNAL_STORAGE") != 0) {
             requestUserInput();
             ActivityCompat.requestPermissions(this.thisActivity, new String[]{"android.permission.WRITE_EXTERNAL_STORAGE"}, this.requestCode);

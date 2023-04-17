@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear;
 
+import static android.content.pm.ApplicationInfo.FLAG_TEST_ONLY;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
@@ -101,6 +103,8 @@ public class QH {
      * 用于判断当前包是否是自己的测试apk而非exagear
      */
     public static boolean isTesting(){
-        return  Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7");
+        //包名改成一样的了，换一种方式？ 用manifest里的application label试试
+        return (Globals.getAppContext().getApplicationInfo().flags &  FLAG_TEST_ONLY) !=0;
+//        return  Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7");
     }
 }

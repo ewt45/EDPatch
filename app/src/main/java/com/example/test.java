@@ -8,7 +8,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.eltechs.axs.Globals;
-import com.ewt45.exagearsupportv7.R;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.CursorToggle;
@@ -17,6 +17,7 @@ import com.example.datainsert.exagear.input.SoftInput;
 import com.example.datainsert.exagear.obb.SelectObbFragment;
 
 import java.io.File;
+import java.io.IOException;
 
 public class test extends AppCompatActivity {
     private static final File mUserAreaDir = DriveD.getDriveDDir();
@@ -33,6 +34,29 @@ public class test extends AppCompatActivity {
         CursorToggle cursorToggle;
         Toolbar toolbar =new Toolbar(Globals.getAppContext());
         toolbar.setBackgroundResource(R.drawable.someimg);
+    }
+
+     Object i2 ;
+    private void test3(int i){
+        while(true){
+            try{
+                File file = new File("");
+                file.createNewFile();
+
+                i--;
+                if(i==0)
+                    throw new RuntimeException();
+                synchronized (i2){
+                    try {
+                        i-=2;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }catch (IOException e){
+
+            }
+        }
     }
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if(requestCode!=10001){

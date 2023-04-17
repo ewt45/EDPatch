@@ -8,7 +8,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.R;
+import com.eltechs.ed.R;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 
 /* loaded from: classes.dex */
@@ -32,8 +32,8 @@ public class FatalErrorActivity extends FrameworkActivity<ApplicationStateBase<?
     @Override // com.eltechs.axs.activities.AxsActivity, android.support.v7.app.AppCompatActivity, android.support.v4.app.FragmentActivity, android.support.v4.app.SupportActivity, android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(com.ewt45.exagearsupportv7.R.layout.ed_fatal_error);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textView = (TextView) findViewById(com.ewt45.exagearsupportv7.R.id.fe_text_view);
+        setContentView(R.layout.ed_fatal_error);
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView textView = (TextView) findViewById(R.id.fe_text_view);
         textView.setText(Html.fromHtml((String) getExtraParameter()));
         textView.setMovementMethod(LinkMovementMethod.getInstance());
     }

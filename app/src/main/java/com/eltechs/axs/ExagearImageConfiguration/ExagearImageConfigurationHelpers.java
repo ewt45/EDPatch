@@ -24,7 +24,7 @@ public class ExagearImageConfigurationHelpers {
         int myUid = Process.myUid();
         FileHelpers.touch(file.getPath());
         PrintWriter printWriter = new PrintWriter(new FileOutputStream(file));
-        printWriter.printf("%s:x:%d:%d::%s:/bin/sh\n", str, Integer.valueOf(myUid), Integer.valueOf(myUid), str2);
+        printWriter.printf("%s:x:%d:%d::%s:/bin/sh\n", str, myUid, myUid, str2);
         printWriter.close();
     }
 
@@ -65,7 +65,8 @@ public class ExagearImageConfigurationHelpers {
         try {
             SafeFileHelpers.removeDirectory(new File(this.image.getPath(), "/tmp/.X11-unix"));
             FileHelpers.createDirectory(new File(this.image.getPath(), "/tmp/.X11-unix"));
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -73,7 +74,8 @@ public class ExagearImageConfigurationHelpers {
         try {
             SafeFileHelpers.removeDirectory(new File(this.image.getPath(), "/tmp/.sound"));
             FileHelpers.createDirectory(new File(this.image.getPath(), "/tmp"), ".sound");
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
