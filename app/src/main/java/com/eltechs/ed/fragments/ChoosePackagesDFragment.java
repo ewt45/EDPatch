@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import com.eltechs.ed.ContainerPackage;
-import com.eltechs.ed.R_original;
+import com.eltechs.ed.R;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class ChoosePackagesDFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle bundle) {
         this.mSelectedItems = new ArrayList();
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Select packages").setAdapter(new ArrayAdapter(getContext(), (int) R_original.layout.multichoice_list_item, ContainerPackage.LIST), null).setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.eltechs.ed.fragments.ChoosePackagesDFragment.2
+        builder.setTitle("Select packages").setAdapter(new ArrayAdapter(getContext(), (int) R.layout.multichoice_list_item, ContainerPackage.LIST), null).setPositiveButton("OK", new DialogInterface.OnClickListener() { // from class: com.eltechs.ed.fragments.ChoosePackagesDFragment.2
             @Override // android.content.DialogInterface.OnClickListener
             public void onClick(DialogInterface dialogInterface, int i) {
                 ChoosePackagesDFragment.this.mListener.onPackagesSelected(ChoosePackagesDFragment.this.mSelectedItems);

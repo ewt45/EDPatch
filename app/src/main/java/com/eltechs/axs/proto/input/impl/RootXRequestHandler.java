@@ -1,5 +1,8 @@
 package com.eltechs.axs.proto.input.impl;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import com.eltechs.axs.helpers.ArithHelpers;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.input.ExtensionRequestHandler;
@@ -12,10 +15,12 @@ import com.eltechs.axs.xconnectors.XInputStream;
 import com.eltechs.axs.xconnectors.XOutputStream;
 import com.eltechs.axs.xconnectors.XRequest;
 import com.eltechs.axs.xconnectors.XResponse;
+import com.eltechs.axs.xconnectors.impl.XInputStreamImpl;
 import com.eltechs.axs.xserver.XServer;
 import com.eltechs.axs.xserver.client.XClient;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /* loaded from: classes.dex */
@@ -45,8 +50,13 @@ public class RootXRequestHandler implements RequestHandler<XClient> {
         if (xInputStream.getAvailableBytesCount() < 4) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        byte b = xInputStream.getByte();
-        byte b2 = xInputStream.getByte();
+        byte majorOpCode = xInputStream.getByte();
+//        if(majorOpCode==49){
+//            byte[] tmpbytes = new byte[xInputStream.getAvailableBytesCount()];
+//            xInputStream.get(tmpbytes);
+//            Log.e("TAG", "handleNormalRequest: 调用listFonts了，看看字节都是啥"+ Arrays.toString(tmpbytes), null);
+//        }
+        byte minorOpCode = xInputStream.getByte();
         int extendAsUnsigned = ArithHelpers.extendAsUnsigned(xInputStream.getShort());
         if (extendAsUnsigned != 0) {
             i = 4;
@@ -56,41 +66,45 @@ public class RootXRequestHandler implements RequestHandler<XClient> {
             extendAsUnsigned = xInputStream.getInt();
             i = 8;
         }
-        int i2 = (extendAsUnsigned * 4) - i;
-        if (i2 > xInputStream.getAvailableBytesCount()) {
+        int length = (extendAsUnsigned * 4) - i;
+        if (length > xInputStream.getAvailableBytesCount()) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        XRequest xRequest = new XRequest(xClient.generateSequenceNumber(), xInputStream, i2);
+        XRequest xRequest = new XRequest(xClient.generateSequenceNumber(), xInputStream, length);
         XResponse xResponse = new XResponse(xRequest, xOutputStream);
-        xRequest.setMajorOpcode(b);
-        dispatchRequest(b, b2, i2, xClient, xRequest, xResponse);
+        xRequest.setMajorOpcode(majorOpCode);
+        dispatchRequest(majorOpCode, minorOpCode, length, xClient, xRequest, xResponse);
         Assert.state(xRequest.getRemainingBytesCount() == 0, "Request has not been parsed fully.");
         return ProcessingResult.PROCESSED;
     }
 
-    private void dispatchRequest(byte b, byte b2, int i, XClient xClient, XRequest xRequest, XResponse xResponse) throws IOException {
-        ExtensionRequestHandler extensionRequestHandler = this.extensionHandlers[b >= 0 ? 0 : ArithHelpers.extendAsUnsigned(b)];
+    private void dispatchRequest(byte majorOpCode, byte minorOpCode, int length, XClient xClient, XRequest xRequest, XResponse xResponse) throws IOException {
+        ExtensionRequestHandler extensionRequestHandler = this.extensionHandlers[majorOpCode >= 0 ? 0 : ArithHelpers.extendAsUnsigned(majorOpCode)];
+//        if(majorOpCode==49){
+//            Log.e("TAG", "dispatchRequest: 调用listFonts了,看看用的哪个handler"+extensionRequestHandler);
+//        }
         try {
-            if (i < 0) {
+            if (length < 0) {
                 throw new BadRequest();
             }
             if (extensionRequestHandler == null) {
                 throw new BadRequest();
             }
-            extensionRequestHandler.handleRequest(xClient, b, b2, i, xRequest, xResponse);
+            extensionRequestHandler.handleRequest(xClient, majorOpCode, minorOpCode, length, xRequest, xResponse);
         } catch (XProtocolError e) {
             xRequest.skipRequest();
             xResponse.sendError(e);
         }
     }
 
+    @SuppressLint("DefaultLocale")
     public void installExtensionHandler(int i, ExtensionRequestHandler extensionRequestHandler) {
         Assert.state(this.extensionHandlers[i] == null, String.format("A handler for the protocol extension %d is already installed.", Integer.valueOf(i)));
         this.extensionHandlers[i] = extensionRequestHandler;
     }
 
     public List<ExtensionRequestHandler> getInstalledExtensionHandlers() {
-        ArrayList arrayList = new ArrayList();
+        ArrayList<ExtensionRequestHandler> arrayList = new ArrayList<>();
         int length = this.extensionHandlers.length;
         for (int i = 1; i < length; i++) {
             if (this.extensionHandlers[i] != null) {

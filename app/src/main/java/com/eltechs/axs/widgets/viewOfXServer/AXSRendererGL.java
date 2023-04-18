@@ -1,5 +1,7 @@
 package com.eltechs.axs.widgets.viewOfXServer;
 
+import static android.opengl.GLES20.GL_SCISSOR_TEST;
+
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -106,14 +108,14 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
         GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
         synchronized (this) {
             LocksManager.XLock lock = this.viewFacade.getXServer().getLocksManager().lock(LocksManager.Subsystem.DRAWABLES_MANAGER);
-            GLES20.glEnable(3089);
+            GLES20.glEnable(GL_SCISSOR_TEST);
             GLES20.glScissor(this.scX, this.glViewportHeight - (this.scY + this.scHeight), this.scWidth, this.scHeight);
             if (!this.freeze) {
                 reloadWindowTextures(0);
                 reloadCursorTexture(this.windowDrawables.size());
             }
             this.scene.draw();
-            GLES20.glDisable(3089);
+            GLES20.glDisable(GL_SCISSOR_TEST);
             lock.close();
         }
     }

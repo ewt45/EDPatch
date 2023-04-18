@@ -6,13 +6,13 @@ public abstract class XProtocolError extends Exception {
     private final int data;
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public XProtocolError(byte b, int i) {
+    protected XProtocolError(byte b, int i) {
         this.code = b;
         this.data = i;
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    public XProtocolError(byte b, int i, String str) {
+    protected XProtocolError(byte b, int i, String str) {
         super(str);
         this.code = b;
         this.data = i;

@@ -35,11 +35,11 @@ public class AnnotationDrivenOpcodeHandler implements OpcodeHandler {
     }
 
     @Override // com.eltechs.axs.proto.input.OpcodeHandler
-    public void handleRequest(XClient xClient, int i, byte b, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException {
+    public void handleRequest(XClient xClient, int length, byte minorOpCode, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException {
         try {
             LocksManager.XLock lock = this.xServer.getLocksManager().lock(this.locks);
             try {
-                this.handlerMethod.invoke(this.handlerObject, this.requestParser.getRequestHandlerParameters(xClient, this.xServer, xRequest, xResponse, i, b));
+                this.handlerMethod.invoke(this.handlerObject, this.requestParser.getRequestHandlerParameters(xClient, this.xServer, xRequest, xResponse, length, minorOpCode));
                 if (lock == null) {
                     return;
                 }

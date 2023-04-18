@@ -1,5 +1,7 @@
 package com.eltechs.axs.proto.input.annotations;
 
+import android.annotation.SuppressLint;
+
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.input.ConfigurableRequestsDispatcher;
 import com.eltechs.axs.proto.input.annotations.impl.AnnotationDrivenOpcodeHandler;
@@ -47,6 +49,7 @@ public class AnnotationDrivenRequestDispatcherConfigurer {
         return new AnnotationDrivenRequestParser(parameterReaderArr);
     }
 
+    @SuppressLint("DefaultLocale")
     private ParameterReader configureParameterReader(final Method method, final ParameterDescriptor[] parameterDescriptorArr, int i) {
         ParameterReader createReader;
         ParameterDescriptor parameterDescriptor = parameterDescriptorArr[i];
@@ -76,12 +79,12 @@ public class AnnotationDrivenRequestDispatcherConfigurer {
         } else {
             createReader = this.reqParamReadersFactory.createReader(parameterDescriptor, configurationContext);
         }
-        Assert.state(createReader != null, String.format("Resolved no parameter reader for the context parameter %d of the request handler method %s.", Integer.valueOf(parameterDescriptor.getIndex()), configurationContext.getHandlerMethodName()));
+        Assert.state(createReader != null, String.format("Resolved no parameter reader for the context parameter %d of the request handler method %s.", parameterDescriptor.getIndex(), configurationContext.getHandlerMethodName()));
         return createReader;
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public ParameterDescriptor findNamedParameter(ParameterDescriptor[] parameterDescriptorArr, String str) {
+    private ParameterDescriptor findNamedParameter(ParameterDescriptor[] parameterDescriptorArr, String str) {
         for (ParameterDescriptor parameterDescriptor : parameterDescriptorArr) {
             ParamName paramName = (ParamName) parameterDescriptor.getAnnotation(ParamName.class);
             if (paramName != null && str.equals(paramName.value())) {

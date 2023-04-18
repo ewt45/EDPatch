@@ -5,6 +5,7 @@ import com.eltechs.axs.proto.input.parameterReaders.ParameterReader;
 import com.eltechs.axs.xconnectors.XRequest;
 import com.eltechs.axs.xconnectors.XResponse;
 import com.eltechs.axs.xserver.XServer;
+import com.eltechs.axs.xserver.client.XClient;
 
 /* loaded from: classes.dex */
 public class AnnotationDrivenRequestParser {
@@ -14,7 +15,7 @@ public class AnnotationDrivenRequestParser {
         this.impl = new RequestStreamParser(parameterReaderArr);
     }
 
-    public Object[] getRequestHandlerParameters(Object obj, XServer xServer, XRequest xRequest, XResponse xResponse, int i, byte b) throws XProtocolError {
-        return this.impl.parse(xServer, obj, new RequestDataRetrievalContext(xRequest, xResponse, b, i));
+    public Object[] getRequestHandlerParameters(XClient xClient, XServer xServer, XRequest xRequest, XResponse xResponse, int length, byte minorOpCode) throws XProtocolError {
+        return this.impl.parse(xServer, xClient, new RequestDataRetrievalContext(xRequest, xResponse, minorOpCode, length));
     }
 }

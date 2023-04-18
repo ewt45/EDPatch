@@ -28,30 +28,24 @@ public class SceneOfRectangles {
     private int texturerDynamicAlpha = createTexturer(false);
     private final TexturesManager texturesManager = TextureManagersFactory.createTexturesManager();
 
+    private native void allocateNativeSceneData(int i);
 
-    native private  void allocateNativeSceneData(int i);
+    private native void freeNativeSceneData();
 
-    native private  void freeNativeSceneData();
+    private static native boolean initialiseNativeParts();
 
-    native private static  boolean initialiseNativeParts();
+    private native void moveRectangleImpl(int i, float f, float f2, float f3, float f4, float f5);
 
-    native private  void moveRectangleImpl(int i, float f, float f2, float f3, float f4, float f5);
+    private native void placeRectangleImpl(int i, float f, float f2, float f3, float f4, float f5, int i2, float f6, float f7, float f8, boolean z);
 
-    native private void placeRectangleImpl(int i, float f, float f2, float f3, float f4, float f5, int i2, float f6, float f7, float f8, boolean z);
+    private native void setMVPMatrix(float[] fArr);
 
-    native private void setMVPMatrix(float[] fArr);
-
-    ;
-
-    native public  synchronized void draw();
-
-    ;
+    public native synchronized void draw();
 
     static {
         System.loadLibrary("axs-helpers");
         Assert.state(initialiseNativeParts(), "Managed and native parts of SceneOfRectangles do not match one another.");
     }
-
 
     public SceneOfRectangles(int i, int i2) {
         this.nRectangles = i;
@@ -97,21 +91,22 @@ public class SceneOfRectangles {
     }
 
     public synchronized void placeRectangle(int i, float f, float f2, float f3, float f4, float f5, int i2, float f6, boolean z) {
-//        float[] iArr = new float[2];
-//        float upperPOT;
-//        float upperPOT2;
-//        Assert.isTrue(i < this.nRectangles, "Invalid rectangle number");
-//        Assert.isTrue(i2 < this.nTextures, "Invalid texture number");
-//        if (this.have_GL_OES_texture_npot) {
-//            iArr[0] = 1.0f;
-//            iArr[1] = 1.0f;
-//        } else {
-//            this.texturesManager.getTextureSize(i2, new int[2]);
-//            upperPOT = iArr[1] / MathHelpers.upperPOT((int) iArr[1]);
-//            upperPOT2 = iArr[0] / MathHelpers.upperPOT((int) iArr[0]);
-//        }
-//        placeRectangleImpl(i, f, f2, f3, f4, f5, this.texturesManager.getTextureId(i2), upperPOT2, upperPOT, f6, z);
-//
+
+        float upperPOT;
+        float upperPOT2;
+        Assert.isTrue(i < this.nRectangles, "Invalid rectangle number");
+        Assert.isTrue(i2 < this.nTextures, "Invalid texture number");
+        if (this.have_GL_OES_texture_npot) {
+            upperPOT = 1.0f;
+            upperPOT2 = 1.0f;
+        } else {
+            //如果不支持OES_texture_npot，就要变为2次幂
+            int[] iArr = new int[2];
+            this.texturesManager.getTextureSize(i2, iArr);
+            upperPOT = (float)iArr[0] / MathHelpers.upperPOT(iArr[0]);
+            upperPOT2 = (float)iArr[1] / MathHelpers.upperPOT(iArr[1]);
+        }
+        placeRectangleImpl(i, f, f2, f3, f4, f5, this.texturesManager.getTextureId(i2), upperPOT, upperPOT2, f6, z);
     }
 
     public synchronized void moveRectangle(int i, float f, float f2, float f3, float f4, float f5) {

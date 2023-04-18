@@ -1,5 +1,7 @@
 package com.eltechs.axs.configuration;
 
+import android.annotation.SuppressLint;
+
 import com.eltechs.axs.environmentService.AXSEnvironment;
 import com.eltechs.axs.environmentService.components.ALSAServerComponent;
 import com.eltechs.axs.environmentService.components.DirectSoundServerComponent;
@@ -99,14 +101,15 @@ public class UBTLaunchConfiguration implements Serializable {
         this.guestEnvironmentVariables.add(String.format("%s=%s", str, str2));
     }
 
+    @SuppressLint("DefaultLocale")
     public void addArgumentsToEnvironment(AXSEnvironment aXSEnvironment) {
         XServerComponent xServerComponent = (XServerComponent) aXSEnvironment.getComponent(XServerComponent.class);
         if (xServerComponent != null) {
-            this.guestEnvironmentVariables.add(String.format("DISPLAY=:%d", Integer.valueOf(xServerComponent.getDisplayNumber())));
+            this.guestEnvironmentVariables.add(String.format("DISPLAY=:%d", xServerComponent.getDisplayNumber()));
         }
         VirglServerComponent virglServerComponent = (VirglServerComponent) aXSEnvironment.getComponent(VirglServerComponent.class);
         if (virglServerComponent != null) {
-            this.guestEnvironmentVariables.add(String.format("GALLIUM_DRIVER=virpipe", new Object[0]));
+            this.guestEnvironmentVariables.add("GALLIUM_DRIVER=virpipe");
             this.guestEnvironmentVariables.add(String.format("VTEST_SOCKET=%s", virglServerComponent.getAddress()));
         }
         ALSAServerComponent aLSAServerComponent = (ALSAServerComponent) aXSEnvironment.getComponent(ALSAServerComponent.class);

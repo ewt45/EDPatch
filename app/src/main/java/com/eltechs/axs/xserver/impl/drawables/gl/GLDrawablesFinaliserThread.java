@@ -13,6 +13,7 @@ import java.util.Map;
 
 /* loaded from: classes.dex */
 public class GLDrawablesFinaliserThread extends Thread {
+    private static final String TAG ="GLDrawableFinalThread";
     private final Map<Reference<Drawable>, Runnable> finalisationHandlers = new HashMap<>();
     private final ReferenceQueue<Drawable> referenceQueue;
 
@@ -31,7 +32,7 @@ public class GLDrawablesFinaliserThread extends Thread {
     @Override // java.lang.Thread, java.lang.Runnable
     public void run() {
         while (true) {
-            Log.d("TAG", "run: 尝试删除drawable？");
+            Log.d(TAG, "run: 尝试删除drawable？");
             Reference<? extends Drawable> drawableRef;
             Runnable destroyer;
             try {
@@ -39,7 +40,10 @@ public class GLDrawablesFinaliserThread extends Thread {
                 synchronized (this.finalisationHandlers) {
                     destroyer = this.finalisationHandlers.remove(drawableRef);
                     Assert.isTrue(destroyer != null);
+                    Log.d(TAG, "run: 开始执行runnable");
                     destroyer.run();
+                    Log.d(TAG, "run: 成功执行runnable");
+
 
                 }
             } catch (InterruptedException e) {

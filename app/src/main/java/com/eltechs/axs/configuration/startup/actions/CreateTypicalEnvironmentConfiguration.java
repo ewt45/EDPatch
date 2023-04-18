@@ -24,14 +24,14 @@ public class CreateTypicalEnvironmentConfiguration<StateClass extends Environmen
     private final int productId;
     private final XServerViewConfiguration xServerConf;
 
-    public CreateTypicalEnvironmentConfiguration(int i, boolean z) {
-        this(i, XServerViewConfiguration.DEFAULT, z);
+    public CreateTypicalEnvironmentConfiguration(int productId, boolean forceUseAbstractSockets) {
+        this(productId, XServerViewConfiguration.DEFAULT, forceUseAbstractSockets);
     }
 
-    public CreateTypicalEnvironmentConfiguration(int i, XServerViewConfiguration xServerViewConfiguration, boolean z) {
-        this.productId = i;
+    public CreateTypicalEnvironmentConfiguration(int productId, XServerViewConfiguration xServerViewConfiguration, boolean forceUseAbstractSockets) {
+        this.productId = productId;
         this.xServerConf = xServerViewConfiguration;
-        this.forceUseAbstractSockets = z;
+        this.forceUseAbstractSockets = forceUseAbstractSockets;
     }
 
     @Override // com.eltechs.axs.configuration.startup.StartupAction
@@ -39,9 +39,8 @@ public class CreateTypicalEnvironmentConfiguration<StateClass extends Environmen
         EnvironmentAware environmentAware = getApplicationState();
         EnvironmentCustomisationParameters environmentCustomisationParameters = ((SelectedExecutableFileAware) environmentAware).getSelectedExecutableFile().getEnvironmentCustomisationParameters();
         AXSEnvironment aXSEnvironment = new AXSEnvironment(getAppContext());
-        int i = this.productId;
         aXSEnvironment.addComponent(new SysVIPCEmulatorComponent(ProductIDs.getPackageName(this.productId)));
-        aXSEnvironment.addComponent(new XServerComponent(environmentCustomisationParameters.getScreenInfo(), i, createXServerSocketConf()));
+        aXSEnvironment.addComponent(new XServerComponent(environmentCustomisationParameters.getScreenInfo(), this.productId, createXServerSocketConf()));
         aXSEnvironment.addComponent(new ALSAServerComponent(createALSASocketConf()));
         aXSEnvironment.addComponent(new DirectSoundServerComponent(createDSoundServerSocketConf()));
         aXSEnvironment.addComponent(new GuestApplicationsTrackerComponent(createGATServerSocketConf()));

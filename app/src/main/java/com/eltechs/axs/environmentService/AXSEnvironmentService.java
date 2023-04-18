@@ -55,6 +55,7 @@ public class AXSEnvironmentService extends Service {
             return Service.START_NOT_STICKY;
         } catch (IOException e) {
             //自己的代码里并不能正常启动，但是也不能停止
+            Log.e(TAG, "onStartCommand: 现在还会报错嘛" );
             if(QH.isTesting()){
                 startupCallback.serviceStarted();
                 configureAsForegroundService();

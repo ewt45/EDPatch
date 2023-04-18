@@ -348,4 +348,6 @@ public class WindowManipulationRequests extends HandlerObjectBase {
         window.setParent(null);
         window2.getChildrenList().add(window);
     }
+
+
 }

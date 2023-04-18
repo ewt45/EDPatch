@@ -40,7 +40,8 @@ public class CursorManipulationRequests extends HandlerObjectBase {
             @RequestParam @Unsigned @Width(2) int i6,
             @RequestParam @Unsigned @Width(2) int i7,
             @RequestParam @Unsigned @Width(2) int i8,
-            @RequestParam @Unsigned @Width(2) int i9) throws XProtocolError {
+            @RequestParam @Unsigned @Width(2) int i9
+    ) throws XProtocolError {
 //        Log.e("", "CreateCursor: opcode外部调用能logcat到吗");
         Drawable backingStore = pixmap.getBackingStore();
         if (pixmap2 != null) {

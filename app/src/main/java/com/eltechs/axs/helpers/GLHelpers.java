@@ -12,19 +12,17 @@ public abstract class GLHelpers {
     }
 
     public static synchronized boolean have_GL_OES_texture_npot() {
-        boolean booleanValue;
         synchronized (GLHelpers.class) {
             if (have_GL_OES_texture_npot == null) {
-                have_GL_OES_texture_npot = Boolean.valueOf(isGLExtensionAvailable("GL_OES_texture_npot"));
+                have_GL_OES_texture_npot = isGLExtensionAvailable("GL_OES_texture_npot");
             }
-            booleanValue = have_GL_OES_texture_npot.booleanValue();
         }
-        return booleanValue;
+        return have_GL_OES_texture_npot;
     }
 
     public static synchronized boolean isGLExtensionAvailable(String str) {
         synchronized (GLHelpers.class) {
-            String glGetString = GLES20.glGetString(7939);
+            String glGetString = GLES20.glGetString(GLES20.GL_EXTENSIONS);
             if (glGetString != null) {
                 for (String str2 : glGetString.split(" ")) {
                     if (str2.equals(str)) {

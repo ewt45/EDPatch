@@ -16,7 +16,7 @@ public class PersistentGLDrawable implements Drawable {
     private final Visual visual;
     private final int width;
 
-//    private static native long allocateNativeStorage(int i, int i2);
+    private static native long allocateNativeStorage(int i, int i2);
 
     static {
         System.loadLibrary("axs-helpers");
@@ -27,7 +27,7 @@ public class PersistentGLDrawable implements Drawable {
         this.id = i;
         this.rootWindow = window;
         this.visual = visual;
-        this.content = 1L;//allocateNativeStorage(i2, i3);
+        this.content = allocateNativeStorage(i2, i3);
         this.width = i2;
         this.height = i3;
         this.painter = new PainterOnPersistentGLDrawable(this);

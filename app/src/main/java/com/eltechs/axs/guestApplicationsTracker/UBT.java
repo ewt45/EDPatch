@@ -39,6 +39,7 @@ public abstract class UBT {
         arrayList.add(fsRoot + "/.exagear/vpaths-list");
         arrayList.add("-f");
         arrayList.add(guestExecutable);
+//        arrayList.add("/opt/wine-stable/bin/wine");
         arrayList.add("--fork-controller");
         arrayList.add("ua:" + ((GuestApplicationsTrackerComponent) aXSEnvironment.getComponent(GuestApplicationsTrackerComponent.class)).getSocket());
         if ((sysVIPCEmulatorComponent = (SysVIPCEmulatorComponent) aXSEnvironment.getComponent(SysVIPCEmulatorComponent.class)) != null) {

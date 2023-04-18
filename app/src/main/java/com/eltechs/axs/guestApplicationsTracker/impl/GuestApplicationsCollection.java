@@ -23,7 +23,6 @@ public class GuestApplicationsCollection {
     }
 
     public synchronized Translator registerTranslator(int i) {
-        Log.d(TAG, "registerTranslator: 这里tranlator被添加");
         Translator translator;
         translator = getTranslator(i);
         if (translator == null) {
@@ -31,6 +30,8 @@ public class GuestApplicationsCollection {
             this.translators.add(translator);
             this.listeners.sendTranslatorStarted(translator);
         }
+        Log.d(TAG, "registerTranslator: 这里translator被添加"+ translator);
+
         return translator;
     }
 
@@ -41,7 +42,7 @@ public class GuestApplicationsCollection {
     }
 
     public synchronized void killTranslator(Translator translator) {
-        Log.d(TAG, "killTranslator: 这里translator被删除一个");
+        Log.d(TAG, "killTranslator: 这里translator被删除一个"+translator);
         ProcessHelpers.killProcess(translator.getPid());
         if (this.translators.remove(translator)) {
             this.listeners.sendTranslatorExited(translator);

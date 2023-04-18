@@ -34,13 +34,13 @@ public class CoreXProtocolDispatcher implements ConfigurableRequestsDispatcher {
     }
 
     @Override // com.eltechs.axs.proto.input.ExtensionRequestHandler
-    public void handleRequest(XClient xClient, byte b, byte b2, int i, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException {
-        OpcodeHandler handler = this.handlersRegistry.getHandler(b);
+    public void handleRequest(XClient xClient, byte majorOpCode, byte minorOpCode, int length, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException {
+        OpcodeHandler handler = this.handlersRegistry.getHandler(majorOpCode);
         xRequest.setMinorOpcode((short) 0);
         if (handler == null) {
             throw new BadRequest();
         }
-        handler.handleRequest(xClient, i, b2, xRequest, xResponse);
+        handler.handleRequest(xClient, length, minorOpCode, xRequest, xResponse);
     }
 
     @Override // com.eltechs.axs.proto.input.ConfigurableRequestsDispatcher

@@ -7,6 +7,8 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.ed.Locales;
 import com.eltechs.ed.controls.Controls;
+import com.example.datainsert.exagear.mutiWine.MutiWine;
+
 import java.io.File;
 
 /* loaded from: classes.dex */
@@ -36,7 +38,7 @@ public class GuestContainerConfig {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    public static void cloneContainerConfig(GuestContainer guestContainer, GuestContainer guestContainer2) {
+    static void cloneContainerConfig(GuestContainer guestContainer, GuestContainer guestContainer2) {
         GuestContainerConfig guestContainerConfig = guestContainer2.mConfig;
         guestContainerConfig.setName("Container_" + guestContainer2.mId);
         guestContainer2.mConfig.setScreenInfo(guestContainer.mConfig.getScreenInfo());
@@ -48,7 +50,8 @@ public class GuestContainerConfig {
         guestContainer2.mConfig.setDefaultResolutionNotShortcut(guestContainer.mConfig.getDefaultResolutionNotShortcut());
         guestContainer2.mConfig.setStartupActions(guestContainer.mConfig.getStartupActions());
         guestContainer2.mConfig.setRunGuide(guestContainer.mConfig.getRunGuide());
-        guestContainer2.mConfig.setRunGuideShown(guestContainer.mConfig.getRunGuideShown().booleanValue());
+        guestContainer2.mConfig.setRunGuideShown(guestContainer.mConfig.getRunGuideShown());
+        MutiWine.cloneWineVerToContainerConfig(guestContainer.mId,guestContainer2.mId);
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
@@ -74,6 +77,7 @@ public class GuestContainerConfig {
         setStartupActions("");
         setRunGuide("");
         setRunGuideShown(false);
+        MutiWine.writeWineVerToContainerConfig(mCont.mId);
     }
 
     public String getName() {

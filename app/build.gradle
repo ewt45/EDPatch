@@ -4,6 +4,7 @@ plugins {
 
 android {
     namespace 'com.eltechs.ed'
+
     compileSdk 28
 
     defaultConfig {
@@ -57,7 +58,6 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['src/main/00jniLibs']
-            jni.srcDirs = []
         }
     }
 }

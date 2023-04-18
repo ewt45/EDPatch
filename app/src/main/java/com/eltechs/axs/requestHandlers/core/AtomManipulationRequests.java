@@ -6,11 +6,15 @@ import com.eltechs.axs.proto.input.annotations.ParamLength;
 import com.eltechs.axs.proto.input.annotations.ParamName;
 import com.eltechs.axs.proto.input.annotations.RequestHandler;
 import com.eltechs.axs.proto.input.annotations.RequestParam;
+import com.eltechs.axs.proto.input.annotations.Unsigned;
+import com.eltechs.axs.proto.input.annotations.Width;
 import com.eltechs.axs.requestHandlers.HandlerObjectBase;
 import com.eltechs.axs.xconnectors.XResponse;
 import com.eltechs.axs.xserver.Atom;
 import com.eltechs.axs.xserver.AtomsManager;
 import com.eltechs.axs.xserver.XServer;
+import com.eltechs.axs.xserver.client.XClient;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -25,7 +29,13 @@ public class AtomManipulationRequests extends HandlerObjectBase {
 
     @Locks({"ATOMS_MANAGER"})
     @RequestHandler(opcode = 16)
-    public void InternAtom(XResponse xResponse, @OOBParam @RequestParam boolean z, @RequestParam @ParamName("nameLength") short s, @RequestParam short s2, @ParamLength("nameLength") @RequestParam String str) throws IOException {
+    public void InternAtom(
+            XResponse xResponse,
+            @OOBParam @RequestParam boolean z,
+            @RequestParam @ParamName("nameLength") short s,
+            @RequestParam short s2,
+            @ParamLength("nameLength") @RequestParam String str
+    ) throws IOException {
         final int internAtom;
         AtomsManager atomsManager = this.xServer.getAtomsManager();
         if (z) {
@@ -45,16 +55,23 @@ public class AtomManipulationRequests extends HandlerObjectBase {
     @RequestHandler(opcode = 17)
     public void GetAtomName(XResponse xResponse, @RequestParam final Atom atom) throws IOException {
         final short length = (short) atom.getName().length();
-        xResponse.sendSuccessReplyWithPayload((byte) 0, new XResponse.ResponseDataWriter() { // from class: com.eltechs.axs.requestHandlers.core.AtomManipulationRequests.2
-            @Override // com.eltechs.axs.xconnectors.BufferFiller
-            public void write(ByteBuffer byteBuffer) {
-                byteBuffer.putShort(length);
-            }
-        }, length, new XResponse.ResponseDataWriter() { // from class: com.eltechs.axs.requestHandlers.core.AtomManipulationRequests.3
-            @Override // com.eltechs.axs.xconnectors.BufferFiller
-            public void write(ByteBuffer byteBuffer) {
-                byteBuffer.put(atom.getName().getBytes(AtomManipulationRequests.latin1));
-            }
-        });
+        xResponse.sendSuccessReplyWithPayload(
+                (byte) 0,
+                new XResponse.ResponseDataWriter() {
+                    @Override
+                    public void write(ByteBuffer byteBuffer) {
+                        byteBuffer.putShort(length);
+                    }
+                },
+                length,
+                new XResponse.ResponseDataWriter() {
+                    @Override
+                    public void write(ByteBuffer byteBuffer) {
+                        byteBuffer.put(atom.getName().getBytes(AtomManipulationRequests.latin1));
+                    }
+                }
+        );
     }
+
+
 }

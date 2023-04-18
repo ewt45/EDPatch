@@ -4,15 +4,15 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.ewt45.exagearsupportv7",
+  "applicationId": "com.eltechs.ed",
   "variantName": "release",
   "elements": [
     {
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 1,
-      "versionName": "1.0",
+      "versionCode": 31,
+      "versionName": "3.0.1",
       "outputFile": "patcher.apk"
     }
   ],

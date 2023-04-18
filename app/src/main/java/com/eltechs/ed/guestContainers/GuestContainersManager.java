@@ -10,6 +10,7 @@ import com.eltechs.axs.helpers.SafeFileHelpers;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.ed.WineRegistryEditor;
 import com.eltechs.ed.XDGLink;
+import com.example.datainsert.exagear.mutiWine.MutiWine;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -118,12 +119,12 @@ public class GuestContainersManager {
         for (File file : this.mHomeDir.listFiles()) {
             if (file.isDirectory() && file.getName().startsWith(CONTAINER_DIR_PREFIX)) {
                 GuestContainer guestContainer = new GuestContainer();
-                Long valueOf = Long.valueOf(Long.parseLong(file.getName().replace(CONTAINER_DIR_PREFIX, "")));
+                long valueOf = Long.parseLong(file.getName().replace(CONTAINER_DIR_PREFIX, ""));
                 guestContainer.mId = valueOf;
                 guestContainer.mPath = file.getAbsolutePath();
                 fillContainerInfo(guestContainer);
-                this.mContainers.append(valueOf.longValue(), guestContainer);
-                if (valueOf.longValue() > this.mMaxContainerId.longValue()) {
+                this.mContainers.append(valueOf, guestContainer);
+                if (valueOf > this.mMaxContainerId) {
                     this.mMaxContainerId = valueOf;
                 }
             }
@@ -135,7 +136,7 @@ public class GuestContainersManager {
         if (guestContainer2 != null) {
             file = new File(guestContainer2.mPath);
         } else {
-            file = new File(this.mImageDir, CONTAINER_PATTERN_GUEST_DIR);
+            file = new File(this.mImageDir, MutiWine.getCustomPatternPath());
         }
         fillContainerInfo(guestContainer);
         File file2 = new File(guestContainer.mPath);

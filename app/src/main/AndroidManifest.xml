@@ -3,26 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-sdk tools:overrideLibrary="com.mittorn.virgloverlay"/>
-<!--    android:name="com.example.datainsert.exagear.application.MyApplication"-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-sdk tools:overrideLibrary="com.mittorn.virgloverlay" />
+    <!--    android:name="com.example.datainsert.exagear.application.MyApplication"-->
 
     <application
-        android:testOnly="true"
-        tools:replace="android:theme"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:testOnly="true"
         android:theme="@style/Theme.ExagearSupportV7包"
+        tools:replace="android:theme"
         tools:targetApi="31">
 
-        <activity android:name="com.eltechs.ed.activities.EDStartupActivity"
-            android:theme="@style/ThemeDefaultDialogNoTitle"
+        <activity
+            android:name="com.eltechs.ed.activities.EDStartupActivity"
+            android:exported="true"
             android:label="模拟ED启动"
-            android:exported="true">
+            android:theme="@style/ThemeDefaultDialogNoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,39 +38,52 @@
             android:theme="@style/Theme.ExagearSupportV7包.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+                <!--                <category android:name="android.intent.category.LAUNCHER" />-->
             </intent-filter>
 
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <activity android:theme="@style/ThemeDefault" android:name="com.eltechs.ed.activities.EDMainActivity" android:parentActivityName="com.eltechs.ed.activities.EDStartupActivity"/>
-        <activity android:theme="@style/ThemeDefault" android:name="com.eltechs.ed.activities.EDHelpActivity" android:parentActivityName="com.eltechs.ed.activities.EDMainActivity"/>
-        <activity android:theme="@style/ThemeDefaultFullscreen" android:name="com.eltechs.axs.activities.XServerDisplayActivity" android:screenOrientation="sensorLandscape"/>
-        <activity android:theme="@style/ThemeDefaultDialogNoTitle" android:name="com.eltechs.axs.activities.FatalErrorActivity"/>
-        <activity android:name="com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity">
+        <activity
+            android:name="com.eltechs.ed.activities.EDMainActivity"
+            android:parentActivityName="com.eltechs.ed.activities.EDStartupActivity"
+            android:theme="@style/ThemeDefault" />
+        <activity
+            android:name="com.eltechs.ed.activities.EDHelpActivity"
+            android:parentActivityName="com.eltechs.ed.activities.EDMainActivity"
+            android:theme="@style/ThemeDefault" />
+        <activity
+            android:name="com.eltechs.axs.activities.XServerDisplayActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/ThemeDefaultFullscreen" />
+        <activity
+            android:name="com.eltechs.axs.activities.FatalErrorActivity"
+            android:theme="@style/ThemeDefaultDialogNoTitle" />
+        <activity android:name="com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <service android:name="com.eltechs.axs.environmentService.AXSEnvironmentService">
+
+        <service android:name="com.eltechs.axs.environmentService.AXSEnvironmentService"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </service>
 
 
-
         <!--        <provider-->
-<!--            android:name="android.support.v4.content.FileProvider"-->
-<!--            android:authorities="${applicationId}.provider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/provider_paths" />-->
-<!--        </provider>-->
+        <!--            android:name="android.support.v4.content.FileProvider"-->
+        <!--            android:authorities="${applicationId}.provider"-->
+        <!--            android:exported="false"-->
+        <!--            android:grantUriPermissions="true">-->
+        <!--            <meta-data-->
+        <!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+        <!--                android:resource="@xml/provider_paths" />-->
+        <!--        </provider>-->
     </application>
 
 </manifest>
