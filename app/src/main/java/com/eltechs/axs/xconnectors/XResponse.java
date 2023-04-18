@@ -42,9 +42,6 @@ public class XResponse {
             this.outputStream.writeShort((short) this.requestSequenceNumber);
             this.outputStream.writeInt(0);
             this.outputStream.write(24, new BufferFiller() { // from class: com.eltechs.axs.xconnectors.XResponse.1
-//                {
-//                    XResponse.this = this;
-//                }
 
                 @Override // com.eltechs.axs.xconnectors.BufferFiller
                 public void write(ByteBuffer byteBuffer) {
@@ -80,10 +77,6 @@ public class XResponse {
             this.outputStream.writeShort((short) this.requestSequenceNumber);
             this.outputStream.writeInt(ProtoHelpers.calculateLengthInWords(roundUpLength4));
             this.outputStream.write(24, new BufferFiller() { // from class: com.eltechs.axs.xconnectors.XResponse.2
-//                {
-//                    XResponse.this = this;
-//                }
-
                 @Override // com.eltechs.axs.xconnectors.BufferFiller
                 public void write(ByteBuffer byteBuffer) {
                     if (responseDataWriter != null) {
@@ -125,10 +118,6 @@ public class XResponse {
             this.outputStream.writeByte(b2);
             this.outputStream.writeShort((short) this.requestSequenceNumber);
             this.outputStream.write(28, new BufferFiller() { // from class: com.eltechs.axs.xconnectors.XResponse.3
-//                {
-//                    XResponse.this = this;
-//                }
-
                 @Override // com.eltechs.axs.xconnectors.BufferFiller
                 public void write(ByteBuffer byteBuffer) {
                     responseDataWriter.write(byteBuffer);

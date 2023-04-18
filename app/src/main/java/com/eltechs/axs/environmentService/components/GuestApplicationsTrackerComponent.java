@@ -49,6 +49,7 @@ public class GuestApplicationsTrackerComponent extends EnvironmentComponent {
     }
 
     public void startGuestApplication(UBTLaunchConfiguration uBTLaunchConfiguration) {
+        //如果后台同时启动了两个ex的xserver，这里会报null错误
         this.tracker.startGuestApplication(uBTLaunchConfiguration, getEnvironment());
     }
 

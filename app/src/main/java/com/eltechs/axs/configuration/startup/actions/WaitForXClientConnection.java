@@ -1,5 +1,7 @@
 package com.eltechs.axs.configuration.startup.actions;
 
+import android.util.Log;
+
 import com.eltechs.axs.AppConfig;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.configuration.startup.StartupActionInfo;
@@ -44,9 +46,10 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
 
     @Override // com.eltechs.axs.configuration.startup.StartupAction
     public void execute() {
-        AXSEnvironment environment = ((EnvironmentAware) getApplicationState()).getEnvironment();
-        XServerComponent xServerComponent = (XServerComponent) environment.getComponent(XServerComponent.class);
-        final GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = (GuestApplicationsTrackerComponent) environment.getComponent(GuestApplicationsTrackerComponent.class);
+        Log.d("", "execute: WaitForXClientConnection有在执行吗");
+        AXSEnvironment environment = getApplicationState().getEnvironment();
+        XServerComponent xServerComponent = environment.getComponent(XServerComponent.class);
+        final GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = environment.getComponent(GuestApplicationsTrackerComponent.class);
         this.putImageListener = new WindowContentModificationListener() { // from class: com.eltechs.axs.configuration.startup.actions.WaitForXClientConnection.1
             @Override // com.eltechs.axs.xserver.WindowContentModificationListener
             public void frontBufferReplaced(Window window) {
@@ -81,6 +84,7 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
             lock.close();
             throw th;
         }
+
     }
 
     /* JADX INFO: Access modifiers changed from: private */
@@ -95,7 +99,7 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
         }
         appConfig.setGuestLaunchesCount(appConfig.getGuestLaunchesCount() + 1);
         this.receivedEvent = true;
-        ((GuestApplicationsTrackerComponent) ((EnvironmentAware) getApplicationState()).getEnvironment().getComponent(GuestApplicationsTrackerComponent.class)).freezeGuestApplications();
+        getApplicationState().getEnvironment().getComponent(GuestApplicationsTrackerComponent.class).freezeGuestApplications();
         sendDone();
         removeListeners();
     }
@@ -111,9 +115,9 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
     }
 
     private void removeListeners() {
-        AXSEnvironment environment = ((EnvironmentAware) getApplicationState()).getEnvironment();
-        XServerComponent xServerComponent = (XServerComponent) environment.getComponent(XServerComponent.class);
-        GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = (GuestApplicationsTrackerComponent) environment.getComponent(GuestApplicationsTrackerComponent.class);
+        AXSEnvironment environment = getApplicationState().getEnvironment();
+        XServerComponent xServerComponent = environment.getComponent(XServerComponent.class);
+        GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = environment.getComponent(GuestApplicationsTrackerComponent.class);
         LocksManager.XLock lock = xServerComponent.getXServer().getLocksManager().lock(LocksManager.Subsystem.WINDOWS_MANAGER);
         try {
             xServerComponent.getXServer().getWindowsManager().removeWindowContentModificationListner(this.putImageListener);

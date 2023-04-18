@@ -1,11 +1,16 @@
 package com.eltechs.axs.helpers;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -209,20 +214,25 @@ public abstract class FileHelpers {
         return substring;
     }
 
+    @SuppressLint("NewApi")
     public static List<String> readAsLines(File file) throws IOException {
-        LinkedList linkedList = new LinkedList();
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        while (true) {
-            try {
-                String readLine = bufferedReader.readLine();
-                if (readLine == null) {
-                    return linkedList;
-                }
-                linkedList.add(readLine);
-            } finally {
-                bufferedReader.close();
-            }
-        }
+        LinkedList<String> linkedList = new LinkedList<>();
+        return Files.readAllLines(file.toPath());
+
+//        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+//        while (true) {
+//            try {
+//                //为什么这个会出错啊
+//
+//                String readLine = bufferedReader.readLine();
+//                if (readLine == null) {
+//                    return linkedList;
+//                }
+//                linkedList.add(readLine);
+//            } finally {
+//                bufferedReader.close();
+//            }
+//        }
     }
 
     public static boolean replaceStringInFile(File file, String str, String str2) throws IOException {

@@ -28,6 +28,7 @@ import com.eltechs.ed.guestContainers.GuestContainer;
 import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
 import com.eltechs.ed.R;
+import com.example.datainsert.exagear.mutiWine.MutiWine;
 
 import java.io.File;
 import java.io.IOException;
@@ -149,8 +150,8 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
 
     public StartGuest(RunExplorer runExplorer) {
         this.mGcm = GuestContainersManager.getInstance(((ApplicationStateBase) getApplicationState()).getAndroidApplicationContext());
-        this.mExeArgv = new ArrayList();
-        this.mEnv = new ArrayList();
+        this.mExeArgv = new ArrayList<>();
+        this.mEnv = new ArrayList<>();
         this.mHideXServerImage = false;
         this.mForceUseDefaultContols = false;
         this.mForceUseDefaultResolution = false;
@@ -169,8 +170,8 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
     public StartGuest(InstallPackage installPackage) {
 
         this.mGcm = GuestContainersManager.getInstance(((ApplicationStateBase) getApplicationState()).getAndroidApplicationContext());
-        this.mExeArgv = new ArrayList();
-        this.mEnv = new ArrayList();
+        this.mExeArgv = new ArrayList<>();
+        this.mEnv = new ArrayList<>();
         this.mHideXServerImage = false;
         this.mForceUseDefaultContols = false;
         this.mForceUseDefaultResolution = false;
@@ -198,6 +199,10 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         if (this.mCont == null) {
             this.mCont = this.mGcm.createContainer();
         }
+
+        //添加环境变量
+        MutiWine.addEnvVars(mCont.mId,mEnv);
+
         this.mGcm.makeContainerActive(this.mCont);
         if (this.mScreenInfo != null) {
             this.mCont.mConfig.setScreenInfo(this.mScreenInfo);
@@ -262,8 +267,8 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         environmentCustomisationParameters.setScreenInfo(this.mScreenInfo);
         environmentCustomisationParameters.setLocaleName(this.mLocaleName);
         UiThread.post(() -> {
-            ((SelectedExecutableFileAware) ((ApplicationStateBase) getApplicationState())).setSelectedExecutableFile(new DetectedExecutableFile<>(environmentCustomisationParameters, mControls.getId(),mControls.createInfoDialog()));
-            ((XServerDisplayActivityConfigurationAware) ((ApplicationStateBase) StartGuest.this.getApplicationState())).setXServerDisplayActivityInterfaceOverlay(mControls.create());
+            getApplicationState().setSelectedExecutableFile(new DetectedExecutableFile<>(environmentCustomisationParameters, mControls.getId(),mControls.createInfoDialog()));
+            StartGuest.this.getApplicationState().setXServerDisplayActivityInterfaceOverlay(mControls.create());
         });
         arrayList.add(new CreateTypicalEnvironmentConfiguration<>(12, false));
         List<String> list = this.mEnv;
@@ -272,7 +277,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         arrayList.add(new StartEnvironmentService<>(new TrayConfiguration(R.drawable.tray, R.string.ed_host_app_name, R.string.ed_host_app_name)));
         arrayList.add(new StartGuestApplication<>(true, true));
         String guestImagePath = this.mGcm.getGuestImagePath();
-        arrayList.add(new WaitForXClientConnection<>(new File(guestImagePath, "/home/xdroid/.ed_progress").getAbsolutePath(), this.mHideXServerImage));
+//        arrayList.add(new WaitForXClientConnection<>(new File(guestImagePath, "/home/xdroid/.ed_progress").getAbsolutePath(), this.mHideXServerImage));
         UiThread.post(() -> {
             ((ApplicationStateBase) getApplicationState()).getStartupActionsCollection().addActions(arrayList);
             StartGuest.this.sendDone();

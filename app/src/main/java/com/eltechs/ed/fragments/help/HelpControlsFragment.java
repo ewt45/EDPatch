@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.eltechs.ed.R_original;
+import com.eltechs.ed.R;
 import com.eltechs.ed.activities.EDHelpActivity;
 import com.eltechs.ed.controls.Controls;
 import com.eltechs.ed.fragments.ControlsInfoDFragment;
@@ -24,8 +24,8 @@ public class HelpControlsFragment extends Fragment {
 
     @Override // android.support.v4.app.Fragment
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        FrameLayout frameLayout = (FrameLayout) layoutInflater.inflate(R_original.layout.basic_list, viewGroup, false);
-        this.mRecyclerView = (RecyclerView) frameLayout.findViewById(R_original.id.list);
+        FrameLayout frameLayout = (FrameLayout) layoutInflater.inflate(R.layout.ex_basic_list, viewGroup, false);
+        this.mRecyclerView = (RecyclerView) frameLayout.findViewById(R.id.list);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.mRecyclerView.getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(this.mRecyclerView.getContext(), 1));
         return frameLayout;
@@ -47,14 +47,14 @@ public class HelpControlsFragment extends Fragment {
 
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public final ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R_original.layout.basic_list_item, viewGroup, false));
+            return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.ex_basic_list_item, viewGroup, false));
         }
 
         @SuppressLint("ResourceType")
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
             viewHolder.mItem = this.mItems.get(i);
-            viewHolder.mImage.setImageResource(R_original.drawable.ic_touch_app_24dp);
+            viewHolder.mImage.setImageResource(R.drawable.ic_touch_app_24dp);
             viewHolder.mText.setText(viewHolder.mItem.getName());
             viewHolder.mText.setTextAppearance(HelpControlsFragment.this.getContext(), 16973892);
             viewHolder.mView.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.fragments.help.HelpControlsFragment.RecipeAdapter.1
@@ -84,8 +84,8 @@ public class HelpControlsFragment extends Fragment {
             public ViewHolder(View view) {
                 super(view);
                 this.mView = view;
-                this.mImage = (ImageView) view.findViewById(R_original.id.image);
-                this.mText = (TextView) view.findViewById(R_original.id.text);
+                this.mImage = (ImageView) view.findViewById(R.id.image);
+                this.mText = (TextView) view.findViewById(R.id.text);
             }
         }
     }

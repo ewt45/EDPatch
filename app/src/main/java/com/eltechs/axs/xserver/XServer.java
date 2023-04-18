@@ -2,8 +2,8 @@ package com.eltechs.axs.xserver;
 
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.rendering.RenderingEngine;
-
 import com.eltechs.axs.sysvipc.SHMEngine;
+import com.eltechs.axs.xserver.LocksManager;
 import com.eltechs.axs.xserver.impl.AtomsManagerImpl;
 import com.eltechs.axs.xserver.impl.ColormapsManagerImpl;
 import com.eltechs.axs.xserver.impl.CursorsManagerImpl;

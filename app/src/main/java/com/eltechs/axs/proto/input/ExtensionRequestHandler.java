@@ -15,5 +15,5 @@ public interface ExtensionRequestHandler {
 
     String getName();
 
-    void handleRequest(XClient xClient, byte b, byte b2, int i, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException;
+    void handleRequest(XClient xClient, byte majorOpCode, byte minorOpCode, int length, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException;
 }

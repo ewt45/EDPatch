@@ -2,7 +2,6 @@ package com.eltechs.ed.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,8 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -53,17 +52,7 @@ public class ChooseXDGLinkFragment extends Fragment {
         void onXDGLinkSelected(XDGLink xDGLink);
     }
 
-    static /* synthetic */ int access$208(ChooseXDGLinkFragment chooseXDGLinkFragment) {
-        int i = chooseXDGLinkFragment.mDepth;
-        chooseXDGLinkFragment.mDepth = i + 1;
-        return i;
-    }
 
-    static /* synthetic */ int access$210(ChooseXDGLinkFragment chooseXDGLinkFragment) {
-        int i = chooseXDGLinkFragment.mDepth;
-        chooseXDGLinkFragment.mDepth = i - 1;
-        return i;
-    }
 
     /* loaded from: classes.dex */
     public class XDGNode implements Comparable<XDGNode> {
@@ -95,6 +84,7 @@ public class ChooseXDGLinkFragment extends Fragment {
             return -1;
         }
 
+        @NonNull
         public String toString() {
             if (isUpNode()) {
                 return ChooseXDGLinkFragment.PARENT_DIR_NAME;
@@ -113,7 +103,7 @@ public class ChooseXDGLinkFragment extends Fragment {
         try {
             this.mListener = (OnXDGLinkSelectedListener) context;
         } catch (ClassCastException unused) {
-            throw new ClassCastException(context.toString() + " must implement OnStartMenuLinkSelectedListener");
+            throw new ClassCastException(context + " must implement OnStartMenuLinkSelectedListener");
         }
     }
 
@@ -125,8 +115,8 @@ public class ChooseXDGLinkFragment extends Fragment {
     @Override // android.support.v4.app.Fragment
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
         FrameLayout frameLayout = (FrameLayout) layoutInflater.inflate(R.layout.ex_basic_list, viewGroup, false);
-        this.mRecyclerView = (RecyclerView) frameLayout.findViewById(R.id.list);
-        this.mEmptyTextView = (TextView) frameLayout.findViewById(R.id.empty_text);
+        this.mRecyclerView = frameLayout.findViewById(R.id.list);
+        this.mEmptyTextView = frameLayout.findViewById(R.id.empty_text);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.mRecyclerView.getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(this.mRecyclerView.getContext(), 1));
         return frameLayout;
@@ -146,7 +136,7 @@ public class ChooseXDGLinkFragment extends Fragment {
         } else {
             this.mRecyclerView.setAdapter(new XDGNodeAdapter(this.mCurrentItems));
         }
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(this.mIsStartMenu ? R.string.wd_title_start_menu : R.string.wd_title_desktop);
+        ((AppCompatActivity) requireActivity()).getSupportActionBar().setTitle(this.mIsStartMenu ? R.string.wd_title_start_menu : R.string.wd_title_desktop);
     }
 
     List<XDGNode> getRootNodeContent() {
@@ -154,7 +144,7 @@ public class ChooseXDGLinkFragment extends Fragment {
         if (currentContainer != null) {
             return getNodeContent(new XDGNode(currentContainer, new File(this.mIsStartMenu ? currentContainer.mStartMenuPath : currentContainer.mDesktopPath), null), true);
         }
-        ArrayList arrayList = new ArrayList();
+        ArrayList<XDGNode> arrayList = new ArrayList<>();
         for (GuestContainer guestContainer : this.mContainers) {
             arrayList.addAll(getNodeContent(new XDGNode(guestContainer, new File(this.mIsStartMenu ? guestContainer.mStartMenuPath : guestContainer.mDesktopPath), null), true));
         }
@@ -162,7 +152,7 @@ public class ChooseXDGLinkFragment extends Fragment {
     }
 
     List<XDGNode> getNodeContent(XDGNode xDGNode, boolean z) {
-        ArrayList arrayList = new ArrayList();
+        ArrayList<XDGNode> arrayList = new ArrayList<>();
         if (!z) {
             arrayList.add(new XDGNode(xDGNode.mCont, new File(PARENT_DIR_NAME), null));
         }
@@ -176,7 +166,8 @@ public class ChooseXDGLinkFragment extends Fragment {
             } else if (file.getName().toLowerCase().endsWith(".desktop")) {
                 try {
                     arrayList.add(new XDGNode(xDGNode.mCont, file, new XDGLink(xDGNode.mCont, file)));
-                } catch (IOException unused) {
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -216,11 +207,13 @@ public class ChooseXDGLinkFragment extends Fragment {
             this.mItems = list;
         }
 
+        @NonNull
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public final ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.ex_basic_list_item_with_button, viewGroup, false), i);
         }
 
+        @SuppressLint("NonConstantResourceId")
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
             viewHolder.mItem = this.mItems.get(i);
@@ -234,37 +227,23 @@ public class ChooseXDGLinkFragment extends Fragment {
             viewHolder.mText.setText(viewHolder.mItem.toString());
             viewHolder.mSubText.setText(viewHolder.mItem.isUpNode() ? "" : viewHolder.mItem.mCont.mConfig.getName());
             viewHolder.mView.setOnClickListener(view -> {
-                XDGNode xDGNode = (XDGNode) XDGNodeAdapter.this.mItems.get(viewHolder.getAdapterPosition());
+                XDGNode xDGNode = mItems.get(viewHolder.getAdapterPosition());
                 if (xDGNode.mLink != null) {
-                    ChooseXDGLinkFragment.this.mListener.onXDGLinkSelected(xDGNode.mLink);
+                    mListener.onXDGLinkSelected(xDGNode.mLink);
                     return;
                 }
                 if (xDGNode.isUpNode()) {
-                    ChooseXDGLinkFragment.access$210(ChooseXDGLinkFragment.this);
-                    ChooseXDGLinkFragment.this.mCurrentNode = new XDGNode(ChooseXDGLinkFragment.this.mCurrentNode.mCont, new File(ChooseXDGLinkFragment.this.mCurrentNode.mFile.getParent()), null);
+                    mDepth--;
+                    mCurrentNode = new XDGNode(mCurrentNode.mCont, new File(mCurrentNode.mFile.getParent()), null);
                 } else {
-                    ChooseXDGLinkFragment.access$208(ChooseXDGLinkFragment.this);
-                    ChooseXDGLinkFragment.this.mCurrentNode = new XDGNode(xDGNode.mCont, xDGNode.mFile, null);
+                    mDepth ++;
+                    mCurrentNode = new XDGNode(xDGNode.mCont, xDGNode.mFile, null);
                 }
                 ChooseXDGLinkFragment.this.mCurrentItems = ChooseXDGLinkFragment.this.getCurrentNodeContent();
                 ChooseXDGLinkFragment.this.mRecyclerView.setAdapter(new XDGNodeAdapter(ChooseXDGLinkFragment.this.mCurrentItems));
             });
-            viewHolder.mButton.setOnClickListener(new AnonymousClass2(viewHolder));
-        }
-
-        /* renamed from: com.eltechs.ed.fragments.ChooseXDGLinkFragment$XDGNodeAdapter$2 */
-        /* loaded from: classes.dex */
-        private class AnonymousClass2 implements View.OnClickListener {
-            final /* synthetic */ ViewHolder val$holder;
-
-            AnonymousClass2(ViewHolder viewHolder) {
-                this.val$holder = viewHolder;
-            }
-
-            @SuppressLint("NonConstantResourceId")
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                final XDGNode xDGNode = (XDGNode) XDGNodeAdapter.this.mItems.get(this.val$holder.getAdapterPosition());
+            viewHolder.mButton.setOnClickListener(view -> {
+                final XDGNode xDGNode = XDGNodeAdapter.this.mItems.get(viewHolder.getAdapterPosition());
                 PopupMenu popupMenu = new PopupMenu(ChooseXDGLinkFragment.this.getContext(), view);
                 popupMenu.inflate(ChooseXDGLinkFragment.this.mIsStartMenu ? R.menu.ex_startmenu_xdg_popup_menu : R.menu.ex_desktop_xdg_popup_menu);
                 final GuestContainer guestContainer = xDGNode.mCont;
@@ -285,12 +264,12 @@ public class ChooseXDGLinkFragment extends Fragment {
                             builder.setTitle("Shortcut deletion");
                             builder.setIcon(R.drawable.ic_warning_24dp);
                             builder.setMessage("This will only delete shortcut, not application or associated container.\n\nDelete shortcut?");
-                            builder.setPositiveButton("Delete", (dialogInterface, i) -> {
+                            builder.setPositiveButton("Delete", (dialogInterface, i1) -> {
                                 xDGNode.mLink.linkFile.delete();
                                 ChooseXDGLinkFragment.this.refresh();
                                 dialogInterface.dismiss();
                             });
-                            builder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+                            builder.setNegativeButton("Cancel", (dialogInterface, i1) -> dialogInterface.dismiss());
                             builder.show();
                             return true;
                         default:
@@ -299,12 +278,12 @@ public class ChooseXDGLinkFragment extends Fragment {
                 });
                 popupMenu.setOnDismissListener(popupMenu2 -> ChooseXDGLinkFragment.this.refresh());
                 popupMenu.show();
-            }
+            });
         }
 
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public int getItemViewType(int i) {
-            return this.mItems.get(i).mLink == null ? 1 : 0;
+            return this.mItems.get(i).mLink == null ? VIEW_TYPE_FOLDER : VIEW_TYPE_LINK;
         }
 
         @Override // android.support.v7.widget.RecyclerView.Adapter
@@ -324,13 +303,12 @@ public class ChooseXDGLinkFragment extends Fragment {
             /* JADX WARN: 'super' call moved to the top of the method (can break code semantics) */
             public ViewHolder(View view, int i) {
                 super(view);
-//                XDGNodeAdapter.this = r1;
                 this.mView = view;
-                this.mImage = (ImageView) view.findViewById(R.id.image);
-                this.mText = (TextView) view.findViewById(R.id.text);
-                this.mSubText = (TextView) view.findViewById(R.id.subtext);
-                this.mButton = (ImageButton) view.findViewById(R.id.button);
-                if (i == 1) {
+                this.mImage = view.findViewById(R.id.image);
+                this.mText = view.findViewById(R.id.text);
+                this.mSubText = view.findViewById(R.id.subtext);
+                this.mButton = view.findViewById(R.id.button);
+                if (i == VIEW_TYPE_FOLDER) {
                     this.mButton.setVisibility(View.GONE);
                 }
             }

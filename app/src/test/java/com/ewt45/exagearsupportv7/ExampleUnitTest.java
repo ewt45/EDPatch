@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
@@ -26,7 +27,8 @@ public class ExampleUnitTest {
 //        clz1 c1=new clz2();
 //        c1.m1();
 //        System.out.println(15f / 0);// infinite
-        System.out.println(Arrays.toString("aaa$bbb$ccc".split("\\$")));
+//        System.out.println(Arrays.toString("aaa$bbb$ccc".split("\\$")));
+        System.out.println(Arrays.toString("".getBytes(StandardCharsets.US_ASCII)));
     }
     class clz1{
         public void m1(){

@@ -73,14 +73,10 @@ public class DesktopExperienceImpl implements DesktopExperience, PointerListener
                 throw th;
             } catch (Throwable th2) {
                 if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
+                    try {
                         lock.close();
+                    } catch (Throwable th3) {
+                        th.addSuppressed(th3);
                     }
                 }
                 throw th2;

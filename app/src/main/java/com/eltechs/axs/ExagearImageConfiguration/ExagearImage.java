@@ -32,7 +32,8 @@ public class ExagearImage {
     public int getImageVersion() {
         try {
             return Integer.parseInt(FileHelpers.readAsLines(new File(this.path, ExagearImagePaths.IMG_VERSION)).get(0));
-        } catch (IOException | NumberFormatException unused) {
+        } catch (IOException | NumberFormatException e) {
+            e.printStackTrace();
             return -1;
         }
     }

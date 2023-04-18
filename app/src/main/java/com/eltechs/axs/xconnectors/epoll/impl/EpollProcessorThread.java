@@ -1,5 +1,7 @@
 package com.eltechs.axs.xconnectors.epoll.impl;
 
+import android.util.Log;
+
 import com.eltechs.axs.annotations.UsedByNativeCode;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.input.ConnectionHandler;
@@ -13,6 +15,7 @@ import java.util.Queue;
 
 /* loaded from: classes.dex */
 public class EpollProcessorThread<Context> extends Thread {
+    private static final String TAG= "EpollProcessorThread";
     private final int batchSize;
     private final BufferSizeConfiguration bufferSizeConfiguration;
     private final ConnectionHandler<Context> connectionHandler;
@@ -148,6 +151,7 @@ public class EpollProcessorThread<Context> extends Thread {
 
     @UsedByNativeCode
     private void processNewConnection() {
+//        Log.d(TAG, "processNewConnection: 在native使用");
         int accept = this.connectionListener.accept();
         if (accept < 0) {
             return;
@@ -166,6 +170,7 @@ public class EpollProcessorThread<Context> extends Thread {
 
     @UsedByNativeCode
     private void processClientMessage(Client<Context> client) {
+//        Log.d(TAG, "processClientMessage: 在native使用");
         try {
             if (client.getInputStream().readMoreData() < 0) {
                 processHangup(client);
@@ -219,6 +224,7 @@ public class EpollProcessorThread<Context> extends Thread {
 
     @UsedByNativeCode
     private void killConnection(Client<Context> client) {
+//        Log.d(TAG, "killConnection: 在native使用");
         this.connectionHandler.handleConnectionShutdown(client.getContext());
         removeFromPoll(client.getFd());
         client.closeConnection();
@@ -241,11 +247,11 @@ public class EpollProcessorThread<Context> extends Thread {
 
     /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    public class ClientsWithUnprocessedMessagesQueue {
+    private class ClientsWithUnprocessedMessagesQueue {
         final Queue<Client<Context>> impl;
 
         private ClientsWithUnprocessedMessagesQueue() {
-            this.impl = new ArrayDeque();
+            this.impl = new ArrayDeque<>();
         }
 
         public void put(Client<Context> client) {

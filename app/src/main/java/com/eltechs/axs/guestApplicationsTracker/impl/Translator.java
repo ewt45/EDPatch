@@ -1,5 +1,8 @@
 package com.eltechs.axs.guestApplicationsTracker.impl;
 
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
+
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.helpers.SingleshotTimer;
 import java.io.IOException;
@@ -80,7 +83,9 @@ public class Translator {
         }
     }
 
+    @SuppressLint("DefaultLocale")
+    @NonNull
     public String toString() {
-        return String.format("ubt[%d]", Integer.valueOf(this.pid));
+        return String.format("ubt[%d]", this.pid);
     }
 }

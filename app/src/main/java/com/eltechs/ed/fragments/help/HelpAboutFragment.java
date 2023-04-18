@@ -8,19 +8,19 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eltechs.ed.BuildConfig;
-import com.eltechs.ed.R_original;
+import com.eltechs.ed.R;
 
 
 /* loaded from: classes.dex */
 public class HelpAboutFragment extends Fragment {
     @Override // android.support.v4.app.Fragment
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        return layoutInflater.inflate(R_original.layout.help_about, viewGroup, false);
+        return layoutInflater.inflate(R.layout.ex_help_about, viewGroup, false);
     }
 
     @Override // android.support.v4.app.Fragment
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-        ((TextView) getView().findViewById(R_original.id.version)).setText(BuildConfig.VERSION_NAME);
+        ((TextView) getView().findViewById(R.id.version)).setText(BuildConfig.VERSION_NAME);
     }
 }

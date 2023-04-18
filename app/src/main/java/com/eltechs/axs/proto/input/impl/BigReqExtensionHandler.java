@@ -34,9 +34,9 @@ public class BigReqExtensionHandler implements ExtensionRequestHandler {
     }
 
     @Override // com.eltechs.axs.proto.input.ExtensionRequestHandler
-    public void handleRequest(XClient xClient, byte b, byte b2, int i, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException {
-        xRequest.setMinorOpcode((short) ArithHelpers.extendAsUnsigned(b2));
-        if (b2 != 0) {
+    public void handleRequest(XClient xClient, byte majorOpCode, byte minorOpCode, int length, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException {
+        xRequest.setMinorOpcode((short) ArithHelpers.extendAsUnsigned(minorOpCode));
+        if (minorOpCode != 0) {
             throw new BadRequest();
         }
         xResponse.sendSimpleSuccessReply((byte) 0, 4194303, (short) 0);

@@ -7,5 +7,5 @@ import java.io.IOException;
 
 /* loaded from: classes.dex */
 public interface OpcodeHandler {
-    void handleRequest(XClient xClient, int i, byte b, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException;
+    void handleRequest(XClient xClient, int length, byte minorOpCode, XRequest xRequest, XResponse xResponse) throws XProtocolError, IOException;
 }

@@ -10,10 +10,10 @@ public class RequestDataRetrievalContext {
     public final XRequest req;
     public final XResponse resp;
 
-    public RequestDataRetrievalContext(XRequest xRequest, XResponse xResponse, byte b, int i) {
+    public RequestDataRetrievalContext(XRequest xRequest, XResponse xResponse, byte minorOpCode, int i) {
         this.req = xRequest;
         this.resp = xResponse;
-        this.oobParameter = b;
+        this.oobParameter = minorOpCode;
         this.remainingBytesCount = i;
     }
 }

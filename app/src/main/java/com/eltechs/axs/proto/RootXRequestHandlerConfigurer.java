@@ -54,7 +54,29 @@ public class RootXRequestHandlerConfigurer {
 
     private static CoreXProtocolDispatcher configureCoreXProtocolDispatcher(RootXRequestHandler rootXRequestHandler, XServer xServer) {
         CoreXProtocolDispatcher coreXProtocolDispatcher = new CoreXProtocolDispatcher();
-        new AnnotationDrivenRequestDispatcherConfigurer(coreXProtocolDispatcher, XRequestParameterReaderFactories.CONTEXT_PARAM_READERS_FACTORY, XRequestParameterReaderFactories.REQUEST_PARAM_READERS_FACTORY).configureDispatcher(new AtomManipulationRequests(xServer), new ExtensionInquiries(xServer, rootXRequestHandler), new GraphicsContextManipulationRequests(xServer), new DrawablesManipulationRequests(xServer), new WindowManipulationRequests(xServer), new PixmapManipulationRequests(xServer), new DrawingRequests(xServer), new FocusManipulationRequests(xServer), new CursorManipulationRequests(xServer), new ColormapManipulationRequests(xServer), new KeyboardRelatedRequest(xServer), new PointerRelatedRequests(xServer), new GrabManipulationRequests(xServer), new FontManipulationRequests(xServer), new EventsRelatedRequests(xServer), new SystemRequests(xServer), new ForceScreenSaverRequest(xServer), new SelectionManipulationRequests(xServer));
+        new AnnotationDrivenRequestDispatcherConfigurer(
+                coreXProtocolDispatcher,
+                XRequestParameterReaderFactories.CONTEXT_PARAM_READERS_FACTORY,
+                XRequestParameterReaderFactories.REQUEST_PARAM_READERS_FACTORY
+        ).configureDispatcher(
+                new AtomManipulationRequests(xServer),
+                new ExtensionInquiries(xServer, rootXRequestHandler),
+                new GraphicsContextManipulationRequests(xServer),
+                new DrawablesManipulationRequests(xServer),
+                new WindowManipulationRequests(xServer),
+                new PixmapManipulationRequests(xServer),
+                new DrawingRequests(xServer),
+                new FocusManipulationRequests(xServer),
+                new CursorManipulationRequests(xServer),
+                new ColormapManipulationRequests(xServer),
+                new KeyboardRelatedRequest(xServer),
+                new PointerRelatedRequests(xServer),
+                new GrabManipulationRequests(xServer),
+                new FontManipulationRequests(xServer),
+                new EventsRelatedRequests(xServer),
+                new SystemRequests(xServer),
+                new ForceScreenSaverRequest(xServer),
+                new SelectionManipulationRequests(xServer));
         return coreXProtocolDispatcher;
     }
 

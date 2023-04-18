@@ -9,7 +9,7 @@ import java.util.TreeMap;
 /* loaded from: classes.dex */
 public final class AtomsManagerImpl implements AtomsManager {
     private final ArrayList<Atom> atoms = new ArrayList<>();
-    private final Map<String, Integer> atomsIds = new TreeMap();
+    private final Map<String, Integer> atomsIds = new TreeMap<>();
 
     public AtomsManagerImpl() {
         this.atoms.add(null);
@@ -19,11 +19,11 @@ public final class AtomsManagerImpl implements AtomsManager {
     public int internAtom(String str) {
         Integer num = this.atomsIds.get(str);
         if (num == null) {
-            num = Integer.valueOf(this.atoms.size());
-            this.atoms.add(new Atom(num.intValue(), str));
+            num = this.atoms.size();
+            this.atoms.add(new Atom(num, str));
             this.atomsIds.put(str, num);
         }
-        return num.intValue();
+        return num;
     }
 
     @Override // com.eltechs.axs.xserver.AtomsManager
