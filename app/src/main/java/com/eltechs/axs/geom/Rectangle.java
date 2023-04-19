@@ -66,4 +66,14 @@ public final class Rectangle {
         }
         return new Rectangle(i, i2, (i3 - i) + 1, (i4 - i2) + 1);
     }
+
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "height=" + height +
+                ", width=" + width +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }

@@ -277,7 +277,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         arrayList.add(new StartEnvironmentService<>(new TrayConfiguration(R.drawable.tray, R.string.ed_host_app_name, R.string.ed_host_app_name)));
         arrayList.add(new StartGuestApplication<>(true, true));
         String guestImagePath = this.mGcm.getGuestImagePath();
-//        arrayList.add(new WaitForXClientConnection<>(new File(guestImagePath, "/home/xdroid/.ed_progress").getAbsolutePath(), this.mHideXServerImage));
+        arrayList.add(new WaitForXClientConnection<>(new File(guestImagePath, "/home/xdroid/.ed_progress").getAbsolutePath(), this.mHideXServerImage));
         UiThread.post(() -> {
             ((ApplicationStateBase) getApplicationState()).getStartupActionsCollection().addActions(arrayList);
             StartGuest.this.sendDone();

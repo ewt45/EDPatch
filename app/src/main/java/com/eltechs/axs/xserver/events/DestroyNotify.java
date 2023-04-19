@@ -1,5 +1,7 @@
 package com.eltechs.axs.xserver.events;
 
+import android.support.annotation.NonNull;
+
 import com.eltechs.axs.xserver.Window;
 
 /* loaded from: classes.dex */
@@ -19,5 +21,14 @@ public class DestroyNotify extends Event {
 
     public Window getDeletedWindow() {
         return this.deletedWindow;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "DestroyNotify{" +
+                "deletedWindow=" + deletedWindow +
+                ", originatedAt=" + originatedAt +
+                '}';
     }
 }

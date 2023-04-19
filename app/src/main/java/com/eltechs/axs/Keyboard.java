@@ -19,6 +19,22 @@ public class Keyboard {
     private final XKey[] UnicodeToXKeyMap = new XKey[65536];
     private final KeyEventReporter reporter;
 
+    private class XKey {
+        //不知道这俩是啥
+        /** 此xKey对应KeyCodeX里的值（那么KeyCodeX是啥？） */
+        public KeyCodesX keycode;
+        public int keysym;
+
+        public XKey(KeyCodesX keyCodesX) {
+            this.keycode = keyCodesX;
+            this.keysym = 0;
+        }
+
+        public XKey(KeyCodesX keyCodesX, int i) {
+            this.keycode = keyCodesX;
+            this.keysym = i;
+        }
+    }
     public Keyboard(KeyEventReporter keyEventReporter) {
         this.reporter = keyEventReporter;
         constructAKeycodeToXKeycodeMap();
@@ -132,37 +148,26 @@ public class Keyboard {
     }
 
 
-    class XKey {
-        //不知道这俩是啥
-        /** 此xKey对应KeyCodeX里的值（那么KeyCodeX是啥？） */
-        public KeyCodesX keycode;
-        public int keysym;
-
-        public XKey(KeyCodesX keyCodesX) {
-            this.keycode = keyCodesX;
-            this.keysym = 0;
-        }
-
-        public XKey(KeyCodesX keyCodesX, int i) {
-            this.keycode = keyCodesX;
-            this.keysym = i;
-        }
-    }
-
-
-
-
-
     public boolean handleKeyDown(int i, KeyEvent keyEvent) {
-        Log.d(TAG, "handleKeyDown: 未实现");
-        return false;
+        KeyCodesX convertAKeycodeToXKeycode = convertAKeycodeToXKeycode(i);
+        if (convertAKeycodeToXKeycode == null) {
+            return false;
+        }
+        XKey convertUnicodeToXKey = convertUnicodeToXKey(keyEvent.getUnicodeChar());
+        this.reporter.reportKeyPressWithSym(convertAKeycodeToXKeycode, convertUnicodeToXKey != null ? convertUnicodeToXKey.keysym : 0);
+        return true;
     }
 
     public boolean handleKeyUp(int i, KeyEvent keyEvent) {
-        Log.d(TAG, "handleKeyUp: 未实现");
-        return false;
-
+        KeyCodesX convertAKeycodeToXKeycode = convertAKeycodeToXKeycode(i);
+        if (convertAKeycodeToXKeycode == null) {
+            return false;
+        }
+        XKey convertUnicodeToXKey = convertUnicodeToXKey(keyEvent.getUnicodeChar());
+        this.reporter.reportKeyReleaseWithSym(convertAKeycodeToXKeycode, convertUnicodeToXKey != null ? convertUnicodeToXKey.keysym : 0);
+        return true;
     }
+
 
     /**
      * onkey接收到unicode字符后处理并输入
@@ -180,11 +185,18 @@ public class Keyboard {
                 z = true;
             }
         }
-
-
         return z;
 
     }
+
+    private KeyCodesX convertAKeycodeToXKeycode(int i) {
+        return this.AKeycodeToXKeycodeMap[i];
+    }
+
+    private XKey convertUnicodeToXKey(int i) {
+        return this.UnicodeToXKeyMap[i];
+    }
+
 
     /**
      * 从数组查找，获取字符的unicode码对应的xkey
@@ -402,9 +414,9 @@ public class Keyboard {
         this.UnicodeToXKeyMap[245] = new XKey(KeyCodesX.KEY_Y, 245);
         this.UnicodeToXKeyMap[246] = new XKey(KeyCodesX.KEY_Z, 246);
         this.UnicodeToXKeyMap[247] = new XKey(KeyCodesX.KEY_A, 247);
-        this.UnicodeToXKeyMap[248] = new XKey(KeyCodesX.KEY_B, KeyboardModel.KEYS_COUNT);
+        this.UnicodeToXKeyMap[248] = new XKey(KeyCodesX.KEY_B, 248);
         this.UnicodeToXKeyMap[249] = new XKey(KeyCodesX.KEY_C, 249);
-        this.UnicodeToXKeyMap[250] = new XKey(KeyCodesX.KEY_D, ItemTouchHelper.Callback.DEFAULT_SWIPE_ANIMATION_DURATION);
+        this.UnicodeToXKeyMap[250] = new XKey(KeyCodesX.KEY_D, 250);
         this.UnicodeToXKeyMap[251] = new XKey(KeyCodesX.KEY_E, 251);
         this.UnicodeToXKeyMap[252] = new XKey(KeyCodesX.KEY_F, 252);
         this.UnicodeToXKeyMap[253] = new XKey(KeyCodesX.KEY_G, 253);
@@ -431,7 +443,7 @@ public class Keyboard {
         this.UnicodeToXKeyMap[274] = new XKey(KeyCodesX.KEY_B, 938);
         this.UnicodeToXKeyMap[275] = new XKey(KeyCodesX.KEY_C, 954);
         this.UnicodeToXKeyMap[278] = new XKey(KeyCodesX.KEY_D, 972);
-        this.UnicodeToXKeyMap[279] = new XKey(KeyCodesX.KEY_E, PointerIconCompat.TYPE_WAIT);
+        this.UnicodeToXKeyMap[279] = new XKey(KeyCodesX.KEY_E, 1004);
         this.UnicodeToXKeyMap[280] = new XKey(KeyCodesX.KEY_F, 458);
         this.UnicodeToXKeyMap[281] = new XKey(KeyCodesX.KEY_G, 490);
         this.UnicodeToXKeyMap[282] = new XKey(KeyCodesX.KEY_H, 460);
@@ -451,7 +463,7 @@ public class Keyboard {
         this.UnicodeToXKeyMap[296] = new XKey(KeyCodesX.KEY_V, 933);
         this.UnicodeToXKeyMap[297] = new XKey(KeyCodesX.KEY_W, 949);
         this.UnicodeToXKeyMap[298] = new XKey(KeyCodesX.KEY_X, 975);
-        this.UnicodeToXKeyMap[299] = new XKey(KeyCodesX.KEY_Y, PointerIconCompat.TYPE_CROSSHAIR);
+        this.UnicodeToXKeyMap[299] = new XKey(KeyCodesX.KEY_Y, 1007);
         this.UnicodeToXKeyMap[302] = new XKey(KeyCodesX.KEY_Z, 967);
         this.UnicodeToXKeyMap[303] = new XKey(KeyCodesX.KEY_A, 999);
         this.UnicodeToXKeyMap[304] = new XKey(KeyCodesX.KEY_B, 681);
@@ -459,7 +471,7 @@ public class Keyboard {
         this.UnicodeToXKeyMap[308] = new XKey(KeyCodesX.KEY_D, 684);
         this.UnicodeToXKeyMap[309] = new XKey(KeyCodesX.KEY_E, 700);
         this.UnicodeToXKeyMap[310] = new XKey(KeyCodesX.KEY_F, 979);
-        this.UnicodeToXKeyMap[311] = new XKey(KeyCodesX.KEY_G, PointerIconCompat.TYPE_COPY);
+        this.UnicodeToXKeyMap[311] = new XKey(KeyCodesX.KEY_G, 1011);
         this.UnicodeToXKeyMap[312] = new XKey(KeyCodesX.KEY_H, 930);
         this.UnicodeToXKeyMap[313] = new XKey(KeyCodesX.KEY_I, 453);
         this.UnicodeToXKeyMap[314] = new XKey(KeyCodesX.KEY_J, 485);
@@ -472,7 +484,7 @@ public class Keyboard {
         this.UnicodeToXKeyMap[323] = new XKey(KeyCodesX.KEY_Q, 465);
         this.UnicodeToXKeyMap[324] = new XKey(KeyCodesX.KEY_R, 497);
         this.UnicodeToXKeyMap[325] = new XKey(KeyCodesX.KEY_S, 977);
-        this.UnicodeToXKeyMap[326] = new XKey(KeyCodesX.KEY_T, PointerIconCompat.TYPE_VERTICAL_TEXT);
+        this.UnicodeToXKeyMap[326] = new XKey(KeyCodesX.KEY_T,  1009);
         this.UnicodeToXKeyMap[327] = new XKey(KeyCodesX.KEY_U, 466);
         this.UnicodeToXKeyMap[328] = new XKey(KeyCodesX.KEY_V, 498);
         this.UnicodeToXKeyMap[330] = new XKey(KeyCodesX.KEY_W, 957);

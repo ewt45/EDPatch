@@ -1,5 +1,7 @@
 package com.eltechs.axs.xserver.impl;
 
+import android.support.annotation.NonNull;
+
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.xserver.Drawable;
@@ -175,5 +177,24 @@ public class WindowImpl implements Window {
                 WindowImpl.this.contentModificationListenersList.sendWindowContentChanged(WindowImpl.this, i, i2, i3, i4);
             }
         });
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "WindowImpl{" +
+                ", id=" + id +
+                ", frontBuffer=" + frontBuffer +
+                ", backBuffer=" + backBuffer +
+                ", boundingRectangle=" + boundingRectangle +
+                ", parent=" + parent +
+                ", children=" + children +
+                ", creator=" + creator +
+                "attributes=" + attributes +
+                ", contentModificationListenersList=" + contentModificationListenersList +
+
+                ", eventListenersList=" + eventListenersList +
+                ", propertiesManager=" + propertiesManager +
+                '}';
     }
 }
