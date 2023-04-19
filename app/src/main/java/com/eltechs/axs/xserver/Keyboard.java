@@ -15,7 +15,7 @@ public class Keyboard {
 
     /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    public static class KeymapStateMask {
+    private static class KeymapStateMask {
         private final byte[] keys;
 
         private KeymapStateMask() {
@@ -23,15 +23,13 @@ public class Keyboard {
         }
 
         public void setKeycode(byte b) {
-            byte[] bArr = this.keys;
             int extendAsUnsigned = ArithHelpers.extendAsUnsigned(b) / 8;
-            bArr[extendAsUnsigned] = (byte) ((1 << (b & 7)) | bArr[extendAsUnsigned]);
+            keys[extendAsUnsigned] = (byte) ((1 << (b & 7)) | keys[extendAsUnsigned]);
         }
 
         public void clearKeycode(byte b) {
-            byte[] bArr = this.keys;
             int extendAsUnsigned = ArithHelpers.extendAsUnsigned(b) / 8;
-            bArr[extendAsUnsigned] = (byte) ((~(1 << (b & 7))) & bArr[extendAsUnsigned]);
+            keys[extendAsUnsigned] = (byte) ((~(1 << (b & 7))) & keys[extendAsUnsigned]);
         }
 
         public boolean isKeycodePressed(byte b) {

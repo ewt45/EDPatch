@@ -18,6 +18,7 @@ import java.util.Set;
 
 /* loaded from: classes.dex */
 public class UBTLaunchConfiguration implements Serializable {
+    public static String gallium_driver; //之前老虎山用于修改环境变量的，初始化在StartGuest中
     private String socketPathSuffix;
     private String fsRoot = null;
     private String guestExecutablePath = null;
