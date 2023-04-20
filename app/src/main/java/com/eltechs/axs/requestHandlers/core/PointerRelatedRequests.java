@@ -1,5 +1,11 @@
 package com.eltechs.axs.requestHandlers.core;
 
+import static com.eltechs.axs.requestHandlers.core.Opcodes.ChangePointerControl;
+import static com.eltechs.axs.requestHandlers.core.Opcodes.GetPointerControl;
+import static com.eltechs.axs.requestHandlers.core.Opcodes.GetPointerMapping;
+import static com.eltechs.axs.requestHandlers.core.Opcodes.QueryPointer;
+import static com.eltechs.axs.requestHandlers.core.Opcodes.WarpPointer;
+
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.proto.input.XProtocolError;
@@ -10,12 +16,15 @@ import com.eltechs.axs.proto.input.annotations.SpecialNullValue;
 import com.eltechs.axs.proto.input.errors.BadValue;
 import com.eltechs.axs.requestHandlers.HandlerObjectBase;
 import com.eltechs.axs.xconnectors.XResponse;
+import com.eltechs.axs.xserver.KeyButNames;
 import com.eltechs.axs.xserver.Pointer;
 import com.eltechs.axs.xserver.Window;
 import com.eltechs.axs.xserver.XServer;
 import com.eltechs.axs.xserver.client.XClient;
 import com.eltechs.axs.xserver.helpers.EventHelpers;
 import com.eltechs.axs.xserver.helpers.WindowHelpers;
+import com.eltechs.axs.xserver.impl.masks.Mask;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
@@ -26,7 +35,7 @@ public class PointerRelatedRequests extends HandlerObjectBase {
     }
 
     @Locks({"INPUT_DEVICES", "WINDOWS_MANAGER"})
-    @RequestHandler(opcode = 38)
+    @RequestHandler(opcode = QueryPointer)
     public void QueryPointer(XResponse xResponse, @RequestParam Window window) throws IOException {
         final Pointer pointer = this.xServer.getPointer();
         final Window directMappedSubWindowByCoords = WindowHelpers.getDirectMappedSubWindowByCoords(window, pointer.getX(), pointer.getY());
@@ -46,10 +55,10 @@ public class PointerRelatedRequests extends HandlerObjectBase {
     }
 
     @Locks({"INPUT_DEVICES", "WINDOWS_MANAGER", "FOCUS_MANAGER"})
-    @RequestHandler(opcode = 41)
+    @RequestHandler(opcode = WarpPointer)
     public void WarpPointer(@SpecialNullValue(0) @RequestParam Window window, @SpecialNullValue(0) @RequestParam Window window2, @RequestParam short s, @RequestParam short s2, @RequestParam short s3, @RequestParam short s4, @RequestParam short s5, @RequestParam short s6) {
-        int i;
-        int i2;
+        int y;
+        int x;
         Pointer pointer = this.xServer.getPointer();
         if (window != null) {
             Rectangle boundingRectangle = window.getBoundingRectangle();
@@ -64,18 +73,18 @@ public class PointerRelatedRequests extends HandlerObjectBase {
             }
         }
         if (window2 == null) {
-            i2 = pointer.getX() + s5;
-            i = pointer.getY() + s6;
+            x = pointer.getX() + s5;
+            y = pointer.getY() + s6;
         } else {
             Point convertWindowCoordsToRoot = WindowHelpers.convertWindowCoordsToRoot(window2, s5, s6);
             int i5 = convertWindowCoordsToRoot.x;
-            i = convertWindowCoordsToRoot.y;
-            i2 = i5;
+            y = convertWindowCoordsToRoot.y;
+            x = i5;
         }
-        pointer.warpOnCoordinates(i2, i);
+        pointer.warpOnCoordinates(x, y);
     }
 
-    @RequestHandler(opcode = 106)
+    @RequestHandler(opcode = GetPointerControl)
     public void GetPointerControl(XResponse xResponse) throws IOException {
         xResponse.sendSimpleSuccessReply((byte) 0, new XResponse.ResponseDataWriter() { // from class: com.eltechs.axs.requestHandlers.core.PointerRelatedRequests.2
             @Override // com.eltechs.axs.xconnectors.BufferFiller
@@ -87,7 +96,7 @@ public class PointerRelatedRequests extends HandlerObjectBase {
         });
     }
 
-    @RequestHandler(opcode = 105)
+    @RequestHandler(opcode = ChangePointerControl)
     public void ChangePointerControl(XClient xClient, @RequestParam short s, @RequestParam short s2, @RequestParam short s3, @RequestParam boolean z, @RequestParam boolean z2) throws XProtocolError {
         if (s < -1) {
             throw new BadValue(s);
@@ -96,5 +105,26 @@ public class PointerRelatedRequests extends HandlerObjectBase {
             return;
         }
         throw new BadValue(s2);
+    }
+
+    @RequestHandler(opcode = GetPointerMapping)
+    public void GetPointerMapping(XResponse xResponse) throws IOException {
+        xResponse.sendSimpleSuccessReply(
+                (byte) 0,
+                new XResponse.ResponseDataWriter() {
+                    @Override
+                    public void write(ByteBuffer byteBuffer) {
+                        byteBuffer.putShort((short) 7);
+                        byteBuffer.putShort((short) 1);
+                        byteBuffer.putShort((short) 2);
+                        byteBuffer.putShort((short) 3);
+                        byteBuffer.putShort((short) 4);
+                        byteBuffer.putShort((short) 5);
+                        byteBuffer.putShort((short) 6);
+                        byteBuffer.putShort((short) 7);
+
+                    }
+                }
+        );
     }
 }

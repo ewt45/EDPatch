@@ -284,6 +284,7 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
             if (this.pointWindow != pointerGrabWindow && WindowHelpers.isAncestorOf(this.pointWindow, pointerGrabWindow)) {
                 window = WindowHelpers.getDirectChild(this.pointWindow, pointerGrabWindow);
             }
+            Log.d(TAG, "pointerButtonPressed: 发送了ButtonPress事件");
             pointerGrabWindow.getEventListenersList().sendEventForEventName(new ButtonPress((byte) i, (int) System.currentTimeMillis(), rootWindow, pointerGrabWindow, window, (short) x, (short) y, (short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask), EventName.BUTTON_PRESS);
         }
     }

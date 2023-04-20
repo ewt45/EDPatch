@@ -7,13 +7,13 @@ import com.eltechs.axs.xserver.impl.masks.Mask;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
 public class Pointer {
-    public static final int BUTTON_CENTER = 2;
     public static final int BUTTON_LEFT = 1;
+    public static final int BUTTON_CENTER = 2;
     public static final int BUTTON_RIGHT = 3;
+    public static final int BUTTON_SCROLL_UP = 4;
+    public static final int BUTTON_SCROLL_DOWN = 5;
     public static final int BUTTON_SCROLL_CLICK_LEFT = 6;
     public static final int BUTTON_SCROLL_CLICK_RIGHT = 7;
-    public static final int BUTTON_SCROLL_DOWN = 5;
-    public static final int BUTTON_SCROLL_UP = 4;
     public static final int MAX_BUTTONS = 7;
     private static final String TAG = "Pointer";
     private final Mask<KeyButNames> buttons = Mask.emptyMask(KeyButNames.class);
@@ -133,6 +133,7 @@ public class Pointer {
         if (isSet != isPress) {
             if (isPress) {
 //                Log.d(TAG, "setButton: 按下鼠标键" + keyFlag);
+
                 this.listeners.sendPointerButtonPressed(keycode);
             } else {
 //                Log.d(TAG, "setButton: 松开鼠标键" + keyFlag);

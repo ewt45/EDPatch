@@ -129,8 +129,7 @@ public class FalloutTouchScreenControlsFactory2 implements TouchScreenControlsFa
         TouchScreenControls touchScreenControls = new TouchScreenControls(graphicsSceneConfigurer);
 
         //里面要设置pointer的移出屏幕距离，需要锁一下
-        LocksManager.XLock lockForInputDevicesManipulation = QH.isTesting() ? null
-                : viewOfXServer.getXServerFacade().getXServer().getLocksManager().lockForInputDevicesManipulation();
+        LocksManager.XLock lockForInputDevicesManipulation =  viewOfXServer.getXServerFacade().getXServer().getLocksManager().lockForInputDevicesManipulation();
         try {
             fillTouchScreenControls(touchScreenControls, view, viewOfXServer);
             if (lockForInputDevicesManipulation != null) {

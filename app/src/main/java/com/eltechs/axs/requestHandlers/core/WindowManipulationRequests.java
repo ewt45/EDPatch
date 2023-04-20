@@ -147,7 +147,7 @@ public class WindowManipulationRequests extends HandlerObjectBase {
         Atom type = property.getType();
         byte formatValue = property.getFormat().getFormatValue();
         if (atom2 != null && !type.equals(atom2)) {
-            xResponse.sendSimpleSuccessReply(formatValue, Integer.valueOf(type.getId()), Integer.valueOf(property.getSizeInBytes()), 0);
+            xResponse.sendSimpleSuccessReply(formatValue, type.getId(), property.getSizeInBytes(), 0);
             return;
         }
         Object obj = new byte[12];
