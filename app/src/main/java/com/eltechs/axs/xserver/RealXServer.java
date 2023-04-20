@@ -6,7 +6,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 //import androidx.annotation.NonNull;
-
 @SuppressWarnings("unused")
 public class RealXServer {
     public static native void start();

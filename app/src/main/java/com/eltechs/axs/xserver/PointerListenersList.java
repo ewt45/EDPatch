@@ -1,5 +1,7 @@
 package com.eltechs.axs.xserver;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -21,9 +23,12 @@ public class PointerListenersList {
     }
 
     public void sendPointerButtonPressed(int i) {
+        StringBuilder builder = new StringBuilder("sendPointerButtonPressed: 按下鼠标按键"+i+". 发送给的监听器有");
         for (PointerListener pointerListener : this.listeners) {
+            builder.append(pointerListener.getClass().getSimpleName());
             pointerListener.pointerButtonPressed(i);
         }
+        Log.d("TAG", builder.toString());
     }
 
     public void sendPointerButtonReleased(int i) {

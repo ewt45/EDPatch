@@ -84,14 +84,12 @@ public class RootXRequestHandler implements RequestHandler<XClient> {
 //            Log.e("TAG", "dispatchRequest: 调用listFonts了,看看用的哪个handler"+extensionRequestHandler);
 //        }
         try {
-            if (length < 0) {
-                throw new BadRequest();
-            }
-            if (extensionRequestHandler == null) {
+            if (length < 0 || extensionRequestHandler == null) {
                 throw new BadRequest();
             }
             extensionRequestHandler.handleRequest(xClient, majorOpCode, minorOpCode, length, xRequest, xResponse);
         } catch (XProtocolError e) {
+            e.printStackTrace();
             xRequest.skipRequest();
             xResponse.sendError(e);
         }
