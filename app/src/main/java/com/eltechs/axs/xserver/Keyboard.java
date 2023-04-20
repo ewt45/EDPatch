@@ -81,7 +81,7 @@ public class Keyboard {
     private int countModifierPressedKeys(KeyButNames keyButNames) {
         int i = 0;
         for (Byte b : this.xServer.getKeyboardModelManager().getKeyboardModel().getModifiersLayout().getModifierKeycodes(keyButNames)) {
-            if (this.keymapStateMask.isKeycodePressed(b.byteValue())) {
+            if (this.keymapStateMask.isKeycodePressed(b)) {
                 i++;
             }
         }
@@ -93,17 +93,20 @@ public class Keyboard {
     }
 
     public void keyPressed(byte b, int i) {
-        if (!this.keymapStateMask.isKeycodePressed(b) || getModifierForKeycode(b) == null) {
-            this.keymapStateMask.setKeycode(b);
-            this.keylisteners.sendKeyPressed(b, i, updateModifiersMaskForKeyPressed(b));
-        }
+        RealXServer.click(b,1);
+//        RealXServer.key(b,i);
+//        if (!this.keymapStateMask.isKeycodePressed(b) || getModifierForKeycode(b) == null) {
+//            this.keymapStateMask.setKeycode(b);
+//            this.keylisteners.sendKeyPressed(b, i, updateModifiersMaskForKeyPressed(b));
+//        }
     }
 
     public void keyReleased(byte b, int i) {
-        if (this.keymapStateMask.isKeycodePressed(b)) {
-            this.keymapStateMask.clearKeycode(b);
-            this.keylisteners.sendKeyReleased(b, i, updateModifiersMaskForKeyReleased(b));
-        }
+        RealXServer.click(b,0);
+//        if (this.keymapStateMask.isKeycodePressed(b)) {
+//            this.keymapStateMask.clearKeycode(b);
+//            this.keylisteners.sendKeyReleased(b, i, updateModifiersMaskForKeyReleased(b));
+//        }
     }
 
     public Mask<KeyButNames> getModifiersMask() {

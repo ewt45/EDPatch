@@ -24,11 +24,11 @@ cmake_minimum_required(VERSION 3.4.1)
 #add_library(axs-helpers SHARED src/main/cpp/axs-helpers.cpp)
 #add_library(ipc-helpers SHARED src/main/cpp/ipc-helpers.cpp)
 #add_library(xconnector-fairepoll SHARED src/main/cpp/xconnector-fairepoll.cpp)
-add_library(inputstub SHARED src/main/cpp/inputstub.cpp)
+add_library(Xegw SHARED src/main/cpp/Xegw.cpp)
 # Specifies a path to native header files.
 include_directories(src/main/cpp/)
 
-target_link_libraries(inputstub "-llog")
+target_link_libraries(Xegw "-llog")
 
 
 

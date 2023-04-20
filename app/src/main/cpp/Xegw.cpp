@@ -19,7 +19,7 @@ Java_com_eltechs_axs_xserver_RealXServer_windowChanged(JNIEnv *env, jclass clazz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_eltechs_axs_xserver_RealXServer_keySym(JNIEnv *env, jclass clazz,jint keycode,jint keysym, jint state) {
+Java_com_eltechs_axs_xserver_RealXServer_keySym(JNIEnv *env, jclass clazz,jint keysym) {
     // TODO: implement keySym()
 }
 extern "C"

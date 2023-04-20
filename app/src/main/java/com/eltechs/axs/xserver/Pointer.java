@@ -59,56 +59,9 @@ public class Pointer {
 
 
     public void setCoordinates(int x, int y) {
-        int lastX = lastXUnmodify;
-        int lastY = lastYUnmodify;
-//        Log.d(TAG, String.format("setCoordinates: 原始输入坐标(%d,%d)",x,y));
-        //这样貌似也不行。得想办法让linux内部一直移动才行。应该在这些listener里有一个是给linux传输入的。就改哪一个，其他的不变? 图标样式的也要固定位置才行
         updateCoordinates(x, y);
-        if (offWindowLimit!=0) {
-
-//            xPos = this.xServer.getScreenInfo().widthInPixels/2;
-//            yPos = xServer.getScreenInfo().heightInPixels/2;
-
-//            //试试move改warp呢（不行啊光标也会跟着移动到中心）
-//            if(x>xServer.getScreenInfo().widthInPixels || x<0
-//            || y > xServer.getScreenInfo().heightInPixels || y<0){
-//                updateCoordinates(xServer.getScreenInfo().widthInPixels/2,xServer.getScreenInfo().heightInPixels/2);
-//                this.listeners.sendPointerWarped(xPos,yPos);
-//            }else{
-//                this.listeners.sendPointerMoved(this.xPos, this.yPos);
-//            }
-
-            //如果超出视图，固定超出1/32（x) 1(放到adapter里试试？）
-            if (x > xServer.getScreenInfo().widthInPixels)
-                x = xServer.getScreenInfo().widthInPixels +offWindowLimit;
-            else if (x < 0)
-                x = -offWindowLimit;
-
-            if (y > xServer.getScreenInfo().heightInPixels)
-                y = xServer.getScreenInfo().heightInPixels +offWindowLimit;
-            else if (y < 0)
-                y = -offWindowLimit;
-
-//            //始终偏移1？(也不行，乱飞）
-//            if((x-lastX)<0)
-//                x =-1;
-//            else if((x-lastX)>0)
-//                x = xServer.getScreenInfo().widthInPixels +offWindowLimit;
-//            else x= 0;
-//            if((y-lastY)<0)
-//                y =-1;
-//            else if((y-lastY)>0)
-//                y = xServer.getScreenInfo().heightInPixels +offWindowLimit;
-//            else y= 0;
-            //难道说允许移出画面尺寸就可以 鼠标到边界，游戏内仍然可以移动视角了吗（好像是哎）
-            this.listeners.sendPointerMoved(x, y);
-        } else {
-            this.listeners.sendPointerMoved(this.xPos, this.yPos);
-        }
-
-
-        //updateCoordinates(x, y);
-        //this.listeners.sendPointerMoved(this.xPos, this.yPos);
+        RealXServer.motion(x,y);
+//        this.listeners.sendPointerMoved(this.xPos, this.yPos);
     }
 
     public void warpOnCoordinates(int i, int i2) {
@@ -132,11 +85,13 @@ public class Pointer {
         this.buttons.setValue(keyFlag, isPress);
         if (isSet != isPress) {
             if (isPress) {
+                RealXServer.click(keycode,1);
 //                Log.d(TAG, "setButton: 按下鼠标键" + keyFlag);
-                this.listeners.sendPointerButtonPressed(keycode);
+//                this.listeners.sendPointerButtonPressed(keycode);
             } else {
+                RealXServer.click(keycode,0);
 //                Log.d(TAG, "setButton: 松开鼠标键" + keyFlag);
-                this.listeners.sendPointerButtonReleased(keycode);
+//                this.listeners.sendPointerButtonReleased(keycode);
             }
         }
     }
