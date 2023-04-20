@@ -70,12 +70,14 @@ public class AXSEnvironmentService extends Service {
 
     @PreRemove
     private void destroy() {
+        Log.d(TAG, "destroy: 退出xserver的时候会结束service吗");
         shutdownComponents();
         stopSelf();
     }
 
     @Override // android.app.Service
     public void onDestroy() {
+        Log.d(TAG, "onDestroy: 退出xserver的时候会结束service吗");
         shutdownComponents();
         super.onDestroy();
     }
