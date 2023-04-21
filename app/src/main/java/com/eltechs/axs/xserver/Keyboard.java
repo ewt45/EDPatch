@@ -91,20 +91,17 @@ public class Keyboard {
     }
 
     public void keyPressed(byte b, int i) {
-        RealXServer.click(b,1);
-//        RealXServer.key(b,i);
-//        if (!this.keymapStateMask.isKeycodePressed(b) || getModifierForKeycode(b) == null) {
-//            this.keymapStateMask.setKeycode(b);
-//            this.keylisteners.sendKeyPressed(b, i, updateModifiersMaskForKeyPressed(b));
-//        }
+        if (!this.keymapStateMask.isKeycodePressed(b) || getModifierForKeycode(b) == null) {
+            this.keymapStateMask.setKeycode(b);
+            this.keylisteners.sendKeyPressed(b, i, updateModifiersMaskForKeyPressed(b));
+        }
     }
 
     public void keyReleased(byte b, int i) {
-        RealXServer.click(b,0);
-//        if (this.keymapStateMask.isKeycodePressed(b)) {
-//            this.keymapStateMask.clearKeycode(b);
-//            this.keylisteners.sendKeyReleased(b, i, updateModifiersMaskForKeyReleased(b));
-//        }
+        if (this.keymapStateMask.isKeycodePressed(b)) {
+            this.keymapStateMask.clearKeycode(b);
+            this.keylisteners.sendKeyReleased(b, i, updateModifiersMaskForKeyReleased(b));
+        }
     }
 
     public Mask<KeyButNames> getModifiersMask() {
