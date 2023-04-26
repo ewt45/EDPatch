@@ -15,10 +15,10 @@ public class GestureState3FingersToZoom extends AbstractGestureFSMState implemen
     private float distance;
     private Finger mainFinger;
     private InfiniteTimer timer;
-    public static FSMEvent FINGER_TOUCHED = new FSMEvent() ;
-    public static FSMEvent FINGER_RELEASED = new FSMEvent() ;
-    public static FSMEvent FINGER_MOVED_IN = new FSMEvent() ;
-    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent() ;
+    public static FSMEvent FINGER_TOUCHED = new FSMEvent("FINGER_TOUCHED") ;
+    public static FSMEvent FINGER_RELEASED = new FSMEvent("FINGER_RELEASED") ;
+    public static FSMEvent FINGER_MOVED_IN = new FSMEvent("FINGER_MOVED_IN") ;
+    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent("FINGER_MOVED_OUT") ;
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyMoved(Finger finger, List<Finger> list) {
@@ -61,9 +61,10 @@ public class GestureState3FingersToZoom extends AbstractGestureFSMState implemen
         Assert.state(fingers.size() == 3);
         XZoomController zoomController = getContext().getZoomController();
         float distanceBetweenFingers = getDistanceBetweenFingers(fingers);
+        double factor = distanceBetweenFingers / this.distance;
         this.distance = distanceBetweenFingers;
         boolean isZoomed = zoomController.isZoomed();
-        zoomController.insertZoomFactorChange(distanceBetweenFingers / this.distance);
+        zoomController.insertZoomFactorChange(factor);
         zoomController.refreshZoom();
         if (isZoomed != zoomController.isZoomed()) {
             zoomController.setAnchorBoth(this.mainFinger.getX(), this.mainFinger.getY());
