@@ -1,5 +1,7 @@
 package com.eltechs.axs.GestureStateMachine;
 
+import android.util.Log;
+
 import com.eltechs.axs.Finger;
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.TouchEventAdapter;
@@ -60,14 +62,16 @@ public class GestureState2FingersToZoom extends AbstractGestureFSMState implemen
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public void notifyTimer() {
+    private void notifyTimer() {
         List<Finger> fingers = getContext().getFingers();
         Assert.state(fingers.size() == 2);
         XZoomController zoomController = getContext().getZoomController();
         float distanceBetweenFingers = getDistanceBetweenFingers(fingers);
+        double factor = distanceBetweenFingers / this.distance;
         this.distance = distanceBetweenFingers;
         boolean isZoomed = zoomController.isZoomed();
-        zoomController.insertZoomFactorChange(distanceBetweenFingers / this.distance);
+        zoomController.insertZoomFactorChange(factor);
+//        Log.d(getClass().getSimpleName(), "缩放中，因子 *= "+factor);
         zoomController.refreshZoom();
         if (isZoomed != zoomController.isZoomed()) {
             zoomController.setAnchorBoth(this.mainFinger.getX(), this.mainFinger.getY());

@@ -23,48 +23,57 @@ public abstract class ZipUnpacker {
     /*
         Code decompiled incorrectly, please refer to instructions dump.
     */
-    public static void unpackZip(File targetFile, File dstDir, final Callbacks callbacks) throws IOException {
+    public static void unpackZip(File file, File file2, final Callbacks callbacks) throws IOException {
         IOException iOException;
         ZipFile zipFile;
-        Assert.isTrue(dstDir.isDirectory(), String.format("'%s' must be a directory.", dstDir.getAbsolutePath()));
-        long length = targetFile.length();
+        Assert.isTrue(file2.isDirectory(), String.format("'%s' must be a directory.", file2.getAbsolutePath()));
+        long length = file.length();
         if (callbacks != null) {
-            UiThread.post(() -> callbacks.reportProgress(-1L));
+            UiThread.post(new Runnable() { // from class: com.eltechs.axs.helpers.ZipUnpacker.1
+                @Override // java.lang.Runnable
+                public void run() {
+                    callbacks.reportProgress(-1L);
+                }
+            });
         }
-        zipFile = new ZipFile(targetFile);
+        zipFile = new ZipFile(file);
         try {
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
-            long extractedSize = 0;
-            long lastProgress = 0;
+            long j = 0;
+            long j2 = 0;
             while (entries.hasMoreElements()) {
-                ZipArchiveEntry zipArchiveEntry = entries.nextElement();
-                if (zipArchiveEntry.isDirectory()) {
-                    File newDir = new File(dstDir, zipArchiveEntry.getName());
-                    if (newDir.exists()) {
-                        if (!newDir.isDirectory()) {
-                            throw new IOException(String.format("Attempted to create directory over file with same name '%s'.", newDir.getAbsolutePath()));
+                ZipArchiveEntry nextElement = entries.nextElement();
+                if (nextElement.isDirectory()) {
+                    File file3 = new File(file2, nextElement.getName());
+                    if (file3.exists()) {
+                        if (!file3.isDirectory()) {
+                            throw new IOException(String.format("Attempted to create directory over file with same name '%s'.", file3.getAbsolutePath()));
                         }
-                    } else if (!newDir.mkdir()) {
-                        throw new IOException(String.format("Failed to create the directory '%s'.", newDir.getAbsolutePath()));
+                    } else if (!file3.mkdir()) {
+                        throw new IOException(String.format("Failed to create the directory '%s'.", file3.getAbsolutePath()));
                     }
-                } else if (zipArchiveEntry.isUnixSymlink()) {
-                    extractOneSymlink(zipFile, zipArchiveEntry, new File(dstDir, zipArchiveEntry.getName()));
-                    extractedSize += zipArchiveEntry.getCompressedSize();
+                } else if (nextElement.isUnixSymlink()) {
+                    extractOneSymlink(zipFile, nextElement, new File(file2, nextElement.getName()));
+                    j += nextElement.getCompressedSize();
                 } else {
-                    extractOneFile(zipFile, zipArchiveEntry, new File(dstDir, zipArchiveEntry.getName()));
-                    extractedSize += zipArchiveEntry.getCompressedSize();
+                    extractOneFile(zipFile, nextElement, new File(file2, nextElement.getName()));
+                    j += nextElement.getCompressedSize();
                 }
-                final long currentProgress = (100 * extractedSize) / length;
-                if (currentProgress >= 5 + lastProgress) {
+                final long j3 = (100 * j) / length;
+                if (j3 >= 5 + j2) {
                     if (callbacks != null) {
-                        UiThread.post(() -> callbacks.reportProgress(currentProgress));
+                        UiThread.post(new Runnable() { // from class: com.eltechs.axs.helpers.ZipUnpacker.2
+                            @Override // java.lang.Runnable
+                            public void run() {
+                                callbacks.reportProgress(j3);
+                            }
+                        });
                     }
-                    lastProgress = currentProgress;
+                    j2 = j3;
                 }
             }
             zipFile.close();
         } catch (IOException e2) {
-            e2.printStackTrace();
             iOException = e2;
             try {
                 zipFile.close();

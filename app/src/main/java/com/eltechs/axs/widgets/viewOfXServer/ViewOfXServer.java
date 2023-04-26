@@ -3,12 +3,16 @@ package com.eltechs.axs.widgets.viewOfXServer;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.widget.FrameLayout;
+
 import com.eltechs.axs.configuration.XServerViewConfiguration;
 import com.eltechs.axs.geom.RectangleF;
 import com.eltechs.axs.helpers.Assert;
+import com.eltechs.axs.helpers.UiThread;
 import com.eltechs.axs.xserver.PointerListener;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
@@ -19,6 +23,7 @@ import com.eltechs.axs.xserver.WindowContentModificationListener;
 import com.eltechs.axs.xserver.WindowLifecycleListener;
 import com.eltechs.axs.xserver.XServer;
 import com.eltechs.axs.xserver.impl.masks.Mask;
+import com.example.datainsert.exagear.QH;
 
 /* loaded from: classes.dex */
 public class ViewOfXServer extends GLSurfaceView {
@@ -274,7 +279,7 @@ public class ViewOfXServer extends GLSurfaceView {
         return this.xServerFacade;
     }
 
-    public void setXViewport(RectangleF rectangleF) {
+    public synchronized void setXViewport(RectangleF rectangleF) {
         this.renderer.setXViewport(rectangleF);
         requestRender();
     }

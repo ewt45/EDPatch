@@ -45,6 +45,6 @@ public abstract class ArithHelpers {
         if (f < 0.0f) {
             return 0.0f;
         }
-        return f > f2 ? f2 : f;
+        return Math.min(f, f2);
     }
 }

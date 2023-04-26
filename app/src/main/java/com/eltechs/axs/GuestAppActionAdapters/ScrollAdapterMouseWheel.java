@@ -7,7 +7,7 @@ import java.util.Map;
 
 /* loaded from: classes.dex */
 public class ScrollAdapterMouseWheel implements SyncScrollAdapter {
-    private static final Map<ScrollDirections.DirectionY, Integer> directionToButtonCodeY = new EnumMap<>(ScrollDirections.DirectionY.class);
+    private static final Map<ScrollDirections.DirectionY, Integer> directionToButtonCodeY = new EnumMap(ScrollDirections.DirectionY.class);
     private final PointerEventReporter per;
 
     @Override // com.eltechs.axs.GuestAppActionAdapters.SyncScrollAdapter
@@ -28,22 +28,23 @@ public class ScrollAdapterMouseWheel implements SyncScrollAdapter {
         this.per = pointerEventReporter;
     }
 
-    private void scrollImpl(int buttonCode, int scrollTimes) {
-        if (buttonCode == 0) {
+    private void scrollImpl(int i, int i2) {
+        if (i == 0) {
             return;
         }
         while (true) {
-            scrollTimes --;
-            if (scrollTimes <= 0) {
+            int i3 = i2 - 1;
+            if (i2 <= 0) {
                 return;
             }
-            this.per.buttonPressed(buttonCode);
-            this.per.buttonReleased(buttonCode);
+            this.per.buttonPressed(i);
+            this.per.buttonReleased(i);
+            i2 = i3;
         }
     }
 
     @Override // com.eltechs.axs.GuestAppActionAdapters.SyncScrollAdapter
-    public void scroll(ScrollDirections.DirectionX directionX, ScrollDirections.DirectionY directionY, int scrollTimes) {
-        scrollImpl(directionToButtonCodeY.get(directionY), scrollTimes);
+    public void scroll(ScrollDirections.DirectionX directionX, ScrollDirections.DirectionY directionY, int i) {
+        scrollImpl(directionToButtonCodeY.get(directionY).intValue(), i);
     }
 }

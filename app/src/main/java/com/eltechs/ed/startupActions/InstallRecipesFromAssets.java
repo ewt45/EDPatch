@@ -25,7 +25,10 @@ public class InstallRecipesFromAssets<StateClass extends ExagearImageAware> exte
                 public void installationFailed(String str) {
                     InstallRecipesFromAssets.this.sendError(str);
                 }
-            }, recipesGuestDir, "recipe.zip");
+            }, recipesGuestDir, "recipe-more.zip");
+
+
+
         } catch (IOException e) {
             sendError(e.toString());
         }
