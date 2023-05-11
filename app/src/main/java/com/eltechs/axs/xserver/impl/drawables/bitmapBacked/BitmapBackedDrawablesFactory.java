@@ -34,16 +34,16 @@ public class BitmapBackedDrawablesFactory extends DrawablesFactoryImplBase {
     }
 
     @Override // com.eltechs.axs.xserver.impl.drawables.DrawablesFactory
-    public Drawable create(int i, Window window, int i2, int i3, Visual visual) {
+    public Drawable create(int i, Window window, int width, int height, Visual visual) {
         int i4;
         int i5;
         if (this.imagesMustBePowerOfTwo) {
-            i4 = MathHelpers.upperPOT(i2);
-            i5 = MathHelpers.upperPOT(i3);
+            i4 = MathHelpers.upperPOT(width);
+            i5 = MathHelpers.upperPOT(height);
         } else {
-            i4 = i2;
-            i5 = i3;
+            i4 = width;
+            i5 = height;
         }
-        return new BitmapBackedDrawable(i, window, Bitmap.createBitmap(i4, i5, Bitmap.Config.ARGB_8888), i2, i3, visual);
+        return new BitmapBackedDrawable(i, window, Bitmap.createBitmap(i4, i5, Bitmap.Config.ARGB_8888), width, height, visual);
     }
 }

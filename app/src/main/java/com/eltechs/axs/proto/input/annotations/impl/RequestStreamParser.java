@@ -22,9 +22,7 @@ public class RequestStreamParser {
         for (ParameterReader parameterReader : this.parameterReaders) {
             parameterReader.readParameter(paramsContext);
         }
-        if(paramsContext.getDataRetrievalContext().req.getMajorOpcode()==49){
-            Log.e("TAG", "parse: 看看参数都读取了什么：参数列表 parameterReaders="+ Arrays.toString(parameterReaders)+", 从字节数组读取到的参数="+ Arrays.toString(paramsContext.getCollectedParameters()));
-        }
+
         return paramsContext.getCollectedParameters();
     }
 }

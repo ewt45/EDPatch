@@ -9,10 +9,10 @@ public abstract class DrawablesFactoryImplBase implements DrawablesFactory {
     private final Collection<ImageFormat> supportedImageFormats;
     private final Collection<Visual> supportedVisuals;
 
-    public DrawablesFactoryImplBase(Collection<Visual> collection, Collection<ImageFormat> collection2, Visual visual) {
-        this.preferredVisual = visual;
-        this.supportedVisuals = collection;
-        this.supportedImageFormats = collection2;
+    public DrawablesFactoryImplBase(Collection<Visual> supportedVisuals, Collection<ImageFormat> supportedImageFormats, Visual preferredVisual) {
+        this.preferredVisual = preferredVisual;
+        this.supportedVisuals = supportedVisuals;
+        this.supportedImageFormats = supportedImageFormats;
     }
 
     @Override // com.eltechs.axs.xserver.impl.drawables.DrawablesFactory

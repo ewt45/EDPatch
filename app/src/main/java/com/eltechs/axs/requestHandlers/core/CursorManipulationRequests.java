@@ -42,7 +42,7 @@ public class CursorManipulationRequests extends HandlerObjectBase {
             @RequestParam @Unsigned @Width(2) int i8,
             @RequestParam @Unsigned @Width(2) int i9
     ) throws XProtocolError {
-//        Log.e("", "CreateCursor: opcode外部调用能logcat到吗");
+        Log.e("TAG", "CreateCursor: ");
         Drawable backingStore = pixmap.getBackingStore();
         if (pixmap2 != null) {
             Drawable backingStore2 = pixmap2.getBackingStore();
@@ -65,6 +65,7 @@ public class CursorManipulationRequests extends HandlerObjectBase {
     @Locks({"CURSORS_MANAGER", "PIXMAPS_MANAGER", "DRAWABLES_MANAGER"})
     @RequestHandler(opcode = 94)
     public void CreateGlyphCursor(XClient xClient, @RequestParam @NewXId int i, @RequestParam Integer num, @RequestParam Integer num2, @RequestParam @Unsigned @Width(2) int i2, @RequestParam @Unsigned @Width(2) int i3, @RequestParam @Unsigned @Width(2) int i4, @RequestParam @Unsigned @Width(2) int i5, @RequestParam @Unsigned @Width(2) int i6, @RequestParam @Unsigned @Width(2) int i7, @RequestParam @Unsigned @Width(2) int i8, @RequestParam @Unsigned @Width(2) int i9) throws XProtocolError {
+        Log.e("TAG", "CreateGlyphCursor: ");
         CursorsManager cursorsManager = this.xServer.getCursorsManager();
         Cursor createFakeCursor = cursorsManager.createFakeCursor(i);
         if (createFakeCursor == null) {
@@ -77,12 +78,14 @@ public class CursorManipulationRequests extends HandlerObjectBase {
     @Locks({"CURSORS_MANAGER", "PIXMAPS_MANAGER", "DRAWABLES_MANAGER"})
     @RequestHandler(opcode = 95)
     public void FreeCursor(XClient xClient, @RequestParam Cursor cursor) {
+        Log.e("TAG", "FreeCursor: ");
         this.xServer.getCursorsManager().freeCursor(cursor);
     }
 
     @Locks({"CURSORS_MANAGER", "DRAWABLES_MANAGER"})
     @RequestHandler(opcode = 96)
     public void RecolorCursor(@RequestParam Cursor cursor, @RequestParam @Unsigned @Width(2) int i, @RequestParam @Unsigned @Width(2) int i2, @RequestParam @Unsigned @Width(2) int i3, @RequestParam @Unsigned @Width(2) int i4, @RequestParam @Unsigned @Width(2) int i5, @RequestParam @Unsigned @Width(2) int i6) {
+        Log.e("TAG", "RecolorCursor: " );
         this.xServer.getCursorsManager().recolorCursor(cursor, i, i2, i3, i4, i5, i6);
     }
 }

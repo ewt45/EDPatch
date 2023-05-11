@@ -26,11 +26,11 @@ public class PixmapsManagerImpl implements PixmapsManager {
 
     @Override // com.eltechs.axs.xserver.PixmapsManager
     public Pixmap createPixmap(Drawable drawable) {
-        if (this.pixmaps.containsKey(Integer.valueOf(drawable.getId()))) {
+        if (this.pixmaps.containsKey(drawable.getId())) {
             return null;
         }
         PixmapImpl pixmapImpl = new PixmapImpl(drawable);
-        this.pixmaps.put(Integer.valueOf(drawable.getId()), pixmapImpl);
+        this.pixmaps.put(drawable.getId(), pixmapImpl);
         this.pixmapLifecycleListenersList.sendPixmapCreated(pixmapImpl);
         return pixmapImpl;
     }

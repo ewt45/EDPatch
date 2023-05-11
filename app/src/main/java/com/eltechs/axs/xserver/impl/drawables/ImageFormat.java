@@ -5,10 +5,10 @@ public class ImageFormat {
     private final int depth;
     private final int scanlinePad;
 
-    public ImageFormat(int i, int i2, int i3) {
-        this.depth = i;
-        this.bitsPerPixel = i2;
-        this.scanlinePad = i3;
+    public ImageFormat(int depth, int bitsPerPixel, int scanlinePad) {
+        this.depth = depth;
+        this.bitsPerPixel = bitsPerPixel;
+        this.scanlinePad = scanlinePad;
     }
 
     public int getDepth() {

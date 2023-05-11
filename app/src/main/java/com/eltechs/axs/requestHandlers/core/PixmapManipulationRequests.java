@@ -1,5 +1,7 @@
 package com.eltechs.axs.requestHandlers.core;
 
+import android.util.Log;
+
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.input.XProtocolError;
 import com.eltechs.axs.proto.input.annotations.Locks;
@@ -24,9 +26,11 @@ public class PixmapManipulationRequests extends HandlerObjectBase {
 
     @Locks({"PIXMAPS_MANAGER", "DRAWABLES_MANAGER"})
     @RequestHandler(opcode = 53)
-    public void CreatePixmap(XClient xClient, @OOBParam @RequestParam byte b, @RequestParam @NewXId int i, @RequestParam Drawable drawable, @RequestParam @Unsigned @Width(2) int i2, @RequestParam @Unsigned @Width(2) int i3) throws XProtocolError {
-        Drawable createDrawable = this.xServer.getDrawablesManager().createDrawable(i, drawable.getRoot(), i2, i3, b);
+    public void CreatePixmap(XClient xClient, @OOBParam @RequestParam byte depth, @RequestParam @NewXId int i, @RequestParam Drawable drawable, @RequestParam @Unsigned @Width(2) int width, @RequestParam @Unsigned @Width(2) int height) throws XProtocolError {
+        Log.e("TAG", "CreatePixmap: " );
+        Drawable createDrawable = this.xServer.getDrawablesManager().createDrawable(i, drawable.getRoot(), width, height, depth);
         if (createDrawable == null) {
+            Log.e("TAG", "CreatePixmap: drawable创建为空，色深为"+depth);
             throw new BadIdChoice(i);
         }
         Pixmap createPixmap = this.xServer.getPixmapsManager().createPixmap(createDrawable);

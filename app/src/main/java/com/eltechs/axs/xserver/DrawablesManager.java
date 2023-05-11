@@ -6,9 +6,9 @@ import com.eltechs.axs.xserver.impl.drawables.Visual;
 import java.util.Collection;
 
 public interface DrawablesManager {
-    Drawable createDrawable(int i, Window window, int i2, int i3, byte b);
+    Drawable createDrawable(int i, Window window, int width, int height, byte depth);
 
-    Drawable createDrawable(int i, Window window, int i2, int i3, Visual visual);
+    Drawable createDrawable(int i, Window window, int width, int height, Visual visual);
 
     Drawable getDrawable(int i);
 

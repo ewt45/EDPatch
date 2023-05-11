@@ -9,22 +9,22 @@ public class Visual {
     private final int id;
     private final int redMask;
 
-    private Visual(int i, boolean z, int i2, int i3, int i4, int i5, int i6) {
-        this.id = i;
-        this.displayable = z;
-        this.depth = i2;
-        this.bitsPerRgbValue = i3;
-        this.redMask = i4;
-        this.greenMask = i5;
-        this.blueMask = i6;
+    private Visual(int id, boolean displayable, int depth, int bitsPerRgbValue, int redMask, int greenMask, int blueMask) {
+        this.id = id;
+        this.displayable = displayable;
+        this.depth = depth;
+        this.bitsPerRgbValue = bitsPerRgbValue;
+        this.redMask = redMask;
+        this.greenMask = greenMask;
+        this.blueMask = blueMask;
     }
 
-    public static Visual makeDisplayableVisual(int i, int i2, int i3, int i4, int i5, int i6) {
-        return new Visual(i, true, i2, i3, i4, i5, i6);
+    public static Visual makeDisplayableVisual(int id, int depth, int bitsPerRgbValue, int redMask, int greenMask, int blueMask) {
+        return new Visual(id, true, depth, bitsPerRgbValue, redMask, greenMask, blueMask);
     }
 
-    public static Visual makeNonDisplayableVisual(int i, int i2) {
-        return new Visual(i, false, i2, i2, 0, 0, 0);
+    public static Visual makeNonDisplayableVisual(int id, int depth) {
+        return new Visual(id, false, depth, depth, 0, 0, 0);
     }
 
     public int getId() {

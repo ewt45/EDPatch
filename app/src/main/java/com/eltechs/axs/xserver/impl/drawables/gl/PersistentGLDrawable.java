@@ -22,14 +22,14 @@ public class PersistentGLDrawable implements Drawable {
         System.loadLibrary("axs-helpers");
     }
 
-    public PersistentGLDrawable(int i, Window window, int i2, int i3, Visual visual) {
-        Assert.isTrue(i2 >= 0 && i3 >= 0, "Dimensions of a Drawable must be non-negative.");
+    public PersistentGLDrawable(int i, Window window, int width, int height, Visual visual) {
+        Assert.isTrue(width >= 0 && height >= 0, "Dimensions of a Drawable must be non-negative.");
         this.id = i;
         this.rootWindow = window;
         this.visual = visual;
-        this.content = allocateNativeStorage(i2, i3);
-        this.width = i2;
-        this.height = i3;
+        this.content = allocateNativeStorage(width, height);
+        this.width = width;
+        this.height = height;
         this.painter = new PainterOnPersistentGLDrawable(this);
         this.painter.setModificationListener(new Drawable.ModificationListener() { // from class: com.eltechs.axs.xserver.impl.drawables.gl.PersistentGLDrawable.1
             @Override // com.eltechs.axs.xserver.Drawable.ModificationListener

@@ -22,20 +22,34 @@ public class GLDrawablesFactory extends DrawablesFactoryImplBase {
         drawablesFinalisationThread.start();
     }
 
-    private GLDrawablesFactory(Collection<Visual> collection, Collection<ImageFormat> collection2, Visual visual) {
-        super(collection, collection2, visual);
+    private GLDrawablesFactory(Collection<Visual> supportedVisuals, Collection<ImageFormat> supportedImageFormats, Visual preferredVisual) {
+        super(supportedVisuals, supportedImageFormats, preferredVisual);
     }
 
     public static GLDrawablesFactory create32Depth() {
-        Visual makeDisplayableVisual = Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(), 32, 24, 16711680, MotionEventCompat.ACTION_POINTER_INDEX_MASK, 255);
-        ArrayList<Visual> arrayList = new ArrayList<>();
-        arrayList.add(makeDisplayableVisual);
-        arrayList.add(Visual.makeNonDisplayableVisual(SmallIdsGenerator.generateId(), 1));
-        ArrayList<ImageFormat> arrayList2 = new ArrayList<>();
-        arrayList2.add(new ImageFormat(1, 1, 32));
-        arrayList2.add(new ImageFormat(24, 32, 32));
-        arrayList2.add(new ImageFormat(32, 32, 32));
-        return new GLDrawablesFactory(arrayList, arrayList2, makeDisplayableVisual);
+        Visual preferredVisual = Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(), 32, 24, 0xff0000, 0xff00, 0xff);
+        ArrayList<Visual> supportedVisuals = new ArrayList<>();
+        supportedVisuals.add(preferredVisual);
+        supportedVisuals.add(Visual.makeNonDisplayableVisual(SmallIdsGenerator.generateId(), 1));
+        //手动加上4 8 24 的试试
+//        supportedVisuals.add(Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(),4,3,0b100,0b10,0b1));
+//        supportedVisuals.add(Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(),8,8,0b110000,0b1100,0b11));
+//        supportedVisuals.add(Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(),4,32,0xff0000,0xff00,0xff));//0xff0000,0xff00,0xff
+//        supportedVisuals.add(Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(),8,32,0xff0000,0xff00,0xff));//0xff0000,0xff00,0xff
+//
+//
+//        supportedVisuals.add(Visual.makeDisplayableVisual(SmallIdsGenerator.generateId(),24,32,0xff0000,0xff00,0xff));//0xff0000,0xff00,0xff
+
+        ArrayList<ImageFormat> supportedImageFormats = new ArrayList<>();
+        supportedImageFormats.add(new ImageFormat(1, 1, 32));
+        supportedImageFormats.add(new ImageFormat(24, 32, 32));
+        supportedImageFormats.add(new ImageFormat(32, 32, 32));
+        //imageformat也要加吗
+//        supportedImageFormats.add(new ImageFormat(4, 1, 32));
+//        supportedImageFormats.add(new ImageFormat(8, 2, 32));
+
+
+        return new GLDrawablesFactory(supportedVisuals, supportedImageFormats, preferredVisual);
     }
 
     public static GLDrawablesFactory create16Depth() {
@@ -76,8 +90,8 @@ public class GLDrawablesFactory extends DrawablesFactoryImplBase {
     }
 
     @Override // com.eltechs.axs.xserver.impl.drawables.DrawablesFactory
-    public Drawable create(int i, Window window, int i2, int i3, Visual visual) {
-        PersistentGLDrawable persistentGLDrawable = new PersistentGLDrawable(i, window, i2, i3, visual);
+    public Drawable create(int i, Window window, int width, int height, Visual visual) {
+        PersistentGLDrawable persistentGLDrawable = new PersistentGLDrawable(i, window, width, height, visual);
         drawablesFinalisationThread.registerFinalisationHandler(persistentGLDrawable, new PersistentGLDrawableDestroyer(persistentGLDrawable));
         return persistentGLDrawable;
     }

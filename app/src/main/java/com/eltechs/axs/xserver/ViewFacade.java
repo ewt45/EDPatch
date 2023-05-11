@@ -793,21 +793,21 @@ public class ViewFacade {
     }
 
     public Point getPointerLocation() {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
+        LocksManager.XLock lock = this.xServer.getLocksManager().lockForInputDevicesManipulation();
         try {
             Pointer pointer = this.xServer.getPointer();
             Point point = new Point(pointer.getX(), pointer.getY());
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
+            if (lock != null) {
+                lock.close();
             }
             return point;
         } catch (Throwable th) {
             try {
                 throw th;
             } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
+                if (lock != null) {
                     try {
-                        lockForInputDevicesManipulation.close();
+                        lock.close();
                     } catch (Throwable th3) {
                         th.addSuppressed(th3);
                     }

@@ -254,19 +254,35 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
         Code decompiled incorrectly, please refer to instructions dump.
     */
     public synchronized void windowGeometryChanged(Window window) {
-        if (this.windowDrawables != null) {
-            int size = this.windowDrawables.size();
-            int i = 0;
-            while (true) {
-                if (i >= size) {
-                    break;
-                } else if (this.windowDrawables.get(i) == window.getActiveBackingStore()) {
-                    break;
-                } else {
-                    i++;
-                }
+        Log.d(TAG, "windowGeometryChanged: ");
+        if(windowDrawables==null)
+            return;
+
+        int size = this.windowDrawables.size();
+        int i = 0;
+
+        while (i<size){
+            if(this.windowDrawables.get(i) == window.getActiveBackingStore()){
+                size -= i;
+                size ++;
+                moveDrawable(i,size,window.getBoundingRectangle());
+                break;
+            }else{
+                i++;
             }
         }
+
+
+
+//        while (true) {
+//            if (i >= size) {
+//                break;
+//            } else if (this.windowDrawables.get(i) == window.getActiveBackingStore()) {
+//                break;
+//            } else {
+//                i++;
+//            }
+//        }
     }
 
     public synchronized void windowAttributesChanged(Window window, Mask<WindowAttributeNames> mask) {

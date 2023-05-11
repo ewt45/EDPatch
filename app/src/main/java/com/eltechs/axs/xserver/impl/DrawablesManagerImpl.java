@@ -22,31 +22,31 @@ public class DrawablesManagerImpl implements DrawablesManager {
 
     @Override // com.eltechs.axs.xserver.DrawablesManager
     public Drawable getDrawable(int i) {
-        return this.drawables.get(Integer.valueOf(i));
+        return this.drawables.get(i);
     }
 
     @Override // com.eltechs.axs.xserver.DrawablesManager
-    public Drawable createDrawable(int i, Window window, int i2, int i3, byte b) {
-        Visual preferredVisualForDepth = this.factory.getPreferredVisualForDepth(ArithHelpers.extendAsUnsigned(b));
+    public Drawable createDrawable(int i, Window window, int width, int height, byte depth) {
+        Visual preferredVisualForDepth = this.factory.getPreferredVisualForDepth(ArithHelpers.extendAsUnsigned(depth));
         if (preferredVisualForDepth == null) {
             return null;
         }
-        return createDrawable(i, window, i2, i3, preferredVisualForDepth);
+        return createDrawable(i, window, width, height, preferredVisualForDepth);
     }
 
     @Override // com.eltechs.axs.xserver.DrawablesManager
-    public Drawable createDrawable(int i, Window window, int i2, int i3, Visual visual) {
-        if (this.drawables.containsKey(Integer.valueOf(i))) {
+    public Drawable createDrawable(int i, Window window, int width, int height, Visual visual) {
+        if (this.drawables.containsKey(i)) {
             return null;
         }
-        Drawable create = this.factory.create(i, window, i2, i3, visual);
-        this.drawables.put(Integer.valueOf(i), create);
+        Drawable create = this.factory.create(i, window, width, height, visual);
+        this.drawables.put(i, create);
         return create;
     }
 
     @Override // com.eltechs.axs.xserver.DrawablesManager
     public void removeDrawable(Drawable drawable) {
-        this.drawables.remove(Integer.valueOf(drawable.getId()));
+        this.drawables.remove(drawable.getId());
     }
 
     @Override // com.eltechs.axs.xserver.DrawablesManager

@@ -1,5 +1,7 @@
 package com.eltechs.axs.requestHandlers.core;
 
+import android.util.Log;
+
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.helpers.ArithHelpers;
@@ -238,6 +240,7 @@ public class WindowManipulationRequests extends HandlerObjectBase {
     @Locks({"WINDOWS_MANAGER", "DRAWABLES_MANAGER", "INPUT_DEVICES", "COLORMAPS_MANAGER", "CURSORS_MANAGER", "FOCUS_MANAGER"})
     @RequestHandler(opcode = 1)
     public void CreateWindow(XClient xClient, @OOBParam @RequestParam byte b, @RequestParam @NewXId int i, @RequestParam Window window, @RequestParam @Signed @Width(2) int i2, @RequestParam @Signed @Width(2) int i3, @RequestParam @Unsigned @Width(2) int i4, @RequestParam @Unsigned @Width(2) int i5, @RequestParam @Unsigned @Width(2) int i6, @RequestParam @Width(2) WindowClass windowClass, @SpecialNullValue(0) @RequestParam Visual visual, @RequestParam @ParamName("mask") Mask<WindowAttributeNames> mask, @RequestParam @Optional(bit = "BACKGROUND_PIXMAP") Integer num, @RequestParam @Optional(bit = "BACKGROUND_PIXEL") Integer num2, @RequestParam @Optional(bit = "BORDER_PIXMAP") Integer num3, @RequestParam @Optional(bit = "BORDER_PIXEL") Integer num4, @RequestParam @Optional(bit = "BIT_GRAVITY") @Width(4) BitGravity bitGravity, @RequestParam @Optional(bit = "WIN_GRAVITY") @Width(4) WinGravity winGravity, @RequestParam @Optional(bit = "BACKING_STORE") @Width(4) WindowAttributes.BackingStore backingStore, @RequestParam @Optional(bit = "BACKING_PLANES") Integer num5, @RequestParam @Optional(bit = "BACKING_PIXEL") Integer num6, @RequestParam @Optional(bit = "OVERRIDE_REDIRECT") @Width(4) Boolean bool, @RequestParam @Optional(bit = "SAVE_UNDER") @Width(4) Boolean bool2, @RequestParam @Optional(bit = "EVENT_MASK") Mask<EventName> mask2, @RequestParam @Optional(bit = "DO_NOT_PROPAGATE_MASK") Mask<EventName> mask3, @RequestParam @Optional(bit = "COLORMAP") Integer num7, @SpecialNullValue(0) @RequestParam @Optional(bit = "CURSOR") Cursor cursor) throws XProtocolError {
+        Log.e("TAG", "CreateWindow: ");
         byte depth;
         boolean z;
         WindowManipulationRequests windowManipulationRequests;
@@ -285,7 +288,7 @@ public class WindowManipulationRequests extends HandlerObjectBase {
         windowAttributes.update(mask, num3, num4, bitGravity, winGravity, backingStore, num5, num6, bool, bool2, mask3, num7, cursor);
         mask.isSet(WindowAttributeNames.BACKGROUND_PIXMAP);
         if (mask.isSet(WindowAttributeNames.BACKGROUND_PIXEL)) {
-            createWindow.getActiveBackingStore().getPainter().fillWithColor(num2.intValue());
+            createWindow.getActiveBackingStore().getPainter().fillWithColor(num2);
         }
         xClient.registerAsOwnerOfWindow(createWindow);
         window.getEventListenersList().sendEventForEventName(new CreateNotify(window, createWindow), EventName.SUBSTRUCTURE_NOTIFY);

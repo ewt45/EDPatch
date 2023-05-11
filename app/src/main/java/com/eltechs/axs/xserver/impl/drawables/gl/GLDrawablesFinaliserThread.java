@@ -22,8 +22,8 @@ public class GLDrawablesFinaliserThread extends Thread {
         this.referenceQueue = referenceQueue;
     }
 
-    public void registerFinalisationHandler(Drawable obj, Runnable runnable) {
-        PhantomReference<Drawable> phantomReference = new PhantomReference<>(obj, this.referenceQueue);
+    public void registerFinalisationHandler(Drawable drawable, Runnable runnable) {
+        PhantomReference<Drawable> phantomReference = new PhantomReference<>(drawable, this.referenceQueue);
         synchronized (this.finalisationHandlers) {
             this.finalisationHandlers.put(phantomReference, runnable);
         }
@@ -40,11 +40,8 @@ public class GLDrawablesFinaliserThread extends Thread {
                 synchronized (this.finalisationHandlers) {
                     destroyer = this.finalisationHandlers.remove(drawableRef);
                     Assert.isTrue(destroyer != null);
-                    Log.d(TAG, "run: 开始执行runnable");
                     destroyer.run();
-                    Log.d(TAG, "run: 成功执行runnable");
-
-
+                    Log.d(TAG, "run: 成功执行一次runnable");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

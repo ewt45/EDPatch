@@ -6,7 +6,7 @@ import com.eltechs.axs.xserver.Window;
 import java.util.Collection;
 
 public interface DrawablesFactory {
-    Drawable create(int i, Window window, int i2, int i3, Visual visual);
+    Drawable create(int i, Window window, int width, int height, Visual visual);
 
     Visual getPreferredVisual();
 
