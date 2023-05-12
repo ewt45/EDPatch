@@ -62,13 +62,13 @@ public class WindowsManagerImpl implements WindowsManager {
     }
 
     @Override // com.eltechs.axs.xserver.WindowsManager
-    public Window createWindow(int i, Window window, int i2, int i3, int i4, int i5, Visual visual, boolean z, XClient xClient) {
+    public Window createWindow(int i, Window window, int x, int y, int width, int height, Visual visual, boolean z, XClient xClient) {
         Drawable drawable;
-        if (this.windows.containsKey(Integer.valueOf(i))) {
+        if (this.windows.containsKey(i)) {
             return null;
         }
         if (z) {
-            Drawable createDrawable = this.drawablesManager.createDrawable(i, WindowHelpers.getRootWindowOf(window), i4, i5, visual);
+            Drawable createDrawable = this.drawablesManager.createDrawable(i, WindowHelpers.getRootWindowOf(window), width, height, visual);
             if (createDrawable == null) {
                 return null;
             }
@@ -77,9 +77,9 @@ public class WindowsManagerImpl implements WindowsManager {
             drawable = null;
         }
         WindowImpl windowImpl = new WindowImpl(i, drawable, null, this.windowContentModificationListenersList, this.windowChangeListenersList, xClient);
-        this.windows.put(Integer.valueOf(i), windowImpl);
+        this.windows.put(i, windowImpl);
         window.getChildrenList().add(windowImpl);
-        windowImpl.setBoundingRectangle(new Rectangle(i2, i3, i4, i5));
+        windowImpl.setBoundingRectangle(new Rectangle(x, y, width, height));
         this.windowLifecycleListenersList.sendWindowCreated(windowImpl);
         return windowImpl;
     }
@@ -185,26 +185,26 @@ public class WindowsManagerImpl implements WindowsManager {
     }
 
     @Override // com.eltechs.axs.xserver.WindowsManager
-    public void changeRelativeWindowGeometry(Window window, int i, int i2, int i3, int i4) {
+    public void changeRelativeWindowGeometry(Window window, int x, int y, int width, int height) {
         if (window.getParent() == null) {
             return;
         }
         Rectangle boundingRectangle = window.getBoundingRectangle();
         WindowAttributes windowAttributes = window.getWindowAttributes();
-        boolean z = (boundingRectangle.width == i3 && boundingRectangle.height == i4) ? false : true;
+        boolean z = (boundingRectangle.width == width && boundingRectangle.height == height) ? false : true;
         if (window.getEventListenersList().isListenerInstalledForEvent(EventName.RESIZE_REDIRECT) && z) {
-            window.getEventListenersList().sendEventForEventName(new ResizeRequest(window, i3, i4), EventName.SUBSTRUCTURE_REDIRECT);
-            i3 = boundingRectangle.width;
-            i4 = boundingRectangle.height;
+            window.getEventListenersList().sendEventForEventName(new ResizeRequest(window, width, height), EventName.SUBSTRUCTURE_REDIRECT);
+            width = boundingRectangle.width;
+            height = boundingRectangle.height;
             z = false;
         }
         if (z && window.isInputOutput()) {
             Drawable frontBuffer = window.getFrontBuffer();
             this.drawablesManager.removeDrawable(frontBuffer);
-            window.replaceBackingStores(this.drawablesManager.createDrawable(frontBuffer.getId(), frontBuffer.getRoot(), i3, i4, frontBuffer.getVisual()), null);
+            window.replaceBackingStores(this.drawablesManager.createDrawable(frontBuffer.getId(), frontBuffer.getRoot(), width, height, frontBuffer.getVisual()), null);
         }
-        if (z || i != boundingRectangle.x || i2 != boundingRectangle.y) {
-            window.setBoundingRectangle(new Rectangle(i, i2, i3, i4));
+        if (z || x != boundingRectangle.x || y != boundingRectangle.y) {
+            window.setBoundingRectangle(new Rectangle(x, y, width, height));
             this.windowChangeListenersList.sendWindowGeometryChanged(window);
         }
         if (z && window.isInputOutput() && windowAttributes.isMapped()) {

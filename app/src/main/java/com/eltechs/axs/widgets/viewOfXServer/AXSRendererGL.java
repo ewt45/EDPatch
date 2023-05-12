@@ -170,6 +170,7 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
 
     private void placeCursor(int i) {
         this.cursorDrawable = this.viewFacade.getCursorDrawable();
+        Log.d(TAG, "placeCursor: cursorDrawable为空吗？"+(cursorDrawable==null?null:cursorDrawable.getDrawable()));
         if (this.cursorDrawable == null) {
             Point pointerLocation = this.viewFacade.getPointerLocation();
             int width = pointerLocation.x - (this.rootCursorBitmap.getWidth() / 2);
@@ -247,14 +248,8 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
         recreateSceneOfXServer();
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:9:0x001a, code lost:
-        moveDrawable(r1, (r0 - r1) + 1, r5.getBoundingRectangle());
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-    */
+
     public synchronized void windowGeometryChanged(Window window) {
-        Log.d(TAG, "windowGeometryChanged: ");
         if(windowDrawables==null)
             return;
 
@@ -271,8 +266,6 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
                 i++;
             }
         }
-
-
 
 //        while (true) {
 //            if (i >= size) {

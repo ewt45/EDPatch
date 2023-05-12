@@ -12,11 +12,11 @@ public interface WindowsManager {
 
     void addWindowLifecycleListener(WindowLifecycleListener windowLifecycleListener);
 
-    void changeRelativeWindowGeometry(Window window, int i, int i2, int i3, int i4);
+    void changeRelativeWindowGeometry(Window window, int x, int y, int width, int height);
 
     void changeWindowZOrder(Window window, Window window2, StackMode stackMode);
 
-    Window createWindow(int i, Window window, int i2, int i3, int i4, int i5, Visual visual, boolean z, XClient xClient);
+    Window createWindow(int i, Window window, int x, int y, int width, int height, Visual visual, boolean z, XClient xClient);
 
     void destroySubwindows(Window window);
 

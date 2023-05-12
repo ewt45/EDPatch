@@ -30,14 +30,14 @@ public class WindowImpl implements Window {
     private Window parent;
     private final WindowPropertiesManager propertiesManager;
 
-    public WindowImpl(int i, Drawable drawable, Drawable drawable2, WindowContentModificationListenersList windowContentModificationListenersList, WindowChangeListenersList windowChangeListenersList, XClient xClient) {
-        this.id = i;
-        if (drawable != null) {
-            this.frontBuffer = drawable;
-            this.backBuffer = drawable2;
+    public WindowImpl(int id, Drawable frontBuffer, Drawable backBuffer, WindowContentModificationListenersList windowContentModificationListenersList, WindowChangeListenersList windowChangeListenersList, XClient xClient) {
+        this.id = id;
+        if (frontBuffer != null) {
+            this.frontBuffer = frontBuffer;
+            this.backBuffer = backBuffer;
             installFrontBufferModificationListener();
         } else {
-            Assert.isTrue(drawable2 == null, "Can't create a window with a back buffer only.");
+            Assert.isTrue(backBuffer == null, "Can't create a window with a back buffer only.");
             this.frontBuffer = null;
             this.backBuffer = null;
         }

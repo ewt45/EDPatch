@@ -157,11 +157,11 @@ public abstract class WindowHelpers {
         });
     }
 
-    public static Window getLeafMappedSubWindowByCoords(Window window, final int i, final int i2) {
+    public static Window getLeafMappedSubWindowByCoords(Window window, final int x, final int y) {
         return getLeafSubWindowByCondition(window, new Predicate<Window>() { // from class: com.eltechs.axs.xserver.helpers.WindowHelpers.10
             @Override // com.eltechs.axs.helpers.Predicate
             public boolean apply(Window window2) {
-                return window2.getWindowAttributes().isMapped() && window2.getBoundingRectangle().containsInnerPoint(WindowHelpers.convertRootCoordsToWindow(window2, i, i2));
+                return window2.getWindowAttributes().isMapped() && window2.getBoundingRectangle().containsInnerPoint(WindowHelpers.convertRootCoordsToWindow(window2, x, y));
             }
         });
     }

@@ -741,6 +741,7 @@ public class ViewFacade {
     public PlacedDrawable getCursorDrawable() {
         final ArrayList<PlacedDrawable> arrayList = new ArrayList<>();
         LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER, LocksManager.Subsystem.INPUT_DEVICES, LocksManager.Subsystem.CURSORS_MANAGER});
+
         try {
             walkCursor(new DrawableHandler() { // from class: com.eltechs.axs.xserver.ViewFacade.2
                 @Override // com.eltechs.axs.xserver.ViewFacade.DrawableHandler
@@ -748,24 +749,20 @@ public class ViewFacade {
                     arrayList.add(placedDrawable);
                 }
             });
-            PlacedDrawable placedDrawable = arrayList.size() > 0 ? (PlacedDrawable) arrayList.get(0) : null;
+            PlacedDrawable placedDrawable = arrayList.size() > 0 ? arrayList.get(0) : null;
             if (lock != null) {
                 lock.close();
             }
             return placedDrawable;
         } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
+            if (lock != null) {
+                try {
+                    lock.close();
+                } catch (Throwable th3) {
+                    th.addSuppressed(th3);
                 }
-                throw th2;
             }
+            throw th;
         }
     }
 
@@ -781,8 +778,13 @@ public class ViewFacade {
 
     private void walkCursor(DrawableHandler drawableHandler) {
         Cursor cursor;
-        Window leafMappedSubWindowByCoords = WindowHelpers.getLeafMappedSubWindowByCoords(this.xServer.getWindowsManager().getRootWindow(), this.xServer.getPointer().getX(), this.xServer.getPointer().getY());
-        if (leafMappedSubWindowByCoords == null || (cursor = leafMappedSubWindowByCoords.getWindowAttributes().getCursor()) == null) {
+        Window targetWindow = WindowHelpers.getLeafMappedSubWindowByCoords(this.xServer.getWindowsManager().getRootWindow(), this.xServer.getPointer().getX(), this.xServer.getPointer().getY());
+
+        //试试获取父窗口的光标
+        while (targetWindow!=null && targetWindow.getWindowAttributes().getCursor()==null)
+            targetWindow= targetWindow.getParent();
+
+        if (targetWindow == null || (cursor = targetWindow.getWindowAttributes().getCursor()) == null) {
             return;
         }
         drawableHandler.handle(new PlacedDrawable(cursor.getCursorImage(), new Rectangle(this.xServer.getPointer().getX() - cursor.getHotSpotX(), this.xServer.getPointer().getY() - cursor.getHotSpotY(), cursor.getCursorImage().getWidth(), cursor.getCursorImage().getHeight())));

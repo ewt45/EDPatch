@@ -7,11 +7,11 @@ public final class Rectangle {
     public final int x;
     public final int y;
 
-    public Rectangle(int i, int i2, int i3, int i4) {
-        this.x = i;
-        this.y = i2;
-        this.width = i3;
-        this.height = i4;
+    public Rectangle(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     public boolean containsPoint(int i, int i2) {
@@ -70,10 +70,10 @@ public final class Rectangle {
     @Override
     public String toString() {
         return "Rectangle{" +
-                "height=" + height +
-                ", width=" + width +
-                ", x=" + x +
+                "x=" + x +
                 ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
                 '}';
     }
 }

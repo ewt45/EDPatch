@@ -98,34 +98,34 @@ public class WindowAttributes {
         this.cursor = cursor;
     }
 
-    public void update(Mask<WindowAttributeNames> mask, Integer num, Integer num2, BitGravity bitGravity, WinGravity winGravity, BackingStore backingStore, Integer num3, Integer num4, Boolean bool, Boolean bool2, Mask<EventName> mask2, Integer num5, Cursor cursor) {
-        if (mask.isSet(WindowAttributeNames.BACKING_PIXEL)) {
-            this.backingPixel = num4.intValue();
+    public void update(Mask<WindowAttributeNames> eventMask, Integer num, Integer num2, BitGravity bitGravity, WinGravity winGravity, BackingStore backingStore, Integer backingPlanes, Integer backingPixel, Boolean overrideRedirect, Boolean saveUnder, Mask<EventName> doNotPropagateMask, Integer num5, Cursor cursor) {
+        if (eventMask.isSet(WindowAttributeNames.BACKING_PIXEL)) {
+            this.backingPixel = backingPixel;
         }
-        if (mask.isSet(WindowAttributeNames.BACKING_PLANES)) {
-            this.backingPlanes = num3.intValue();
+        if (eventMask.isSet(WindowAttributeNames.BACKING_PLANES)) {
+            this.backingPlanes = backingPlanes;
         }
-        if (mask.isSet(WindowAttributeNames.BIT_GRAVITY)) {
+        if (eventMask.isSet(WindowAttributeNames.BIT_GRAVITY)) {
             this.bitGravity = bitGravity;
         }
-        if (mask.isSet(WindowAttributeNames.WIN_GRAVITY)) {
+        if (eventMask.isSet(WindowAttributeNames.WIN_GRAVITY)) {
             this.winGravity = winGravity;
         }
-        if (mask.isSet(WindowAttributeNames.BACKING_STORE)) {
+        if (eventMask.isSet(WindowAttributeNames.BACKING_STORE)) {
             this.backingStore = backingStore;
         }
-        if (mask.isSet(WindowAttributeNames.SAVE_UNDER)) {
-            this.saveUnder = bool2.booleanValue();
+        if (eventMask.isSet(WindowAttributeNames.SAVE_UNDER)) {
+            this.saveUnder = saveUnder;
         }
-        if (mask.isSet(WindowAttributeNames.OVERRIDE_REDIRECT)) {
-            this.overrideRedirect = bool.booleanValue();
+        if (eventMask.isSet(WindowAttributeNames.OVERRIDE_REDIRECT)) {
+            this.overrideRedirect = overrideRedirect;
         }
-        if (mask.isSet(WindowAttributeNames.DO_NOT_PROPAGATE_MASK)) {
-            this.doNotPropagateMask = mask2;
+        if (eventMask.isSet(WindowAttributeNames.DO_NOT_PROPAGATE_MASK)) {
+            this.doNotPropagateMask = doNotPropagateMask;
         }
-        if (mask.isSet(WindowAttributeNames.CURSOR)) {
+        if (eventMask.isSet(WindowAttributeNames.CURSOR)) {
             this.cursor = cursor;
         }
-        this.windowChangeListenersList.sendWindowAttributeChanged(this.window, mask);
+        this.windowChangeListenersList.sendWindowAttributeChanged(this.window, eventMask);
     }
 }
