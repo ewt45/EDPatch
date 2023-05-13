@@ -42,7 +42,7 @@ public class SmaliFile {
      *
      * @param pkgName   类所属包名。不确定的话可以为null，会遍历查找 格式为com.package.name
      * @param className 类名
-     * @return this
+     * @return this。如果没找到对应smali文件会返回null，此后不应再对该实例进行操作
      */
     public SmaliFile findSmali(@Nullable String pkgName, String className) {
         File smaliRoot = new File(PatchUtils.getPatchTmpDir() + "/tmp/smali");
@@ -53,6 +53,8 @@ public class SmaliFile {
         } catch (Exception e) {
             e.printStackTrace();
             mFile = null;
+            //如果没找到smali，应返回null
+            return null;
         }
         Log.d(TAG, "locate: 找到smali：" + mFile);
         try {

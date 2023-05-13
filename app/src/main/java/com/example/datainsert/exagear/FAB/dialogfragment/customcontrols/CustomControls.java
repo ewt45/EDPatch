@@ -5,7 +5,6 @@ import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.widget.LinearLayout.VERTICAL;
 
-import static com.example.datainsert.exagear.RR.cmCtrl_tabOther;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.app.Dialog;
@@ -17,16 +16,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eltechs.axs.Globals;
@@ -37,15 +32,12 @@ import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColRecyclerView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.SubNormalPagerAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.WrapContentViewPager;
-import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.FormatHelper;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 public class CustomControls extends BaseFragment implements DialogInterface.OnClickListener {
@@ -247,7 +239,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     }
 
     @Override
-    public void callWhenFirstStart(AppCompatActivity activity) {
+    public void callWhenFirstStart(FragmentActivity activity) {
 
     }
 

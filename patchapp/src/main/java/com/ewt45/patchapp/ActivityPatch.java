@@ -42,7 +42,6 @@ public class ActivityPatch extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         binding = ActivityPtMainBinding.inflate(getLayoutInflater());
 
         //设置强制竖屏？

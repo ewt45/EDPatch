@@ -1,11 +1,14 @@
 package com.eltechs.axs;
 
+import android.util.Log;
+
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 
 /* loaded from: classes.dex */
 public class PointerEventReporter implements PointerEventListener {
+    private static final String TAG ="PointerEventReporter";
     final ViewOfXServer host;
     final int maxDivisor = 20;
     final float maximalDelta;
@@ -20,6 +23,7 @@ public class PointerEventReporter implements PointerEventListener {
     private void sendCoordinates(float f, float f2) {
         float[] fArr = {f, f2};
         TransformationHelpers.mapPoints(this.host.getViewToXServerTransformationMatrix(), fArr);
+        Log.d(TAG, "sendCoordinates: 设置坐标："+fArr[0]+","+fArr[1]);
         this.xServerFacade.injectPointerMove((int) fArr[0], (int) fArr[1]);
     }
 

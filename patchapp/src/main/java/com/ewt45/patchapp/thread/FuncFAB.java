@@ -7,6 +7,7 @@ import static com.ewt45.patchapp.patching.SmaliFile.LOCATION_BEFORE;
 
 import android.util.Log;
 
+import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.patching.PatcherFile;
 import com.ewt45.patchapp.patching.SmaliFile;
@@ -89,8 +90,8 @@ public class FuncFAB implements Func {
                 .patch(SmaliFile.LOCATION_BEFORE, ACTION_INSERT,
                         new String[]{"return-void"},
                         new String[]{
-                                "new-instance v3, Lcom/example/datainsert/exagear/FAB/FabMenu;",
-                                "invoke-direct {v3, p0}, Lcom/example/datainsert/exagear/FAB/FabMenu;-><init>(Landroid/support/v7/app/AppCompatActivity;)V"})
+                                "new-instance v0, Lcom/example/datainsert/exagear/FAB/FabMenu;",
+                                "invoke-direct {v0, p0}, Lcom/example/datainsert/exagear/FAB/FabMenu;-><init>(Landroid/support/v7/app/AppCompatActivity;)V"})
                 .close();
     }
 
@@ -176,6 +177,8 @@ public class FuncFAB implements Func {
                                     "invoke-static {}, Lcom/example/datainsert/exagear/FAB/dialogfragment/DriveD;->getDriveDDir()Ljava/io/File;",
                                     "move-result-object v0"})
                     .close();
+
+
             //StartGuest
             new SmaliFile()
                     .findSmali(null, "StartGuest")
@@ -187,6 +190,7 @@ public class FuncFAB implements Func {
                                     "invoke-static {}, Lcom/example/datainsert/exagear/FAB/dialogfragment/DriveD;->getDriveDDir()Ljava/io/File;",
                                     "move-result-object v0"})
                     .close();
+
             //CreateLaunchConfiguration
             String[] strArr2 = new String[]{
                     "const-string v6, \"/dosdevices/d:\"",
@@ -229,5 +233,6 @@ public class FuncFAB implements Func {
                     "/com/example/datainsert/exagear/controls",});
         }
     }
+
 
 }

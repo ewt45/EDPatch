@@ -6,6 +6,8 @@ import static com.eltechs.axs.requestHandlers.core.Opcodes.GetPointerMapping;
 import static com.eltechs.axs.requestHandlers.core.Opcodes.QueryPointer;
 import static com.eltechs.axs.requestHandlers.core.Opcodes.WarpPointer;
 
+import android.util.Log;
+
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.proto.input.XProtocolError;
@@ -30,6 +32,7 @@ import java.nio.ByteBuffer;
 
 /* loaded from: classes.dex */
 public class PointerRelatedRequests extends HandlerObjectBase {
+    private static final String TAG="PointerRelatedRequests";
     public PointerRelatedRequests(XServer xServer) {
         super(xServer);
     }
@@ -37,6 +40,7 @@ public class PointerRelatedRequests extends HandlerObjectBase {
     @Locks({"INPUT_DEVICES", "WINDOWS_MANAGER"})
     @RequestHandler(opcode = QueryPointer)
     public void QueryPointer(XResponse xResponse, @RequestParam Window window) throws IOException {
+        Log.d(TAG, "QueryPointer: ");
         final Pointer pointer = this.xServer.getPointer();
         final Window directMappedSubWindowByCoords = WindowHelpers.getDirectMappedSubWindowByCoords(window, pointer.getX(), pointer.getY());
         final Point convertRootCoordsToWindow = WindowHelpers.convertRootCoordsToWindow(window, pointer.getX(), pointer.getY());
@@ -57,6 +61,8 @@ public class PointerRelatedRequests extends HandlerObjectBase {
     @Locks({"INPUT_DEVICES", "WINDOWS_MANAGER", "FOCUS_MANAGER"})
     @RequestHandler(opcode = WarpPointer)
     public void WarpPointer(@SpecialNullValue(0) @RequestParam Window window, @SpecialNullValue(0) @RequestParam Window window2, @RequestParam short s, @RequestParam short s2, @RequestParam short s3, @RequestParam short s4, @RequestParam short s5, @RequestParam short s6) {
+        Log.d(TAG, "WarpPointer修改了指针坐标");
+
         int y;
         int x;
         Pointer pointer = this.xServer.getPointer();
@@ -81,11 +87,14 @@ public class PointerRelatedRequests extends HandlerObjectBase {
             y = convertWindowCoordsToRoot.y;
             x = i5;
         }
+        Log.d(TAG, "WarpPointer确实修改了指针坐标 "+x+","+y);
+
         pointer.warpOnCoordinates(x, y);
     }
 
     @RequestHandler(opcode = GetPointerControl)
     public void GetPointerControl(XResponse xResponse) throws IOException {
+        Log.d(TAG, "GetPointerControl: ");
         xResponse.sendSimpleSuccessReply((byte) 0, new XResponse.ResponseDataWriter() { // from class: com.eltechs.axs.requestHandlers.core.PointerRelatedRequests.2
             @Override // com.eltechs.axs.xconnectors.BufferFiller
             public void write(ByteBuffer byteBuffer) {
@@ -98,6 +107,7 @@ public class PointerRelatedRequests extends HandlerObjectBase {
 
     @RequestHandler(opcode = ChangePointerControl)
     public void ChangePointerControl(XClient xClient, @RequestParam short s, @RequestParam short s2, @RequestParam short s3, @RequestParam boolean z, @RequestParam boolean z2) throws XProtocolError {
+        Log.d(TAG, "ChangePointerControl: ");
         if (s < -1) {
             throw new BadValue(s);
         }
@@ -109,6 +119,7 @@ public class PointerRelatedRequests extends HandlerObjectBase {
 
     @RequestHandler(opcode = GetPointerMapping)
     public void GetPointerMapping(XResponse xResponse) throws IOException {
+        Log.d(TAG, "GetPointerMapping: ");
         xResponse.sendSimpleSuccessReply(
                 (byte) 0,
                 new XResponse.ResponseDataWriter() {

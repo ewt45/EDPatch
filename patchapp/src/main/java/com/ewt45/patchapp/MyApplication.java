@@ -10,10 +10,13 @@ public class MyApplication extends Application {
     public static final String PREFERENCE = "config";
     public static final String KEY_LAST_LAUNCH_TIME = "lastLaunchTime";
 
+    public static MyApplication instance;
+
     boolean logCrash=true;
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
 //        getApplicationInfo().nativeLibraryDir = Objects.requireNonNull(getApplicationContext().getExternalFilesDir(null)).getAbsolutePath();
 
         //记录本次应用启动时间。如果立刻闪退，就清除数据

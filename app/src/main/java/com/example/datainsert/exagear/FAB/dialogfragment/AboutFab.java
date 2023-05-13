@@ -5,20 +5,16 @@ import static com.example.datainsert.exagear.RR.getS;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.eltechs.axs.Globals;
-import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
-
-import org.apache.commons.compress.harmony.pack200.BandSet;
 
 /**
  * 关于。关于右下齿轮按钮的介绍。

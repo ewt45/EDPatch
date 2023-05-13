@@ -1,6 +1,8 @@
 package com.ewt45.patchapp;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
@@ -84,9 +86,14 @@ public class PatchUtils {
      */
     public static String getPackageName() {
         if(packageName==null || packageName.equals("")){
-            SmaliFile pkgSmali = new SmaliFile();
-            PatchUtils.setPackageName(pkgSmali.findSmali(null, "EDMainActivity").getmCls());
-            pkgSmali.close();
+//            SmaliFile pkgSmali = new SmaliFile();
+//            PatchUtils.setPackageName(pkgSmali.findSmali(null, "EDMainActivity").getmCls());
+//            pkgSmali.close();
+            //MyApplication.instance.getApplicationContext()
+            PackageInfo info =  MyApplication.instance.getApplicationContext().getPackageManager().getPackageArchiveInfo(getPatchTmpApk().getAbsolutePath(),PackageManager.GET_ACTIVITIES);
+            if(info!=null){
+                packageName = info.packageName.replace('.','/');
+            }
         }
         return packageName;
     }

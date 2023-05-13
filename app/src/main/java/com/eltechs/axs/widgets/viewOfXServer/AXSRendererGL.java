@@ -170,7 +170,6 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
 
     private void placeCursor(int i) {
         this.cursorDrawable = this.viewFacade.getCursorDrawable();
-        Log.d(TAG, "placeCursor: cursorDrawable为空吗？"+(cursorDrawable==null?null:cursorDrawable.getDrawable()));
         if (this.cursorDrawable == null) {
             Point pointerLocation = this.viewFacade.getPointerLocation();
             int width = pointerLocation.x - (this.rootCursorBitmap.getWidth() / 2);
