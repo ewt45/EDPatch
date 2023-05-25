@@ -99,14 +99,10 @@ public class DesktopExperienceImpl implements DesktopExperience, PointerListener
                 throw th;
             } catch (Throwable th2) {
                 if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
+                    try {
                         lock.close();
+                    } catch (Throwable th3) {
+                        th.addSuppressed(th3);
                     }
                 }
                 throw th2;
@@ -118,16 +114,16 @@ public class DesktopExperienceImpl implements DesktopExperience, PointerListener
     public void pointerButtonPressed(int i) {
         LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.FOCUS_MANAGER, LocksManager.Subsystem.INPUT_DEVICES});
         try {
-            FocusManager focusManager = this.xServer.getFocusManager();
-            Window focusedWindow = focusManager.getFocusedWindow();
-            Pointer pointer = this.xServer.getPointer();
-            Window rootWindow = this.xServer.getWindowsManager().getRootWindow();
-            Window directMappedSubWindowByCoords = WindowHelpers.getDirectMappedSubWindowByCoords(rootWindow, pointer.getX(), pointer.getY());
-            if (directMappedSubWindowByCoords == null && focusManager.getFocusedWindow() != rootWindow) {
-                focusManager.setFocus(rootWindow, FocusManager.FocusReversionPolicy.NONE);
-            } else if (directMappedSubWindowByCoords != focusedWindow) {
-                focusManager.setFocus(directMappedSubWindowByCoords, focusManager.getFocusReversionPolicy());
-            }
+//            FocusManager focusManager = this.xServer.getFocusManager();
+//            Window focusedWindow = focusManager.getFocusedWindow();
+//            Pointer pointer = this.xServer.getPointer();
+//            Window rootWindow = this.xServer.getWindowsManager().getRootWindow();
+//            Window directMappedSubWindowByCoords = WindowHelpers.getDirectMappedSubWindowByCoords(rootWindow, pointer.getX(), pointer.getY());
+//            if (directMappedSubWindowByCoords == null && focusManager.getFocusedWindow() != rootWindow) {
+//                focusManager.setFocus(rootWindow, FocusManager.FocusReversionPolicy.NONE);
+//            } else if (directMappedSubWindowByCoords != focusedWindow) {
+//                focusManager.setFocus(directMappedSubWindowByCoords, focusManager.getFocusReversionPolicy());
+//            }
             if (lock != null) {
                 lock.close();
             }
@@ -149,10 +145,10 @@ public class DesktopExperienceImpl implements DesktopExperience, PointerListener
 
     @Override // com.eltechs.axs.xserver.WindowLifecycleListener
     public void windowMapped(Window window) {
-        if (window.getParent() == this.xServer.getWindowsManager().getRootWindow()) {
-            this.xServer.getFocusManager().setFocus(window, FocusManager.FocusReversionPolicy.POINTER_ROOT);
-            ICCCMHelpers.setWMState(this.xServer, window, new WMStateProperty(WMStateValues.NORMAL, null));
-        }
+//        if (window.getParent() == this.xServer.getWindowsManager().getRootWindow()) {
+//            this.xServer.getFocusManager().setFocus(window, FocusManager.FocusReversionPolicy.POINTER_ROOT);
+//            ICCCMHelpers.setWMState(this.xServer, window, new WMStateProperty(WMStateValues.NORMAL, null));
+//        }
     }
 
     private void initXResources() {

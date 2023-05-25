@@ -104,7 +104,7 @@ public abstract class BaseFragment extends DialogFragment implements DialogInter
      * @return editor
      */
     public static SharedPreferences getPreference() {
-        return Globals.getAppContext().getSharedPreferences(SHARED_PREFERENCE_SETTING, Context.MODE_PRIVATE);
+        return QH.getPreference();
     }
 
     /**

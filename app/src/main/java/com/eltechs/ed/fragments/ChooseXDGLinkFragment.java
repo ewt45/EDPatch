@@ -25,6 +25,8 @@ import com.eltechs.ed.R;
 import com.eltechs.ed.XDGLink;
 import com.eltechs.ed.guestContainers.GuestContainer;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
+import com.example.datainsert.exagear.shortcut.MoreShortcut;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -277,6 +279,10 @@ public class ChooseXDGLinkFragment extends Fragment {
                     }
                 });
                 popupMenu.setOnDismissListener(popupMenu2 -> ChooseXDGLinkFragment.this.refresh());
+
+                //插入diamante，用于创建app快捷方式
+                MoreShortcut.addOptionsToMenu(mIsStartMenu,popupMenu,xDGNode.mLink);
+
                 popupMenu.show();
             });
         }

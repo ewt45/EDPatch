@@ -3,6 +3,7 @@ package com.example.datainsert.exagear;
 import static android.content.pm.ApplicationInfo.FLAG_TEST_ONLY;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
@@ -19,6 +20,8 @@ import java.io.ObjectInputStream;
 
 public class QH {
     private final static String TAG = "Helpers";
+    public final static String MY_SHARED_PREFERENCE_SETTING = "some_settings";
+
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
@@ -106,5 +109,13 @@ public class QH {
         //包名改成一样的了，换一种方式？ 用manifest里的application label试试
         return (Globals.getAppContext().getApplicationInfo().flags &  FLAG_TEST_ONLY) !=0;
 //        return  Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7");
+    }
+
+    /**
+     * 自己的代码都用同一个sharePreference吧。通过这个函数获取。
+     * 写入或读取。写入:.edit().apply()
+     */
+    public static SharedPreferences getPreference() {
+        return Globals.getAppContext().getSharedPreferences(MY_SHARED_PREFERENCE_SETTING, Context.MODE_PRIVATE);
     }
 }

@@ -18,6 +18,7 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -293,6 +294,34 @@ public class SmaliFile {
     }
 
     /**
+     * 删除一整个方法
+     * @param methodName 能够标识该行在smali文件中为某方法的起点。例如：.method public getCursor()Lcom/eltechs/axs/xserver/Cursor;
+     */
+    public SmaliFile deleteMethod(String methodName) {
+        boolean startDel=false;
+        for(int ind=0;ind<mAllLines.size(); ind++){
+            //处于函数内部
+            if(startDel){
+                //到结尾了，删除后停止循环
+                if(mAllLines.get(ind).startsWith(".end method")){
+                    mAllLines.remove(ind);
+                    break;
+                }else{
+                    mAllLines.remove(ind);
+                    ind--;
+                    continue;
+                }
+            }
+            //如果找到函数起点，设置flag。从此往后开始删除
+            if(mAllLines.get(ind).contains(methodName)){
+                ind--; //别忘了第一句也要删
+                startDel=true;
+            }
+        }
+        return  this;
+    }
+
+    /**
      * 生成修改后的文件。
      * 关闭，不再使用该对象
      */
@@ -363,6 +392,8 @@ public class SmaliFile {
         }
         return  false;
     }
+
+
 
 //    public static class ModPosition {
 //

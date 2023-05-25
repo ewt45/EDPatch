@@ -22,13 +22,10 @@ public class EventsRelatedRequests extends HandlerObjectBase {
 
     @RequestHandler(opcode = 25)
     @GiantLocked
-    public void SendEvent(XResponse xResponse, @OOBParam @RequestParam boolean z, @RequestParam int i, @RequestParam Mask<EventName> mask, @RequestParam Event event) throws XProtocolError {
-        boolean z2 = true;
-        if (i == 0 || i == 1) {
-            z2 = false;
-        }
+    public void SendEvent(XResponse xResponse, @OOBParam @RequestParam boolean propagate, @RequestParam int destination, @RequestParam Mask<EventName> mask, @RequestParam Event event) throws XProtocolError {
+        boolean z2 = destination != 0 && destination != 1;
         Assert.state(z2);
-        Window window = this.xServer.getWindowsManager().getWindow(i);
+        Window window = this.xServer.getWindowsManager().getWindow(destination);
         if (mask.isEmpty()) {
             window.getCreator().createEventSender().sendEvent(event);
         } else {

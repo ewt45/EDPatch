@@ -53,6 +53,7 @@ import java.nio.ByteBuffer;
 /* loaded from: classes.dex */
 public class WindowManipulationRequests extends HandlerObjectBase {
 
+    private static final String TAG ="WindowManRequests";
     /* loaded from: classes.dex */
     public enum WindowClass {
         COPY_FROM_PARENT,
@@ -64,6 +65,9 @@ public class WindowManipulationRequests extends HandlerObjectBase {
         super(xServer);
     }
 
+    /**
+     * 当createWindow创建了一个新窗口之后，新窗口不会立即显示，而是需要调用MapWindow
+     */
     @Locks({"WINDOWS_MANAGER", "FOCUS_MANAGER", "INPUT_DEVICES", "KEYBOARD_MODEL_MANAGER", "ATOMS_MANAGER"})
     @RequestHandler(opcode = 8)
     public void MapWindow(@RequestParam Window window) {
@@ -102,35 +106,31 @@ public class WindowManipulationRequests extends HandlerObjectBase {
 
     @Locks({"WINDOWS_MANAGER", "FOCUS_MANAGER", "INPUT_DEVICES"})
     @RequestHandler(opcode = 12)
-    public void ConfigureWindow(@RequestParam Window window, @RequestParam @ParamName("mask") @Width(2) Mask<ConfigureWindowParts> mask, @RequestParam short s, @RequestParam @Optional(bit = "X") @Width(4) Integer num, @RequestParam @Optional(bit = "Y") @Width(4) Integer num2, @RequestParam @Optional(bit = "WIDTH") @Width(4) Integer num3, @RequestParam @Optional(bit = "HEIGHT") @Width(4) Integer num4, @RequestParam @Optional(bit = "BORDER_WIDTH") @Width(4) Short sh, @RequestParam @Optional(bit = "SIBLING") Window window2, @RequestParam @Optional(bit = "STACK_MODE") @Width(4) StackMode stackMode) {
-        int borderWidth;
+    public void ConfigureWindow(@RequestParam Window window, @RequestParam @ParamName("mask") @Width(2) Mask<ConfigureWindowParts> mask, @RequestParam short s, @RequestParam @Optional(bit = "X") @Width(4) Integer x, @RequestParam @Optional(bit = "Y") @Width(4) Integer y, @RequestParam @Optional(bit = "WIDTH") @Width(4) Integer width, @RequestParam @Optional(bit = "HEIGHT") @Width(4) Integer height, @RequestParam @Optional(bit = "BORDER_WIDTH") @Width(4) Short borderWidth, @RequestParam @Optional(bit = "SIBLING") Window sibling, @RequestParam @Optional(bit = "STACK_MODE") @Width(4) StackMode stackMode) {
         if (mask.isEmpty()) {
             return;
         }
         WindowsManager windowsManager = this.xServer.getWindowsManager();
         Window parent = window.getParent();
         Rectangle boundingRectangle = window.getBoundingRectangle();
-        Integer valueOf = num == null ? Integer.valueOf(boundingRectangle.x) : num;
-        Integer valueOf2 = num2 == null ? Integer.valueOf(boundingRectangle.y) : num2;
-        Integer valueOf3 = num3 == null ? Integer.valueOf(boundingRectangle.width) : num3;
-        Integer valueOf4 = num4 == null ? Integer.valueOf(boundingRectangle.height) : num4;
+        Integer valueOf = x == null ? Integer.valueOf(boundingRectangle.x) : x;
+        Integer valueOf2 = y == null ? Integer.valueOf(boundingRectangle.y) : y;
+        Integer valueOf3 = width == null ? Integer.valueOf(boundingRectangle.width) : width;
+        Integer valueOf4 = height == null ? Integer.valueOf(boundingRectangle.height) : height;
         if (parent.getEventListenersList().isListenerInstalledForEvent(EventName.SUBSTRUCTURE_REDIRECT) && !window.getWindowAttributes().isOverrideRedirect()) {
-            if (sh != null) {
-                borderWidth = sh.shortValue();
-            } else {
-                borderWidth = window.getWindowAttributes().getBorderWidth();
-            }
-            parent.getEventListenersList().sendEventForEventName(new ConfigureRequest(parent, window, window.getParent().getChildrenList().getPrevSibling(window), valueOf.intValue(), valueOf2.intValue(), valueOf3.intValue(), valueOf4.intValue(), borderWidth, stackMode, mask), EventName.SUBSTRUCTURE_REDIRECT);
+            if(borderWidth==null)
+                borderWidth = (short)window.getWindowAttributes().getBorderWidth();
+            parent.getEventListenersList().sendEventForEventName(new ConfigureRequest(parent, window, window.getParent().getChildrenList().getPrevSibling(window), valueOf, valueOf2, valueOf3, valueOf4, borderWidth, stackMode, mask), EventName.SUBSTRUCTURE_REDIRECT);
             return;
         }
         if (mask.isSet(ConfigureWindowParts.X) || mask.isSet(ConfigureWindowParts.Y) || mask.isSet(ConfigureWindowParts.WIDTH) || mask.isSet(ConfigureWindowParts.HEIGHT)) {
-            windowsManager.changeRelativeWindowGeometry(window, valueOf.intValue(), valueOf2.intValue(), valueOf3.intValue(), valueOf4.intValue());
+            windowsManager.changeRelativeWindowGeometry(window, valueOf, valueOf2, valueOf3, valueOf4);
         }
-        if (sh != null) {
-            window.getWindowAttributes().setBorderWidth(ArithHelpers.extendAsUnsigned(sh.shortValue()));
+        if (borderWidth != null) {
+            window.getWindowAttributes().setBorderWidth(ArithHelpers.extendAsUnsigned(borderWidth));
         }
         if (mask.isSet(ConfigureWindowParts.STACK_MODE)) {
-            windowsManager.changeWindowZOrder(window, window2, stackMode);
+            windowsManager.changeWindowZOrder(window, sibling, stackMode);
         }
         Window prevSibling = parent.getChildrenList().getPrevSibling(window);
         Rectangle boundingRectangle2 = window.getBoundingRectangle();
@@ -239,11 +239,14 @@ public class WindowManipulationRequests extends HandlerObjectBase {
 
     @Locks({"WINDOWS_MANAGER", "DRAWABLES_MANAGER", "INPUT_DEVICES", "COLORMAPS_MANAGER", "CURSORS_MANAGER", "FOCUS_MANAGER"})
     @RequestHandler(opcode = 1)
-    public void CreateWindow(XClient xClient, @OOBParam @RequestParam byte b, @RequestParam @NewXId int i, @RequestParam Window window, @RequestParam @Signed @Width(2) int x, @RequestParam @Signed @Width(2) int y, @RequestParam @Unsigned @Width(2) int width, @RequestParam @Unsigned @Width(2) int height, @RequestParam @Unsigned @Width(2) int i6, @RequestParam @Width(2) WindowClass windowClass, @SpecialNullValue(0) @RequestParam Visual visual, @RequestParam @ParamName("mask") Mask<WindowAttributeNames> eventMask, @RequestParam @Optional(bit = "BACKGROUND_PIXMAP") Integer num, @RequestParam @Optional(bit = "BACKGROUND_PIXEL") Integer num2, @RequestParam @Optional(bit = "BORDER_PIXMAP") Integer num3, @RequestParam @Optional(bit = "BORDER_PIXEL") Integer num4, @RequestParam @Optional(bit = "BIT_GRAVITY") @Width(4) BitGravity bitGravity, @RequestParam @Optional(bit = "WIN_GRAVITY") @Width(4) WinGravity winGravity, @RequestParam @Optional(bit = "BACKING_STORE") @Width(4) WindowAttributes.BackingStore backingStore, @RequestParam @Optional(bit = "BACKING_PLANES") Integer backingPlanes, @RequestParam @Optional(bit = "BACKING_PIXEL") Integer backingPixel, @RequestParam @Optional(bit = "OVERRIDE_REDIRECT") @Width(4) Boolean overrideRedirect, @RequestParam @Optional(bit = "SAVE_UNDER") @Width(4) Boolean saveUnder, @RequestParam @Optional(bit = "EVENT_MASK") Mask<EventName> mask2, @RequestParam @Optional(bit = "DO_NOT_PROPAGATE_MASK") Mask<EventName> doNotPropagateMask, @RequestParam @Optional(bit = "COLORMAP") Integer num7, @SpecialNullValue(0) @RequestParam @Optional(bit = "CURSOR") Cursor cursor) throws XProtocolError {
-        Log.e("TAG", "CreateWindow: ");
+    public void CreateWindow(XClient xClient, @OOBParam @RequestParam byte b, @RequestParam @NewXId int i, @RequestParam Window window, @RequestParam @Signed @Width(2) int x, @RequestParam @Signed @Width(2) int y, @RequestParam @Unsigned @Width(2) int width, @RequestParam @Unsigned @Width(2) int height, @RequestParam @Unsigned @Width(2) int borderWidth, @RequestParam @Width(2) WindowClass windowClass, @SpecialNullValue(0) @RequestParam Visual visual, @RequestParam @ParamName("mask") Mask<WindowAttributeNames> attrMask, @RequestParam @Optional(bit = "BACKGROUND_PIXMAP") Integer backgroundPixmap, @RequestParam @Optional(bit = "BACKGROUND_PIXEL") Integer backgroundPixel, @RequestParam @Optional(bit = "BORDER_PIXMAP") Integer borderPixmap, @RequestParam @Optional(bit = "BORDER_PIXEL") Integer borderPixel, @RequestParam @Optional(bit = "BIT_GRAVITY") @Width(4) BitGravity bitGravity, @RequestParam @Optional(bit = "WIN_GRAVITY") @Width(4) WinGravity winGravity, @RequestParam @Optional(bit = "BACKING_STORE") @Width(4) WindowAttributes.BackingStore backingStore, @RequestParam @Optional(bit = "BACKING_PLANES") Integer backingPlanes, @RequestParam @Optional(bit = "BACKING_PIXEL") Integer backingPixel, @RequestParam @Optional(bit = "OVERRIDE_REDIRECT") @Width(4) Boolean overrideRedirect, @RequestParam @Optional(bit = "SAVE_UNDER") @Width(4) Boolean saveUnder, @RequestParam @Optional(bit = "EVENT_MASK") Mask<EventName> eventMask, @RequestParam @Optional(bit = "DO_NOT_PROPAGATE_MASK") Mask<EventName> doNotPropagateMask, @RequestParam @Optional(bit = "COLORMAP") Integer colorMap, @SpecialNullValue(0) @RequestParam @Optional(bit = "CURSOR") Cursor cursor) throws XProtocolError {
+        Log.e(TAG, "CreateWindow:");
+        if(attrMask.isSet(WindowAttributeNames.DO_NOT_PROPAGATE_MASK)|| doNotPropagateMask!=null)
+            Log.d(TAG, "ChangeWindowAttributes: doNotPropagate的mask为空吗"+doNotPropagateMask.isEmpty());
+
         byte depth;
         boolean z;
-        Mask<EventName> emptyMask = mask2 == null ? Mask.emptyMask(EventName.class) : mask2;
+
         switch (windowClass) {
             case COPY_FROM_PARENT:
                 boolean isInputOutput = window.isInputOutput();
@@ -276,13 +279,13 @@ public class WindowManipulationRequests extends HandlerObjectBase {
         if (createWindow == null) {
             throw new BadIdChoice(i);
         }
-        xClient.installEventListener(createWindow, emptyMask);
+        xClient.installEventListener(createWindow, eventMask == null ? Mask.emptyMask(EventName.class) : eventMask);
         WindowAttributes windowAttributes = createWindow.getWindowAttributes();
-        windowAttributes.setBorderWidth(i6);
-        windowAttributes.update(eventMask, num3, num4, bitGravity, winGravity, backingStore, backingPlanes, backingPixel, overrideRedirect, saveUnder, doNotPropagateMask, num7, cursor);
-        eventMask.isSet(WindowAttributeNames.BACKGROUND_PIXMAP);
-        if (eventMask.isSet(WindowAttributeNames.BACKGROUND_PIXEL)) {
-            createWindow.getActiveBackingStore().getPainter().fillWithColor(num2);
+        windowAttributes.setBorderWidth(borderWidth);
+        windowAttributes.update(attrMask, borderPixmap, borderPixel, bitGravity, winGravity, backingStore, backingPlanes, backingPixel, overrideRedirect, saveUnder, doNotPropagateMask, colorMap, cursor);
+        attrMask.isSet(WindowAttributeNames.BACKGROUND_PIXMAP);
+        if (attrMask.isSet(WindowAttributeNames.BACKGROUND_PIXEL)) {
+            createWindow.getActiveBackingStore().getPainter().fillWithColor(backgroundPixel);
         }
         xClient.registerAsOwnerOfWindow(createWindow);
         window.getEventListenersList().sendEventForEventName(new CreateNotify(window, createWindow), EventName.SUBSTRUCTURE_NOTIFY);
@@ -290,17 +293,23 @@ public class WindowManipulationRequests extends HandlerObjectBase {
 
     @Locks({"WINDOWS_MANAGER", "COLORMAPS_MANAGER", "CURSORS_MANAGER"})
     @RequestHandler(opcode = 2)
-    public void ChangeWindowAttributes(XClient xClient, @RequestParam Window window, @RequestParam @ParamName("mask") Mask<WindowAttributeNames> eventMask, @RequestParam @Optional(bit = "BACKGROUND_PIXMAP") Integer num, @RequestParam @Optional(bit = "BACKGROUND_PIXEL") Integer num2, @RequestParam @Optional(bit = "BORDER_PIXMAP") Integer num3, @RequestParam @Optional(bit = "BORDER_PIXEL") Integer num4, @RequestParam @Optional(bit = "BIT_GRAVITY") @Width(4) BitGravity bitGravity, @RequestParam @Optional(bit = "WIN_GRAVITY") @Width(4) WinGravity winGravity, @RequestParam @Optional(bit = "BACKING_STORE") @Width(4) WindowAttributes.BackingStore backingStore, @RequestParam @Optional(bit = "BACKING_PLANES") Integer backingPlanes, @RequestParam @Optional(bit = "BACKING_PIXEL") Integer backingPixel, @RequestParam @Optional(bit = "OVERRIDE_REDIRECT") @Width(4) Boolean overrideRedirect, @RequestParam @Optional(bit = "SAVE_UNDER") @Width(4) Boolean saveUnder, @RequestParam @Optional(bit = "EVENT_MASK") Mask<EventName> mask2, @RequestParam @Optional(bit = "DO_NOT_PROPAGATE_MASK") Mask<EventName> doNotPropagateMask, @RequestParam @Optional(bit = "COLORMAP") Integer num7, @SpecialNullValue(0) @RequestParam @Optional(bit = "CURSOR") Cursor cursor) throws XProtocolError {
-        if (mask2 != null) {
-            if ((mask2.isSet(EventName.SUBSTRUCTURE_REDIRECT) && willBeInConflict(xClient, window, EventName.SUBSTRUCTURE_REDIRECT)) || ((mask2.isSet(EventName.RESIZE_REDIRECT) && willBeInConflict(xClient, window, EventName.RESIZE_REDIRECT)) || (mask2.isSet(EventName.BUTTON_PRESS) && willBeInConflict(xClient, window, EventName.BUTTON_PRESS)))) {
+    public void ChangeWindowAttributes(XClient xClient, @RequestParam Window window, @RequestParam @ParamName("mask") Mask<WindowAttributeNames> attrMask, @RequestParam @Optional(bit = "BACKGROUND_PIXMAP") Integer num, @RequestParam @Optional(bit = "BACKGROUND_PIXEL") Integer num2, @RequestParam @Optional(bit = "BORDER_PIXMAP") Integer borderPixmap, @RequestParam @Optional(bit = "BORDER_PIXEL") Integer borderPixel, @RequestParam @Optional(bit = "BIT_GRAVITY") @Width(4) BitGravity bitGravity, @RequestParam @Optional(bit = "WIN_GRAVITY") @Width(4) WinGravity winGravity, @RequestParam @Optional(bit = "BACKING_STORE") @Width(4) WindowAttributes.BackingStore backingStore, @RequestParam @Optional(bit = "BACKING_PLANES") Integer backingPlanes, @RequestParam @Optional(bit = "BACKING_PIXEL") Integer backingPixel, @RequestParam @Optional(bit = "OVERRIDE_REDIRECT") @Width(4) Boolean overrideRedirect, @RequestParam @Optional(bit = "SAVE_UNDER") @Width(4) Boolean saveUnder, @RequestParam @Optional(bit = "EVENT_MASK") Mask<EventName> eventMask, @RequestParam @Optional(bit = "DO_NOT_PROPAGATE_MASK") Mask<EventName> doNotPropagateMask, @RequestParam @Optional(bit = "COLORMAP") Integer colormap, @SpecialNullValue(0) @RequestParam @Optional(bit = "CURSOR") Cursor cursor) throws XProtocolError {
+        Log.d(TAG, "ChangeWindowAttributes: 修改的属性mask="+attrMask);
+        if(attrMask.isSet(WindowAttributeNames.DO_NOT_PROPAGATE_MASK) || doNotPropagateMask!=null)
+            Log.d(TAG, "ChangeWindowAttributes: doNotPropagate的mask为空吗"+doNotPropagateMask.isEmpty());
+
+
+        if (eventMask != null) {
+            if ((eventMask.isSet(EventName.SUBSTRUCTURE_REDIRECT) && willBeInConflict(xClient, window, EventName.SUBSTRUCTURE_REDIRECT)) || ((eventMask.isSet(EventName.RESIZE_REDIRECT) && willBeInConflict(xClient, window, EventName.RESIZE_REDIRECT)) || (eventMask.isSet(EventName.BUTTON_PRESS) && willBeInConflict(xClient, window, EventName.BUTTON_PRESS)))) {
                 throw new BadAccess();
             }
-            xClient.installEventListener(window, mask2);
+            Log.d(TAG, "ChangeWindowAttributes: 创建窗口之后有改过eventMask吗 "+window.getId()+" " +eventMask);
+            xClient.installEventListener(window, eventMask);
         }
-        window.getWindowAttributes().update(eventMask, num3, num4, bitGravity, winGravity, backingStore, backingPlanes, backingPixel, overrideRedirect, saveUnder, doNotPropagateMask, num7, cursor);
-        eventMask.isSet(WindowAttributeNames.BACKGROUND_PIXMAP);
-        if (eventMask.isSet(WindowAttributeNames.BACKGROUND_PIXEL)) {
-            window.getActiveBackingStore().getPainter().fillWithColor(num2.intValue());
+        window.getWindowAttributes().update(attrMask, borderPixmap, borderPixel, bitGravity, winGravity, backingStore, backingPlanes, backingPixel, overrideRedirect, saveUnder, doNotPropagateMask, colormap, cursor);
+        attrMask.isSet(WindowAttributeNames.BACKGROUND_PIXMAP);
+        if (attrMask.isSet(WindowAttributeNames.BACKGROUND_PIXEL)) {
+            window.getActiveBackingStore().getPainter().fillWithColor(num2);
         }
     }
 
@@ -312,7 +321,7 @@ public class WindowManipulationRequests extends HandlerObjectBase {
     @RequestHandler(opcode = 3)
     public void GetWindowAttributes(XClient xClient, XResponse xResponse, @RequestParam Window window) throws IOException {
         WindowAttributes windowAttributes = window.getWindowAttributes();
-        xResponse.sendSimpleSuccessReply((byte) windowAttributes.getBackingStore().ordinal(), Integer.valueOf(window.isInputOutput() ? window.getActiveBackingStore().getVisual().getId() : 0), Short.valueOf((short) windowAttributes.getWindowClass().ordinal()), Byte.valueOf((byte) windowAttributes.getBitGravity().ordinal()), Byte.valueOf((byte) windowAttributes.getWinGravity().ordinal()), Integer.valueOf(windowAttributes.getBackingPlanes()), Integer.valueOf(windowAttributes.getBackingPixel()), Boolean.valueOf(windowAttributes.isSaveUnder()), true, Byte.valueOf((byte) WindowHelpers.getWindowMapState(window).ordinal()), Boolean.valueOf(windowAttributes.isOverrideRedirect()), 0, Integer.valueOf(window.getEventListenersList().calculateAllEventsMask().getRawMask()), Integer.valueOf(xClient.getEventMask(window).getRawMask()), Short.valueOf((short) windowAttributes.getDoNotPropagateMask().getRawMask()));
+        xResponse.sendSimpleSuccessReply((byte) windowAttributes.getBackingStore().ordinal(), window.isInputOutput() ? window.getActiveBackingStore().getVisual().getId() : 0, (short) windowAttributes.getWindowClass().ordinal(), (byte) windowAttributes.getBitGravity().ordinal(), (byte) windowAttributes.getWinGravity().ordinal(), windowAttributes.getBackingPlanes(), windowAttributes.getBackingPixel(), windowAttributes.isSaveUnder(), true, (byte) WindowHelpers.getWindowMapState(window).ordinal(), windowAttributes.isOverrideRedirect(), 0, window.getEventListenersList().calculateAllEventsMask().getRawMask(), xClient.getEventMask(window).getRawMask(), (short) windowAttributes.getDoNotPropagateMask().getRawMask());
     }
 
     @Locks({"WINDOWS_MANAGER"})

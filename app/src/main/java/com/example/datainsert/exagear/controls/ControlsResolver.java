@@ -2,6 +2,7 @@ package com.example.datainsert.exagear.controls;
 
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.ed.controls.Controls;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
 /**
@@ -9,7 +10,7 @@ import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterface
  * 存储了一些sharedPreference数据键名，添加一项时，记得在FormatHelper里添加对应的导入导出
  */
 public class ControlsResolver {
-    public final static String PREF_FILE_NAME_SETTING = "some_settings";
+    public final static String PREF_FILE_NAME_SETTING = QH.MY_SHARED_PREFERENCE_SETTING;
 //    public final static String PREF_KEY_USE_CUSTOM_CONTROL = "use_custom_control";
     public final static String PREF_KEY_SHOW_CURSOR="show_cursor";
     public final static String PREF_KEY_BTN_BG_COLOR = "btn_background_color";

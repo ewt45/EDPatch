@@ -14,7 +14,7 @@
 <!--        android:title="生成的apk允许调试"-->
 <!--        />-->
     <CheckBoxPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="use_default_signature"
         android:summary="@string/settings_usedefaultkeysummary"
         android:title="@string/settings_usedefaultkey" />

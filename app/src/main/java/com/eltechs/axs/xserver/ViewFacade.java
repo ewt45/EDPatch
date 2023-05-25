@@ -780,9 +780,9 @@ public class ViewFacade {
         Cursor cursor;
         Window targetWindow = WindowHelpers.getLeafMappedSubWindowByCoords(this.xServer.getWindowsManager().getRootWindow(), this.xServer.getPointer().getX(), this.xServer.getPointer().getY());
 
-        //试试获取父窗口的光标
-        while (targetWindow!=null && targetWindow.getWindowAttributes().getCursor()==null)
-            targetWindow= targetWindow.getParent();
+        //试试获取父窗口的光标(在getCursor里更改了）
+//        while (targetWindow!=null && targetWindow.getWindowAttributes().getCursor()==null)
+//            targetWindow= targetWindow.getParent();
 
         if (targetWindow == null || (cursor = targetWindow.getWindowAttributes().getCursor()) == null) {
             return;

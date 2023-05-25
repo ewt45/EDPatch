@@ -7,7 +7,7 @@ import com.eltechs.axs.xserver.impl.masks.Mask;
 
 /* loaded from: classes.dex */
 public class EnterNotify extends PointerWindowEvent {
-    public EnterNotify(PointerWindowEvent.Detail detail, PointerWindowEvent.Mode mode, int i, Window window, Window window2, Window window3, short s, short s2, short s3, short s4, Mask<KeyButNames> mask, boolean z) {
-        super(7, detail, mode, i, window, window2, window3, s, s2, s3, s4, mask, z);
+    public EnterNotify(PointerWindowEvent.Detail detail, PointerWindowEvent.Mode mode, int timestamp, Window root, Window event, Window child, short rootX, short rootY, short eventX, short eventY, Mask<KeyButNames> state, boolean z) {
+        super(7, detail, mode, timestamp, root, event, child, rootX, rootY, eventX, eventY, state, z);
     }
 }

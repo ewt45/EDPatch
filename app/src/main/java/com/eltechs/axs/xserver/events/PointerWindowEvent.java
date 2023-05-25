@@ -36,20 +36,21 @@ public abstract class PointerWindowEvent extends Event {
     }
 
     /* JADX INFO: Access modifiers changed from: protected */
-    protected PointerWindowEvent(int i, Detail detail, Mode mode, int i2, Window window, Window window2, Window window3, short s, short s2, short s3, short s4, Mask<KeyButNames> mask, boolean z) {
+    protected PointerWindowEvent(int i, Detail detail, Mode mode, int timestamp, Window root, Window event, Window child, short rootX, short rootY, short eventX, short eventY, Mask<KeyButNames> state, boolean focus) {
         super(i);
         this.detail = detail;
         this.mode = mode;
-        this.timestamp = i2;
-        this.root = window;
-        this.event = window2;
-        this.child = window3;
-        this.rootX = s;
-        this.rootY = s2;
-        this.eventX = s3;
-        this.eventY = s4;
-        this.state = mask;
-        this.sameScreenAndFocus = (byte) ((z ? 1 : 0) | 2);
+        this.timestamp = timestamp;
+        this.root = root;
+        this.event = event;
+        this.child = child;
+        this.rootX = rootX;
+        this.rootY = rootY;
+        this.eventX = eventX;
+        this.eventY = eventY;
+        this.state = state;
+        //意思是sameScreen一直是1.占用第二位。第一位是focus
+        this.sameScreenAndFocus = (byte) ((focus ? 1 : 0) | 2);
     }
 
     public int getTimestamp() {

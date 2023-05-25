@@ -257,7 +257,7 @@ public class FragmentChoosePatch extends Fragment {
             if (patchNew) {
                 mActionPool.submit(new WriteFuncVer(addingFuncList));//添加功能时要获取旧的版本号，所以等功能添加完了，再写入版本号（获取和写入都是写到解包apk的asset里，打包的时候会自动加进去
                 mActionPool.submit(new BuildApk());//回编译apk
-                boolean useDefaultKey = requireActivity().getSharedPreferences(MyApplication.PREFERENCE,Context.MODE_PRIVATE).getBoolean("use_default_signature",false);
+                boolean useDefaultKey = requireActivity().getSharedPreferences(MyApplication.PREFERENCE,Context.MODE_PRIVATE).getBoolean("use_default_signature",true);
                 mActionPool.submit(new SignApk(requireContext().getAssets(),useDefaultKey));//签名
             }
             mActionPool.submit(new SignalDone()); //恢复按钮可用

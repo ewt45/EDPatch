@@ -17,6 +17,9 @@ public class WindowAttributes {
     private boolean saveUnder = false;
     private boolean isMapped = false;
     private boolean overrideRedirect = false;
+    /**
+     * 禁止向父窗口传递的事件类型。如果要找禁止在本窗口或子窗口传递的事件类型，应该看WindowListener（XClientWindowListener）内的eventMask
+     */
     private Mask<EventName> doNotPropagateMask = Mask.emptyMask(EventName.class);
 
     /* loaded from: classes.dex */
@@ -90,7 +93,14 @@ public class WindowAttributes {
         this.borderWidth = i;
     }
 
+    /**
+     * 获取该窗口对应的光标
+     * @return 自己的光标。当自己的光标为null时，尝试获取父窗口的光标并返回
+     */
     public Cursor getCursor() {
+        //如果自己光标为null，但需要用光标了，则使用父窗口的光标
+        if(cursor==null)
+            return window.getParent()!=null?window.getParent().getWindowAttributes().getCursor():null;
         return this.cursor;
     }
 
@@ -98,34 +108,34 @@ public class WindowAttributes {
         this.cursor = cursor;
     }
 
-    public void update(Mask<WindowAttributeNames> eventMask, Integer num, Integer num2, BitGravity bitGravity, WinGravity winGravity, BackingStore backingStore, Integer backingPlanes, Integer backingPixel, Boolean overrideRedirect, Boolean saveUnder, Mask<EventName> doNotPropagateMask, Integer num5, Cursor cursor) {
-        if (eventMask.isSet(WindowAttributeNames.BACKING_PIXEL)) {
+    public void update(Mask<WindowAttributeNames> attrMask, Integer borderPixmap, Integer borderPixel, BitGravity bitGravity, WinGravity winGravity, BackingStore backingStore, Integer backingPlanes, Integer backingPixel, Boolean overrideRedirect, Boolean saveUnder, Mask<EventName> doNotPropagateMask, Integer colormap, Cursor cursor) {
+        if (attrMask.isSet(WindowAttributeNames.BACKING_PIXEL)) {
             this.backingPixel = backingPixel;
         }
-        if (eventMask.isSet(WindowAttributeNames.BACKING_PLANES)) {
+        if (attrMask.isSet(WindowAttributeNames.BACKING_PLANES)) {
             this.backingPlanes = backingPlanes;
         }
-        if (eventMask.isSet(WindowAttributeNames.BIT_GRAVITY)) {
+        if (attrMask.isSet(WindowAttributeNames.BIT_GRAVITY)) {
             this.bitGravity = bitGravity;
         }
-        if (eventMask.isSet(WindowAttributeNames.WIN_GRAVITY)) {
+        if (attrMask.isSet(WindowAttributeNames.WIN_GRAVITY)) {
             this.winGravity = winGravity;
         }
-        if (eventMask.isSet(WindowAttributeNames.BACKING_STORE)) {
+        if (attrMask.isSet(WindowAttributeNames.BACKING_STORE)) {
             this.backingStore = backingStore;
         }
-        if (eventMask.isSet(WindowAttributeNames.SAVE_UNDER)) {
+        if (attrMask.isSet(WindowAttributeNames.SAVE_UNDER)) {
             this.saveUnder = saveUnder;
         }
-        if (eventMask.isSet(WindowAttributeNames.OVERRIDE_REDIRECT)) {
+        if (attrMask.isSet(WindowAttributeNames.OVERRIDE_REDIRECT)) {
             this.overrideRedirect = overrideRedirect;
         }
-        if (eventMask.isSet(WindowAttributeNames.DO_NOT_PROPAGATE_MASK)) {
+        if (attrMask.isSet(WindowAttributeNames.DO_NOT_PROPAGATE_MASK)) {
             this.doNotPropagateMask = doNotPropagateMask;
         }
-        if (eventMask.isSet(WindowAttributeNames.CURSOR)) {
+        if (attrMask.isSet(WindowAttributeNames.CURSOR)) {
             this.cursor = cursor;
         }
-        this.windowChangeListenersList.sendWindowAttributeChanged(this.window, eventMask);
+        this.windowChangeListenersList.sendWindowAttributeChanged(this.window, attrMask);
     }
 }

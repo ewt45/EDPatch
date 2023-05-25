@@ -58,12 +58,12 @@ public class WindowsManagerImpl implements WindowsManager {
 
     @Override // com.eltechs.axs.xserver.WindowsManager
     public Window getWindow(int i) {
-        return this.windows.get(Integer.valueOf(i));
+        return this.windows.get(i);
     }
 
     @Override // com.eltechs.axs.xserver.WindowsManager
     public Window createWindow(int i, Window window, int x, int y, int width, int height, Visual visual, boolean z, XClient xClient) {
-        Drawable drawable;
+        Drawable frontBuffer;
         if (this.windows.containsKey(i)) {
             return null;
         }
@@ -72,11 +72,11 @@ public class WindowsManagerImpl implements WindowsManager {
             if (createDrawable == null) {
                 return null;
             }
-            drawable = createDrawable;
+            frontBuffer = createDrawable;
         } else {
-            drawable = null;
+            frontBuffer = null;
         }
-        WindowImpl windowImpl = new WindowImpl(i, drawable, null, this.windowContentModificationListenersList, this.windowChangeListenersList, xClient);
+        WindowImpl windowImpl = new WindowImpl(i, frontBuffer, null, this.windowContentModificationListenersList, this.windowChangeListenersList, xClient);
         this.windows.put(i, windowImpl);
         window.getChildrenList().add(windowImpl);
         windowImpl.setBoundingRectangle(new Rectangle(x, y, width, height));

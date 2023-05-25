@@ -13,6 +13,7 @@ import com.eltechs.ed.R;
 import com.eltechs.ed.startupActions.InitGuestContainersManager;
 import com.eltechs.ed.startupActions.InstallRecipesFromAssets;
 import com.eltechs.ed.startupActions.WDesktop;
+import com.example.datainsert.exagear.shortcut.MoreShortcut;
 
 import java.io.File;
 
@@ -52,7 +53,10 @@ public class EDStartupActivity extends StartupActivity<EDApplicationState> {
         startupActionsCollection.addAction(new UnpackExagearImageObb<>(true, new String[]{"/home"}, new File(applicationContext.getFilesDir(), PROGRESS_FILE_NAME).getAbsolutePath()));
         startupActionsCollection.addAction(new InstallRecipesFromAssets<>());
         startupActionsCollection.addAction(new InitGuestContainersManager<>());
-        startupActionsCollection.addAction(new WDesktop<>());
+
+//        startupActionsCollection.addAction(new WDesktop<>());
+        //最后这个视情况，如果从快捷方式启动的话就直接使用StartGuest
+        MoreShortcut.launchFromShortCutOrNormally(this);
 
 
 

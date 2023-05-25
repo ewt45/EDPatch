@@ -28,7 +28,7 @@ public class FuncCursor implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 2;
+        return 1;
     }
 
     private boolean isPatchedOldWay() {
@@ -58,19 +58,21 @@ public class FuncCursor implements Func {
 
     @Override
     public Integer call() throws Exception {
-        //如果首次安装，修改ex的dex
-        if (getInstalledVersion() == INVALID_VERSION)
+        //如果首次安装，修改ex的dex (version=1用的是png图片方法，也需要首次安装）
+        int installedVersion  = getInstalledVersion();
+        if (installedVersion == INVALID_VERSION )
             firstPatch();
 
         //复制自己的类和光标
         PatcherFile.copy(TYPE_SMALI, new String[]{"/com/example/datainsert/exagear/cursor"});
         PatcherFile.copy(TYPE_ASSETS, new String[]{"/mouse.png"});
+
+
         return R.string.actmsg_funccursor;
 
     }
 
     private void firstPatch() throws Exception {
-        //AXSRendererGL
         String[] origin1 = new String[]{
                 "invoke-direct {p0}, Lcom/eltechs/axs/widgets/viewOfXServer/AXSRendererGL;->createXCursorBitmap()Landroid/graphics/Bitmap;",
                 "move-result-object p1",
@@ -86,6 +88,7 @@ public class FuncCursor implements Func {
                 .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_DELETE, origin1, dstDelete)
                 .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_INSERT, origin2, dstAdd)
                 .close();
+
     }
 
     @Override

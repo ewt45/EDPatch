@@ -85,33 +85,26 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
         }
     }
 
-    private void sendVirtualEnterNotify(Window window, Window window2, PointerWindowEvent.Detail detail, PointerWindowEvent.Mode mode, int i) {
-        Window window3 = window2;
-        PointerWindowEvent.Detail detail2 = detail;
+    private void sendVirtualEnterNotify(Window window, Window window2, PointerWindowEvent.Detail detail, PointerWindowEvent.Mode mode, int timestamp) {
         boolean z = false;
-        Assert.isTrue(window != window3);
-        Assert.isTrue(WindowHelpers.isAncestorOf(window3, window));
-        if (detail2 == PointerWindowEvent.Detail.VIRTUAL || detail2 == PointerWindowEvent.Detail.NONLINEAR_VIRTUAL) {
+        Assert.isTrue(window != window2);
+        Assert.isTrue(WindowHelpers.isAncestorOf(window2, window));
+        if (detail == PointerWindowEvent.Detail.VIRTUAL || detail == PointerWindowEvent.Detail.NONLINEAR_VIRTUAL) {
             z = true;
         }
         Assert.isTrue(z);
-        Mask<KeyButNames> keyButMask = EventHelpers.getKeyButMask(this.xServer);
-        int x = this.xServer.getPointer().getX();
-        int y = this.xServer.getPointer().getY();
+        Mask<KeyButNames> state = EventHelpers.getKeyButMask(this.xServer);
+        int rootX = this.xServer.getPointer().getX();
+        int rootY = this.xServer.getPointer().getY();
         Window focusedWindow = this.xServer.getFocusManager().getFocusedWindow();
         Window rootWindow = this.xServer.getWindowsManager().getRootWindow();
-        Window directChild = WindowHelpers.getDirectChild(window3, window);
-        while (directChild != window3) {
-            boolean isAncestorOf = WindowHelpers.isAncestorOf(directChild, focusedWindow);
-            Point convertRootCoordsToWindow = WindowHelpers.convertRootCoordsToWindow(directChild, x, y);
-            Window directChild2 = WindowHelpers.getDirectChild(window3, directChild);
-            sendEventForEventMask(new EnterNotify(detail2, mode, i, rootWindow, directChild, directChild2, (short) x, (short) y, (short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask, isAncestorOf), EventName.ENTER_WINDOW, directChild);
-            detail2 = detail;
-            directChild = directChild2;
-            x = x;
-            y = y;
-            focusedWindow = focusedWindow;
-            window3 = window2;
+        Window eventWindow = WindowHelpers.getDirectChild(window2, window);
+        while (eventWindow != window2) {
+            boolean isAncestorOf = WindowHelpers.isAncestorOf(eventWindow, focusedWindow);
+            Point eventXY = WindowHelpers.convertRootCoordsToWindow(eventWindow, rootX, rootY);
+            Window child = WindowHelpers.getDirectChild(window2, eventWindow);
+            sendEventForEventMask(new EnterNotify(detail, mode, timestamp, rootWindow, eventWindow, child, (short) rootX, (short) rootY, (short) eventXY.x, (short) eventXY.y, state, isAncestorOf), EventName.ENTER_WINDOW, eventWindow);
+            eventWindow = child;
         }
     }
 
@@ -182,9 +175,9 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
     }
 
     private void updatePointWindow() {
-        Window calculatePointWindow = WindowHelpers.calculatePointWindow(this.xServer);
-        sendEnterLeaveNotify(this.pointWindow, calculatePointWindow, PointerWindowEvent.Mode.NORMAL);
-        this.pointWindow = calculatePointWindow;
+        Window newPointWindow = WindowHelpers.calculatePointWindow(this.xServer);
+        sendEnterLeaveNotify(this.pointWindow, newPointWindow, PointerWindowEvent.Mode.NORMAL);
+        this.pointWindow = newPointWindow;
     }
 
     public void sendGrabActivationEvents(Window window) {
@@ -231,7 +224,10 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
         XClientWindowListener pointerGrabListener = grabsManager.getPointerGrabListener();
         Window pointerGrabWindow = grabsManager.getPointerGrabWindow();
 
-        Window ancestorWithDeviceEventMask = (pointerGrabWindow == null || grabsManager.getPointerGrabOwnerEvents()) ? WindowHelpers.getAncestorWithDeviceEventMask(this.pointWindow, createCurrentEventMask) : null;
+        Window ancestorWithDeviceEventMask =
+                (pointerGrabWindow == null || grabsManager.getPointerGrabOwnerEvents())
+                        ? WindowHelpers.getAncestorWithDeviceEventMask(this.pointWindow, createCurrentEventMask)
+                        : null;
         if (pointerGrabWindow == null && ancestorWithDeviceEventMask == null) {
             return;
         }
@@ -242,8 +238,7 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
         Window childWindow = (this.pointWindow != eventWindow && WindowHelpers.isAncestorOf(this.pointWindow, eventWindow))
                 ? WindowHelpers.getDirectChild(this.pointWindow, eventWindow)
                 : null;
-        MotionNotify motionNotify =
-                new MotionNotify(false, (int) System.currentTimeMillis(), rootWindow, eventWindow, childWindow, (short) rootX, (short) rootY, (short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask);
+        MotionNotify motionNotify = new MotionNotify(false, (int) System.currentTimeMillis(), rootWindow, eventWindow, childWindow, (short) rootX, (short) rootY, (short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask);
 
 //        FalloutInterfaceOverlay2.isCursorLocked
 //                        ? new MotionNotify(false, (int) System.currentTimeMillis(), rootWindow, eventWindow, childWindow, (short) (this.xServer.getScreenInfo().widthInPixels / 2), (short) (this.xServer.getScreenInfo().heightInPixels / 2) ,(short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask)
@@ -268,24 +263,24 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
     }
 
     @Override // com.eltechs.axs.xserver.PointerListener
-    public void pointerButtonPressed(int i) {
-        Window pointerGrabWindow = this.xServer.getGrabsManager().getPointerGrabWindow();
-        if (pointerGrabWindow == null && (pointerGrabWindow = WindowHelpers.getAncestorWithDeviceEventName(this.pointWindow, EventName.BUTTON_PRESS)) != null) {
-            this.xServer.getGrabsManager().initiateAutomaticPointerGrab(pointerGrabWindow);
+    public void pointerButtonPressed(int btnCode) {
+        Window event = this.xServer.getGrabsManager().getPointerGrabWindow();
+        if (event == null && (event = WindowHelpers.getAncestorWithDeviceEventName(this.pointWindow, EventName.BUTTON_PRESS)) != null) {
+            this.xServer.getGrabsManager().initiateAutomaticPointerGrab(event);
         }
-        if (pointerGrabWindow != null) {
+        if (event != null) {
             Mask<KeyButNames> keyButMask = EventHelpers.getKeyButMask(this.xServer);
-            keyButMask.clear(KeyButNames.getFlagForButtonNumber(i));
-            int x = this.xServer.getPointer().getX();
-            int y = this.xServer.getPointer().getY();
-            Point convertRootCoordsToWindow = WindowHelpers.convertRootCoordsToWindow(pointerGrabWindow, x, y);
-            Window rootWindow = this.xServer.getWindowsManager().getRootWindow();
-            Window window = null;
-            if (this.pointWindow != pointerGrabWindow && WindowHelpers.isAncestorOf(this.pointWindow, pointerGrabWindow)) {
-                window = WindowHelpers.getDirectChild(this.pointWindow, pointerGrabWindow);
+            keyButMask.clear(KeyButNames.getFlagForButtonNumber(btnCode));
+            int rootX = this.xServer.getPointer().getX();
+            int rootY = this.xServer.getPointer().getY();
+            Point eventXY = WindowHelpers.convertRootCoordsToWindow(event, rootX, rootY);
+            Window root = this.xServer.getWindowsManager().getRootWindow();
+            Window child = null;
+            if (this.pointWindow != event && WindowHelpers.isAncestorOf(this.pointWindow, event)) {
+                child = WindowHelpers.getDirectChild(this.pointWindow, event);
             }
             Log.d(TAG, "pointerButtonPressed: 发送了ButtonPress事件");
-            pointerGrabWindow.getEventListenersList().sendEventForEventName(new ButtonPress((byte) i, (int) System.currentTimeMillis(), rootWindow, pointerGrabWindow, window, (short) x, (short) y, (short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask), EventName.BUTTON_PRESS);
+            event.getEventListenersList().sendEventForEventName(new ButtonPress((byte) btnCode, (int) System.currentTimeMillis(), root, event, child, (short) rootX, (short) rootY, (short) eventXY.x, (short) eventXY.y, keyButMask), EventName.BUTTON_PRESS);
         }
     }
 

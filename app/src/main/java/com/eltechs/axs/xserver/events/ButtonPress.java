@@ -6,7 +6,7 @@ import com.eltechs.axs.xserver.impl.masks.Mask;
 
 /* loaded from: classes.dex */
 public class ButtonPress extends InputDeviceEvent {
-    public ButtonPress(byte b, int i, Window window, Window window2, Window window3, short s, short s2, short s3, short s4, Mask<KeyButNames> mask) {
-        super(4, b, i, window, window2, window3, s, s2, s3, s4, mask);
+    public ButtonPress(byte btnCode, int timestamp, Window root, Window event, Window child, short rootX, short rootY, short eventX, short eventY, Mask<KeyButNames> mask) {
+        super(4, btnCode, timestamp, root, event, child, rootX, rootY, eventX, eventY, mask);
     }
 }

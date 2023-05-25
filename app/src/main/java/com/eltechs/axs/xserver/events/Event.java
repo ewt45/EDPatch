@@ -18,6 +18,7 @@ public abstract class Event {
 
     private static final Map<Integer,String> idMap = new HashMap<>();
     static {
+        //有关各个event的参数具体说明https://www.x.org/releases/current/doc/xproto/x11protocol.html#events
         idMap.put(2,"InputDeviceEvent/KeyPress");
         idMap.put(3,"InputDeviceEvent/KeyRelease");
         idMap.put(4,"InputDeviceEvent/ButtonPress");
