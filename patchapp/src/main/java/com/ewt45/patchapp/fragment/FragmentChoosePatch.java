@@ -2,7 +2,6 @@ package com.ewt45.patchapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,7 +21,6 @@ import com.ewt45.patchapp.MyApplication;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentChoosePatchBinding;
-import com.ewt45.patchapp.patching.PatcherFile;
 import com.ewt45.patchapp.thread.BuildApk;
 import com.ewt45.patchapp.thread.DecodeApk;
 import com.ewt45.patchapp.thread.Func;
@@ -31,6 +29,7 @@ import com.ewt45.patchapp.thread.FuncFAB;
 import com.ewt45.patchapp.thread.FuncResl;
 import com.ewt45.patchapp.thread.FuncSInput;
 import com.ewt45.patchapp.thread.FuncSelObb;
+import com.ewt45.patchapp.thread.FuncShortcut;
 import com.ewt45.patchapp.thread.SignApk;
 import com.ewt45.patchapp.thread.SignalDone;
 import com.ewt45.patchapp.thread.WriteFuncVer;
@@ -44,7 +43,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +79,7 @@ public class FragmentChoosePatch extends Fragment {
         funcList.add(new FuncWithCheckBox(binding.checkResl, new FuncResl()));
         funcList.add(new FuncWithCheckBox(binding.checkInput, new FuncSInput()));
         funcList.add(new FuncWithCheckBox(binding.checkSelobb, new FuncSelObb()));
+        funcList.add(new FuncWithCheckBox(binding.checkShortcut,new FuncShortcut()));
         return binding.getRoot();
     }
 
@@ -255,7 +254,7 @@ public class FragmentChoosePatch extends Fragment {
 
             changeView(CHECK_DISABLE_WAITING); //操作过程先禁用按钮(草这个要放到判断isEnable下面不然就全是disable了）
             if (patchNew) {
-                mActionPool.submit(new WriteFuncVer(addingFuncList));//添加功能时要获取旧的版本号，所以等功能添加完了，再写入版本号（获取和写入都是写到解包apk的asset里，打包的时候会自动加进去
+//                mActionPool.submit(new WriteFuncVer(addingFuncList));//添加功能时要获取旧的版本号，所以等功能添加完了，再写入版本号（获取和写入都是写到解包apk的asset里，打包的时候会自动加进去）（还是不用这种方法了，手动改的没法识别）
                 mActionPool.submit(new BuildApk());//回编译apk
                 boolean useDefaultKey = requireActivity().getSharedPreferences(MyApplication.PREFERENCE,Context.MODE_PRIVATE).getBoolean("use_default_signature",true);
                 mActionPool.submit(new SignApk(requireContext().getAssets(),useDefaultKey));//签名

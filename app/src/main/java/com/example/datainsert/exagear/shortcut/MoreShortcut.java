@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class MoreShortcut {
+    private static final int VERSION_FOR_EDPATCH = 1;
     private static final String TAG = "MoreShortcut";
     private static final String DESKTOP_FILE_ABSOLUTE_PATH = "desktop_file_absolute_path";
     private static final String CONTAINER_ID = "container_id";
@@ -55,7 +56,7 @@ public class MoreShortcut {
             return;
 
         //给菜单项设置了单独的监听器后，只会调用自己的监听器，不会调用统一设置的监听器
-        popupMenu.getMenu().add("添加为app快捷方式").setOnMenuItemClickListener(item -> {
+        popupMenu.getMenu().add(RR.getS(RR.shortcut_menuItem_addAppSc)).setOnMenuItemClickListener(item -> {
             Log.d(TAG, "onMenuItemClick: 会调用自己的监听器嘛？");
 
 
@@ -126,7 +127,7 @@ public class MoreShortcut {
 
         //如果快捷方式不存在了，就正常启动
         if (container == null || !desktopFile.exists()) {
-            Toast.makeText(a, "快捷方式已失效", Toast.LENGTH_LONG).show();
+//            Toast.makeText(a, "快捷方式已失效", Toast.LENGTH_LONG).show();
             //TO-DO: 删除这个快捷方式
 
             startNormally(a);
@@ -179,10 +180,10 @@ public class MoreShortcut {
         TextView textView = new TextView(a);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         textView.setLineSpacing(0, 1.5f);
-        textView.setText("为该.desktop文件创建app快捷方式，之后可以通过长按app图标 -> 点击快捷方式快速启动程序。快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。\n\n将该exe快捷方式删除后，app快捷方式在下一次启动时会被自动删除。\n\n该功能在安卓7以下无法使用。");
+        textView.setText(RR.getS(RR.shortcut_TipAfterAdd));
 
         CheckBox checkBox = new CheckBox(a);
-        checkBox.setText("下次不再提示");
+        checkBox.setText(RR.getS(RR.shortcut_DontShowUp));
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> QH.getPreference().edit().putBoolean(SHOULD_SHOW_TIP, !isChecked).apply());
         LinearLayout.LayoutParams checkParams = new LinearLayout.LayoutParams(-2, -2);
         checkParams.topMargin = 20;

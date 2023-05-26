@@ -36,12 +36,12 @@
     <string name="fraghelp_body_step_1">从已安装应用列表，或者本地文件中选择exagear的apk，等待解包完成。</string>
     <string name="fraghelp_body_step_2">勾选要添加的功能。有关各功能的详细介绍在下面。</string>
     <string name="fraghelp_body_step_3">点击“开始修改”按钮，耐心等待打包完成。打包进度可以在输出信息中查看。</string>
-    <string name="fraghelp_body_step_4">打包完成后，点击“安装修改后的apk”按钮安装新apk。由于签名变化，可能需要卸载原先的apk。</string>
+    <string name="fraghelp_body_step_4">打包完成后，点击“安装修改后的apk”按钮安装新apk。</string>
     <string name="fraghelp_title2_attention">注意事项</string>
     <string name="fraghelp_body_attention_1">本apk为实验性项目，出现各种bug都是正常现象。</string>
     <string name="fraghelp_body_attention_2">在点击“开始修改”按钮后，请不要点击其他按钮或跳转其他界面，否则可能会出现问题。</string>
     <string name="fraghelp_body_attention_3">打包完成的apk存在于/storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk，可以手动在第三方文件管理器中查看。</string>
-    <string name="fraghelp_body_attention_4">由于打包后重新签名，需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。\n如果需要virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。</string>
+    <string name="fraghelp_body_attention_4">若在设置中取消勾选“使用默认签名”，打包后需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。如果需要保留virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。</string>
     <string name="fraghelp_title1_func">可添加的功能介绍</string>
     <string name="fraghelp_body_cursorimg">在某些游戏内鼠标光标只显示一个很小的叉或者完全不显示，本功能将其图标修改为自定义的鼠标图片。图片保存于apk文件内的assets/mouse.png。</string>
     <string name="fraghelp_body_prefresl">在容器设置里可以自定义进入桌面后的宽高，兼容原本的预设分辨率选择。</string>
@@ -66,5 +66,8 @@
     <string name="tips_waiting">正在修改apk，请勿切换到其他界面，以防出现问题。</string>
     <string name="settings_usedefaultkey">使用默认签名</string>
     <string name="settings_usedefaultkeysummary">若勾选，则通常情况下修改后的apk可以直接覆盖安装，但可能会被误报为病毒。</string>
+    <string name="funcname_shortcut">exe快捷方式直接启动</string>
+    <string name="fraghelp_body_shortcut">长按app图标，选择一个exe快捷方式，点击直接进入图形界面运行exe。\n添加app快捷方式的方法：点击app图标启动应用，在“桌面”页面下点击exe快捷方式菜单项，选择“添加为app快捷方式”。\n注意事项：快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。将该exe快捷方式（.desktop文件）删除后，app快捷方式在下一次启动应用时会被自动删除。该功能在安卓7以下无法使用。</string>
+    <string name="actmsg_funcshortcut">添加功能: exe快捷方式直接启动</string>
 
 </resources>

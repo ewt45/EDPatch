@@ -5,6 +5,7 @@ import static com.ewt45.patchapp.patching.PatcherFile.TYPE_SMALI;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.patching.PatcherFile;
+import com.ewt45.patchapp.patching.SmaliFile;
 
 import java.io.File;
 
@@ -14,14 +15,18 @@ public class FuncResl implements Func {
     private static final String TAG = "FuncResl";
     @Override
     public int getLatestVersion() {
-        return 1;
+        return 2;
     }
     @Override
     public int getInstalledVersion() {
+        int version = SmaliFile.findVersionInClass("com.eltechs.ed.fragments.ContainerSettingsFragment");
+        if(version!=INVALID_VERSION)
+            return version;
+
         try {
             int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
             if (a == INVALID_VERSION && isPatchedOldWay())
-                return 2;
+                return 1;
             else return a;
         } catch (Exception e) {
             e.printStackTrace();

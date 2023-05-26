@@ -32,6 +32,7 @@ import java.util.Arrays;
 
 public class ContainerSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String ARG_CONT_ID = "CONT_ID";
+    private static final int VERSION_FOR_EDPATCH = 2;
     /**用于记录本次dialog期间选定的分辨率*/
     String curResolution;
     private static final String TAG = "ContSettingsFragment";

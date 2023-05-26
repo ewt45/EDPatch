@@ -85,7 +85,7 @@ public class FuncFAB implements Func {
 
         //EDMainActivity
         new SmaliFile()
-                .findSmali(null, "EDMainActivity")
+                .findSmali("com.eltechs.ed.activities.EDMainActivity")
                 .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method protected onCreate(Landroid/os/Bundle;)V")
                 .patch(SmaliFile.LOCATION_BEFORE, ACTION_INSERT,
                         new String[]{"return-void"},
@@ -103,6 +103,10 @@ public class FuncFAB implements Func {
      */
     @Override
     public int getInstalledVersion() {
+        int version  =SmaliFile.findVersionInClass("com.example.datainsert.exagear.FAB.FabMenu");
+        if(version!=INVALID_VERSION)
+            return version;
+
         try {
             int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
             //如果没有版本信息且存在fabmenu的，就是初版只有一个自定义d盘的，版本号为1
@@ -119,7 +123,7 @@ public class FuncFAB implements Func {
     private boolean isPatchedOldWay() {
         boolean patched;
         try {
-            SmaliFile edmain = new SmaliFile().findSmali(null, "EDMainActivity");
+            SmaliFile edmain = new SmaliFile().findSmali( "com.eltechs.ed.activities.EDMainActivity");
             patched = edmain.patchedEarlier(".method protected onCreate(Landroid/os/Bundle;)V",
                     SmaliFile.LOCATION_BEFORE, ACTION_INSERT,
                     new String[]{"return-void"},
@@ -168,7 +172,7 @@ public class FuncFAB implements Func {
             };
             //EDMainActivity
             new SmaliFile()
-                    .findSmali(null, "EDMainActivity")
+                    .findSmali("com.eltechs.ed.activities.EDMainActivity")
                     .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method static constructor <clinit>()V")
                     .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_DELETE, strArr1, strArr1)
                     .patch(SmaliFile.LOCATION_BEFORE, ACTION_INSERT,
@@ -181,7 +185,7 @@ public class FuncFAB implements Func {
 
             //StartGuest
             new SmaliFile()
-                    .findSmali(null, "StartGuest")
+                    .findSmali("com.eltechs.ed.startupActions.StartGuest")
                     .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method static constructor <clinit>()V")
                     .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_DELETE, strArr1, strArr1)
                     .patch(SmaliFile.LOCATION_BEFORE, ACTION_INSERT,
@@ -200,7 +204,7 @@ public class FuncFAB implements Func {
                     "invoke-direct {v3, v4, v5}, Ljava/io/File;-><init>(Ljava/io/File;Ljava/lang/String;)V",
             };
             new SmaliFile()
-                    .findSmali(null, "CreateLaunchConfiguration")
+                    .findSmali("com.eltechs.ed.startupActions.CreateLaunchConfiguration")
                     .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method public execute()V")
                     .patch(LOCATION_AFTER, ACTION_INSERT, strArr2, new String[]{"invoke-virtual {v3}, Ljava/io/File;->delete()Z"})
                     .close();

@@ -25,7 +25,7 @@ public class FragmentHelp extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_help,container,false);
+        View rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.func_recycler);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -34,17 +34,26 @@ public class FragmentHelp extends Fragment {
         recyclerView.setAdapter(new FuncdescpAdapter(
                 getResources().getStringArray(R.array.func_name),
                 getResources().getStringArray(R.array.func_description),
-                new int[]{R.drawable.drived, R.drawable.cstmctrl, R.drawable.showcursor, R.drawable.customresl, R.drawable.softinput, R.drawable.selectobb}
+                new int[]{
+                        R.drawable.drived,
+                        R.drawable.cstmctrl,
+                        R.drawable.showcursor,
+                        R.drawable.customresl,
+                        R.drawable.softinput,
+                        R.drawable.selectobb,
+                        0
+                }
         ));
         return rootView;
     }
 
 
-    public static class FuncdescpAdapter extends RecyclerView.Adapter<FuncdescpAdapter.ViewHolder>{
+    public static class FuncdescpAdapter extends RecyclerView.Adapter<FuncdescpAdapter.ViewHolder> {
         final String[] titles;
         final String[] descriptions;
         final @DrawableRes int[] images;
-        public FuncdescpAdapter(String[] titles, String[] strings, int[] images){
+
+        public FuncdescpAdapter(String[] titles, String[] strings, int[] images) {
             this.titles = titles;
             this.descriptions = strings;
             this.images = images;
@@ -53,7 +62,7 @@ public class FragmentHelp extends Fragment {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_func_help_descp,viewGroup,false);
+            View rootView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_func_help_descp, viewGroup, false);
             return new ViewHolder(rootView);
         }
 
@@ -61,7 +70,7 @@ public class FragmentHelp extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
             viewHolder.title.setText(titles[i]);
             viewHolder.description.setText(descriptions[i]);
-            if(images[i]!=0)
+            if (images[i] != 0)
                 viewHolder.image.setImageResource(images[i]);
 
         }
@@ -71,10 +80,11 @@ public class FragmentHelp extends Fragment {
             return titles.length;
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder{
+        public static class ViewHolder extends RecyclerView.ViewHolder {
             private final TextView title;
             private final TextView description;
             private final GifImageView image;
+
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 title = itemView.findViewById(R.id.title);

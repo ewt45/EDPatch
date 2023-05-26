@@ -23,6 +23,7 @@
         <item>@string/funcname_prefresl</item>
         <item>@string/funcname_softinput</item>
         <item>@string/funcname_selobb</item>
+        <item>@string/funcname_shortcut</item>
     </string-array>
 
     <string-array name="func_description">
@@ -32,6 +33,8 @@
         <item>@string/fraghelp_body_prefresl</item>
         <item>@string/fraghelp_body_softinput</item>
         <item>@string/fraghelp_body_selobb</item>
+        <item>@string/fraghelp_body_shortcut</item>
+
     </string-array>
 
 </resources>

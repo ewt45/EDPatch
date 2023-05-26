@@ -8,9 +8,9 @@
     <string name="actmsg_buildapk">build apk</string>
     <string name="actmsg_decodeapk">decode apk</string>
     <string name="actmsg_funccursor">add function: show cursor</string>
-    <string name="funcname_cursorimg">show cursor</string>
     <string name="actmsg_funcfab">add function: float action button</string>
     <string name="actmsg_funcresl">add function: custom resolution</string>
+    <string name="funcname_cursorimg">show cursor</string>
     <string name="funcname_fab">float action button\n- Custom location of drive D\n- Custom Control</string>
     <string name="funcname_prefresl">custom resolution</string>
     <string name="funcname_softinput">android 11+ soft-input no-crashing</string>
@@ -34,7 +34,7 @@
     <string name="fraghelp_body_step_1">Select exagear apk from installed apks list or local files. Wait until decoded session completes.</string>
     <string name="fraghelp_body_step_2">Check the function you want to add. Function descriptions  are described below.</string>
     <string name="fraghelp_body_step_3">Click the \"start patch\" button and wait patientlly until building completes. The building info can be found in the log info.</string>
-    <string name="fraghelp_body_step_4">After building the apk, click the \"install patched apk\" button to install it. Sigunature may change, so you might need to uninstalled the original installed apk.</string>
+    <string name="fraghelp_body_step_4">After building the apk, click the \"install patched apk\" button to install it.</string>
     <string name="fraghelp_body_attention_1">This apk is an experimental project, and it is not guaranteed that the function will be added successfully</string>
     <string name="fraghelp_title1_func">Function descriptions</string>
     <string name="fraghelp_body_cursorimg">In some games, the mouse cursor only displays  as a small cross or does not display at all. This function changes the cursor to a customized mouse image. The image is saved in assets/mouse.png in the apk file.</string>
@@ -43,7 +43,7 @@
     <string name="action_guide">Guide</string>
     <string name="fraghelp_body_attention_2">After clicking\"start patch\" button, please don\'t click or move to other view, otherwise problems may occur.</string>
     <string name="fraghelp_body_attention_3">"The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. You can check it manually with third-party file manager app. "</string>
-    <string name="fraghelp_body_attention_4">Since the patched apk is resigned, you may need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) before installing it.\nIf you need virgl overlay, please resign them with the same signature manually.</string>
+    <string name="fraghelp_body_attention_4">If  the option \" use default signature\" in Settings is unchecked, after patching you need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) first. If you need virgl overlay, please resign them with the same signature manually.</string>
     <string name="fraghelp_body_fab">Add a floating action button at the right-end of the layout, providing some extra functions. Currently functions: Changing the drive d location.</string>
     <string name="fraghelp_body_drived">The location of drive D inside the container is normally corresponding to /storage/emulated/0/Donwload or Exagear directory in android file system.\nThis function allows user to change the directory\'s location and customize its name. There will be an availability check after changing the location. If changed successfully, app needs to be restart so that the location will be updated.</string>
     <string name="fraghelp_body_softinput">Fix the crash of showing softinput method on android11 and above. After fixed, the launching of input method will be delayed for one second.</string>
@@ -52,19 +52,24 @@
     <string name="settings_delpatcherapk">clear patcher apk</string>
     <string name="settings_delpatcherapksummary">Generally not used</string>
     <string name="settings_version">version</string>
+    <string name="settings_credits">Third-party project dependencies</string>
+    <string name="settings_update">Update</string>
     <string name="settings_usedefaultkey">Use the default signature</string>
-    <string name="settings_usedefaultkeysummary">If checked, the patched APK can usually be installed without unsintalling first or resigning manually , but it may be recognized as a virus.</string>
+    <string name="settings_usedefaultkeysummary">If checked, No need to uninstall original one or resign the patched apk manually , but it may be recognized as virus.</string>
 
     <string name="tips_backup">Patched apk can\'t be restored, so please backup first!</string>
     <string name="tips_check_guide">Please check the Guide in action bar\'s menu before patching.</string>
+    <string name="tips_waiting">Patching apk, please don\'t switch to other interface in case something goes wrong.</string>
+
     <string name="tv_patchstep2">2. check functions</string>
     <string name="tv_patchstep3">3. action</string>
     <string name="fragment_patch_label">Main</string>
-    <string name="settings_credits">Third-party project dependencies</string>
-    <string name="settings_update">Update</string>
+
     <string name="fraghelp_title2_brief">About</string>
-    <string name="fraghelp_body_brief">After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. \nEven if  a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\nSo I\'m wondering if I can make an application. The user only needs to click a button and wait for the automatic modification to complete, then install the new apk. \nThat\'s why this application was born. Due to my limited knowledge, 100% modification success or compatibility with all versions of exagear is not guaranteed.</string>
     <string name="funcname_fab_cstmCtrl">Custom Control</string>
+    <string name="fraghelp_body_brief">After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. \nEven if  a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\nSo I\'m wondering if I can make an application. The user only needs to click a button and wait for the automatic modification to complete, then install the new apk. \nThat\'s why this application was born. Due to my limited knowledge, 100% modification success or compatibility with all versions of exagear is not guaranteed.</string>
     <string name="fraghelp_body_cstmCtrl">Most of the options have descriptions that show up when long pressing. Select \"default\" of Control in container\'s properties. After entering the container, three-finger click to edit.\nMouse: Toggle visibility of mouse cursor. Switch gesture modes (default mode and touchpad mode) . Set mouse move speed.\nButtons: Customize buttons ( keys, text and position) . Switch layout mode (sidebar and free position) . Mouse button keys and joystick style buttons are available. \nStyle: Customize button color, transparency, size, sidebar background color.</string>
-    <string name="tips_waiting">Patching apk, please don\'t switch to other interface in case something goes wrong.</string>
+    <string name="funcname_shortcut">launch exe shortcut directly</string>
+    <string name="fraghelp_body_shortcut">Long press the app icon, select an exe shortcut, and click to run it.\nHow to add an app shortcut: Click the menu of an exe shortcut on the \"Desktop\" page, and select \"Add as app shortcut\".\nNote: A maximum of four shortcuts can be added. Before launching from shortcut, ensure that the app is not running at background. After deleting the exe shortcut ( .desktop file), the app shortcut will be automatically deleted the next time launching the app . This feature requires Android 7 and above.</string>
+    <string name="actmsg_funcshortcut">add function: launch exe shortcut directly</string>
 </resources>

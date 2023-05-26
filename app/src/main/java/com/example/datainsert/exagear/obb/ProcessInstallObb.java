@@ -16,6 +16,7 @@ import java.io.File;
 
 public class ProcessInstallObb {
     static String TAG = "ProcessInstallObb";
+    private static final int VERSION_FOR_EDPATCH = 2;
 
     /**
      * 检查是否需要解压数据包，如果需要是否存在，如果不存在显示fragment

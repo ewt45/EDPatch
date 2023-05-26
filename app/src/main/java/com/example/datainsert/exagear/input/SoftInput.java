@@ -12,8 +12,9 @@ import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 
 public class SoftInput {
-    static String TAG = "SoftInput";
-    static boolean showing = false;
+    private static final String TAG = "SoftInput";
+    private static boolean showing = false;
+    private static final int VERSION_FOR_EDPATCH = 2;
 
     public static void toggle() {
         InputMethodManager imm = (InputMethodManager) Globals.getAppContext().getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);

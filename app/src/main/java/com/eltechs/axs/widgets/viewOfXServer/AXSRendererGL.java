@@ -21,6 +21,7 @@ import com.eltechs.axs.xserver.WindowAttributeNames;
 import com.eltechs.axs.xserver.impl.drawables.gl.PersistentGLDrawable;
 import com.eltechs.axs.xserver.impl.masks.Mask;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.cursor.CursorImage;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

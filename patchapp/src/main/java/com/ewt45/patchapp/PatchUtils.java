@@ -100,6 +100,8 @@ public class PatchUtils {
 
     /**
      * 不使用$PACKAGE_NAME了，自动检测com.eltechs.ed包名吧
+     * <p/>
+     * 会转换包含"com/eltechs/ed"的字符串和包含"com.eltechs.ed"的字符串
      *
      * @param origin
      * @return

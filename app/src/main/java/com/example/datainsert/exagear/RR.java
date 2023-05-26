@@ -116,6 +116,10 @@ public class RR {
     public static int abtFab_title = 100;
     public static int abtFab_info = 101;
     public static int firstLaunch_snack = 102;
+    //app快捷方式
+    public static int shortcut_menuItem_addAppSc = 103;
+    public static int shortcut_DontShowUp = 104;
+    public static int shortcut_TipAfterAdd = 105;
 
 
     private static String locale;
@@ -234,6 +238,11 @@ public class RR {
                         "  <li>您可以通过“ED自助补丁”将第三方功能加入原版apk中：https://github.com/ewt45/EDPatch/releases。请勿用于商业用途。</li>\n" +
                         "</ul>",
                 "额外功能可以在右下操作按钮中找到。",
+
+                "添加为app快捷方式",
+                "不再显示此提示",
+                "为该.desktop文件创建app快捷方式，之后可以通过长按app图标 -> 点击快捷方式快速启动程序。快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。\n\n将该exe快捷方式删除后，app快捷方式在下一次启动时会被自动删除。\n\n该功能在安卓7以下无法使用。",
+
         };
         String[] enStrings = new String[]{
                 "confirm",
@@ -348,6 +357,11 @@ public class RR {
                         "  <li>You can add this and more features into Exagear by EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
                         "</ul>",
                 "Extra features can be found in the bottom left button.",
+
+                "Add as app shortcut",
+                "Don't show up again",
+                "Creating an app shortcut for this .desktop file. Later you can launch it by long pressing APP icon and clicking the app shortcut. A maximum of four shortcuts can be added. Before launching from shortcut, ensure that the app is not running at background. \n\nAfter deleting the exe shortcut ( .desktop file), the app shortcut will be automatically deleted the next time launching the app . \n\nThis feature requires Android 7 and above.",
+
         };
 
         String[] ruStrings = new String[]{
@@ -463,10 +477,14 @@ public class RR {
                         "  <li>Вы можете добавить эту и другие функции в Exagear с помощью EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
                         "</ul>",
                 "Для изменения расположения диска D нажать ⚙️",
+
+                "📌 Добавить как внешний ярлык",
+                "Не показывать снова",
+                "Создание ярлыка программы для файла .desktop. После вы можете запустить его, нажав и удерживая значок приложения и кликнуть на ярлык программы. Можно добавить максимум четыре ярлыка. Перед запуском с ярлыка убедитесь, что приложение не работает в фоновом режиме. \n\nПосле удаления ярлыка exe (файл .desktop) внешний ярлык будет автоматически удален при следующем запуске приложения. \n\nДля этой функции требуется Android 7 и выше.",
+
         };
 
         stringMap.put("zh", zhStrings);
-
         stringMap.put("en", enStrings);
         stringMap.put("ru", ruStrings);
     }

@@ -15,6 +15,9 @@ public class FuncCursor implements Func {
 
     @Override
     public int getInstalledVersion() {
+        int version = SmaliFile.findVersionInClass("com.example.datainsert.exagear.cursor.CursorImage");
+        if (version != INVALID_VERSION)
+            return version;
         try {
             int a = PatcherFile.getAddedFuncVer(getClass().getSimpleName());
             if (a == INVALID_VERSION && isPatchedOldWay())
@@ -28,11 +31,11 @@ public class FuncCursor implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 1;
+        return 2;
     }
 
     private boolean isPatchedOldWay() {
-        SmaliFile testFile = new SmaliFile().findSmali("com.eltechs.axs.widgets.viewOfXServer", "AXSRendererGL");
+        SmaliFile testFile = new SmaliFile().findSmali("com.eltechs.axs.widgets.viewOfXServer.AXSRendererGL");
         boolean patched;
         try {
             patched = testFile.patchedEarlier(
@@ -59,8 +62,8 @@ public class FuncCursor implements Func {
     @Override
     public Integer call() throws Exception {
         //如果首次安装，修改ex的dex (version=1用的是png图片方法，也需要首次安装）
-        int installedVersion  = getInstalledVersion();
-        if (installedVersion == INVALID_VERSION )
+        int installedVersion = getInstalledVersion();
+        if (installedVersion == INVALID_VERSION)
             firstPatch();
 
         //复制自己的类和光标
@@ -83,7 +86,7 @@ public class FuncCursor implements Func {
 
         String[] dstDelete = new String[]{"invoke-direct {p0}, Lcom/eltechs/axs/widgets/viewOfXServer/AXSRendererGL;->createXCursorBitmap()Landroid/graphics/Bitmap;"};
         String[] dstAdd = new String[]{"invoke-static {}, Lcom/example/datainsert/exagear/cursor/CursorImage;->createBitmap()Landroid/graphics/Bitmap;"};
-        new SmaliFile().findSmali("com.eltechs.axs.widgets.viewOfXServer", "AXSRendererGL")
+        new SmaliFile().findSmali("com.eltechs.axs.widgets.viewOfXServer.AXSRendererGL")
                 .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method public constructor <init>")
                 .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_DELETE, origin1, dstDelete)
                 .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_INSERT, origin2, dstAdd)

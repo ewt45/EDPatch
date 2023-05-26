@@ -4,11 +4,11 @@ import com.eltechs.axs.xserver.impl.masks.Mask;
 
 /* loaded from: classes.dex */
 public class WindowAttributes {
-    private int borderWidth;
-    private Cursor cursor;
     private final Window window;
     private final WindowChangeListenersList windowChangeListenersList;
     private final WindowClass windowClass;
+    private int borderWidth;
+    private Cursor cursor;
     private BackingStore backingStore = BackingStore.NOT_USEFUL;
     private BitGravity bitGravity = BitGravity.CENTER;
     private WinGravity winGravity = WinGravity.CENTER;
@@ -21,19 +21,6 @@ public class WindowAttributes {
      * 禁止向父窗口传递的事件类型。如果要找禁止在本窗口或子窗口传递的事件类型，应该看WindowListener（XClientWindowListener）内的eventMask
      */
     private Mask<EventName> doNotPropagateMask = Mask.emptyMask(EventName.class);
-
-    /* loaded from: classes.dex */
-    public enum BackingStore {
-        NOT_USEFUL,
-        WHEN_MAPPED,
-        ALWAYS
-    }
-
-    /* loaded from: classes.dex */
-    public enum WindowClass {
-        INPUT_OUTPUT,
-        INPUT_ONLY
-    }
 
     public WindowAttributes(WindowClass windowClass, WindowChangeListenersList windowChangeListenersList, Window window) {
         this.windowClass = windowClass;
@@ -95,12 +82,13 @@ public class WindowAttributes {
 
     /**
      * 获取该窗口对应的光标
+     *
      * @return 自己的光标。当自己的光标为null时，尝试获取父窗口的光标并返回
      */
     public Cursor getCursor() {
         //如果自己光标为null，但需要用光标了，则使用父窗口的光标
-        if(cursor==null)
-            return window.getParent()!=null?window.getParent().getWindowAttributes().getCursor():null;
+        if (cursor == null && window.getParent()!=null)
+            return window.getParent().getWindowAttributes().getCursor();
         return this.cursor;
     }
 
@@ -137,5 +125,18 @@ public class WindowAttributes {
             this.cursor = cursor;
         }
         this.windowChangeListenersList.sendWindowAttributeChanged(this.window, attrMask);
+    }
+
+    /* loaded from: classes.dex */
+    public enum BackingStore {
+        NOT_USEFUL,
+        WHEN_MAPPED,
+        ALWAYS
+    }
+
+    /* loaded from: classes.dex */
+    public enum WindowClass {
+        INPUT_OUTPUT,
+        INPUT_ONLY
     }
 }

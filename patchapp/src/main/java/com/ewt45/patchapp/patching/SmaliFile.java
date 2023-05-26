@@ -1,6 +1,7 @@
 package com.ewt45.patchapp.patching;
 
 import static com.ewt45.patchapp.PatchUtils.scanAndParsePkgName;
+import static com.ewt45.patchapp.thread.Func.INVALID_VERSION;
 
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -28,36 +29,35 @@ public class SmaliFile {
     public final static int ACTION_DELETE = 0;
     public final static int ACTION_INSERT = 1;
     public final static int LIMIT_TYPE_METHOD = 0;
-    static String TAG = "SmaliFile";
+    /**
+     * java类中用于记录该功能版本号的成员变量
+     */
+    private static final String VERSION_FIELD_PREFIX = ".field private static final VERSION_FOR_EDPATCH:I = ";
+    private static final String TAG = "SmaliFile";
     File mFile;//Smali对应的File
     private String mCls;//smali类名。格式如：Lcom/eltechs/ed/AppRunGuide;
     private String mMethodLimit;//限制范围。目前仅想到了方法限制
     private List<String> mAllLines = new ArrayList<>(); //文本转为字符串列表，一个字符串为一行
 
-    public SmaliFile() {
 
-    }
 
     /**
      * 寻找到一个smali文件
+     * fullclassname 格式为： 类的完成路径，包名+类名。 com.package.classname
      *
-     * @param pkgName   类所属包名。不确定的话可以为null，会遍历查找 格式为com.package.name
-     * @param className 类名
      * @return this。如果没找到对应smali文件会返回null，此后不应再对该实例进行操作
      */
-    public SmaliFile findSmali(@Nullable String pkgName, String className) {
-        File smaliRoot = new File(PatchUtils.getPatchTmpDir() + "/tmp/smali");
-        try {
-            mFile = pkgName == null
-                    ? traverseDir(smaliRoot, className)
-                    : new File(smaliRoot.getAbsolutePath() + "/" + pkgName.replace(".", "/") + "/" + className + ".smali");
-        } catch (Exception e) {
-            e.printStackTrace();
-            mFile = null;
-            //如果没找到smali，应返回null
+    public SmaliFile findSmali(String fullClassName) {
+
+        //在这里转换一下包名吧
+        fullClassName = PatchUtils.scanAndParsePkgName(new String[]{fullClassName}).get(0);
+        mFile = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/tmp/smali/" + fullClassName.replace(".", "/") + ".smali");
+
+        //文件不存在就返回null吧
+        if(!mFile.exists()){
+            Log.e(TAG, "findSmali: "+fullClassName+".smali不存在");
             return null;
         }
-        Log.d(TAG, "locate: 找到smali：" + mFile);
         try {
             init();
         } catch (Exception e) {
@@ -193,7 +193,6 @@ public class SmaliFile {
         return this;
     }
 
-
     /**
      * 将修改范围缩小到某一范围（比如某个方法内），如果有多个patch，请注意是否需要修改limit
      *
@@ -228,7 +227,7 @@ public class SmaliFile {
         }
         //更新包名
         origin = scanAndParsePkgName(origin).toArray(new String[0]);
-        patch  = scanAndParsePkgName(patch).toArray(new String[0]);
+        patch = scanAndParsePkgName(patch).toArray(new String[0]);
         //找到函数中定位代码的位置
         boolean locFound = false;
         for (int i = patchPosition; i < mAllLines.size(); i++) {
@@ -295,31 +294,36 @@ public class SmaliFile {
 
     /**
      * 删除一整个方法
+     *
      * @param methodName 能够标识该行在smali文件中为某方法的起点。例如：.method public getCursor()Lcom/eltechs/axs/xserver/Cursor;
      */
     public SmaliFile deleteMethod(String methodName) {
-        boolean startDel=false;
-        for(int ind=0;ind<mAllLines.size(); ind++){
+        boolean startDel = false;
+        for (int ind = 0; ind < mAllLines.size(); ind++) {
             //处于函数内部
-            if(startDel){
+            if (startDel) {
                 //到结尾了，删除后停止循环
-                if(mAllLines.get(ind).startsWith(".end method")){
+                if (mAllLines.get(ind).startsWith(".end method")) {
                     mAllLines.remove(ind);
                     break;
-                }else{
+                } else {
                     mAllLines.remove(ind);
                     ind--;
                     continue;
                 }
             }
             //如果找到函数起点，设置flag。从此往后开始删除
-            if(mAllLines.get(ind).contains(methodName)){
+            if (mAllLines.get(ind).contains(methodName)) {
                 ind--; //别忘了第一句也要删
-                startDel=true;
+                startDel = true;
             }
         }
-        return  this;
+        return this;
     }
+
+//    private String parsePkgName(String str) {
+//        return str.replace("$PACKAGE_NAME", PatchUtils.getPackageName());
+//    }
 
     /**
      * 生成修改后的文件。
@@ -349,12 +353,6 @@ public class SmaliFile {
         Log.d(TAG, "close: 生成新文件，关闭");
     }
 
-//    private String parsePkgName(String str) {
-//        return str.replace("$PACKAGE_NAME", PatchUtils.getPackageName());
-//    }
-
-
-
     public String getmCls() {
         return mCls;
     }
@@ -379,20 +377,41 @@ public class SmaliFile {
 
     /**
      * 在该文件中是否能找到这包含该字符串的一行
+     *
      * @param s 要寻找的字符串
      */
     public boolean containsLine(String s) {
-        for(String line:mAllLines){
-            if(line.contains("toggleSoftInput")){
-                Log.d(TAG, "containsLine: ");
-            }
-
-            if(line.contains(PatchUtils.scanAndParsePkgName(new String[]{s}).get(0)))
+        for (String line : mAllLines) {
+            if (line.contains(PatchUtils.scanAndParsePkgName(new String[]{s}).get(0)))
                 return true;
         }
-        return  false;
+        return false;
     }
 
+
+    /**
+     * 从某个smali文件中，尝试寻找成员变量，以获取当前功能的安装版本号
+     * <p/>
+     * java格式应该如：private static final int VERSION_FOR_EDPATCH = 1;
+     * <p/>
+     * smali格式应该如：.field private static final VERSION_FOR_EDPATCH:I = 0x1
+     *
+     * @param targetClassName 完整包名和类名。格式如：com.package.SomeClass
+     * @return 版本号，如果找不到返回0 （还是说抛出异常比较好？）
+     */
+    public static int findVersionInClass(String targetClassName){
+        SmaliFile smaliFile = new SmaliFile().findSmali(targetClassName);
+        int version = INVALID_VERSION;
+        if(smaliFile!=null){
+            for (String line : smaliFile.mAllLines)
+                if (line.contains(VERSION_FIELD_PREFIX)){
+                    version =  Integer.parseInt(line.substring(VERSION_FIELD_PREFIX.length()+"0x".length()), 16);
+                    break;
+                }
+            smaliFile.close();
+        }
+        return version;
+    }
 
 
 //    public static class ModPosition {

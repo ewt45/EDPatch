@@ -51,7 +51,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
                 msg = b?"patcher.apk删除成功":"patcher.apk删除失败";
             }else
                 msg="patcher.apk不存在";
-            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
             return true;
         });
 

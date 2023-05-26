@@ -38,7 +38,7 @@ public class FuncCursorV2 implements Func {
             firstPatch();
         //换新的方法，改WindowAttributes
         new SmaliFile()
-                .findSmali("com.eltechs.axs.xserver","WindowAttributes")
+                .findSmali("com.eltechs.axs.xserver.WindowAttributes")
                 .deleteMethod(".method public getCursor()Lcom/eltechs/axs/xserver/Cursor;")
                 .addMethod(PatcherFile.getSmaliMethod("/com/eltechs/axs/xserver/WindowAttributes.smali", ".method public getCursor()Lcom/eltechs/axs/xserver/Cursor;"))
                 .close();

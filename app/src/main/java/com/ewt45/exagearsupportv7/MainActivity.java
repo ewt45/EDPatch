@@ -56,7 +56,9 @@ public class MainActivity extends FrameworkActivity {
 //            Globals.setApplicationState(new ApplicationStateObject(EDApplicationState.class));
 //        }
 
+
     }
+
 
     String TAG = "MainActivity";
     private AppBarConfiguration mAppBarConfiguration;

@@ -24,6 +24,19 @@ import com.example.datainsert.exagear.RSIDHelper;
 public class FabMenu {
     private static final String TAG = "FabMenu";
 
+
+
+    /*
+    //由多个版本号构成，每个占4位
+    自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+    1：初版（旧版没写入版本号）
+    2：初次安装后会自动创建Exagear文件夹
+     */
+    private static final int VERSION_FOR_EDPATCH = 0x2
+                    | 0x1 << 4;//自定义按键的版本号
+
+
+
     @SuppressLint("RtlHardcoded")
     public FabMenu(AppCompatActivity a) {
         FloatingActionButton fab = new FloatingActionButton(a);
