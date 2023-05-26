@@ -16,14 +16,13 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 1. Select exagear apk from installed apks list or local files. Wait until decoded session completes.
 2. Check the function you want to add. Function descriptions  are described below.
 3. Click the "start patch" button and wait patientlly until building completes. The building info can be found in the log info.
-4. After building the apk, click the "install patched apk" button to install it. Sigunature may change, so you might need to uninstalled the original installed apk.
+4. After building the apk, click the "install patched apk" button to install it.
 
 ### Attention
 1. This apk is an experimental project, and it is not guaranteed that the function will be added successfully
 2. After clicking"start patch" button, please don't click or move to other view, otherwise problems may occur.
 3. The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. You can check it manually with third-party file manager app. 
-4. Since the patched apk is resigned, you may need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) before installing it. \
-If you need virgl overlay, please resign them with the same signature manually.
+4. If  the option " use default signature" in Settings is unchecked, after patching you need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) first. If you need virgl overlay, please resign them with the same signature manually.
 
 
 ## Available Functions
@@ -34,7 +33,7 @@ If you need virgl overlay, please resign them with the same signature manually.
 - [custom resolution](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [android 11+ soft-input no-crashing](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [select obb manually](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
-
+- launch exe shortcut directly
 
 ## Third-party project dependencies
 
@@ -47,15 +46,21 @@ If you need virgl overlay, please resign them with the same signature manually.
 
 
 ## Change Log
-
+- Now Sign apks with default signature. No need to uninstall original one or resign the patched apk manually , but it may be recognized as virus.
+- New functions available: launch exe shortcut directly
+  - Long press the app icon, select an exe shortcut, and click to run it.
+  - How to add an app shortcut: Click the menu of an exe shortcut on the "Desktop" page, and select "Add as app shortcut".
+  - Note: A maximum of four shortcuts can be added. Before launching from shortcut, ensure that the app is not running at background. After deleting the exe shortcut ( .desktop file), the app shortcut will be automatically deleted the next time launching the app . This feature requires Android 7 and above.
+- Old functions updated:
+  - show cursor: now try to read the image from `z:/opt/mouse.png` first, then `apk/assets/mouse.png`.
 ### v0.0.2
 - EDPatch interface and available functions support Russian now, thanks to Ēlochnik.
-- Add a new function: Custom Control
+- New functions available: Custom Control
   - Most of the options have descriptions that show up when long pressing. Select "default" of Control in container's properties. After entering the container, three-finger click to edit.
   - Mouse: Toggle visibility of mouse cursor. Switch gesture modes (default mode and touchpad mode) . Set mouse move speed.
   - Buttons: Customize buttons ( keys, text and position) . Switch layout mode (sidebar and free position) . Mouse button keys and joystick style buttons are available.
   - Style: Customize button color, transparency, size, sidebar background color.
-- Update old functions: 
+- Old functions updated: 
   - android 11+ soft-input no-crashing: Android 11 and above show/hide logic fix, use `toggleSoftInput()` method (In this way the input method can't hide by clicking from the popup menu, not a big problem, the android back key will be able to hide it). Change the time delay of calling out the input method from 1 second to 0.2 seconds.
   - select obb manually: The position of the text prompt is changed. Now after selecting the file, the text will be replaced by `obb selected, decompressing` or `the selected file is not obb`, in case the user selects the right obb without the correct prompt and selects something again. Display the selected file name as a toast. Disable the select button when unpacking.
   - Custom location of drive D: After the app starts, if there is no preset folder (default is `Exagear`), it will try to create it automatically.

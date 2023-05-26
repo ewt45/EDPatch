@@ -21,13 +21,13 @@
 1. 从已安装应用列表，或者本地文件中选择exagear的apk，等待解包完成。
 2. 勾选要添加的功能。有关各功能的详细介绍在下面。
 3. 点击“开始修改”按钮，耐心等待打包完成。打包进度可以在输出信息中查看。
-4. 打包完成后，点击“安装修改后的apk”按钮安装新apk。由于签名变化，可能需要卸载原先的apk。
+4. 打包完成后，点击“安装修改后的apk”按钮安装新apk。
 
 ### 注意事项
 1. 本apk为实验性项目，出现各种bug都是正常现象。
 2. 在点击“开始修改”按钮后，请不要点击其他按钮或跳转其他界面，否则可能会出现问题。
 3. 打包完成的apk存在于/storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk，可以手动在第三方文件管理器中查看。
-4. 由于打包后重新签名，需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。如果需要virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。
+4. 若在设置中取消勾选“使用默认签名”，打包后需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。如果需要保留virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。
 
 ## 目前可添加的功能
 - [悬浮操作按钮](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
@@ -37,6 +37,7 @@
 - [自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [手动选择obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
+- exe快捷方式直接启动
 
 ## 第三方依赖
 
@@ -49,6 +50,17 @@
 
 
 ## 更新历史
+
+### v0.0.3
+- 修改的apk使用默认密钥签名，安装修改后的apk不再需要手动重新签名或卸载原有apk。
+- 添加新功能：exe快捷方式直接启动
+  - 长按app图标，选择一个exe快捷方式，点击直接进入图形界面运行exe。
+  - 添加app快捷方式的方法：点击app图标启动应用，在“桌面”页面下点击exe快捷方式菜单项，选择“添加为app快捷方式”。
+  - 注意事项：快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。将该exe快捷方式（.desktop文件）删除后，app快捷方式在下一次启动应用时会被自动删除。该功能在安卓7以下无法使用。
+
+- 更新旧功能：
+  - 强制显示鼠标光标：现在优先从`z:/opt/mouse.png`获取光标图片，如果没有再去`apk/assets/mouse.png`找。
+
 
 ### v0.0.2
 - ED自助补丁界面和支持打入的功能添加了对俄语的支持，感谢 Ēlochnik

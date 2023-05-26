@@ -37,7 +37,7 @@
     <string name="fraghelp_body_step_4">After building the apk, click the \"install patched apk\" button to install it.</string>
     <string name="fraghelp_body_attention_1">This apk is an experimental project, and it is not guaranteed that the function will be added successfully</string>
     <string name="fraghelp_title1_func">Function descriptions</string>
-    <string name="fraghelp_body_cursorimg">In some games, the mouse cursor only displays  as a small cross or does not display at all. This function changes the cursor to a customized mouse image. The image is saved in assets/mouse.png in the apk file.</string>
+    <string name="fraghelp_body_cursorimg">In some games, the mouse cursor only displays  as a small cross or does not display at all. This function changes the cursor to a customized mouse image. The image should be saved in z:/opt/mouse.png or assets/mouse.png in the apk file, The former has higher priority.</string>
     <string name="fraghelp_body_prefresl">In the container settings, allow users to customize desktop\'s resolution. It is compatible with the original preset resolution selection.</string>
     <string name="fraghelp_title1_guide">Usage</string>
     <string name="action_guide">Guide</string>

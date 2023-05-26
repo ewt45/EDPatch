@@ -43,7 +43,7 @@
     <string name="fraghelp_body_attention_3">打包完成的apk存在于/storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk，可以手动在第三方文件管理器中查看。</string>
     <string name="fraghelp_body_attention_4">若在设置中取消勾选“使用默认签名”，打包后需要卸载掉与其签名不同但包名或共享用户ID相同的应用（一般是各种版本的exagear和virgl overlay）才能安装新apk。如果需要保留virgl overlay，请去文件管理器中自己使用同一签名秘钥，手动对二者签名，再安装。</string>
     <string name="fraghelp_title1_func">可添加的功能介绍</string>
-    <string name="fraghelp_body_cursorimg">在某些游戏内鼠标光标只显示一个很小的叉或者完全不显示，本功能将其图标修改为自定义的鼠标图片。图片保存于apk文件内的assets/mouse.png。</string>
+    <string name="fraghelp_body_cursorimg">在某些游戏内鼠标光标只显示一个很小的叉或者完全不显示，本功能将其图标修改为自定义的鼠标图片。图片读取路径：模拟器内z:/opt/mouse.png或apk文件内assets/mouse.png，前者优先级更高。</string>
     <string name="fraghelp_body_prefresl">在容器设置里可以自定义进入桌面后的宽高，兼容原本的预设分辨率选择。</string>
     <string name="fraghelp_body_fab">在主界面右下角显示一个悬浮操作按钮，提供一些额外功能。目前包含的功能有：切换d盘路径。</string>
     <string name="fraghelp_body_drived">容器内windows的d盘一般对应手机/storage/emulated/0/Donwload或文件夹。\n本功能允许用户修改文件夹所在位置和自定义文件夹名称。设置新的路径后会对路径可用性进行检查。设置成功后需要重启应用才会更新路径。</string>
