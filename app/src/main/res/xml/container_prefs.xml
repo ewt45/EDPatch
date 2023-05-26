@@ -68,4 +68,17 @@
             android:targetClass="com.eltechs.axs.activities.XServerDisplayActivity"
             android:targetPackage="com.eltechs.axs.activities" />
     </PreferenceScreen>
+
+    <EditTextPreference
+        android:defaultValue="16:9"
+        android:summary="格式：宽:高，英文冒号隔开，没有英文冒号则拉伸全屏"
+        android:key="full_screen_with_ratio"
+        android:title="全屏宽高比" />
+
+    <EditTextPreference
+        android:title="Display resolution"
+        android:key="displayResolutionCustom"
+        android:defaultValue="1280x720"
+        android:summary="Example: 1280x1024" />
+
 </PreferenceScreen>

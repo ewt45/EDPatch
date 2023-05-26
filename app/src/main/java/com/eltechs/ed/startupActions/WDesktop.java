@@ -15,7 +15,7 @@ public class WDesktop<StateClass> extends InteractiveStartupActionBase<StateClas
     }
     @Override // com.eltechs.axs.configuration.startup.StartupAction
     public void execute() {
-        requestUserInput(EDMainActivity.class);
+        requestUserInput(MainActivity.class);
 //        requestUserInput(
 //                QH.isTesting()
 //                        ? MainActivity.class

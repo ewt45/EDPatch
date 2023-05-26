@@ -21,6 +21,9 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomCo
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.RSIDHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FabMenu {
     private static final String TAG = "FabMenu";
 
@@ -44,7 +47,7 @@ public class FabMenu {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(AndroidHelpers.dpToPx(60), AndroidHelpers.dpToPx(60));//AndroidHelpers.dpToPx(60),AndroidHelpers.dpToPx(60)
         params.gravity = Gravity.TOP | Gravity.RIGHT;
         params.rightMargin = AndroidHelpers.dpToPx(40);
-        fab.setTranslationY(-AndroidHelpers.dpToPx(120));//不知道为啥margin那里说应该是正数，那用translation吧
+        fab.setTranslationY(-AndroidHelpers.dpToPx(100));//不知道为啥margin那里说应该是正数，那用translation吧
         fab.setElevation(100); //感觉高度舍不设置都无所谓
         fab.setCustomSize(AndroidHelpers.dpToPx(60)); //要用这个设置一遍否则图片不居中
         //设置图标
@@ -66,7 +69,10 @@ public class FabMenu {
 
         //用于显示的功能对话框 这个class newInstance不会出问题吧
 //        Class<? extends BaseFragment> clz = DriveD.class;
-        final Class<? extends BaseFragment>[] fragmentClsArray = new Class[]{DriveD.class,CustomControls.class, AboutFab.class};
+        final List<Class<? extends BaseFragment>> fragmentClsArray = new ArrayList<>(); //使用add的添加方式，便于在smali中删除
+        fragmentClsArray.add(DriveD.class);
+        fragmentClsArray.add(CustomControls.class);
+        fragmentClsArray.add(AboutFab.class);
         //先调用一次初次启动需要执行的操作
         for (Class<? extends BaseFragment> clz : fragmentClsArray) {
             try {
