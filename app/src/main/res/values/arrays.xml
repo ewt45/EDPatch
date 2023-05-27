@@ -113,4 +113,44 @@
         <item>32</item>
     </string-array>
 
+    <string-array name="displayResolutionVariants">
+        <item>本机分辨率</item>
+        <item>按比例缩放</item>
+        <item>预设分辨率</item>
+        <item>自定义分辨率</item>
+    </string-array>
+    <string-array name="displayResolutionValues">
+        <item>native</item>
+        <item>scaled</item>
+        <item>exact</item>
+        <item>custom</item>
+    </string-array>
+    <string-array name="displayResolution">
+        <item>320x200</item>
+        <item>320x240</item>
+        <item>352x288</item>
+        <item>400x240</item>
+        <item>640x350</item>
+        <item>640x480</item>
+        <item>800x480</item>
+        <item>800x600</item>
+        <item>1024x768</item>
+        <item>1280x720</item>
+        <item>1280x960</item>
+        <item>1280x1024</item>
+        <item>1400x1050</item>
+        <item>1600x1024</item>
+        <item>1600x1200</item>
+        <item>1366x768</item>
+        <item>1680x1050</item>
+        <item>1920x1080</item>
+        <item>1920x1200</item>
+        <item>2048x1536</item>
+        <item>2560x1600</item>
+        <item>2560x2048</item>
+        <item>3840×2160</item>
+        <item>7680×4320</item>
+    </string-array>
+
+
 </resources>

@@ -69,16 +69,30 @@
             android:targetPackage="com.eltechs.axs.activities" />
     </PreferenceScreen>
 
-    <EditTextPreference
-        android:defaultValue="16:9"
-        android:summary="格式：宽:高，英文冒号隔开，没有英文冒号则拉伸全屏"
-        android:key="full_screen_with_ratio"
-        android:title="全屏宽高比" />
+    <SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:summary="开启后按比例居中全屏，否则拉伸全屏（使用自定义或预设分辨率时）"
+        android:key="should_full_screen_with_ratio"
+        android:title="按比例居中全屏" />
+
+    <ListPreference
+        android:title="显示模式"
+        android:key="displayResolutionMode"
+        android:defaultValue="native"
+        android:entries="@array/displayResolutionVariants"
+        android:entryValues="@array/displayResolutionValues" />
+
+    <ListPreference
+        android:title="选择分辨率"
+        android:key="displayResolutionExact"
+        android:defaultValue="1280x1024"
+        android:entries="@array/displayResolution"
+        android:entryValues="@array/displayResolution" />
 
     <EditTextPreference
-        android:title="Display resolution"
+        android:title="自定义分辨率"
         android:key="displayResolutionCustom"
-        android:defaultValue="1280x720"
+        android:defaultValue="1280x1024"
         android:summary="Example: 1280x1024" />
 
 </PreferenceScreen>

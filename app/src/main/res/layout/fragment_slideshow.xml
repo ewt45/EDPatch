@@ -31,7 +31,7 @@
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="200dp"/>-->
     <FrameLayout
-        android:background="@color/primary"
+        android:background="#000000"
         android:layout_width="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
 
