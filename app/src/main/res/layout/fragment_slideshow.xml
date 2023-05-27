@@ -30,9 +30,18 @@
     <!--        app:layout_constraintBottom_toBottomOf="parent"-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="200dp"/>-->
-    <com.example.datainsert.exagear.test.LorieView
-        android:id="@+id/surfaceview"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <FrameLayout
+        android:background="@color/primary"
         android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:layout_height="match_parent">
+        <com.example.datainsert.exagear.test.LorieView
+            android:background="#54717E"
+            android:id="@+id/surfaceview"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="200dp"/>
+
+    </FrameLayout>
 </android.support.constraint.ConstraintLayout>

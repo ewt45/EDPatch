@@ -26,8 +26,8 @@ public class LorieView extends SurfaceView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         try {
-//            SharedPreferences sp = getContext().getSharedPreferences("com.eltechs.ed.CONTAINER_CONFIG_0",Context.MODE_PRIVATE);
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+            SharedPreferences sp = getContext().getSharedPreferences("com.eltechs.ed.CONTAINER_CONFIG_0",Context.MODE_PRIVATE);
+//            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
             String ratioStr = sp.getString("full_screen_with_ratio","");
             if(ratioStr!=null && ratioStr.contains(":") ){
                 String[] strings1 = ratioStr.split(":");
@@ -36,11 +36,11 @@ public class LorieView extends SurfaceView {
                 int height = MeasureSpec.getSize(heightMeasureSpec);
                 //左右黑边
                 if(width*1f/height > ratio){
-                    heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) (width/ratio), MeasureSpec.EXACTLY);
+                    widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) (height*ratio), MeasureSpec.EXACTLY);
                 }
                 //上下黑边
                 else{
-                    widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) (height*ratio), MeasureSpec.EXACTLY);
+                    heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) (width/ratio), MeasureSpec.EXACTLY);
                 }
             }
         }catch (Exception e){
