@@ -28,7 +28,6 @@ public class FuncShortcut implements Func {
 
         PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
                 "/com/example/datainsert/exagear/shortcut",
-                "/com/example/datainsert/exagear/RSIDHelper.smali",
                 "/com/example/datainsert/exagear/RR.smali",
                 "/com/example/datainsert/exagear/QH.smali",
         });

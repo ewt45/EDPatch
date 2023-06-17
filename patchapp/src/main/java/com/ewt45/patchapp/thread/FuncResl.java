@@ -44,7 +44,6 @@ public class FuncResl implements Func {
     public Integer call() throws Exception {
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",
-                "/com/example/datainsert/exagear/RSIDHelper.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
         return R.string.actmsg_funcresl;
     }

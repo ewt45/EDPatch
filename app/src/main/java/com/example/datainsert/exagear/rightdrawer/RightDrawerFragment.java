@@ -1,10 +1,8 @@
 package com.example.datainsert.exagear.rightdrawer;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.resources.MaterialResources;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.RSIDHelper;
+import com.example.datainsert.exagear.QH;
 
 public class RightDrawerFragment extends Fragment {
 
@@ -26,7 +24,7 @@ public class RightDrawerFragment extends Fragment {
         assert bundle != null;
         TextView tv = new TextView(requireContext());
         tv.setText("临时tv");
-        return inflater.inflate(RSIDHelper.rslvID(R.layout.fragment_rightdrawer,0x7f0b0100),container,false);
+        return inflater.inflate(QH.rslvID(R.layout.fragment_rightdrawer,0x7f0b0100),container,false);
 //                super.onCreateView(inflater, container, savedInstanceState);
     }
 

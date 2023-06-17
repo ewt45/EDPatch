@@ -51,7 +51,7 @@ public class FuncSelObb implements Func {
         //复制自己的类
         PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
                 "/com/example/datainsert/exagear/obb",
-                "/com/example/datainsert/exagear/RSIDHelper.smali",
+                "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
         return R.string.actmsg_funcselobb;
     }

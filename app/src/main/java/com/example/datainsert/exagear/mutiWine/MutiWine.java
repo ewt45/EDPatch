@@ -13,12 +13,13 @@ import android.view.SubMenu;
 import com.eltechs.axs.Globals;
 import com.eltechs.ed.fragments.ManageContainersFragment;
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.RSIDHelper;
+import com.example.datainsert.exagear.QH;
 
 
 import java.util.List;
 
 public class MutiWine {
+    private static final int VERSION_FOR_EDPATCH = 2;
     private static final String TAG = "MutiWine";
     //pref前缀，用于容器设置，记录wine版本，需要根据apk包名自行修改
     //内容有：wineVersion，wineExecutePath
@@ -49,15 +50,16 @@ public class MutiWine {
          You can safely hold on to menu (and any items created from it),
          making modifications to it as desired, until the next time onCreateOptionsMenu() is called.
          */
+        WineVersionConfig.initList();
         Log.d(TAG, "setOptionMenu: 开始设置右上角菜单，获取到的fragment实例为" + fragmentInstance +
                 "\n读取到的wine版本有" + WineVersionConfig.wineList);
-        WineVersionConfig.initList();
+
         SubMenu subMenu = menu.addSubMenu("New");
         //原来通过getItem()就可以吧submenu转为menuItem，就可以设置直接显示或者在三个点里显示了! 草，我说menuItem怎么没有adSubMenu()
         subMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         subMenu.getItem().setTitle("New");//当subMenu和其对应的menuItem都设置了title，显示的以menuItem为准
 
-        Drawable d = Globals.getAppContext().getDrawable(RSIDHelper.rslvID(R.drawable.ic_add_24dp, 0x7f08009b));
+        Drawable d = Globals.getAppContext().getDrawable(QH.rslvID(R.drawable.ic_add_24dp, 0x7f08009b));
         subMenu.getItem().setIcon(d);
 //        //添加图标，这个id直接写成ed里的了，省的来回改
 //        try{
@@ -74,6 +76,8 @@ public class MutiWine {
             subMenu.add(1, i, 0, WineVersionConfig.wineList.get(i).name).setOnMenuItemClickListener(listener);
         }
         subMenu.add(2, WineVersionConfig.wineList.size(), 0, "说明").setOnMenuItemClickListener(listener);
+        subMenu.add(3, 100, 0, "管理").setOnMenuItemClickListener(listener);
+
         //为什么子菜单的内容不会进到这个监听啊（啊原来只监听本menuitem。。。）
     }
 
@@ -157,7 +161,7 @@ public class MutiWine {
                 + sp.getString(KEY_WINE_INSTALL_PATH, "/usr") + "/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games");
         Log.d(TAG, "getEnvVarBin: wine执行路径为" + list.get(list.size() - 1));
         //添加链接库路径（可以用于设置渲染模式）
-        String renderer = sp.getString(KEY_RENDERER, Globals.getAppContext().getResources().getStringArray(RSIDHelper.rslvID(R.array.cont_pref_renderer_values, 0x7f030009))[0]);
+        String renderer = sp.getString(KEY_RENDERER, Globals.getAppContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_renderer_values, 0x7f030009))[0]);
         String ldPath = ""; //不同渲染模式选择不同链接库路径
         if ("llvmpipe".equals(renderer))
             ldPath = "/usr/bin/llvmpipe";

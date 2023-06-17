@@ -13,6 +13,11 @@ public class InstallRecipesFromAssets<StateClass extends ExagearImageAware> exte
     @Override // com.eltechs.axs.configuration.startup.StartupAction
     public void execute() {
         File recipesGuestDir = new File(getApplicationState().getExagearImage().getPath(), GuestContainersManager.RECIPES_GUEST_DIR);
+        //改成只解压一次吧？不然每次进入安卓界面就会清空一次
+        if(recipesGuestDir.exists()){
+            sendDone();
+            return;
+        }
         try {
             SafeFileHelpers.removeDirectory(recipesGuestDir);
             ZipInstallerAssets.installIfNecessary(getAppContext(), new ZipInstallerAssets.InstallCallback() { // from class: com.eltechs.ed.startupActions.InstallRecipesFromAssets.1

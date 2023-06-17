@@ -7,7 +7,7 @@ import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.ed.R_original;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 
 import java.util.Arrays;
 import java.util.List;

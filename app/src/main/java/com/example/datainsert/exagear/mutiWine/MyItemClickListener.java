@@ -3,6 +3,8 @@ package com.example.datainsert.exagear.mutiWine;
 
 import android.app.AlertDialog;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -12,10 +14,15 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 
+import com.eltechs.axs.Globals;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.ed.R;
 import com.eltechs.ed.fragments.ManageContainersFragment;
 import com.eltechs.ed.guestContainers.GuestContainer;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.mutiWine.v2.WineStoreFragment;
 
-public class MyItemClickListener implements MenuItem.OnMenuItemClickListener {
+class MyItemClickListener implements MenuItem.OnMenuItemClickListener {
     private final String TAG = "MyItemClickListener";
     ManageContainersFragment fragment;
     AsyncTask<GuestContainer, Void, Void> task;
@@ -28,8 +35,29 @@ public class MyItemClickListener implements MenuItem.OnMenuItemClickListener {
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         Log.d(TAG, "onMenuItemClick: 点击了菜单项 "+item.getTitle());
+        //管理wine版本界面
+        if(item.getGroupId() == 3){
+            FragmentManager supportFragmentManager = ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity().getSupportFragmentManager();
+            for (int i = 0; i < supportFragmentManager.getBackStackEntryCount(); i++) {
+                supportFragmentManager.popBackStack();
+            }
+            WineStoreFragment wineStoreFragment = new WineStoreFragment();
+            supportFragmentManager.beginTransaction()
+                    .replace(QH.rslvID(R.id.ed_main_fragment_container,0x7f090070), wineStoreFragment, "CONTAINER_PROP")
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null)
+                    .commit();
+            //为什么Builder里传Global.getAppContext()就会闪退？？
+//            new AlertDialog.Builder(((ApplicationStateBase)Globals.getApplicationState()).getCurrentActivity())
+//                    .setTitle("添加/删除wine版本")
+//                    .setView(new WineStoreView(Globals.getAppContext()))
+//                    .setPositiveButton(android.R.string.yes,null)
+//                    .setCancelable(false)
+//                    .show();
+            return true;
+        }
         //如果点击的是是使用说明,显示对话框
-        if(item.getGroupId()==2 && fragment!=null){
+        else if(item.getGroupId()==2 && fragment!=null){
 
             TextView usageTv = new TextView(fragment.getActivity());
             SpannableString spanText = new SpannableString("多版本wine共存功能 修改by 补补23456");

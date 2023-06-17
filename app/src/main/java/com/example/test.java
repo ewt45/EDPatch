@@ -18,9 +18,19 @@ import com.example.datainsert.exagear.obb.SelectObbFragment;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class test extends AppCompatActivity {
     private static final File mUserAreaDir = DriveD.getDriveDDir();
+    public test(){
+
+    }
+    public test(Map<String,Object> map){
+
+    }
 //
 //    private void test1(int i1,float f1,float f2, float f3, float f4, float f5, int i2, float f6, boolean b){
 //       logthis(i1,f1,f2,f3,f4,f5,i2,f6,b);
@@ -34,6 +44,18 @@ public class test extends AppCompatActivity {
         CursorToggle cursorToggle;
         Toolbar toolbar =new Toolbar(Globals.getAppContext());
         toolbar.setBackgroundResource(R.drawable.someimg);
+        Class<test> s = test.class;
+        try {
+            s.getDeclaredConstructor(Map.class).newInstance(new HashMap<>());
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
      Object i2 ;
@@ -57,6 +79,7 @@ public class test extends AppCompatActivity {
 
             }
         }
+
     }
 //    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if(requestCode!=10001){

@@ -3,7 +3,6 @@ package com.eltechs.axs.widgets.touchScreenControlsOverlay;
 import static com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration.BackKeyAction.SHOW_POPUP_MENU;
 
 import android.support.v4.view.InputDeviceCompat;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,11 +18,10 @@ import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration;
-import com.eltechs.axs.widgets.popupMenu.AXSPopupMenu;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 
 /* loaded from: classes.dex */
 public class TouchScreenControlsInputWidget extends View {

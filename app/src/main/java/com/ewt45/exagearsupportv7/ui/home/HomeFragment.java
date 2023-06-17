@@ -1,54 +1,33 @@
 package com.ewt45.exagearsupportv7.ui.home;
 
 import static android.content.ContentValues.TAG;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_POINTER_DOWN;
-import static android.view.MotionEvent.ACTION_POINTER_UP;
-import static android.view.MotionEvent.ACTION_UP;
 
 import static com.eltechs.axs.Globals.getApplicationState;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.InsetDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.graphics.drawable.StateListDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.ViewModelProvider;
 
 import com.eltechs.axs.ExagearImageConfiguration.ExagearImage;
-import com.eltechs.axs.Globals;
-import com.eltechs.axs.activities.FatalErrorActivity;
-import com.eltechs.axs.activities.FrameworkActivity;
-import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.eltechs.axs.configuration.XServerViewConfiguration;
 import com.eltechs.axs.configuration.startup.EnvironmentCustomisationParameters;
-import com.eltechs.axs.configuration.startup.StartupAction;
-import com.eltechs.axs.configuration.startup.actions.CreateTypicalEnvironmentConfiguration;
 import com.eltechs.axs.configuration.startup.actions.StartEnvironmentService;
 import com.eltechs.axs.environmentService.AXSEnvironment;
 import com.eltechs.axs.environmentService.TrayConfiguration;
@@ -56,7 +35,6 @@ import com.eltechs.axs.environmentService.components.XServerComponent;
 import com.eltechs.axs.helpers.UiThread;
 import com.eltechs.axs.network.SocketPaths;
 import com.eltechs.axs.xconnectors.epoll.UnixSocketConfiguration;
-import com.eltechs.ed.activities.EDStartupActivity;
 import com.eltechs.ed.startupActions.WDesktop;
 import com.ewt45.exagearsupportv7.MainActivity;
 import com.eltechs.ed.R;
@@ -64,14 +42,9 @@ import com.eltechs.ed.databinding.FragmentHomeBinding;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.ToggleButtonHighContrast;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controls.SensitivitySeekBar;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.BtnContainer;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.SpecialPopupMenu;
-import com.example.datainsert.exagear.input.SoftInput;
 import com.example.datainsert.exagear.obb.ProcessInstallObb;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class HomeFragment extends Fragment {
 

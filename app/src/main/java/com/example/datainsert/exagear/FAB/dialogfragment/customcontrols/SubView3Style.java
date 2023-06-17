@@ -42,7 +42,7 @@ import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.UnmovableBtn;
+import com.example.datainsert.exagear.controls.widget.UnmovableBtn;
 
 public class SubView3Style extends LinearLayout {
     public static final String TAG = "SubView3Style";

@@ -10,9 +10,7 @@ import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.helpers.ZipInstallerObb;
 import com.eltechs.ed.R;
 import com.ewt45.exagearsupportv7.ui.home.HomeFragment;
-import com.example.datainsert.exagear.RSIDHelper;
-
-import java.io.File;
+import com.example.datainsert.exagear.QH;
 
 public class ProcessInstallObb {
     static String TAG = "ProcessInstallObb";
@@ -36,10 +34,10 @@ public class ProcessInstallObb {
             fragment= new SelectObbFragment();
             fragment.setZipInstallerObb(zipInstallerObb);
             edStartupActivity.getSupportFragmentManager().beginTransaction()
-                    .add(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2),fragment,SelectObbFragment.TAG).commit();
+                    .add(QH.rslvID(R.id.startupAdButtons,0x7f0900f2),fragment,SelectObbFragment.TAG).commit();
         }
         //外布局设置成显示，否则隐藏状态下替换fragment也不会显示
-        ViewGroup startupAdButtons = edStartupActivity.findViewById(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2));
+        ViewGroup startupAdButtons = edStartupActivity.findViewById(QH.rslvID(R.id.startupAdButtons,0x7f0900f2));
         startupAdButtons.setVisibility(View.VISIBLE);
         //清空原有子布局,如果遇到fragment保留
         int i=0;
@@ -64,10 +62,10 @@ public class ProcessInstallObb {
             fragment=  new SelectObbFragment();
             fragment.setZipInstallerObb(new ZipInstallerObb(null,false ,false,null,null,null));
             homeFragment.requireActivity().getSupportFragmentManager().beginTransaction()
-                    .add(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2),fragment,SelectObbFragment.TAG).commit();
+                    .add(QH.rslvID(R.id.startupAdButtons,0x7f0900f2),fragment,SelectObbFragment.TAG).commit();
         }
         //外布局设置成显示，否则隐藏状态下替换fragment也不会显示
-        ViewGroup startupAdButtons = homeFragment.requireActivity().findViewById(RSIDHelper.rslvID(R.id.startupAdButtons,0x7f0900f2));
+        ViewGroup startupAdButtons = homeFragment.requireActivity().findViewById(QH.rslvID(R.id.startupAdButtons,0x7f0900f2));
         startupAdButtons.setVisibility(View.VISIBLE);
         //清空原有子布局,如果遇到fragment保留
         while(startupAdButtons.getChildCount()>0){

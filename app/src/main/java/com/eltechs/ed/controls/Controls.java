@@ -49,7 +49,7 @@ public abstract class Controls {
 
     public static List<Controls> getList() {
         return Arrays.asList(new DefaultControls()
-//                , new RtsControls(), new HoMM3Controls(), new Disciples2Controls(), new Panzer2Controls(), new Civ3Controls(), new ArcanumControls(), new FalloutControls(), new JA2Controls(), new MMControls()
+                , new RtsControls(), new HoMM3Controls(), new Disciples2Controls(), new Panzer2Controls(), new Civ3Controls(), new ArcanumControls(), new FalloutControls(), new JA2Controls(), new MMControls()
         );
     }
 }

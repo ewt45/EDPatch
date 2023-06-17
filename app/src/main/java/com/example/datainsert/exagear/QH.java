@@ -23,6 +23,7 @@ public class QH {
     public final static String MY_SHARED_PREFERENCE_SETTING = "some_settings";
 
 
+
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
      */
@@ -117,5 +118,17 @@ public class QH {
      */
     public static SharedPreferences getPreference() {
         return Globals.getAppContext().getSharedPreferences(MY_SHARED_PREFERENCE_SETTING, Context.MODE_PRIVATE);
+    }
+
+    /**
+     * (原本在RSIDHelper类，不过就这一个方法单独一个类而且还要用到QH，不如直接整合到QH里了）
+     * 用于处理使用的资源id。用自己的工程测试的时候，返回gradle自动分配的id，添加到待修改的apk后使用apk原有id。
+     * 省的每次编译成smali都要手动替换，麻烦死了
+     * @param my 我自己的apk的资源id
+     * @param ori 别人apk的资源id
+     * @return 应该使用的资源id
+     */
+    public static int rslvID(int my, int ori){
+        return isTesting()? my : ori;
     }
 }

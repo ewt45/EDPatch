@@ -99,10 +99,13 @@ dependencies {
     implementation 'com.android.support:preference-v14:28.0.0'
     implementation 'com.android.support:preference-v7:28.0.0'
 
-    implementation 'commons-io:commons-io:2.7'
+    implementation 'commons-io:commons-io:2.4'
     implementation 'org.apache.commons:commons-compress:1.21'
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.tukaani:xz:1.9' //下载wine压缩包，解压tar.xz需要
+
 
 //    implementation project(path: ':edapi')
     testImplementation 'junit:junit:4.13.2'

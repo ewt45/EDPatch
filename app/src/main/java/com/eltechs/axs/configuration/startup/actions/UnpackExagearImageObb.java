@@ -7,7 +7,7 @@ import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.eltechs.axs.configuration.startup.StartupActionInfo;
 import com.eltechs.axs.helpers.ZipInstallerObb;
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.RSIDHelper;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.obb.SelectObbFragment;
 
 import org.apache.commons.io.IOUtils;
@@ -71,7 +71,7 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
                 @Override // com.eltechs.axs.helpers.ZipInstallerObb.Callbacks
                 public void noObbFound() {
                     UnpackExagearImageObb.this.sendError(appContext.getResources().getString(
-                            RSIDHelper.rslvID(R.string.no_obb_file_found, 0x7f0d0071)));
+                            QH.rslvID(R.string.no_obb_file_found, 0x7f0d0071)));
                 }
 
                 @Override // com.eltechs.axs.helpers.ZipInstallerObb.Callbacks

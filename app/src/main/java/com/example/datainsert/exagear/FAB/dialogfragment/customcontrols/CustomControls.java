@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,7 +33,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.SubNormalPagerAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.WrapContentViewPager;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.FormatHelper;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;

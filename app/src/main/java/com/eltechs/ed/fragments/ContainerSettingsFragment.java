@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.RSIDHelper;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
 import java.util.Arrays;
@@ -33,30 +33,35 @@ import java.util.Arrays;
 public class ContainerSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String ARG_CONT_ID = "CONT_ID";
     private static final int VERSION_FOR_EDPATCH = 2;
-    /**用于记录本次dialog期间选定的分辨率*/
-    String curResolution;
     private static final String TAG = "ContSettingsFragment";
+    /**
+     * 用于记录本次dialog期间选定的分辨率
+     */
+    String curResolution;
+
     @Override // android.support.v7.preference.PreferenceFragmentCompat
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
 
 //        assert getArguments() != null;
         long valueOf;
-        if(getArguments()!=null){
+        if (getArguments() != null) {
             valueOf = getArguments().getLong("CONT_ID");
-        }else{
+        } else {
             valueOf = 0L;
         }
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setSharedPreferencesName(GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX + valueOf);
-        setPreferencesFromResource(RSIDHelper.rslvID(R.xml.container_prefs,0x7f100000), rootKey);
+        setPreferencesFromResource(QH.rslvID(R.xml.container_prefs, 0x7f100000), rootKey);
 
     }
 
-    @Override // android.support.v7.preference.PreferenceFragmentCompat, android.support.v4.app.Fragment
+    @Override
+    // android.support.v7.preference.PreferenceFragmentCompat, android.support.v4.app.Fragment
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(RSIDHelper.rslvID(R.string.wd_title_container_prop,0x7f0d00a0));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(QH.rslvID(R.string.wd_title_container_prop, 0x7f0d00a0));
     }
+
     @Override // android.support.v4.app.Fragment
     public void onResume() {
         super.onResume();
@@ -81,30 +86,31 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 
     /**
      * 如果自定义preference的话要重写这个
+     *
      * @param preference 点击的pref选项
      */
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
-        if(!preference.getKey().equals("SCREEN_SIZE")){
+        if (!preference.getKey().equals("SCREEN_SIZE")) {
             super.onDisplayPreferenceDialog(preference);
             return;
         }
         //如果是分辨率选项，自定义一下
         //arsc里记录的分辨率键和值
 
-        String[] strEntries = requireContext().getResources().getStringArray(RSIDHelper.rslvID(R.array.cont_pref_screen_size_entries,0x7f030006));
-        String[] strValues = requireContext().getResources().getStringArray(RSIDHelper.rslvID(R.array.cont_pref_screen_size_values,0x7f030007));
+        String[] strEntries = requireContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_screen_size_entries, 0x7f030006));
+        String[] strValues = requireContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_screen_size_values, 0x7f030007));
 
         //用于记录本次dialog期间选定的分辨率（这个默认返回default不准确，应该是value的第一个值，有可能是Default）
-        curResolution = preference.getSharedPreferences().getString("SCREEN_SIZE",strValues[0]);
+        curResolution = preference.getSharedPreferences().getString("SCREEN_SIZE", strValues[0]);
 
 
         ScrollView dialogView = new ScrollView(requireContext());
         LinearLayout linearLayout = new LinearLayout(requireContext());
         dialogView.addView(linearLayout);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        int px = (int) (20*requireContext().getResources().getDisplayMetrics().density+0.5f);
-        linearLayout.setPadding(px,px,px,px);
+        int px = (int) (20 * requireContext().getResources().getDisplayMetrics().density + 0.5f);
+        linearLayout.setPadding(px, px, px, px);
         RadioGroup radioGroup = new RadioGroup(requireContext());
 
         //添加自定义的选项
@@ -132,10 +138,10 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         rsEditLLayout.addView(widthEText);
         rsEditLLayout.addView(commaText);
         rsEditLLayout.addView(heightEText);
-        resolutionLinearLayout.addView(switchToCustom, new ViewGroup.LayoutParams(-2,-2));
+        resolutionLinearLayout.addView(switchToCustom, new ViewGroup.LayoutParams(-2, -2));
         resolutionLinearLayout.addView(rsEditLLayout);
 
-        for(String str:strEntries){
+        for (String str : strEntries) {
             RadioButton radioButton = new RadioButton(requireContext());
             radioButton.setText(str);
             radioGroup.addView(radioButton);
@@ -151,9 +157,9 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                String selectStr =  ((RadioButton)group.findViewById(checkedId)).getText().toString();
+                String selectStr = ((RadioButton) group.findViewById(checkedId)).getText().toString();
                 for (int i = 0; i < strEntries.length; i++) {
-                    if(strEntries[i].equals(selectStr)){
+                    if (strEntries[i].equals(selectStr)) {
                         curResolution = strValues[i];
                         break;
                     }
@@ -164,17 +170,17 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         switchToCustom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     //禁用radiobutton
-                    for(int i=0; i<radioGroup.getChildCount(); i++){
+                    for (int i = 0; i < radioGroup.getChildCount(); i++) {
                         radioGroup.getChildAt(i).setEnabled(false);
                     }
                     //启用edittext
                     widthEText.setEnabled(true);
                     heightEText.setEnabled(true);
 
-                }else{
-                    for(int i=0; i<radioGroup.getChildCount(); i++){
+                } else {
+                    for (int i = 0; i < radioGroup.getChildCount(); i++) {
                         radioGroup.getChildAt(i).setEnabled(true);
                     }
                     widthEText.setEnabled(false);
@@ -187,16 +193,16 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         widthEText.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         heightEText.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         //初始时选中pref设置的单选项/自定义分辨率
-        for(int i=0; i<strValues.length; i++){
+        for (int i = 0; i < strValues.length; i++) {
             //如果是预设的，那么选择单选项，禁用自定义分辨率，结束
-            if(strValues[i].equals(curResolution)){
-                ((RadioButton)radioGroup.getChildAt(i)).setChecked(true);
+            if (strValues[i].equals(curResolution)) {
+                ((RadioButton) radioGroup.getChildAt(i)).setChecked(true);
                 widthEText.setEnabled(false);
                 heightEText.setEnabled(false);
                 break;
             }
             //如果找到最后一个了也不是，说明是自定义，启用自定义分辨率,填写当前宽高，禁用单选项
-            else if(i== strEntries.length-1){
+            else if (i == strEntries.length - 1) {
                 String[] reso = curResolution.split(",");
                 widthEText.setText(reso[0]);
                 heightEText.setText(reso[1]);
@@ -204,7 +210,7 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
             }
         }
 
-        Log.d(TAG, "onDisplayPreferenceDialog: 获取到的array为"+ Arrays.toString(strEntries));
+        Log.d(TAG, "onDisplayPreferenceDialog: 获取到的array为" + Arrays.toString(strEntries));
         new AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .setTitle(preference.getTitle())
@@ -213,7 +219,7 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
                     public void onClick(DialogInterface dialog, int which) {
                         //关闭对话框且点的是确认键，则修改sharePref
                         //如果是自定义分辨率，检查完整性并转为字符串形式
-                        if(switchToCustom.isChecked()){
+                        if (switchToCustom.isChecked()) {
                             //不知道怎么取消退出dialog，如果没填就改成0吧
                             curResolution = (TextUtils.isEmpty(widthEText.getText().toString())
                                     ? "0" : widthEText.getText().toString()) +
@@ -234,6 +240,30 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
     }
 
 
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    @Override
+//    public void onDetach() {
+//        SharedPreferences sp = getContext().getSharedPreferences("com.eltechs.ed.CONTAINER_CONFIG_0", Context.MODE_PRIVATE);
+////        SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+//        String res = null;
+//        String mode = sp.getString("displayResolutionMode", "native");
+//        if ("exact".equals(mode))
+//            res = sp.getString("displayResolutionExact", "1280x1024");
+//        else if ("custom".equals(mode))
+//            res = sp.getString("displayResolutionCustom", "1280x1024");
+//        try {
+//            File file = new File(Environment.getExternalStorageDirectory(), "Box64Droid/resolution.conf");
+//            if (!file.exists()){
+//                file.getParentFile().mkdirs();
+//                file.createNewFile();
+//            }
+//            if (res != null && file.canWrite())
+//                Files.write(file.toPath(), res.getBytes(StandardCharsets.UTF_8));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        super.onDetach();
+//    }
 
 
     private void updatePreference(Preference preference) {
@@ -242,10 +272,10 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 //            preference.dialog
             EditTextPreference editTextPreference = (EditTextPreference) preference;
             editTextPreference.setSummary(editTextPreference.getText());
-        }else if("SCREEN_SIZE".equals(preference.getKey())){
+        } else if ("SCREEN_SIZE".equals(preference.getKey())) {
             //这里default也改成strValues[0]
-            String[] strValues = requireContext().getResources().getStringArray(RSIDHelper.rslvID(R.array.cont_pref_screen_size_values,0x7f030007));
-            preference.setSummary(preference.getSharedPreferences().getString("SCREEN_SIZE",strValues[0]));
+            String[] strValues = requireContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_screen_size_values, 0x7f030007));
+            preference.setSummary(preference.getSharedPreferences().getString("SCREEN_SIZE", strValues[0]));
         }
     }
 

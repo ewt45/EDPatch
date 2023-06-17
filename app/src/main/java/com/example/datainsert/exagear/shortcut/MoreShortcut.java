@@ -78,7 +78,6 @@ public class MoreShortcut {
                         .setShortLabel(xdgLink.name)
                         .setExtras(persistableBundle)
                         .setIntent(intent) //设置intent又不一定非要指向目标activity，那难道会加到栈中？如果不指定
-
                         .setActivity(new ComponentName(Globals.getAppContext().getPackageName(), Globals.getAppContext().getPackageName() + ".activities.EDStartupActivity")) //设置目标activity
                         .build();
 

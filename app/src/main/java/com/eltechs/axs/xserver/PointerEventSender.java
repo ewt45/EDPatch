@@ -15,7 +15,6 @@ import com.eltechs.axs.xserver.events.PointerWindowEvent;
 import com.eltechs.axs.xserver.helpers.EventHelpers;
 import com.eltechs.axs.xserver.helpers.WindowHelpers;
 import com.eltechs.axs.xserver.impl.masks.Mask;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
 /* loaded from: classes.dex */
 public class PointerEventSender implements PointerListener, WindowLifecycleListener, WindowChangeListener {

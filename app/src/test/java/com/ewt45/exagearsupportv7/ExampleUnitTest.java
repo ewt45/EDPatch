@@ -1,5 +1,6 @@
 package com.ewt45.exagearsupportv7;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -49,6 +52,31 @@ public class ExampleUnitTest {
         for(String str: allLines){
             System.out.println(str);
         }
+    }
+
+    @Test
+    public void checksum256() throws NoSuchAlgorithmException, IOException {
+        File file = new File("E:\\tmp\\wine-8.10-x86.tar.xz");
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] tarSha = digest.digest(FileUtils.readFileToByteArray(file));
+
+        StringBuilder builder = new StringBuilder();
+        for (byte b : tarSha) {
+            //java.lang.Integer.toHexString() 方法的参数是int(32位)类型，
+            //如果输入一个byte(8位)类型的数字，这个方法会把这个数字的高24为也看作有效位，就会出现错误
+            //如果使用& 0XFF操作，可以把高24位置0以避免这样错误
+            String temp = Integer.toHexString(b & 0xFF);
+            if (temp.length() == 1) {
+                //1得到一位的进行补0操作
+                builder.append("0");
+            }
+            builder.append(temp);
+        }
+
+
+        System.out.println("671940c6dd1c3fac9715a6d2b64b5a028e0f20fee04b482ff5788f54f0f4fadb");
+        System.out.println(builder.toString());
+
     }
     class clz1{
         public void m1(){

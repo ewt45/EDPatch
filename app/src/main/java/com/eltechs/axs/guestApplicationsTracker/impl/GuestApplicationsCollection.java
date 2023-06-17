@@ -69,7 +69,7 @@ public class GuestApplicationsCollection {
                     break;
                 }
             }
-            yield();
+            this.yield();
         }
         for (Translator translator : this.translators) {
             ProcessHelpers.suspendProcess(translator.getPid());

@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class WineVersionConfig {
 
@@ -22,10 +23,50 @@ public class WineVersionConfig {
     private static String TAG = "WineVersionConfig";
 
     /**
+     * 从z:/opt/wineCollection下寻找符合条件的文件夹，初始化wine版本列表
+     */
+    public static void initList(){
+        wineList = new ArrayList<>();
+        //wine文件夹父目录
+        File parentFolder = Config.getTagParentFolder();
+        if(parentFolder.exists()){
+            //获取wine程序文件夹
+            for(File tagFolder: parentFolder.listFiles()){
+                //要求是文件夹
+                if(!tagFolder.isDirectory())
+                    continue;
+                //如果子目录是文件夹且有bin/wine这个文件，则属于wine程序文件夹
+                for(File sub:tagFolder.listFiles()){
+                    if(sub.isDirectory() && new File(sub,"bin/wine").exists()){
+                        //初始化填充默认内容
+                        String childPath = sub.getAbsolutePath();
+                        WineVersion wineVersion = new WineVersion(
+                                sub.getName().replace("-x86",""),
+                                childPath.substring(childPath.indexOf("/opt/wineCollection/")),
+                                "/opt/guestcont-pattern");
+                        //如果有info.txt，读取其内容(略过吧）
+                        wineList.add(wineVersion);
+                        break;
+                    }
+                }
+
+            }
+        }
+        //如果一个都没找到，至少添加一个
+        if(wineList.isEmpty())
+            wineList.add(new WineVersion("新建","","/opt/guestcont-pattern"));
+
+        //按名称 排下序
+        Collections.sort(wineList,new WineNameComparator());
+    }
+
+
+    /**
+     * (原名为initList)
      * 读取assets中的wine版本信息，初始化列表以供静态调用
      * 应该在初始化menu的时候被调用一次。之后才可以使用本类中的静态成员变量
      */
-    public static void initList(){
+    public static void initListOld(){
         if(Globals.getAppContext()==null)
             return;
         //读取assets下的txt (改成读rootfs下的吧）

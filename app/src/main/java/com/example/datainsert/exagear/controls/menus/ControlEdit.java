@@ -9,7 +9,7 @@ import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.actions.AbstractAction;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 
 public class ControlEdit extends AbstractAction {
 

@@ -279,10 +279,8 @@ public class ChooseXDGLinkFragment extends Fragment {
                     }
                 });
                 popupMenu.setOnDismissListener(popupMenu2 -> ChooseXDGLinkFragment.this.refresh());
-
                 //插入diamante，用于创建app快捷方式
                 MoreShortcut.addOptionsToMenu(mIsStartMenu,popupMenu,xDGNode.mLink);
-
                 popupMenu.show();
             });
         }

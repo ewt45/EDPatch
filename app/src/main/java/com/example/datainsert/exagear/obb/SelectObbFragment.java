@@ -27,7 +27,6 @@ import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.helpers.ZipInstallerObb;
 import com.eltechs.ed.activities.EDStartupActivity;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.RSIDHelper;
 
 import org.apache.commons.io.IOUtils;
 

@@ -28,6 +28,7 @@ import com.eltechs.ed.guestContainers.GuestContainer;
 import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
 import com.eltechs.ed.R;
+import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.mutiWine.MutiWine;
 
 import java.io.File;
@@ -41,7 +42,7 @@ import org.apache.commons.io.FileUtils;
 /* loaded from: classes.dex */
 public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & SelectedExecutableFileAware<StateClass> & XServerDisplayActivityConfigurationAware> extends AbstractStartupAction<StateClass> implements AsyncStartupAction<StateClass> {
     private static final String TAG = "StartGuest";
-    private static final File mUserAreaDir = new File(AndroidHelpers.getMainSDCard(), "Exagear");
+    private static final File mUserAreaDir = DriveD.getDriveDDir();
     private GuestContainer mCont;
     private String mContStartupActions;
     private Controls mControls;

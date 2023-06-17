@@ -3,7 +3,7 @@ package com.example.datainsert.exagear.controls;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.ed.controls.Controls;
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
+import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 
 /**
  * 处理操作模式。请勿随意移动此类

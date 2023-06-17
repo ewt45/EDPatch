@@ -38,11 +38,13 @@ public class CreateLaunchConfiguration<StateClass extends EDApplicationState> ex
         uBTLaunchConfiguration.setGuestEnvironmentVariables(this.envp);
         uBTLaunchConfiguration.addEnvironmentVariable("LC_ALL", environmentCustomisationParameters.getLocaleName());
         uBTLaunchConfiguration.addArgumentsToEnvironment(eDApplicationState.getEnvironment());
-        File path = ((EDApplicationState) getApplicationState()).getExagearImage().getPath();
-        SafeFileHelpers.symlink("../drive_c", new File(path, this.winePrefix + "/dosdevices/c:").getAbsolutePath());
-        String str = this.userAreaDir;
-        File path2 = ((EDApplicationState) getApplicationState()).getExagearImage().getPath();
-        SafeFileHelpers.symlink(str, new File(path2, this.winePrefix + "/dosdevices/d:").getAbsolutePath());
+        File imagePath = ((EDApplicationState) getApplicationState()).getExagearImage().getPath();
+        SafeFileHelpers.symlink("../drive_c", new File(imagePath, this.winePrefix + "/dosdevices/c:").getAbsolutePath());
+        //每次启动删除旧的链接路径
+        File driveD = new File(imagePath,this.winePrefix + "/dosdevices/d:");
+        driveD.delete();
+
+        SafeFileHelpers.symlink(this.userAreaDir, driveD.getAbsolutePath());
         File path3 = ((EDApplicationState) getApplicationState()).getExagearImage().getPath();
         SafeFileHelpers.symlink("/tmp/", new File(path3, this.winePrefix + "/dosdevices/e:").getAbsolutePath());
         File path4 = ((EDApplicationState) getApplicationState()).getExagearImage().getPath();

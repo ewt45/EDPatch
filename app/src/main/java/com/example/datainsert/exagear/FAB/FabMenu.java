@@ -5,13 +5,13 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.ed.R;
@@ -19,7 +19,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.AboutFab;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
-import com.example.datainsert.exagear.RSIDHelper;
+import com.example.datainsert.exagear.QH;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class FabMenu {
         fab.setCustomSize(AndroidHelpers.dpToPx(60)); //要用这个设置一遍否则图片不居中
         //设置图标
         try {
-            Drawable iconDrawable = a.getDrawable(RSIDHelper.rslvID(R.drawable.ic_menu_camera, 0x7f0800aa));
+            Drawable iconDrawable = a.getDrawable(QH.rslvID(R.drawable.ic_settings_24dp, 0x7f0800aa));
             //设置icon颜色
             if (fab.getBackgroundTintList() != null) {
                 int bgColor = fab.getBackgroundTintList().getDefaultColor() | 0xff000000;
@@ -98,6 +98,16 @@ public class FabMenu {
                 }
             }
         });
+        //可以隐藏吧
+        fab.setOnLongClickListener(view->{
+            PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
+            popupMenu.getMenu().add("隐藏").setOnMenuItemClickListener(item->{
+                fab.hide();
+               return true ;
+            });
+            popupMenu.show();
+            return true;
+        });
         fab.setOnClickListener(view -> fab.showContextMenu());
         //findViewById找到线性布局，添加fab和params
 
@@ -112,7 +122,7 @@ public class FabMenu {
 
 
     public static View getMainFrameView(AppCompatActivity a) {
-        return a.findViewById(RSIDHelper.rslvID(R.id.ed_main_content_frame, 0x7f09006e));
+        return a.findViewById(QH.rslvID(R.id.ed_main_content_frame, 0x7f09006e));
     }
 
 }

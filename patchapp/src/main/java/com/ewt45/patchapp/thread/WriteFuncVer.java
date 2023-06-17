@@ -5,6 +5,8 @@ import android.util.Log;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.patching.PatcherFile;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.util.Map;
 

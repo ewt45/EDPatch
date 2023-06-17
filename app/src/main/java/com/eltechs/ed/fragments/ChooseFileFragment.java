@@ -100,8 +100,8 @@ public class ChooseFileFragment extends Fragment {
 
     List<File> getDirContent(File file, File file2) {
         File[] listFiles;
-        ArrayList arrayList = new ArrayList();
-        ArrayList arrayList2 = new ArrayList();
+        ArrayList<File> arrayList = new ArrayList<>();
+        ArrayList<File> arrayList2 = new ArrayList<>();
         if (!file.equals(file2)) {
             arrayList.add(new File(PARENT_DIR_NAME));
         }

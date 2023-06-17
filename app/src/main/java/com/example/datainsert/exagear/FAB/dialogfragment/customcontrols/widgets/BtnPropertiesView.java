@@ -10,7 +10,6 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.text.Editable;
 import android.text.InputType;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -22,12 +21,7 @@ import android.widget.LinearLayout;
 import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.interfaceOverlay.widget.JoyStickBtn;
 import com.example.datainsert.exagear.controls.model.OneKey;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 用于编辑单个普通按钮的属性的视图

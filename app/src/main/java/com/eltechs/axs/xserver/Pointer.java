@@ -1,10 +1,7 @@
 package com.eltechs.axs.xserver;
 
-import android.util.Log;
-
 import com.eltechs.axs.helpers.ArithHelpers;
 import com.eltechs.axs.xserver.impl.masks.Mask;
-import com.example.datainsert.exagear.controls.interfaceOverlay.FalloutInterfaceOverlay2;
 
 public class Pointer {
     public static final int BUTTON_LEFT = 1;

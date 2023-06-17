@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.RSIDHelper;
+import com.example.datainsert.exagear.QH;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -242,7 +242,7 @@ public class OverlayBuildUI {
 
 
         //添加ov布局到ed布局中(这里改到ex里的时候替换一下）
-        LinearLayout layout = a.findViewById(RSIDHelper.rslvID(R.id.ed_main_content_frame,0x7f09006e));
+        LinearLayout layout = a.findViewById(QH.rslvID(R.id.ed_main_content_frame,0x7f09006e));
         if(layout!=null)
             layout.addView(shadowWrapper, 1);
         else

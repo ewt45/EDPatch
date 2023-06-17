@@ -1,7 +1,9 @@
 package com.eltechs.ed.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,6 +33,8 @@ import com.eltechs.ed.fragments.ManageContainersFragment;
 import com.eltechs.ed.guestContainers.GuestContainer;
 import com.eltechs.ed.startupActions.StartGuest;
 import com.eltechs.ed.startupActions.WDesktop;
+import com.example.datainsert.exagear.FAB.FabMenu;
+
 import java.io.File;
 import java.util.List;
 
@@ -57,12 +61,12 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
     @Override // com.eltechs.axs.activities.AxsActivity, android.support.v7.app.AppCompatActivity, android.support.v4.app.FragmentActivity, android.support.v4.app.SupportActivity, android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView((int) R.layout.ed_main);
-        this.mDrawerLayout = (DrawerLayout) findViewById(R.id.ed_main_drawer);
-        this.mNavigationView = (NavigationView) findViewById(R.id.ed_main_nav_view);
+        setContentView(R.layout.ed_main);
+        this.mDrawerLayout = findViewById(R.id.ed_main_drawer);
+        this.mNavigationView = findViewById(R.id.ed_main_nav_view);
         NavigationItemSelectedListener navigationItemSelectedListener = new NavigationItemSelectedListener();
         this.mNavigationView.setNavigationItemSelectedListener(navigationItemSelectedListener);
-        setSupportActionBar((Toolbar) findViewById(R.id.ed_main_toolbar));
+        setSupportActionBar(findViewById(R.id.ed_main_toolbar));
         ActionBar supportActionBar = getSupportActionBar();
         supportActionBar.setDisplayHomeAsUpEnabled(true);
         supportActionBar.setHomeAsUpIndicator(R.drawable.ic_menu_24dp);
@@ -77,6 +81,7 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
 
 //            UiThread.postDelayed(1250L, () -> RateAppDialog.checkCondAndShow(EDMainActivity.this));
         }
+        new FabMenu(this);
     }
 
     @Override // com.eltechs.axs.activities.FrameworkActivity, com.eltechs.axs.activities.AxsActivity, android.support.v4.app.FragmentActivity, android.app.Activity
