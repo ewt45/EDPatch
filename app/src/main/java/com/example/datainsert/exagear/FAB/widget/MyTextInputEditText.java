@@ -1,27 +1,9 @@
 package com.example.datainsert.exagear.FAB.widget;
 
 import android.content.Context;
-import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.PopupMenu;
-import android.widget.TextView;
-
-import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class MyTextInputEditText extends TextInputEditText {

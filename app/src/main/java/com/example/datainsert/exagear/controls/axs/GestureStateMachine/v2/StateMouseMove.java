@@ -1,7 +1,6 @@
 package com.example.datainsert.exagear.controls.axs.GestureStateMachine.v2;
 
 import com.eltechs.axs.Finger;
-import com.eltechs.axs.GestureStateMachine.AbstractGestureFSMState;
 import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.GestureStateMachine.PointerContext;
 import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;

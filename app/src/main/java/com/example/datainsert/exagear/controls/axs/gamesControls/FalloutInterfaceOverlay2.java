@@ -3,7 +3,6 @@ package com.example.datainsert.exagear.controls.axs.gamesControls;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.HORIZONTAL;
-
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SHOW_CURSOR;
 

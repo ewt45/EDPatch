@@ -37,7 +37,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
-//import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.ColorPickerView;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
 import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;

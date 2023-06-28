@@ -1,14 +1,11 @@
 package com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters;
 
-import android.view.View;
-
 import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;
 import com.eltechs.axs.PointerEventReporter;
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.eltechs.axs.xserver.Pointer;
 
 /**
  * 用于相对移动的adapter。接收的xy是偏移量.

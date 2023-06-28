@@ -3,7 +3,6 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 
 public class WrapContentViewPager extends ViewPager {

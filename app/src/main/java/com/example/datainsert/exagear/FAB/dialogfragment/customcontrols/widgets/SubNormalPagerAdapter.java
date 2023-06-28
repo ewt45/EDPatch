@@ -1,20 +1,10 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
-import static com.example.datainsert.exagear.RR.getS;
-
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.SubView1Mouse;
-import com.example.datainsert.exagear.RR;
 
 public class SubNormalPagerAdapter extends PagerAdapter implements WrapContentViewPager.ItemHelper {
     private static final String TAG= "SubNormalPagerAdapter";

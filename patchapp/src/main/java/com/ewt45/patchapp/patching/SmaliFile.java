@@ -286,6 +286,7 @@ public class SmaliFile {
 
     /**
      * 添加一整个方法
+     * @param add 这个方法的全部代码行
      */
     public SmaliFile addMethod(String[] add) {
         mAllLines.addAll(scanAndParsePkgName(add));

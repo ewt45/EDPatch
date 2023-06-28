@@ -6,6 +6,7 @@ import com.eltechs.axs.proto.input.annotations.impl.RequestDataReader;
 import com.eltechs.axs.proto.input.errors.BadColormap;
 import com.eltechs.axs.xserver.Colormap;
 import com.eltechs.axs.xserver.XServer;
+import com.eltechs.axs.xserver.impl.ColormapImpl;
 
 /* loaded from: classes.dex */
 public class ColormapParameterReader extends ReferenceToObjectParameterReader {

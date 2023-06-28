@@ -41,12 +41,12 @@ public class ZipInstallerAssets {
                         ZipUnpacker.unpackZip(extractedAssetsInDstDir, dstDir, null);
                         extractedAssetsInDstDir.delete();
 
-                        //没法从assets提取文件夹，自己压缩的recipe.zip又有问题，那就手动复制一下单个sh吧
-                        InputStream shIs = context.getAssets().open("recipe/run/simple.sh");
-                        FileOutputStream shFos = new FileOutputStream(new File(dstDir,"/run/simple.sh"));
-                        IOStreamHelpers.copy(shIs,shFos);
-                        shIs.close();
-                        shFos.close();
+//                        //没法从assets提取文件夹，自己压缩的recipe.zip又有问题，那就手动复制一下单个sh吧
+//                        InputStream shIs = context.getAssets().open("recipe/run/simple.sh");
+//                        FileOutputStream shFos = new FileOutputStream(new File(dstDir,"/run/simple.sh"));
+//                        IOStreamHelpers.copy(shIs,shFos);
+//                        shIs.close();
+//                        shFos.close();
                         UiThread.post(new Runnable() { // from class: com.eltechs.axs.helpers.ZipInstallerAssets.1.1
                             @Override // java.lang.Runnable
                             public void run() {

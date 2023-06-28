@@ -11,28 +11,23 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColRecyclerView;
-import com.example.datainsert.exagear.FAB.widget.SimpleItemSelectedListener;
-import com.example.datainsert.exagear.FAB.widget.SpinArrayAdapterSmSize;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.model.JoyParams;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
 import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
-import com.example.datainsert.exagear.controls.model.JoyParams;
 
 import java.util.List;
 

@@ -1,8 +1,5 @@
 package com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters;
 
-import android.graphics.Matrix;
-
-import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;
 import com.eltechs.axs.PointerEventReporter;
@@ -10,7 +7,6 @@ import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.LocksManager;
-import com.eltechs.axs.xserver.ScreenInfo;
 
 
 public class ViewportMouseAdapter implements MouseMoveAdapter {

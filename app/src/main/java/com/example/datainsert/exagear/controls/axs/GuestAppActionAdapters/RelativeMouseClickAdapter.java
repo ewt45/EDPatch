@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters;
 
 import com.eltechs.axs.GestureStateMachine.PointerContext;
 import com.eltechs.axs.GuestAppActionAdapters.MouseClickAdapter;
-import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.MousePointAndClickAdapter;
 
 /* loaded from: classes.dex */

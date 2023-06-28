@@ -2,8 +2,6 @@ package com.example.datainsert.exagear.application;
 
 import android.app.Application;
 
-import java.util.Objects;
-
 public class MyApplication extends Application {
     boolean logCrash=true;
     @Override

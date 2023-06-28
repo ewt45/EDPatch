@@ -5,9 +5,7 @@ import com.example.datainsert.exagear.controls.model.FormatHelper;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BlockOneKey implements FormatHelper.Block<OneKey> {
 

@@ -9,6 +9,7 @@ import com.eltechs.axs.GestureStateMachine.GestureContext;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.eltechs.axs.helpers.OneShotTimer;
+
 import java.util.List;
 
 /**

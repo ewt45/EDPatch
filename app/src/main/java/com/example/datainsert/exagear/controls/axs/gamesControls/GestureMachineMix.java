@@ -35,13 +35,13 @@ import com.eltechs.axs.finiteStateMachine.FiniteStateMachine;
 import com.eltechs.axs.finiteStateMachine.generalStates.FSMStateRunRunnable;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.State1FMouseMove;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.State2FDragNDrop;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.State2FScrollSyncRel;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.State2FToZoomMove;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.StateClickRel;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.StateMesOneFSpd;
+import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
 import com.example.datainsert.exagear.controls.menus.ShowKeyboardA11;
 
 /**

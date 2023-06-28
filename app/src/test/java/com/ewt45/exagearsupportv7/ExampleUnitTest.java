@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 
+import com.eltechs.axs.proto.input.annotations.ParamName;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,13 @@ public class ExampleUnitTest {
     }
 
     @Test
+    public void multipleSpaceSplit() {
+        String testStr = "671940c6dd1c3fac9715a6d2b64b5a028e0f20fee04b482ff5788f54f0f4fadb  wine-8.10-x86.tar.xz";
+        String[] arr = testStr.split(" ");
+       System.out.println(Arrays.toString(arr));
+    }
+
+    @Test
     public void test1() throws IOException {
 //        clz1 c1=new clz2();
 //        c1.m1();
@@ -44,12 +53,12 @@ public class ExampleUnitTest {
         Collections.sort(allLines, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                String op1 = o1.substring(0,o1.length()-1).split(" = ")[1];
-                String op2 = o2.substring(0,o2.length()-1).split(" = ")[1];
-                return Integer.parseInt(op1)-Integer.parseInt(op2);
+                String op1 = o1.substring(0, o1.length() - 1).split(" = ")[1];
+                String op2 = o2.substring(0, o2.length() - 1).split(" = ")[1];
+                return Integer.parseInt(op1) - Integer.parseInt(op2);
             }
         });
-        for(String str: allLines){
+        for (String str : allLines) {
             System.out.println(str);
         }
     }
@@ -78,15 +87,52 @@ public class ExampleUnitTest {
         System.out.println(builder.toString());
 
     }
-    class clz1{
-        public void m1(){
+
+    @Test
+    public void convertI18n() throws IOException {
+        List<String> allLines = Files.readAllLines(new File("E:\\111.txt").toPath());
+        List<String> stringLines = FileUtils.readLines(new File("E:\\222.txt"));
+        for (int i = 0; i < allLines.size(); i++) {
+            String s = allLines.get(i).trim();
+            if (!s.startsWith("zhArray") || !s.endsWith(";")) {
+                allLines.remove(i);
+                i--;
+            }
+        }
+        for (int i = 0; i < stringLines.size(); i++) {
+            String s = stringLines.get(i).trim();
+            if (!s.startsWith("\"") || !s.endsWith(",") || s.contains("</ul>")) {
+                stringLines.remove(i);
+                i--;
+            }
+        }
+        if (allLines.size() != stringLines.size()) {
+            System.out.println("两列表长度不等，无法转换" + allLines.size() + stringLines.size());
+            return;
+        }
+        for (int i = 0; i < allLines.size(); i++) {
+            String newS = allLines.get(i).trim();
+            String oldS = stringLines.get(i).trim();
+
+            int begin = newS.indexOf(',');
+            int end = newS.length() - 2;
+            System.out.println("ru" + newS.substring(2, begin + 1) + oldS.substring(0, oldS.length() - 1) + ");");
+
+        }
+
+    }
+
+    class clz1 {
+        public void m1() {
             System.out.println("clz1 m1");
         }
-        public void m2(){
+
+        public void m2() {
 
         }
     }
-    class clz2 extends clz1{
+
+    class clz2 extends clz1 {
         @Override
         public void m1() {
             System.out.println("clz2 m1");

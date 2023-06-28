@@ -83,7 +83,7 @@ public class GuestContainersManager {
     }
 
     public GuestContainer getContainerById(Long l) {
-        return this.mContainers.get(l.longValue());
+        return this.mContainers.get(l);
     }
 
     public String getHostPath(String str) {
@@ -114,8 +114,9 @@ public class GuestContainersManager {
         File[] listFiles;
         this.mContainers = new LongSparseArray<>();
         this.mMaxContainerId = 0L;
-        if(!mHomeDir.exists())
-            return;;
+        if (!mHomeDir.exists())
+            return;
+        ;
         for (File file : this.mHomeDir.listFiles()) {
             if (file.isDirectory() && file.getName().startsWith(CONTAINER_DIR_PREFIX)) {
                 GuestContainer guestContainer = new GuestContainer();
@@ -131,38 +132,33 @@ public class GuestContainersManager {
         }
     }
 
-    private boolean initNewContainer(GuestContainer guestContainer, GuestContainer guestContainer2) {
-        File file;
-        if (guestContainer2 != null) {
-            file = new File(guestContainer2.mPath);
-        } else {
-            file = new File(this.mImageDir, MutiWine.getCustomPatternPath());
-        }
-        fillContainerInfo(guestContainer);
-        File file2 = new File(guestContainer.mPath);
+    private boolean initNewContainer(GuestContainer newContainer, GuestContainer refContainer) {
+        File contPattern = refContainer != null
+                ? new File(refContainer.mPath)
+                : new File(this.mImageDir, MutiWine.getCustomPatternPath());//"/opt/guestcont-pattern/"
+
+        fillContainerInfo(newContainer);
+        File file2 = new File(newContainer.mPath);
         try {
             try {
-                FileUtils.copyDirectory(file, file2, new FileFilter() { // from class: com.eltechs.ed.guestContainers.GuestContainersManager.1
-                        @Override // java.io.FileFilter
-                        public boolean accept(File file3) {
-                            return !SafeFileHelpers.isSymlink(file3.getAbsolutePath());
-                        }
-                    }, true);
-                File file3 = new File(guestContainer.mWinePrefixPath, LOCAL_RUN_SCRIPT);
-                if (!file3.exists()) {
-                    FileUtils.copyFile(new File(getHostPath(RECIPES_GUEST_DIR), "run/simple.sh"), file3);
+                FileUtils.copyDirectory(contPattern, file2, file3 -> !SafeFileHelpers.isSymlink(file3.getAbsolutePath()), true);
+                File runsh = new File(newContainer.mWinePrefixPath, LOCAL_RUN_SCRIPT);
+                if (!runsh.exists()) {
+                    FileUtils.copyFile(new File(getHostPath(RECIPES_GUEST_DIR), "run/simple.sh"), runsh);
                 }
-                if (guestContainer2 == null) {
-                    guestContainer.mConfig.loadDefaults();
+                if (refContainer == null) {
+                    newContainer.mConfig.loadDefaults();
                 } else {
-                    GuestContainerConfig.cloneContainerConfig(guestContainer2, guestContainer);
+                    GuestContainerConfig.cloneContainerConfig(refContainer, newContainer);
                 }
                 return true;
-            } catch (IOException unused) {
+            } catch (IOException e) {
+                e.printStackTrace();
                 FileUtils.deleteDirectory(file2);
                 return false;
             }
-        } catch (IOException unused2) {
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
@@ -171,19 +167,18 @@ public class GuestContainersManager {
         return createContainer(null);
     }
 
-    public GuestContainer createContainer(GuestContainer guestContainer) {
-        long valueOf = this.mMaxContainerId + 1;
+    public GuestContainer createContainer(GuestContainer refContainer) {
+        long newContainerId = this.mMaxContainerId + 1;
         File file = this.mHomeDir;
-        File file2 = new File(file, CONTAINER_DIR_PREFIX + valueOf);
+        File file2 = new File(file, CONTAINER_DIR_PREFIX + newContainerId);
         if (file2.mkdirs()) {
-            GuestContainer guestContainer2 = new GuestContainer();
-            guestContainer2.mId = valueOf;
-            guestContainer2.mPath = file2.getAbsolutePath();
-            if (initNewContainer(guestContainer2, guestContainer)) {
-                Long l = this.mMaxContainerId;
+            GuestContainer newContainer = new GuestContainer();
+            newContainer.mId = newContainerId;
+            newContainer.mPath = file2.getAbsolutePath();
+            if (initNewContainer(newContainer, refContainer)) {
                 this.mMaxContainerId = this.mMaxContainerId + 1;
-                this.mContainers.append(valueOf, guestContainer2);
-                return guestContainer2;
+                this.mContainers.append(newContainerId, newContainer);
+                return newContainer;
             }
             return null;
         }
@@ -199,7 +194,8 @@ public class GuestContainersManager {
         File file = new File(guestContainer.mPath);
         try {
             FileUtils.deleteDirectory(file);
-        } catch (IOException unused) {
+        } catch (IOException e) {
+            e.printStackTrace(); //为什么删文件夹会失败？
             String parent = file.getParent();
             file.renameTo(new File(parent, "corrupted_" + file.getName()));
         }

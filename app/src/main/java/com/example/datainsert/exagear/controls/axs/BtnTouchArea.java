@@ -1,15 +1,8 @@
 package com.example.datainsert.exagear.controls.axs;
 
-import android.graphics.PointF;
-import android.util.Log;
-
 import com.eltechs.axs.Finger;
-import com.eltechs.axs.GeometryHelpers;
-import com.eltechs.axs.TouchArea;
 import com.eltechs.axs.TouchEventAdapter;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

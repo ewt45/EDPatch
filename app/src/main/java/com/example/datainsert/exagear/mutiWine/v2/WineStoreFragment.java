@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.eltechs.ed.InstallRecipe;
-import com.eltechs.ed.R;
-import com.eltechs.ed.fragments.ChooseRecipeFragment;
+import com.example.datainsert.exagear.RR;
 
 public class WineStoreFragment extends Fragment {
     @Nullable
@@ -24,7 +22,7 @@ public class WineStoreFragment extends Fragment {
     @Override // android.support.v4.app.Fragment
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("添加/删除wine版本");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(RR.getS(RR.mw_manTitle));
     }
 
     @Override

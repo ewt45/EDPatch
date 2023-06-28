@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 
 public class SoftInput {

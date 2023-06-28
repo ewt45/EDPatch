@@ -1,7 +1,5 @@
 package com.example.datainsert.exagear.controls.axs.GestureStateMachine.v2;
 
-import android.support.annotation.NonNull;
-
 import com.eltechs.axs.GestureStateMachine.AbstractGestureFSMState;
 import com.eltechs.axs.GestureStateMachine.GestureContext;
 

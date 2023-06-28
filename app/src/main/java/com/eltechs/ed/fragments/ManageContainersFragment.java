@@ -77,8 +77,9 @@ public class ManageContainersFragment extends Fragment {
     /**
      * 准备添加到ex中的方法，用于从外部调用，执行创建容器task
      */
+    @Deprecated
     public void callToCreateNewContainer() {
-        new ContAsyncTask(0).execute();
+//        new ContAsyncTask(0).execute();
     }
 
 //    @Override // android.support.v4.app.Fragment
@@ -119,7 +120,7 @@ public class ManageContainersFragment extends Fragment {
         }
     }
 
-    public void refreshContainersList() {
+    private void refreshContainersList() {
         this.mContainers = this.mGcm.getContainersList();
         this.mRecyclerView.setAdapter(new ContainersAdapter(this.mContainers));
         if (this.mContainers.isEmpty()) {
@@ -127,7 +128,7 @@ public class ManageContainersFragment extends Fragment {
         }
     }
 
-    public ProgressDialog showProgressDialog(String str) {
+    private ProgressDialog showProgressDialog(String str) {
         ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage(str);
@@ -136,7 +137,7 @@ public class ManageContainersFragment extends Fragment {
         return progressDialog;
     }
 
-    public void closeProgressDialog(ProgressDialog progressDialog) {
+    private void closeProgressDialog(ProgressDialog progressDialog) {
         progressDialog.dismiss();
     }
 

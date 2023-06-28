@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets
 
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
-
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 
 import android.content.Context;
@@ -24,8 +23,8 @@ import android.widget.ToggleButton;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.widget.JoyStickBtn;
 import com.example.datainsert.exagear.controls.model.OneKey;
+import com.example.datainsert.exagear.controls.widget.JoyStickBtn;
 
 import java.util.ArrayList;
 import java.util.List;

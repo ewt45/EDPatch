@@ -74,6 +74,14 @@ public class RootXRequestHandler implements RequestHandler<XClient> {
         XResponse xResponse = new XResponse(xRequest, xOutputStream);
         xRequest.setMajorOpcode(majorOpCode);
         dispatchRequest(majorOpCode, minorOpCode, length, xClient, xRequest, xResponse);
+        if(xRequest.getRemainingBytesCount()!=0){
+            Log.d("TAG", "handleNormalRequest: "+xRequest.getRemainingBytesCount());
+            StringBuilder builder = new StringBuilder();
+            while (xRequest.getRemainingBytesCount()>0)
+                builder.append(" ").append(xRequest.readByte());
+            Log.d("TAG", "handleNormalRequest: "+builder.toString());
+            int stop = 1;
+        }
         Assert.state(xRequest.getRemainingBytesCount() == 0, "Request has not been parsed fully.");
         return ProcessingResult.PROCESSED;
     }

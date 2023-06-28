@@ -19,7 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.eltechs.axs.helpers.AndroidHelpers;
-import com.eltechs.ed.R_original;
+import com.eltechs.ed.R;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
 public class ChooseFileFragment extends Fragment {
     public static final String ARG_DOWNLOAD_URL = "DOWNLOAD_URL";
     public static final String ARG_ROOT_PATH = "ROOT_PATH";
-    private static final String NO_EXE_FILES = AndroidHelpers.getString(R_original.string.wd_no_exe_files);
+    private static final String NO_EXE_FILES = AndroidHelpers.getString(R.string.wd_no_exe_files);
     private static final String PARENT_DIR_NAME = "..";
     private static final int VIEW_TYPE_NO_EXE = 1;
     private static final int VIEW_TYPE_REGULAR = 0;
@@ -67,12 +67,12 @@ public class ChooseFileFragment extends Fragment {
 
     @Override // android.support.v4.app.Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R_original.menu.choose_install_file_menu, menu);
+        menuInflater.inflate(R.menu.ex_choose_install_file_menu, menu);
     }
 
     @Override // android.support.v4.app.Fragment
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        if (menuItem.getItemId() == R_original.id.choose_install_file_download) {
+        if (menuItem.getItemId() == R.id.choose_install_file_download) {
             startActivity(new Intent("android.intent.action.VIEW", Uri.parse(this.mDownloadUrl)));
             return true;
         }
@@ -81,8 +81,8 @@ public class ChooseFileFragment extends Fragment {
 
     @Override // android.support.v4.app.Fragment
     public View onCreateView(LayoutInflater layoutInflater, ViewGroup viewGroup, Bundle bundle) {
-        FrameLayout frameLayout = (FrameLayout) layoutInflater.inflate(R_original.layout.basic_list, viewGroup, false);
-        this.mRecyclerView = (RecyclerView) frameLayout.findViewById(R_original.id.list);
+        FrameLayout frameLayout = (FrameLayout) layoutInflater.inflate(R.layout.ex_basic_list, viewGroup, false);
+        this.mRecyclerView = (RecyclerView) frameLayout.findViewById(R.id.list);
         this.mRecyclerView.setLayoutManager(new LinearLayoutManager(this.mRecyclerView.getContext()));
         this.mRecyclerView.addItemDecoration(new DividerItemDecoration(this.mRecyclerView.getContext(), 1));
         return frameLayout;
@@ -95,7 +95,7 @@ public class ChooseFileFragment extends Fragment {
         this.mCurrentDir = this.mRootDir;
         this.mCurrentItems = getDirContent(this.mCurrentDir, this.mRootDir);
         this.mRecyclerView.setAdapter(new FileAdapter(this.mCurrentItems));
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R_original.string.wd_title_select_installer_file);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.wd_title_select_installer_file);
     }
 
     List<File> getDirContent(File file, File file2) {
@@ -132,7 +132,7 @@ public class ChooseFileFragment extends Fragment {
 
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public final ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R_original.layout.basic_list_item, viewGroup, false), i);
+            return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.ex_basic_list_item, viewGroup, false), i);
         }
 
         @Override // android.support.v7.widget.RecyclerView.Adapter
@@ -141,7 +141,7 @@ public class ChooseFileFragment extends Fragment {
                 return;
             }
             viewHolder.mItem = this.mItems.get(i);
-            viewHolder.mImage.setImageResource((viewHolder.mItem.getPath().equals(ChooseFileFragment.PARENT_DIR_NAME) || viewHolder.mItem.isDirectory()) ? R_original.drawable.ic_folder_open_24dp : R_original.drawable.ic_description_24dp);
+            viewHolder.mImage.setImageResource((viewHolder.mItem.getPath().equals(ChooseFileFragment.PARENT_DIR_NAME) || viewHolder.mItem.isDirectory()) ? R.drawable.ic_folder_open_24dp : R.drawable.ic_description_24dp);
             viewHolder.mText.setText(viewHolder.mItem.getName());
             viewHolder.mView.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.fragments.ChooseFileFragment.FileAdapter.1
 
@@ -185,8 +185,8 @@ public class ChooseFileFragment extends Fragment {
             public ViewHolder(View view, int i) {
                 super(view);
                 this.mView = view;
-                this.mImage = (ImageView) view.findViewById(R_original.id.image);
-                this.mText = (TextView) view.findViewById(R_original.id.text);
+                this.mImage = (ImageView) view.findViewById(R.id.image);
+                this.mText = (TextView) view.findViewById(R.id.text);
                 if (i == 1) {
                     this.mImage.setVisibility(View.GONE);
                     this.mText.setText(ChooseFileFragment.NO_EXE_FILES);

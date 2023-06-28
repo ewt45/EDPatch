@@ -4,7 +4,6 @@ import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
 import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static android.widget.LinearLayout.VERTICAL;
-
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.app.Dialog;
@@ -38,6 +37,12 @@ import com.example.datainsert.exagear.controls.model.FormatHelper;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class CustomControls extends BaseFragment implements DialogInterface.OnClickListener {
@@ -209,9 +214,9 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             public void importData() {
                 //先获取一下当前的数据，如果导入失败了，恢复当前的数据
                 String currentData = FormatHelper.dataExport(mKeyCodes2, mKeyCodes3);
+                String data = null;
                 try {
                     ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    String data;
                     if (clipboard.getPrimaryClip() == null || !(clipboard.hasPrimaryClip())
                             || !(Objects.requireNonNull(clipboard.getPrimaryClipDescription()).hasMimeType(MIMETYPE_TEXT_PLAIN))) {
                         throw new Exception("剪切板没有数据 或者剪切板数据类型不是文本");
@@ -229,6 +234,28 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
                     getDialog().dismiss();//这个貌似不会调用positive button的onclicklisntenr，好耶
                     Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_importResult).split("\\$")[0], Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
+                    List<String> filelines = new ArrayList<>();
+                    if(data!=null)
+                        filelines.add(data);
+                    filelines.add("");
+                    filelines.add(e.getMessage());
+                    for(StackTraceElement element: e.getStackTrace())
+                        filelines.add(element.toString());
+
+                    Throwable errorCause = e.getCause();
+                    while(errorCause!=null){
+                        filelines.add("Caused by: "+errorCause.getMessage());
+                        for(StackTraceElement element: errorCause.getStackTrace())
+                            filelines.add(element.toString());
+                        errorCause = errorCause.getCause();
+                    }
+
+                    try {
+                        FileUtils.writeLines(new File("/sdcard/Download/errors.txt"),filelines);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+
                     e.printStackTrace();
                     FormatHelper.dataImport(currentData);
                     Toast.makeText(requireContext(), getS(RR.cmCtrl_s4_importResult).split("\\$")[1], Toast.LENGTH_SHORT).show();

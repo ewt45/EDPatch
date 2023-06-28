@@ -121,8 +121,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         this.mRunGuide = installRecipe.mRunGuide;
         this.mRunScriptToCopy = new File(this.mGcm.getGuestImagePath(), getRecipeGuestPath(installRecipe.mRunScriptName));
         this.mExeWorkDir = new File(str).getParentFile();
-        List<String> list = this.mExeArgv;
-        list.addAll(Arrays.asList("/bin/bash", "-x", getRecipeGuestPath(installRecipe.mInstallScriptName), "eval \"wine '" + (this.mGcm.getGuestPath(this.mGcm.getGuestWinePrefixPath()) + "/dosdevices/d:" + FileHelpers.cutRootPrefixFromPath(new File(installApp.mExePath), mUserAreaDir)) + "'\""));
+        this.mExeArgv.addAll(Arrays.asList("/bin/bash", "-x", getRecipeGuestPath(installRecipe.mInstallScriptName), "eval \"wine '" + (this.mGcm.getGuestPath(this.mGcm.getGuestWinePrefixPath()) + "/dosdevices/d:" + FileHelpers.cutRootPrefixFromPath(new File(installApp.mExePath), mUserAreaDir)) + "'\""));
         if (this.mCont == null || this.mCont.mConfig.getDefaultControlsNotShortcut()) {
             this.mForceUseDefaultContols = true;
         }
@@ -142,8 +141,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         XDGLink xDGLink = runXDGLink.mLink;
         this.mCont = xDGLink.guestCont;
         this.mExeWorkDir = new File(xDGLink.path == null ? mUserAreaDir.getAbsolutePath() : this.mGcm.getHostPath(xDGLink.path));
-        List<String> list = this.mExeArgv;
-        list.addAll(Arrays.asList(this.mGcm.getGuestPath(this.mGcm.getGuestWinePrefixPath()) + "/" + GuestContainersManager.LOCAL_RUN_SCRIPT, "eval \"" + xDGLink.exec + " " + this.mCont.mConfig.getRunArguments() + "\""));
+        this.mExeArgv.addAll(Arrays.asList(this.mGcm.getGuestPath(this.mGcm.getGuestWinePrefixPath()) + "/" + GuestContainersManager.LOCAL_RUN_SCRIPT, "eval \"" + xDGLink.exec + " " + this.mCont.mConfig.getRunArguments() + "\""));
         if (this.mCont.mConfig.getHideTaskbarOnShortcut()) {
             this.mHideTaskbar = true;
         }
@@ -159,7 +157,10 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         this.mHideTaskbar = false;
         this.mCont = runExplorer.mCont;
         this.mExeWorkDir = new File(mUserAreaDir.getAbsolutePath());
-        this.mExeArgv.addAll(Arrays.asList(getRecipeGuestPath("run/simple.sh"), "eval \"wine /opt/exec_wrapper.exe /opt/TFM.exe D:/\""));
+//        this.mExeArgv.addAll(Arrays.asList(getRecipeGuestPath("run/simple.sh"), "eval \"wine /opt/exec_wrapper.exe /opt/TFM.exe D:/\""));
+        this.mExeArgv.addAll(Arrays.asList(getRecipeGuestPath("run/simple.sh"), "eval \"wine /opt/TFM.exe D:/\""));
+//        this.mExeArgv.addAll(Arrays.asList(getRecipeGuestPath("run/simple.sh"), "eval \"xterm\""));
+
         if (this.mCont.mConfig.getDefaultControlsNotShortcut()) {
             this.mForceUseDefaultContols = true;
         }
@@ -200,11 +201,11 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         if (this.mCont == null) {
             this.mCont = this.mGcm.createContainer();
         }
+        this.mGcm.makeContainerActive(this.mCont);
 
         //添加环境变量
         MutiWine.addEnvVars(mCont.mId,mEnv);
 
-        this.mGcm.makeContainerActive(this.mCont);
         if (this.mScreenInfo != null) {
             this.mCont.mConfig.setScreenInfo(this.mScreenInfo);
         } else {
@@ -272,8 +273,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
             StartGuest.this.getApplicationState().setXServerDisplayActivityInterfaceOverlay(mControls.create());
         });
         arrayList.add(new CreateTypicalEnvironmentConfiguration<>(12, false));
-        List<String> list = this.mEnv;
-        list.addAll(Arrays.asList("HOME=/home/xdroid/", "WINEPREFIX=" + guestPath));
+        this.mEnv.addAll(Arrays.asList("HOME=/home/xdroid/", "WINEPREFIX=" + guestPath));
         arrayList.add(new CreateLaunchConfiguration<>(this.mExeWorkDir, guestPath, (String[]) this.mExeArgv.toArray(new String[0]), (String[]) this.mEnv.toArray(new String[0]), EDStartupActivity.SOCKET_PATH_SUFFIX, mUserAreaDir.getAbsolutePath()));
         arrayList.add(new StartEnvironmentService<>(new TrayConfiguration(R.drawable.tray, R.string.ed_host_app_name, R.string.ed_host_app_name)));
         arrayList.add(new StartGuestApplication<>(true, true));

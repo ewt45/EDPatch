@@ -3,7 +3,6 @@ package com.example.datainsert.exagear.controls.widget;
 import android.util.Log;
 
 import com.eltechs.axs.helpers.InfiniteTimer;
-import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 
 /**

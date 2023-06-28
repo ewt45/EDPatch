@@ -5,11 +5,9 @@ import static com.example.datainsert.exagear.controls.model.FormatHelper.blockSu
 import static com.example.datainsert.exagear.controls.model.FormatHelper.propSeparator;
 
 import com.eltechs.axs.helpers.Assert;
-import com.example.datainsert.exagear.controls.model.FormatHelper;
 import com.example.datainsert.exagear.controls.model.FormatHelper.Block;
 import com.example.datainsert.exagear.controls.model.JoyParams;
 import com.example.datainsert.exagear.controls.model.KeyCodes3;
-import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.ArrayList;

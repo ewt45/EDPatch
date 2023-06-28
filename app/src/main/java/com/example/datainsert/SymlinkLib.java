@@ -5,7 +5,6 @@ import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 
 public class SymlinkLib {

@@ -1,11 +1,16 @@
 package com.eltechs.axs.requestHandlers.core;
 
+import android.util.Log;
+
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.input.annotations.Locks;
 import com.eltechs.axs.proto.input.annotations.OOBParam;
+import com.eltechs.axs.proto.input.annotations.ParamLength;
+import com.eltechs.axs.proto.input.annotations.ParamName;
 import com.eltechs.axs.proto.input.annotations.RequestHandler;
 import com.eltechs.axs.proto.input.annotations.RequestParam;
 import com.eltechs.axs.proto.input.annotations.SpecialNullValue;
+import com.eltechs.axs.proto.input.annotations.Unsigned;
 import com.eltechs.axs.proto.input.annotations.Width;
 import com.eltechs.axs.requestHandlers.HandlerObjectBase;
 import com.eltechs.axs.xconnectors.XResponse;
@@ -81,6 +86,50 @@ public class GrabManipulationRequests extends HandlerObjectBase {
     @Locks({"WINDOWS_MANAGER", "CURSORS_MANAGER", "FOCUS_MANAGER"})
     @RequestHandler(opcode = 31)
     public void GrabKeyboard(XResponse xResponse, @OOBParam @RequestParam boolean z, @RequestParam Window window, @RequestParam int i, @RequestParam boolean z2, @RequestParam boolean z3, @RequestParam short s) throws IOException {
-        xResponse.sendSimpleSuccessReply((byte) 0, new Object[0]);
+        xResponse.sendSimpleSuccessReply((byte) 0);
     }
+//    @Locks({"WINDOWS_MANAGER", "CURSORS_MANAGER", "FOCUS_MANAGER"})
+//    @RequestHandler(opcode = Opcodes.UngrabKey)
+//    public void UngrabKey( @RequestParam byte key, @RequestParam short length,@RequestParam Window grabWindow,@RequestParam short modifiers,@RequestParam short pad){
+//        /*
+//         * typedef struct {
+//         *     CARD8 reqType;
+//         *     CARD8 key;
+//         *     CARD16 length B16;
+//         *     Window grabWindow B32;
+//         *     CARD16 modifiers B16;
+//         *     CARD16 pad B16;
+//         * } xUngrabKeyReq;
+//         */
+//        Log.d(null, String.valueOf("UngrabKey: key=%d length=%d, grabWindow=%d, modifiers=%d, pad=%d"));
+//
+//    }
+//
+//    @Locks({"WINDOWS_MANAGER", "CURSORS_MANAGER", "FOCUS_MANAGER"})
+//    @RequestHandler(opcode = Opcodes.GrabKey)
+//    public void GrabKey(
+//            @RequestParam boolean ownerEvents,
+//            @RequestParam @Unsigned short length,
+//            @RequestParam Window grabWindow,
+//            @RequestParam @Unsigned short modifiers,
+//            @RequestParam @Unsigned byte key,
+//            @RequestParam byte pointerMode,
+//            @RequestParam byte keyboardMode,
+//            @RequestParam byte pad1,
+//            @RequestParam byte pad2,
+//            @RequestParam byte pad3
+//            ){
+//        /*
+//        CARD8 reqType;
+//        BOOL ownerEvents;
+//        CARD16 length B16;
+//        Window grabWindow B32;
+//        CARD16 modifiers B16;
+//        CARD8 key;
+//        BYTE pointerMode, keyboardMode;
+//        BYTE pad1, pad2, pad3;
+//         */
+//        Log.d(null, String.valueOf("UngrabKey: key=%d length=%d, grabWindow=%d, modifiers=%d, pad=%d"));
+//
+//    }
 }

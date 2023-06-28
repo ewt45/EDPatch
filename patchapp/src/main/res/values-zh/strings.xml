@@ -7,14 +7,14 @@
     <string name="actmsg_finish">…完成</string>
     <string name="actmsg_buildapk">回编译apk</string>
     <string name="actmsg_decodeapk">解包apk</string>
-    <string name="actmsg_funccursor">添加功能 光标显示</string>>
-    <string name="actmsg_funcfab">添加功能 悬浮操作按钮</string>
-    <string name="actmsg_funcresl">添加功能 自定义分辨率</string>
+    <string name="actmsg_funccursor">添加功能: 光标显示</string>>
+    <string name="actmsg_funcfab">添加功能: 悬浮操作按钮</string>
+    <string name="actmsg_funcresl">添加功能: 自定义分辨率</string>
     <string name="actmsg_signapk">apk签名 (apk保存到/storage/emulated/0/Android/data/com.ewt45.patchapp/patchtmp/tmp/dist/apk_sign.apk)</string>
     <string name="actmsg_signaldone">---====全部任务====---</string>
     <string name="n1_exagear_apk_n2_n3_apk">使用方法：\n1. 选择exagear的apk文件，等待解包完成\n2. 勾选功能，点击添加按钮，等待回包完成\n3. 点击安装按钮，安装修改后的apk\n注意事项：\n1. 不保证添加功能一定成功。\n2. 修改后签名会变化，如有需要请自行重新签名。</string>
     <string name="app_info">所选apk：%1$s</string>
-    <string name="actmsg_funcsinput">添加功能 调起输入法修复</string>
+    <string name="actmsg_funcsinput">添加功能: 调起输入法修复</string>
     <string name="actmsg_fail">…失败</string>
     <string name="tv_patchstep1">1. 选择apk</string>
     <string name="btntxt_selectapkinstalled">已安装应用</string>
@@ -30,7 +30,7 @@
     <string name="btntxt_installnew">安装修改后的apk</string>
     <string name="tv_patchingprogress">正在执行操作</string>
     <string name="tv_logtitle">输出信息：</string>
-    <string name="actmsg_funcselobb">添加功能 手动选择obb</string>
+    <string name="actmsg_funcselobb">添加功能: 手动选择obb</string>
     <string name="action_guide">使用指南</string>
     <string name="fraghelp_title2_steps">操作步骤</string>
     <string name="fraghelp_body_step_1">从已安装应用列表，或者本地文件中选择exagear的apk，等待解包完成。</string>
@@ -69,5 +69,6 @@
     <string name="funcname_shortcut">exe快捷方式直接启动</string>
     <string name="fraghelp_body_shortcut">长按app图标，选择一个exe快捷方式，点击直接进入图形界面运行exe。\n添加app快捷方式的方法：点击app图标启动应用，在“桌面”页面下点击exe快捷方式菜单项，选择“添加为app快捷方式”。\n注意事项：快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。将该exe快捷方式（.desktop文件）删除后，app快捷方式在下一次启动应用时会被自动删除。该功能在安卓7以下无法使用。</string>
     <string name="actmsg_funcshortcut">添加功能: exe快捷方式直接启动</string>
+    <string name="actmsg_funcmw">添加功能: wine版本切换</string>
 
 </resources>

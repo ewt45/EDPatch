@@ -10,9 +10,9 @@ import com.eltechs.axs.activities.menus.ToggleHorizontalStretch;
 import com.eltechs.axs.widgets.actions.Action;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.menus.ControlEdit;
-import com.example.datainsert.exagear.controls.menus.RotateScreen;
 import com.example.datainsert.exagear.controls.menus.ControlToggleVisibility;
 import com.example.datainsert.exagear.controls.menus.ControlUsage;
+import com.example.datainsert.exagear.controls.menus.RotateScreen;
 import com.example.datainsert.exagear.controls.menus.ShowKeyboardA11;
 
 /**

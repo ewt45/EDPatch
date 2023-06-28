@@ -1,15 +1,12 @@
 package com.example.datainsert.exagear.controls;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
-import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.ed.R;
 
 @SuppressLint("ViewConstructor")

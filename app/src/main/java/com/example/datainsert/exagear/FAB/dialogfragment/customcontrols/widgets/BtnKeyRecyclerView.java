@@ -4,7 +4,6 @@ import static android.support.v7.widget.helper.ItemTouchHelper.DOWN;
 import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 import static android.support.v7.widget.helper.ItemTouchHelper.RIGHT;
 import static android.support.v7.widget.helper.ItemTouchHelper.UP;
-
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SIDEBAR_COLOR;
 

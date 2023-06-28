@@ -55,7 +55,7 @@ public class GuestContainerConfig {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    public void deleteConfig() {
+     void deleteConfig() {
         File file = new File(this.mContext.getFilesDir().getParent() + "/shared_prefs/" + CONTAINER_CONFIG_FILE_KEY_PREFIX + this.mCont.mId + ".xml");
         if (file.exists()) {
             Context context = this.mContext;
@@ -65,7 +65,7 @@ public class GuestContainerConfig {
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */
-    public void loadDefaults() {
+     void loadDefaults() {
         setName("Container_" + this.mCont.mId);
         setScreenInfoDefault();
         setLocaleName(Locales.getLocaleByDevice(this.mContext));
@@ -217,7 +217,7 @@ public class GuestContainerConfig {
     }
 
     public Boolean getRunGuideShown() {
-        return Boolean.valueOf(this.mSp.getBoolean(KEY_RUN_GUIDE_SHOWN, false));
+        return this.mSp.getBoolean(KEY_RUN_GUIDE_SHOWN, false);
     }
 
     public void setRunGuideShown(boolean z) {

@@ -4,25 +4,16 @@ import static android.content.ContentValues.TAG;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.RippleDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.Shape;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
-import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.widget.ToggleButton;
-
-import com.eltechs.ed.R;
-import com.example.datainsert.exagear.FAB.FabMenu;
-import com.example.datainsert.exagear.QH;
 
 import java.util.Arrays;
 

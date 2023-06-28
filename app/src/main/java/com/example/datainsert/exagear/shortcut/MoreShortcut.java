@@ -1,27 +1,24 @@
 package com.example.datainsert.exagear.shortcut;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MenuItem;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
-import com.eltechs.axs.configuration.startup.StartupActionsCollection;
 import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.XDGLink;
 import com.eltechs.ed.activities.EDStartupActivity;
@@ -89,6 +86,9 @@ public class MoreShortcut {
                 if (shortcutInfoList.size() > 4)
                     shortcutInfoList.remove(0);
 
+                //设置图标，由于get到的信息会丢失图标，所以每次设置快捷方式前需要重新设置一遍
+                setDynamicShortcuts(shortcutInfoList);
+
                 shortcutManager.setDynamicShortcuts(shortcutInfoList);
             }
 
@@ -112,63 +112,79 @@ public class MoreShortcut {
      * @param a activity
      */
     public static void launchFromShortCutOrNormally(AppCompatActivity a) {
-
-        updateCurrentShortcuts(a);
-        //获取路径，然后新建xdglink
-        String shortcutPath = a.getIntent().getStringExtra(DESKTOP_FILE_ABSOLUTE_PATH);
-        //如果不是从快捷方式启动，正常进入WDesktop
-        if (shortcutPath == null) {
-            startNormally(a);
-            return;
-        }
-        GuestContainer container = GuestContainersManager.getInstance(a).getContainerById(a.getIntent().getLongExtra(CONTAINER_ID, 0));
-        File desktopFile = new File(shortcutPath);
-
-        //如果快捷方式不存在了，就正常启动
-        if (container == null || !desktopFile.exists()) {
-//            Toast.makeText(a, "快捷方式已失效", Toast.LENGTH_LONG).show();
-            //TO-DO: 删除这个快捷方式
-
-            startNormally(a);
-            return;
-        }
-
+        setDynamicShortcuts(null);
         try {
+            //获取路径，然后新建xdglink
+            String shortcutPath = a.getIntent().getStringExtra(DESKTOP_FILE_ABSOLUTE_PATH);
+            //如果不是从快捷方式启动，正常进入WDesktop
+            if (shortcutPath == null)
+                throw new Exception("正常启动app，进入WDesktop");
+
+            GuestContainer container = GuestContainersManager.getInstance(a).getContainerById(a.getIntent().getLongExtra(CONTAINER_ID, 0));
+            File desktopFile = new File(shortcutPath);
+            //如果快捷方式不存在了，就正常启动
+            if (container == null || !desktopFile.exists())
+                throw new Exception("快捷方式不存在，正常启动");
+
+            Log.d(TAG, "launchFromShortCut: 从快捷方式入口直接进入xserver");
             XDGLink xdgLink = new XDGLink(container, desktopFile);
             ((EDApplicationState) Globals.getApplicationState()).getStartupActionsCollection().addAction(new StartGuest<>(new StartGuest.RunXDGLink(xdgLink)));
-            Log.d(TAG, "launchFromShortCut: 从快捷方式入口直接进入xserver");
-        } catch (IOException e) {
-            Log.e(TAG, "launchFromShortCut: ", e);
-            startNormally(a);
+        } catch (Exception e) {
+            Log.d(TAG, "launchFromShortCut: 正常启动 " + e.getMessage());
+            ((EDApplicationState) Globals.getApplicationState()).getStartupActionsCollection().addAction(new WDesktop<>());
         }
 
 
     }
 
-    /**
-     * 正常流程启动，即进入安卓应用主界面
-     */
-    private static void startNormally(AppCompatActivity a) {
-        EDApplicationState eDApplicationState = Globals.getApplicationState();
-        StartupActionsCollection<EDApplicationState> startupActionsCollection = eDApplicationState.getStartupActionsCollection();
-        startupActionsCollection.addAction(new WDesktop<>());
-    }
 
     /**
-     * 检查现有的快捷方式，删除已经失效的
+     * 添加动态快捷方式。同时会检查就的快捷方式是否失效，失效则删除
+     *
+     * @param list 新增的动态快捷方式列表，为null的话则获取当前的并检查是否有应该删除的
      */
-    private static void updateCurrentShortcuts(AppCompatActivity a) {
+    private static void setDynamicShortcuts(List<ShortcutInfo> list) {
+
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.N_MR1) {
             Log.d(TAG, "updateCurrentShortcuts: 低于安卓7，无法使用快捷方式功能");
             return;
         }
         ShortcutManager shortcutManager = Globals.getAppContext().getSystemService(ShortcutManager.class);
-        List<ShortcutInfo> list = shortcutManager.getDynamicShortcuts();
+        if (list == null) {
+            list = shortcutManager.getDynamicShortcuts();
+        }
         for (int i = 0; i < list.size(); i++) {
-            //应用还无法查看shortcutinfo里的intent，那只能另加一个extra了
-            if (!new File(list.get(i).getExtras().getString(DESKTOP_FILE_ABSOLUTE_PATH)).exists()) {
+            ShortcutInfo info = list.get(i);
+            PersistableBundle bundle = list.get(i).getExtras();
+            File desktopFile;
+            if (bundle == null || !(desktopFile = new File(bundle.getString(DESKTOP_FILE_ABSOLUTE_PATH))).exists()) {
                 list.remove(i);
                 i--;
+            }
+            //通过getDynamicShortcuts获取的信息丢失了图标，需要重新设置
+            else {
+                try {
+                    GuestContainersManager manager = GuestContainersManager.getInstance(Globals.getAppContext());
+                    GuestContainer container = manager.getContainerById(bundle.getLong(CONTAINER_ID, 0));
+                    XDGLink xdgLink = new XDGLink(container, desktopFile);
+                    Bitmap icon = BitmapFactory.decodeFile(manager.getIconPath(xdgLink));
+                    //构建shortcutinfo
+                    ShortcutInfo.Builder builder = new ShortcutInfo.Builder(Globals.getAppContext(), xdgLink.name)
+                            .setShortLabel(xdgLink.name)
+                            .setExtras(info.getExtras())
+                            .setIntent(info.getIntent()) //设置intent又不一定非要指向目标activity，那难道会加到栈中？如果不指定
+                            .setActivity(info.getActivity()) //设置目标activity
+                            ;
+//                    if (icon != null)
+//                        builder.setIcon(Icon.createWithBitmap(icon));
+//                    else{
+//                        Log.d(TAG, "setDynamicShortcuts: 没有图标："+xdgLink.guestCont.mIconsPath+"/"+xdgLink.icon + ".png");
+//                    }
+                    list.remove(i);
+                    list.add(i, builder.build());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
         shortcutManager.setDynamicShortcuts(list);
@@ -195,6 +211,6 @@ public class MoreShortcut {
         linearLayout.addView(checkBox, checkParams);
         ScrollView scrollView = new ScrollView(a);
         scrollView.addView(linearLayout);
-        new AlertDialog.Builder(a).setView(scrollView).setPositiveButton(android.R.string.yes,null).create().show();
+        new AlertDialog.Builder(a).setView(scrollView).setPositiveButton(android.R.string.yes, null).create().show();
     }
 }

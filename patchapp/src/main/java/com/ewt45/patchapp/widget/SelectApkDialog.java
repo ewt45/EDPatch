@@ -19,17 +19,21 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.ewt45.patchapp.R;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Comparators;
 
 import java.io.File;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class SelectApkDialog extends DialogFragment {
-    List<String> mFilterApps;
-    List<String> mAppNames;
+//    List<String> mFilterApps;
+//    List<String> mAppNames;
+    List<SelectAppInfo> mAppsInfo= new ArrayList<>();
     String TAG = "SelectApkDialog";
     Callback mCallback;
     View rootView;
@@ -40,7 +44,6 @@ public class SelectApkDialog extends DialogFragment {
     }
 
     public SelectApkDialog  setCallback( Callback callback){
-
         mCallback = callback;
         return this;
     }
@@ -68,15 +71,13 @@ public class SelectApkDialog extends DialogFragment {
     private void prepareApkList(){
         new Thread(()->{
             List<ApplicationInfo> apps = requireContext().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-            mFilterApps = new ArrayList<>();
-            mAppNames = new ArrayList<>();
             for (ApplicationInfo info : apps) {
                 if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     //非系统应用
-                    mFilterApps.add(info.sourceDir);
-                    mAppNames.add(requireContext().getPackageManager().getApplicationLabel(info).toString());
+                    mAppsInfo.add(new SelectAppInfo(requireContext().getPackageManager().getApplicationLabel(info).toString(),info.sourceDir));
                 }
             }
+            Collections.sort(mAppsInfo);
             //排一下序吧受不了了
 //            String[] apkLocations = mFilterApps.toArray(new String[0]);
 //            String[] appNames = mAppNames.toArray(new String[0]);
@@ -97,16 +98,16 @@ public class SelectApkDialog extends DialogFragment {
      */
     private void changeViewOnUIThread(){
         rootView.post(()->{
-            ArrayAdapter<String> adapter = new ArrayAdapter<>
-                    (requireContext(), android.R.layout.simple_expandable_list_item_1, mAppNames);
+            ArrayAdapter<SelectAppInfo> adapter = new ArrayAdapter<>
+                    (requireContext(), android.R.layout.simple_expandable_list_item_1, mAppsInfo);
 
             ListView listView = rootView.findViewById(R.id.dialog_listview);
             listView.setAdapter(adapter);
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d(TAG, "onClick: dialog点击的项目为：" + mFilterApps.get(position));
-                    mCallback.deployEDApk(new File(mFilterApps.get(position)));
+                    Log.d(TAG, "onClick: dialog点击的项目为：" + mAppsInfo.get(position));
+                    mCallback.deployEDApk(new File(mAppsInfo.get(position).getSourceDir()));
                     dismiss();
                 }
             });
@@ -126,5 +127,27 @@ public class SelectApkDialog extends DialogFragment {
 
         }
     }
+    private static class SelectAppInfo implements Comparable<SelectAppInfo>{
+        String name;
+        String sourceDir;
+        public SelectAppInfo(String name, String sourceDir){
+            this.name = name;
+            this.sourceDir = sourceDir;
+        }
 
+        @NonNull
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        public String getSourceDir() {
+            return sourceDir;
+        }
+
+        @Override
+        public int compareTo(SelectAppInfo o) {
+            return name.compareTo(o.name);
+        }
+    }
 }

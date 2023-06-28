@@ -14,7 +14,6 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.model.FormatHelper;
 
 /**
  * 一些说明。导入导出功能

@@ -1,18 +1,24 @@
 package com.example.datainsert.exagear.mutiWine.v2;
 
+import static com.example.datainsert.exagear.mutiWine.KronConfig.PROXY_GHPROXY;
+import static com.example.datainsert.exagear.mutiWine.KronConfig.PROXY_GITHUB;
+import static com.example.datainsert.exagear.mutiWine.KronConfig.PROXY_KGITHUB;
+import static com.example.datainsert.exagear.mutiWine.KronConfig.PROXY_PREF_KEY;
+
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
+import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -25,7 +31,7 @@ public class WineStoreView extends LinearLayout {
         super(context);
         setOrientation(VERTICAL);
         int padding = QH.px(context, RR.attr.dialogPaddingDp);
-        setPadding(padding, padding, padding, padding);
+//        setPadding(padding, padding, padding, padding);
         initUI(context);
     }
 
@@ -66,7 +72,7 @@ public class WineStoreView extends LinearLayout {
 
         RecyclerView localVersions = new RecyclerView(c);
         localVersions.setLayoutManager(new LinearLayoutManager(c, LinearLayoutManager.VERTICAL, false));
-        localVersions.setAdapter(new LocalWineAdapter());
+        localVersions.setAdapter(new LocalAdapter());
         linearLocal.addView(localVersions);
 //        addView(linearKron);
 
@@ -74,94 +80,99 @@ public class WineStoreView extends LinearLayout {
         LinearLayout linearKron = new LinearLayout(c);
         linearKron.setOrientation(VERTICAL);
 
+        //下载页面的上方选项
+        LinearLayout linearOption = new LinearLayout(c);
+        linearOption.setOrientation(HORIZONTAL);
+        linearOption.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setColor(Color.GRAY);
+        gradientDrawable.setSize(AndroidHelpers.dpToPx(2),AndroidHelpers.dpToPx(8));
+        linearOption.setDividerDrawable(gradientDrawable);
+        linearOption.setDividerPadding(AndroidHelpers.dpToPx(10));
+
+        LinearLayout.LayoutParams badgeParams = new LayoutParams(-2, -2);
+        badgeParams.rightMargin = AndroidHelpers.dpToPx(8);
+        badgeParams.leftMargin = AndroidHelpers.dpToPx(8);
         //刷新按钮
         Button refreshBtn = new Button(c);
-        refreshBtn.setText("↻ 刷新列表");//🔄
+        refreshBtn.setText(RR.getS(RR.mw_refreshBtn));//🔄 🔧
+        setupBadgeButtonWidth(refreshBtn);
+        linearOption.addView(refreshBtn,badgeParams);
 
-        LinearLayout.LayoutParams refreshParams = new LayoutParams(-2, -2);
-        refreshParams.bottomMargin = 20;
-        linearKron.addView(refreshBtn, refreshParams);
+        //下载线路
+        if("zh".equals(RR.locale)){
+            Button proxyBtn = new Button(c);
+            proxyBtn.setText("下载线路");
+            proxyBtn.setOnClickListener(v->{
+                PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
+                int proxy = QH.getPreference().getInt(PROXY_PREF_KEY,PROXY_GITHUB);
+                popupMenu.getMenu().add("github").setCheckable(true).setChecked(proxy== PROXY_GITHUB).setOnMenuItemClickListener(item->{
+                    QH.getPreference().edit().putInt(PROXY_PREF_KEY,PROXY_GITHUB).apply();
+                    return true;
+                });
+                popupMenu.getMenu().add("ghproxy").setCheckable(true).setChecked(proxy==PROXY_GHPROXY).setOnMenuItemClickListener(item->{
+                    QH.getPreference().edit().putInt(PROXY_PREF_KEY,PROXY_GHPROXY).apply();
+                    return true;
+                });
+                popupMenu.getMenu().add("kgithub").setCheckable(true).setChecked(proxy==PROXY_KGITHUB).setOnMenuItemClickListener(item->{
+                    QH.getPreference().edit().putInt(PROXY_PREF_KEY,PROXY_KGITHUB).apply();
+                    return true;
+                });
+                popupMenu.show();
+            });
+            setupBadgeButtonWidth(proxyBtn);
+            linearOption.addView(proxyBtn,badgeParams);
+        }
+
+
+//        Button versionBtn = new Button(c);
+//        versionBtn.setText("版本选择");
+//        setupBadgeButtonWidth(versionBtn);
+//        linearOption.addView(versionBtn,badgeParams);
+
+        HorizontalScrollView scrollOption = new HorizontalScrollView(c);
+        scrollOption.addView(linearOption,new LayoutParams(-2,-2));
+        linearKron.addView(scrollOption,new LayoutParams(-1,-2));
+
 
         //kron4ek构建的版本信息，可以下载或删除
         RecyclerView kronVersions = new RecyclerView(c);
         kronVersions.setLayoutManager(new LinearLayoutManager(c, LinearLayoutManager.VERTICAL, false));
-        kronVersions.setAdapter(new KronBuildAdapter());
+        kronVersions.setAdapter(new KronAdapter());
         linearKron.addView(kronVersions);
 //        addView(linearKron);
         refreshBtn.setOnClickListener(v -> {
             RecyclerView.Adapter<?> adapter = kronVersions.getAdapter();
-            if(adapter instanceof  KronBuildAdapter){
-                ((KronBuildAdapter) adapter).refresh();
+            if(adapter instanceof KronAdapter){
+                ((KronAdapter) adapter).refresh();
             }
         });
 
         //标签页滑动视图
         TabLayout tabLayout = new TabLayout(getContext());
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        ViewPager viewPager = new ViewPager(getContext());
+        ViewPager viewPager = new WineStorePager(getContext(),new ViewGroup[]{linearLocal,linearKron});
         LinearLayout.LayoutParams viewPagerParams = new LinearLayout.LayoutParams(-1, -1);
-        viewPagerParams.setMargins(0, 20, 0, 20);
+        int margin = AndroidHelpers.dpToPx(8);
+        viewPagerParams.setMargins(margin, margin, margin, 0);
 //        viewPager.setLabelFor(View.NO_ID);
 //        viewPager.setId(VIEWPAGER_RESOURCE_ID);
         //设置适配器，显示两个标签对应的布局
-        viewPager.setAdapter(new PagerAdapter() {
 
-            private final String[] mTabTitles = new String[]{"本地", "可下载"};
-            private final View[] mViewPages = new View[]{linearLocal, linearKron};
-
-            @Override
-            public int getCount() {
-                return mTabTitles.length;
-            }
-
-            @Override
-            public boolean isViewFromObject(@NonNull View view, @NonNull Object o) {
-                return view == o;
-            }
-
-            @NonNull
-            @Override
-            public Object instantiateItem(@NonNull ViewGroup container, int position) {
-                container.addView(mViewPages[position]);
-                return mViewPages[position];
-            }
-
-            @Override
-            public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-                container.removeView(mViewPages[position]);
-            }
-
-            @Nullable
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return mTabTitles[position];
-            }
-        });
         //切换到“本地”页面显示的时候，刷新
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i1) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if(position==0){
-                    RecyclerView.Adapter adapter = localVersions.getAdapter();
-                    if(adapter instanceof LocalWineAdapter)
-                        ((LocalWineAdapter) adapter).refresh(false);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int i) {
-
-            }
-        });
         tabLayout.setupWithViewPager(viewPager, false);
         addView(tabLayout, new ViewGroup.LayoutParams(-1, -2));
         addView(viewPager, viewPagerParams);
 
 
+    }
+
+
+    private void setupBadgeButtonWidth(Button btn){
+        QH.setRippleBackground(btn);
+        btn.setMinWidth(0);
+        btn.setMinimumWidth(0);
+        int padding = AndroidHelpers.dpToPx(4);
+        btn.setPadding(padding,0,padding,0);
     }
 }

@@ -3,14 +3,10 @@ package com.example.datainsert;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-
 import android.os.Build;
-
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import android.view.inputmethod.InputMethodManager;
-
 
 import java.io.File;
 import java.io.FileOutputStream;

@@ -1,18 +1,6 @@
 package com.example.datainsert.exagear.controls.menus;
 
-import android.os.Bundle;
-
-import com.eltechs.axs.Globals;
-import com.eltechs.axs.activities.FrameworkActivity;
-import com.eltechs.axs.activities.UsageActivity;
-import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.menus.ShowUsage;
-import com.eltechs.axs.applicationState.SelectedExecutableFileAware;
-import com.eltechs.axs.configuration.startup.DetectedExecutableFile;
-import com.eltechs.axs.widgets.actions.AbstractAction;
-import com.eltechs.axs.widgets.actions.Action;
-import com.eltechs.ed.controls.DefaultControls;
-import com.eltechs.ed.fragments.ControlsInfoDFragment;
 import com.example.datainsert.exagear.RR;
 
 public class ControlUsage extends ShowUsage {

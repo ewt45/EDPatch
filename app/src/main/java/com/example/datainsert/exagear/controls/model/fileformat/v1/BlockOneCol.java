@@ -7,7 +7,6 @@ import com.example.datainsert.exagear.controls.model.OneCol;
 import com.example.datainsert.exagear.controls.model.OneKey;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

@@ -27,7 +27,7 @@ public class PixmapManipulationRequests extends HandlerObjectBase {
     @Locks({"PIXMAPS_MANAGER", "DRAWABLES_MANAGER"})
     @RequestHandler(opcode = 53)
     public void CreatePixmap(XClient xClient, @OOBParam @RequestParam byte depth, @RequestParam @NewXId int i, @RequestParam Drawable drawable, @RequestParam @Unsigned @Width(2) int width, @RequestParam @Unsigned @Width(2) int height) throws XProtocolError {
-        Log.e("TAG", "CreatePixmap: " );
+        Log.e("TAG", "CreatePixmap: "+i );
         Drawable createDrawable = this.xServer.getDrawablesManager().createDrawable(i, drawable.getRoot(), width, height, depth);
         if (createDrawable == null) {
             Log.e("TAG", "CreatePixmap: drawable创建为空，色深为"+depth);

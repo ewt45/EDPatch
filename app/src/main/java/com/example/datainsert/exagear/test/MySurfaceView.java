@@ -4,17 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.v7.preference.Preference;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Menu;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.LinearLayout;
-import android.content.SharedPreferences;
 
 public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     static String TAG= "MySurfaceView";
