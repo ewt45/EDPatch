@@ -17,9 +17,9 @@ public class StartGuestApplication<StateClass extends UBTLaunchConfigurationAwar
         this(z, false);
     }
 
-    public StartGuestApplication(boolean z, boolean z2) {
-        this.terminateAXSOnGuestExit = z;
-        this.restartAXSAfterShutdown = z2;
+    public StartGuestApplication(boolean terminateAXSOnGuestExit, boolean restartAXSAfterShutdown) {
+        this.terminateAXSOnGuestExit = terminateAXSOnGuestExit;
+        this.restartAXSAfterShutdown = restartAXSAfterShutdown;
     }
 
     @Override // com.eltechs.axs.configuration.startup.StartupAction

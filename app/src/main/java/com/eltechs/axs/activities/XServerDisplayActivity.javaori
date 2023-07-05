@@ -149,7 +149,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         if (Globals.getApplicationState() != null) {
             return false;
         }
-        FatalErrorActivity.showFatalError(getResources().getString(com.eltechs.axs.R.string.xda_guest_suddenly_died));
+        FatalErrorActivity.showFatalError(getResources().getString(com.eltechs.axs.R_original.string.xda_guest_suddenly_died));
         finish();
         return true;
     }
@@ -241,7 +241,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
     }
 
     private FrameLayout getRootLayout() {
-        return (FrameLayout) findViewById(com.eltechs.axs.R.id.mainView);
+        return (FrameLayout) findViewById(com.eltechs.axs.R_original.id.mainView);
     }
 
     /* loaded from: classes.dex */

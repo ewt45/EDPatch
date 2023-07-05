@@ -30,7 +30,7 @@ add_library(some-helper SHARED src/main/cpp/some-helper.c)
 include_directories(src/main/cpp/)
 
 target_link_libraries(Xegw "-llog")
-
+target_link_libraries(some-helper "-llog")
 
 
 

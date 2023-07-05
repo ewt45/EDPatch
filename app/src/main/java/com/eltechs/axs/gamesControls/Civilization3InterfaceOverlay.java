@@ -12,7 +12,7 @@ import android.widget.ScrollView;
 import com.eltechs.axs.CommonApplicationConfigurationAccessor;
 import com.eltechs.axs.GestureStateMachine.GestureMouseMode;
 import com.eltechs.axs.KeyCodesX;
-import com.eltechs.axs.R;
+import com.eltechs.axs.R_original;
 import com.eltechs.axs.TouchScreenControlsFactory;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
@@ -104,8 +104,8 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
     }
 
     private static Button createShiftButton(Activity activity, final ViewFacade viewFacade, int i) {
-        final String string = activity.getResources().getString(R.string.civ3_shift_off);
-        final String string2 = activity.getResources().getString(R.string.civ3_shift_on);
+        final String string = activity.getResources().getString(R_original.string.civ3_shift_off);
+        final String string2 = activity.getResources().getString(R_original.string.civ3_shift_on);
         final Button button = new Button(activity);
         button.setWidth(i);
         button.setMaxWidth(i);
@@ -169,7 +169,7 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
     }
 
     private static ImageButton createMouseModeButton(Activity activity, final GestureMouseMode gestureMouseMode, int i) {
-        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, i, i, R.drawable.mouse_left);
+        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, i, i, R_original.drawable.mouse_left);
         createRegularImageButton.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.4
             @Override // android.view.View.OnClickListener
             public void onClick(View view) {
@@ -184,9 +184,9 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
             @Override // com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeChangeListener
             public void mouseModeChanged(GestureMouseMode gestureMouseMode2, GestureMouseMode.MouseModeState mouseModeState) {
                 if (mouseModeState == GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT) {
-                    createRegularImageButton.setImageResource(R.drawable.mouse_left);
+                    createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
                 } else {
-                    createRegularImageButton.setImageResource(R.drawable.mouse_right);
+                    createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
                 }
             }
         });

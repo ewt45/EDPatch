@@ -1,8 +1,7 @@
 package com.eltechs.axs.activities.menus;
 
-import com.eltechs.axs.CommonApplicationConfigurationAccessor;
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.activities.XServerDisplayActivity;
+import com.eltechs.axs.R_original;
 import com.eltechs.axs.activities.XServerDisplayActivityUiOverlaySidePanels;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.axs.helpers.AndroidHelpers;
@@ -23,9 +22,9 @@ public class ToggleUiOverlaySidePanels extends AbstractAction {
     @Override // com.eltechs.axs.widgets.actions.AbstractAction, com.eltechs.axs.widgets.actions.Action
     public String getName() {
         if (getUiOverlaySidePanels().isSidePanelsVisible()) {
-            return AndroidHelpers.getString(com.eltechs.axs.R.string.hide_side_panels);
+            return AndroidHelpers.getString(R_original.string.hide_side_panels);
         }
-        return AndroidHelpers.getString(com.eltechs.axs.R.string.show_side_panels);
+        return AndroidHelpers.getString(R_original.string.show_side_panels);
     }
 
     @Override // com.eltechs.axs.widgets.actions.Action

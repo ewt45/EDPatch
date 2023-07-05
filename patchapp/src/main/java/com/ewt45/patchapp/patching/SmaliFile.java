@@ -390,6 +390,7 @@ public class SmaliFile {
     }
 
 
+
     /**
      * 从某个smali文件中，尝试寻找成员变量，以获取当前功能的安装版本号
      * <p/>

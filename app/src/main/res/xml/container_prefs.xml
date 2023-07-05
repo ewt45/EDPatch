@@ -14,14 +14,14 @@
         android:key="SCREEN_SIZE"
         android:summary="%s"
         android:title="屏幕分辨率" />
-    <ListPreference
-        android:defaultValue="llvmpipe"
-        android:dialogTitle="渲染方式"
-        android:entries="@array/cont_pref_renderer_entries"
-        android:entryValues="@array/cont_pref_renderer_values"
-        android:key="RENDERER"
-        android:summary="%s"
-        android:title="渲染方式" />
+<!--    <ListPreference-->
+<!--        android:defaultValue="llvmpipe"-->
+<!--        android:dialogTitle="渲染方式"-->
+<!--        android:entries="@array/cont_pref_renderer_entries"-->
+<!--        android:entryValues="@array/cont_pref_renderer_values"-->
+<!--        android:key="RENDERER"-->
+<!--        android:summary="%s"-->
+<!--        android:title="渲染方式" />-->
 
     <ListPreference
         android:defaultValue="16"

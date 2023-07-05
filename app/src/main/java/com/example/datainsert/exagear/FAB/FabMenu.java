@@ -27,17 +27,17 @@ import java.util.List;
 public class FabMenu {
     private static final String TAG = "FabMenu";
 
-
-
-    /*
     //由多个版本号构成，每个占4位
-    自定义d盘的版本号，如果这个为0说明整个fabmenu没有
-    1：初版（旧版没写入版本号）
-    2：初次安装后会自动创建Exagear文件夹
-     */
-    private static final int VERSION_FOR_EDPATCH = 0x2
-                    | 0x1 << 4;//自定义按键的版本号
-
+    private static final int VERSION_FOR_EDPATCH =
+            /*
+            自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+            1：初版（旧版没写入版本号）
+            2：初次安装后会自动创建Exagear文件夹
+             */
+            0x2
+                    | 0x1 << 4 //自定义按键的版本号
+//                    | 0x1 << 8 //pulseaudio
+            ;
 
 
     @SuppressLint("RtlHardcoded")
@@ -77,7 +77,7 @@ public class FabMenu {
         for (Class<? extends BaseFragment> clz : fragmentClsArray) {
             try {
                 clz.newInstance().callWhenFirstStart(a);
-                Log.d(TAG, "FabMenu: 启动应用，执行初始化操作"+clz);
+                Log.d(TAG, "FabMenu: 启动应用，执行初始化操作" + clz);
             } catch (IllegalAccessException | InstantiationException e) {
                 e.printStackTrace();
             }
@@ -99,11 +99,11 @@ public class FabMenu {
             }
         });
         //可以隐藏吧
-        fab.setOnLongClickListener(view->{
-            PopupMenu popupMenu = new PopupMenu(view.getContext(),view);
-            popupMenu.getMenu().add("隐藏").setOnMenuItemClickListener(item->{
+        fab.setOnLongClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+            popupMenu.getMenu().add("隐藏").setOnMenuItemClickListener(item -> {
                 fab.hide();
-               return true ;
+                return true;
             });
             popupMenu.show();
             return true;

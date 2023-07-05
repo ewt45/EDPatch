@@ -22,7 +22,7 @@ public class WineStoreFragment extends Fragment {
     @Override // android.support.v4.app.Fragment
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(RR.getS(RR.mw_manTitle));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(RR.getS(RR.mw_fragTitle));
     }
 
     @Override

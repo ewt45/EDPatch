@@ -3,7 +3,7 @@ package com.example.datainsert.exagear.mutiWine.unused;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.mutiWine.KronConfig;
+import com.example.datainsert.exagear.mutiWine.v2.KronConfig;
 
 import org.apache.commons.io.FileUtils;
 
@@ -150,7 +150,7 @@ public class Config {
      * @return
      */
     public static String getGithubUrlByProxy(String url) {
-        switch (QH.getPreference().getInt(KronConfig.PROXY_PREF_KEY, KronConfig.PROXY_GITHUB)) {
+        switch (QH.getPreference().getInt(KronConfig.PROXY_GITHUB_PREF_KEY, KronConfig.PROXY_GITHUB)) {
             case KronConfig.PROXY_KGITHUB: {
                 return url.replace("https://github.com/", "https://kgithub.com/");
             }

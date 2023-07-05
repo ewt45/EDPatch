@@ -64,7 +64,7 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
     }
 
     @SuppressLint("WrongConstant")
-    public static void shutdownAXSApplication(boolean z) {
+    public static void shutdownAXSApplication(boolean restartAXSAfterShutdown) {
         if (shutdownInProgress) {
             return;
         }
@@ -76,7 +76,7 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
         if (!z2) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
-        intent.putExtra(SHUTDOWN_REQUEST_FLAG, z ? RESTART_AFTER_SHUTDOWN_FLAG_VALUE : "");
+        intent.putExtra(SHUTDOWN_REQUEST_FLAG, restartAXSAfterShutdown ? RESTART_AFTER_SHUTDOWN_FLAG_VALUE : "");
         context.startActivity(intent);
         shutdownInProgress = true;
     }

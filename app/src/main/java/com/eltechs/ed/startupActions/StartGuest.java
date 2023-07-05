@@ -29,6 +29,7 @@ import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
+import com.example.datainsert.exagear.action.AddEnvironmentVariables;
 import com.example.datainsert.exagear.mutiWine.MutiWine;
 
 import java.io.File;
@@ -274,7 +275,11 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         });
         arrayList.add(new CreateTypicalEnvironmentConfiguration<>(12, false));
         this.mEnv.addAll(Arrays.asList("HOME=/home/xdroid/", "WINEPREFIX=" + guestPath));
-        arrayList.add(new CreateLaunchConfiguration<>(this.mExeWorkDir, guestPath, (String[]) this.mExeArgv.toArray(new String[0]), (String[]) this.mEnv.toArray(new String[0]), EDStartupActivity.SOCKET_PATH_SUFFIX, mUserAreaDir.getAbsolutePath()));
+        arrayList.add(new CreateLaunchConfiguration<>(this.mExeWorkDir, guestPath, this.mExeArgv.toArray(new String[0]), this.mEnv.toArray(new String[0]), EDStartupActivity.SOCKET_PATH_SUFFIX, mUserAreaDir.getAbsolutePath()));
+
+        //自己添加一个action，用于添加环境变量
+        arrayList.add(new AddEnvironmentVariables<>());
+
         arrayList.add(new StartEnvironmentService<>(new TrayConfiguration(R.drawable.tray, R.string.ed_host_app_name, R.string.ed_host_app_name)));
         arrayList.add(new StartGuestApplication<>(true, true));
         String guestImagePath = this.mGcm.getGuestImagePath();

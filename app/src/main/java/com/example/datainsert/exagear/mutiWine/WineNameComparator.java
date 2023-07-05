@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 /**
  * 根据wine名称对列表进行排序
+ * 比较WineInfo，通过其toString方法来对比，所以需要重写其toString方法并返回类似tagName格式的字符串以便比较
  */
 public class WineNameComparator implements Comparator<Object> {
 

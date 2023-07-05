@@ -83,6 +83,8 @@ public abstract class ZipUnpacker {
 
         Assert.isFalse(zipArchiveEntry.isDirectory(), "extractOneFile() must be applied to file entries.");
         Assert.isFalse(zipArchiveEntry.isUnixSymlink(), "extractOneFile() must be applied to file entries.");
+//        if(!file.exists())
+//            file.createNewFile();
         try (InputStream inputStream = zipFile.getInputStream(zipArchiveEntry);
              FileOutputStream fileOutputStream2 = new FileOutputStream(file);) {
             IOStreamHelpers.copy(inputStream, fileOutputStream2);

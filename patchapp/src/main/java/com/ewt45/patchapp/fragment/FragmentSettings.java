@@ -44,7 +44,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         Preference delPatcherPref = findPreference("clear_patcher_apk");
         //删除patcher
         delPatcherPref.setOnPreferenceClickListener(p -> {
-            File patcher = new File(PatchUtils.getPatchTmpDir(),"patcher.apk");
+            File patcher = PatchUtils.getLocalPatcherApk();
             String msg;
             if(patcher.exists()){
                 boolean b=patcher.delete();

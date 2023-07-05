@@ -41,10 +41,7 @@ public class TouchScreenControlsInputWidget extends View {
         this.xServerFacade = viewOfXServer==null?null:viewOfXServer.getXServerFacade();
         this.mouse = viewOfXServer==null?null:new Mouse(new PointerEventReporter(viewOfXServer));
         this.keyboard = new Keyboard(new KeyEventReporter(this.xServerFacade));
-
-        if(QH.isTesting())
-            configuration = new TouchScreenControlsInputConfiguration(SHOW_POPUP_MENU);
-        else this.configuration = touchScreenControlsInputConfiguration;
+        this.configuration = touchScreenControlsInputConfiguration;
         setFocusable(true);
         setFocusableInTouchMode(true);
         installKeyListener();
@@ -71,12 +68,12 @@ public class TouchScreenControlsInputWidget extends View {
                     if (i == 4 && TouchScreenControlsInputWidget.this.configuration.backKeyAction == SHOW_POPUP_MENU) {
                         if (keyEvent.getAction() == 1) {
                             //仅供调试
-                            if( QH.isTesting()){
-                                XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
-                                ((FalloutInterfaceOverlay2)ui).getControlsFactory().getPopupMenu().getMenu().clear();
-                                ((FalloutInterfaceOverlay2)ui).getControlsFactory().getPopupMenu().show();
-                            }
-//                          getHost().showPopupMenu();
+//                            if( QH.isTesting()){
+//                                XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
+//                                ((FalloutInterfaceOverlay2)ui).getControlsFactory().getPopupMenu().getMenu().clear();
+//                                ((FalloutInterfaceOverlay2)ui).getControlsFactory().getPopupMenu().show();
+//                            }
+                          getHost().showPopupMenu();
                         }
                         return true;
                     } else if (i == 23) {

@@ -111,7 +111,6 @@ public class GuestContainersManager {
     }
 
     private void makeContainersList() {
-        File[] listFiles;
         this.mContainers = new LongSparseArray<>();
         this.mMaxContainerId = 0L;
         if (!mHomeDir.exists())

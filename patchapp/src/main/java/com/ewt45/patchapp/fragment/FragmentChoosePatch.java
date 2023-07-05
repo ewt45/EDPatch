@@ -226,7 +226,7 @@ public class FragmentChoosePatch extends Fragment {
             //解包自己的代码的apk（最好优化一下，仅当必要的时候才解包）
             try {
                 //将自己的apk拷贝出来
-                File patcherApk = new File(PatchUtils.getPatchTmpDir(), "patcher.apk");
+                File patcherApk = PatchUtils.getLocalPatcherApk();
                 //先发现已经有就跳过解包吧。之后单独抽出方法，加个判断好更新
                 if (!patcherApk.exists()) {
                     InputStream is = requireContext().getAssets().open("patcher/release/patcher.apk");

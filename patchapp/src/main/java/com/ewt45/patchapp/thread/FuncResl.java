@@ -35,16 +35,22 @@ public class FuncResl implements Func {
     }
 
     private boolean isPatchedOldWay() {
-        File smaliFile = new File(PatchUtils.getPatchTmpDir() + "/tmp/smali/"
-                + PatchUtils.getPackageName() + "/fragments/ContainerSettingsFragment$3.smali");
-        return smaliFile.exists();
+        SmaliFile fragment = new SmaliFile().findSmali("com.eltechs.ed.fragments.ContainerSettingsFragment");
+        boolean patched = fragment.containsLine("RadioGroup");
+        fragment.close();
+        return patched;
     }
 
     @Override
     public Integer call() throws Exception {
+
+
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",
+                "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
+
+
         return R.string.actmsg_funcresl;
     }
 

@@ -69,6 +69,8 @@
     <string name="funcname_shortcut">exe快捷方式直接启动</string>
     <string name="fraghelp_body_shortcut">长按app图标，选择一个exe快捷方式，点击直接进入图形界面运行exe。\n添加app快捷方式的方法：点击app图标启动应用，在“桌面”页面下点击exe快捷方式菜单项，选择“添加为app快捷方式”。\n注意事项：快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。将该exe快捷方式（.desktop文件）删除后，app快捷方式在下一次启动应用时会被自动删除。该功能在安卓7以下无法使用。</string>
     <string name="actmsg_funcshortcut">添加功能: exe快捷方式直接启动</string>
-    <string name="actmsg_funcmw">添加功能: wine版本切换</string>
+    <string name="actmsg_funcmw">添加功能: 多版本wine共存 v2</string>
+    <string name="fraghelp_body_mw">在容器管理界面右上角新增下载按钮，点击进入wine版本管理界面。\n- 本地：对已下载或预置的wine进行管理。点击安装（解压）后，会显示“已启用”，已启用的wine会显示在新建容器时的选项中。可通过卸载（删除已解压文件夹）来减少本地占用。本地存放位置为：z:/opt/WineCollection。\n- 可下载：从网络下载更多版本的wine。下载源可选择WineHQ（官方构建）或Kron4ek（第三方，体积小），其中WineHQ仅提供 ubuntu 18 的对应列表，Kron4ek不提供 staging 版本。下载成功后会显示在“本地”页面。若由于网络原因下载失败，可以尝试切换下载线路。\n\n如何在数据包中预置wine：\n一个wine二进制文件的路径：`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : 该文件夹名对应一个版本的wine名字，用于新建容器时显示。\n- `$WineFolder` : 该文件夹包含./bin/wine二进制文件。\n- wine压缩包（要求为 .tar.xz格式）也要放在`$TagFolder` 下，并且确保将其解压到同目录后，会出现`$WineFolder`。\n</string>
+    <string name="funcname_mw">多版本Wine共存 v2</string>
 
 </resources>

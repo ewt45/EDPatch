@@ -122,10 +122,11 @@ public class RR {
     public static int shortcut_DontShowUp = 104;
     public static int shortcut_TipAfterAdd = 105;
     public static int mw_newContProgress = 106;   //多wine v2 下载/删除wine
-    public static int mw_manTitle = 107;
-    public static int mw_tabLocal = 108;
-    public static int mw_tabDlable = 109;
-    public static int mw_refreshBtn = 110;
+    public static int mw_fragTitle = 107;
+    public static int mw_tabTitles = 108;
+    //    public static int mw_tabDlable = 109;
+    public static int mw_refreshBtn = 109;
+    public static int mw_dlSourceBtn = 110;
     public static int mw_dataSizeMB = 111;
 
     public static int mw_dialog_download = 112;
@@ -133,9 +134,14 @@ public class RR {
     public static int mw_dialog_checksum = 114;
     public static int mw_localMenuItem = 115;
     public static int mw_localState = 116;
+    public static int mw_tips = 117;
 
 
-    public static String locale = Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
+    public static String locale = refreshLocale();
+
+    public static String refreshLocale(){
+        return Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
+    }
 
     static {
         SparseArray<String> zhArray = new SparseArray<>();
@@ -230,9 +236,9 @@ public class RR {
         zhArray.put(cmCtrl_BtnEditComb, "组合键");
         zhArray.put(cmCtrl_tabOther, "其他");
         zhArray.put(cmCtrl_s4_tips, "<ul>\n" +
-                "  <li>在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。</li>\n" +
-                "  <li>启动环境后，可以通过三指触屏调出此界面进行实时修改。</li>\n" +
-                "  <li>本功能仅提供基础设置，若有更复杂的需求请使用Input Bridge.</li>\n" +
+                "  <li>&ensp; 在环境设置中将操作模式调为“默认(default)”即可启用此自定义模式。</li>\n" +
+                "  <li>&ensp; 启动环境后，可以通过三指触屏调出此界面进行实时修改。</li>\n" +
+                "  <li>&ensp; 本功能仅提供基础设置，若有更复杂的需求请使用Input Bridge.</li>\n" +
                 "</ul>");
         zhArray.put(cmCtrl_s4_export, "导出");
         zhArray.put(cmCtrl_s4_import, "导入");
@@ -245,27 +251,36 @@ public class RR {
         zhArray.put(cmCtrl_actionRotate, "旋转屏幕");
         zhArray.put(abtFab_title, "关于");
         zhArray.put(abtFab_info, "<ul>\n" +
-                "  <li>Exagear模拟器官方（Eltechs）已停止开发。本菜单为第三方补丁，旨在添加一些便捷功能。</li>\n" +
-                "  <li>您可以通过“ED自助补丁”将第三方功能加入原版apk中：https://github.com/ewt45/EDPatch/releases。请勿用于商业用途。</li>\n" +
+                "  <li>&ensp; Exagear模拟器官方（Eltechs）已停止开发。本菜单为第三方补丁，旨在添加一些便捷功能。</li>\n" +
+                "  <li>&ensp; 您可以通过“ED自助补丁”将第三方功能加入原版apk中：https://github.com/ewt45/EDPatch/releases。请勿用于商业用途。</li>\n" +
                 "</ul>");
         zhArray.put(firstLaunch_snack, "额外功能可以在右下操作按钮中找到。");
         zhArray.put(shortcut_menuItem_addAppSc, "添加为app快捷方式");
         zhArray.put(shortcut_DontShowUp, "不再显示此提示");
         zhArray.put(shortcut_TipAfterAdd, "为该.desktop文件创建app快捷方式，之后可以通过长按app图标 -> 点击快捷方式快速启动程序。快捷方式最多可以添加四个，启动快捷方式前确保app后台已被清除。\n\n将该exe快捷方式删除后，app快捷方式在下一次启动时会被自动删除。\n\n该功能在安卓7以下无法使用。");
         zhArray.put(mw_newContProgress, "创建容器...");
-        zhArray.put(mw_manTitle, "添加/删除wine版本");
-        zhArray.put(mw_tabLocal, "本地");
-        zhArray.put(mw_tabDlable, "可下载");
+        zhArray.put(mw_fragTitle, "添加/删除wine版本");
+        zhArray.put(mw_tabTitles, "本地$可下载$说明");
         zhArray.put(mw_refreshBtn, "↻ 刷新列表");
+        zhArray.put(mw_dlSourceBtn, "下载源");
         zhArray.put(mw_dataSizeMB, " MB");
         zhArray.put(mw_dialog_download, " 下载成功$ 下载失败$本地文件已存在，跳过下载$有下载正在进行中，无法新建下载");
         zhArray.put(mw_dialog_extract, "解压中...$解压成功$解压失败");
         zhArray.put(mw_localMenuItem, "安装$校验$卸载$删除压缩包");
         zhArray.put(mw_dialog_checksum, "压缩包校验结束，没有发现问题$校验码文本不存在，无法校验$压缩包损坏，请尝试删除并重新下载");
         zhArray.put(mw_localState, "已启用$未启用");
+        zhArray.put(mw_tips, "<ul>\n" +
+                "<li>&ensp; “本地”页面：<br/>对已下载或预置的wine进行管理。点击安装（解压）后，会显示“已启用”，已启用的wine会显示在新建容器时的选项中。可通过卸载（删除已解压文件夹）来减少本地占用。本地存放位置为：z:/opt/WineCollection。</li>\n" +
+                "<li>&ensp; “可下载”页面：<br/>从网络下载更多版本的wine。下载源可选择WineHQ（官方构建）或Kron4ek（第三方，体积小），其中WineHQ仅提供 ubuntu 18 的对应列表，Kron4ek不提供 staging 版本。下载成功后会显示在“本地”页面。若由于网络原因下载失败，可以尝试切换下载线路。</li>\n" +
+                "</ul>\n");
+
+        /*
 
 
 
+
+
+         */
         SparseArray<String> enArray = new SparseArray<>();
         enArray.put(Dialog_PosBtn, "confirm");
         enArray.put(Dialog_NegBtn, "cancel");
@@ -358,9 +373,9 @@ public class RR {
         enArray.put(cmCtrl_BtnEditComb, "Combination");
         enArray.put(cmCtrl_tabOther, "Others");
         enArray.put(cmCtrl_s4_tips, "    <ul>\n" +
-                "        <li>To enable this control, set Control Mode \"default\" in container properties</li>\n" +
-                "        <li>This dialog can also show up by three-finger click after launching the container.</li>\n" +
-                "        <li>This function provides only basic settings. For better customization Input Bridge is preferred.</li>\n" +
+                "        <li>&ensp; To enable this control, set Control Mode \"default\" in container properties</li>\n" +
+                "        <li>&ensp; This dialog can also show up by three-finger click after launching the container.</li>\n" +
+                "        <li>&ensp; This function provides only basic settings. For better customization Input Bridge is preferred.</li>\n" +
                 "    </ul>");
         enArray.put(cmCtrl_s4_export, "Export");
         enArray.put(cmCtrl_s4_import, "Import");
@@ -373,29 +388,37 @@ public class RR {
         enArray.put(cmCtrl_actionRotate, "Rotate Screen");
         enArray.put(abtFab_title, "About");
         enArray.put(abtFab_info, "<ul>\n" +
-                "  <li>Exagear Android (Eltechs) project has been closed. This menu is a third-party patch designed to add some handy features.</li>\n" +
-                "  <li>You can add this and more features into Exagear by EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
+                "  <li>&ensp; Exagear Android (Eltechs) project has been closed. This menu is a third-party patch designed to add some handy features.</li>\n" +
+                "  <li>&ensp; You can add this and more features into Exagear by EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
                 "</ul>");
         enArray.put(firstLaunch_snack, "Extra features can be found in the bottom left button.");
         enArray.put(shortcut_menuItem_addAppSc, "Add as app shortcut");
         enArray.put(shortcut_DontShowUp, "Don't show up again");
         enArray.put(shortcut_TipAfterAdd, "Creating an app shortcut for this .desktop file. Later you can launch it by long pressing APP icon and clicking the app shortcut. A maximum of four shortcuts can be added. Before launching from shortcut, ensure that the app is not running at background. \n\nAfter deleting the exe shortcut ( .desktop file), the app shortcut will be automatically deleted the next time launching the app . \n\nThis feature requires Android 7 and above.");
         enArray.put(mw_newContProgress, "Creating container...");
-        enArray.put(mw_manTitle, "Add/Remove Wine");
-        enArray.put(mw_tabLocal, "Local");
-        enArray.put(mw_tabDlable, "Downloadable");
-        enArray.put(mw_refreshBtn, "↻ refresh");
+        enArray.put(mw_fragTitle, "Add/Remove Wines");
+        enArray.put(mw_tabTitles, "Local$Downloadable$Tips");
+        enArray.put(mw_refreshBtn, "↻ Refresh");
+        enArray.put(mw_dlSourceBtn, "Sources");
         enArray.put(mw_dataSizeMB, " MB");
         enArray.put(mw_dialog_download, " download completed.$ download failed.$Local file exists, download skipped.$Other download process is running, operation cancelled.");
         enArray.put(mw_dialog_extract, "Extracting...$Extraction completed.$Extraction failed.");
         enArray.put(mw_localMenuItem, "Install$Checksum$Uninstall$Delete archive");
         enArray.put(mw_dialog_checksum, "Archive contains no errors.$Unable to check without sha256sums.txt.$Archive is corrupted. Please delete and download it again.");
         enArray.put(mw_localState, "active$inactive");
+        enArray.put(mw_tips, "<ul>\n" +
+                "<li>&ensp; Local:<br/>Edit the downloaded or bundled Wines. After Clicking Install (extract) option, it will be displayed as 'active', which can be selected when creating a new container. Use Uninstall (delete extracted folder) option to reduce local storage. Wines are stored at z:/opt/WineCollection.</li>\n" +
+                "<li>&ensp; Downloadable:<br/>Download all kinds of Wines from the Internet. Available sources are WineHQ(Official build, only ubuntu18-builds are listed) and Kron4ek(shrinked size, staging versions are not included). Downloaded Wines appear at 'Local' page. </li>\n" +
+                "</ul>\n");
+
+
+        /*
 
 
 
 
 
+         */
 
         SparseArray<String> ruArray = new SparseArray<>();
         ruArray.put(Dialog_PosBtn, "подтвердить");
@@ -489,9 +512,9 @@ public class RR {
         ruArray.put(cmCtrl_BtnEditComb, "Комбинация");
         ruArray.put(cmCtrl_tabOther, "Прочее");
         ruArray.put(cmCtrl_s4_tips, "    <ul>\n" +
-                "        <li>Чтобы включить Катомное Управление - выберите режим управления\"Default\" в настройках контейнера.</li>\n" +
-                "        <li>Это окно также можно открыть, тапнув тремя пальцами в запущенном контейнере.</li>\n" +
-                "        <li>Эта функция обеспечивает только основные настройки. Для лучшей и более точной настройки рекомендуется использовать Input Bridge.</li>\n" +
+                "        <li>&ensp; Чтобы включить Кастомное Управление - выберите режим управления \"Default\" в настройках контейнера.</li>\n" +
+                "        <li>&ensp; Это окно также можно открыть, тапнув тремя пальцами в запущенном контейнере.</li>\n" +
+                "        <li>&ensp; Эта функция обеспечивает только основные настройки. Для лучшей и более точной настройки рекомендуется использовать Input Bridge.</li>\n" +
                 "    </ul>");
         ruArray.put(cmCtrl_s4_export, "Экспорт");
         ruArray.put(cmCtrl_s4_import, "Импорт");
@@ -504,28 +527,28 @@ public class RR {
         ruArray.put(cmCtrl_actionRotate, "Поворот экрана");
         ruArray.put(abtFab_title, "О приложении");
         ruArray.put(abtFab_info, "<ul>\n" +
-                "  <li>Exagear Android (Eltechs) проект закрыт. Это меню представляет собой сторонний патч, предназначенный для добавления некоторых удобных функций.</li>\n" +
-                "  <li>Вы можете добавить эту и другие функции в Exagear с помощью EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
+                "  <li>&ensp; Exagear Android (Eltechs) проект закрыт. Это меню представляет собой сторонний патч, предназначенный для добавления некоторых удобных функций.</li>\n" +
+                "  <li>&ensp; Вы можете добавить эту и другие функции в Exagear с помощью EDPatch: https://github.com/ewt45/EDPatch/releases</li>\n" +
                 "</ul>");
         ruArray.put(firstLaunch_snack, "Для изменения расположения диска D нажать ⚙️");
         ruArray.put(shortcut_menuItem_addAppSc, "📌 Добавить как внешний ярлык");
         ruArray.put(shortcut_DontShowUp, "Не показывать снова");
         ruArray.put(shortcut_TipAfterAdd, "Создание ярлыка программы для файла .desktop. После вы можете запустить его, нажав и удерживая значок приложения и кликнуть на ярлык программы. Можно добавить максимум четыре ярлыка. Перед запуском с ярлыка убедитесь, что приложение не работает в фоновом режиме. \n\nПосле удаления ярлыка exe (файл .desktop) внешний ярлык будет автоматически удален при следующем запуске приложения. \n\nДля этой функции требуется Android 7 и выше.");
-        ruArray.put(mw_newContProgress, "Creating container...");
-        ruArray.put(mw_manTitle, "Add/Remove Wine");
-        ruArray.put(mw_tabLocal, "Local");
-        ruArray.put(mw_tabDlable, "Downloadable");
-        ruArray.put(mw_refreshBtn, "↻ refresh");
+        ruArray.put(mw_newContProgress, "Создание контейнера...");
+        ruArray.put(mw_fragTitle, "Добавить/Удалить Wine");
+        ruArray.put(mw_tabTitles, "Установка$Загрузка$Советы");
+        ruArray.put(mw_refreshBtn, "↻ Обновить");
+        ruArray.put(mw_dlSourceBtn, "Источники");
         ruArray.put(mw_dataSizeMB, " MB");
-        ruArray.put(mw_dialog_download, "download completed.$download failed.$Local file exists, download skipped.$Other download process is running, operation cancelled.");
-        ruArray.put(mw_dialog_extract, "Extracting...$Extraction completed.$Extraction failed.");
-        ruArray.put(mw_localMenuItem, "Install$Checksum$Uninstall$Delete archive");
-        ruArray.put(mw_dialog_checksum, "Archive contains no errors.$Unable to check without sha256sums.txt.$Archive is corrupted. Please delete and download it again.");
-        ruArray.put(mw_localState, "active$inactive");
-
-
-
-
+        ruArray.put(mw_dialog_download, "Загрузка завершена.$Загрузка не удалась.$Локальный файл существует, загрузка пропущена.$Выполняется другой процесс загрузки, операция отменена.");
+        ruArray.put(mw_dialog_extract, "Извлечение...$Извлечение завершено.$Извлечение не удалось.");
+        ruArray.put(mw_localMenuItem, "Установить$Контрольная сумма$Удалить$Удалить архив");
+        ruArray.put(mw_dialog_checksum, "Архив не содержит ошибок.$Невозможно проверить без sha256sums.txt.$Архив поврежден. Пожалуйста, удалите и загрузите его снова.");
+        ruArray.put(mw_localState, "Активный$Неактивный");
+        ruArray.put(mw_tips, "<ul>\n" +
+                "<li>&ensp; Установка wine:<br/>Вы можете редактировать загруженные или предустановленные версии wine. После выбора опции Установить (Извлечь) выбранная версия wine будет отображаться как 'Активная', теперь её можно выбрать при создании нового контейнера. Используйте опцию Удалить (удалить папку с wine), чтобы уменьшить объем затятой внутренней памяти вашего девайса. Файлы wine хранятся в папке Z:/opt/WineCollection.</li>\n" +
+                "<li>&ensp; Загрузка файлов wine:<br/>загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице 'Установленные'.</li>\n" +
+                "</ul>\n");
 
         stringMap.put("zh", zhArray);
         stringMap.put("en", enArray);

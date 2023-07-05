@@ -1,5 +1,6 @@
 package com.ewt45.patchapp.thread;
 
+import static com.ewt45.patchapp.patching.PatcherFile.TYPE_SMALI;
 import static com.ewt45.patchapp.patching.SmaliFile.ACTION_DELETE;
 import static com.ewt45.patchapp.patching.SmaliFile.ACTION_INSERT;
 import static com.ewt45.patchapp.patching.SmaliFile.LOCATION_AFTER;
@@ -12,6 +13,7 @@ import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.patching.PatcherFile;
 import com.ewt45.patchapp.patching.SmaliFile;
 
+import java.io.File;
 import java.util.concurrent.Callable;
 
 /**
@@ -33,6 +35,7 @@ public class FuncFAB implements Func {
     public Integer call() throws Exception {
         Sub1DriveD sub1DriveD = new Sub1DriveD();
         Sub2Control sub2Control = new Sub2Control();
+        Sub3Pulseaudio sub3Pulseaudio = new Sub3Pulseaudio();
 
         int mergeVersion = getInstalledVersion();
 
@@ -52,9 +55,14 @@ public class FuncFAB implements Func {
             sub2Control.firstInstall();
         }
 
+        if (((mergeVersion >> 8) & 0x0000000f) == INVALID_VERSION) {
+            Log.d(TAG, "call: 首次安装子功能-pulseaudio");
+            sub3Pulseaudio.firstInstall();
+        }
+
         //复制自己的类
         Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
-        PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
+        PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/example/datainsert/exagear/FAB",
                 "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
@@ -62,6 +70,7 @@ public class FuncFAB implements Func {
         //复制子功能自己的类
         sub1DriveD.updateSelfPackage();
         sub2Control.updateSelfPackage();
+        sub3Pulseaudio.updateSelfPackage();
         return R.string.actmsg_funcfab;
     }
 
@@ -102,8 +111,8 @@ public class FuncFAB implements Func {
      */
     @Override
     public int getInstalledVersion() {
-        int version  =SmaliFile.findVersionInClass("com.example.datainsert.exagear.FAB.FabMenu");
-        if(version!=INVALID_VERSION)
+        int version = SmaliFile.findVersionInClass("com.example.datainsert.exagear.FAB.FabMenu");
+        if (version != INVALID_VERSION)
             return version;
 
         try {
@@ -122,7 +131,7 @@ public class FuncFAB implements Func {
     private boolean isPatchedOldWay() {
         boolean patched;
         try {
-            SmaliFile edmain = new SmaliFile().findSmali( "com.eltechs.ed.activities.EDMainActivity");
+            SmaliFile edmain = new SmaliFile().findSmali("com.eltechs.ed.activities.EDMainActivity");
             patched = edmain.patchedEarlier(".method protected onCreate(Landroid/os/Bundle;)V",
                     SmaliFile.LOCATION_BEFORE, ACTION_INSERT,
                     new String[]{"return-void"},
@@ -150,6 +159,7 @@ public class FuncFAB implements Func {
          */
         return 0x2
                 | 0x1 << 4//自定义按键的版本号
+//                | 0x1 << 8 //pulseaudio
                 ;
 
     }
@@ -216,26 +226,47 @@ public class FuncFAB implements Func {
     }
 
     public static class Sub2Control {
+        private static final String TAG = "Sub2Control";
         public void firstInstall() throws Exception {
 
         }
 
         public void updateSelfPackage() throws Exception {
             //自定义操作模式 DefaultControl
-            PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
+            PatcherFile.copy(TYPE_SMALI, new String[]{
                     "/com/eltechs/ed/controls/DefaultControls.smali", //覆盖原有的默认操作模式
-                    "/com/eltechs/axs/xserver/Pointer.smali", //控制鼠标是否允许移出屏幕
                     //仅供测试用
+//                    "/com/eltechs/axs/xserver/Pointer.smali",
 //                    "/com/eltechs/axs/xserver/ViewFacade.smali",
 //                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
 //                    "/com/eltechs/axs/xserver/client/XClientWindowListener.smali"
 //                    "/com/eltechs/axs/finiteStateMachine/FiniteStateMachine.smali"
             });
+            //糟了，现在xegw也需要改Pointer.smali，所以只能检测一下非xegw才复制这个
+            if (!new File(PatchUtils.getPatchTmpDir(), "tmp/lib/armeabi-v7a/libXegw.so").exists()){
+                Log.d(TAG, "updateSelfPackage: x11 server为ex原始的，可以复制Pointer.smali");
+                PatcherFile.copy(TYPE_SMALI, new String[]{
+                        "/com/eltechs/axs/xserver/Pointer.smali"});//控制鼠标是否允许移出屏幕
+            }else{
+                Log.d(TAG, "updateSelfPackage: x11 server 为Xegw，跳过复制Pointer.smali");
+            }
 
-            PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
+
+            PatcherFile.copy(TYPE_SMALI, new String[]{
                     "/com/example/datainsert/exagear/controls",});
         }
     }
 
+    public static class Sub3Pulseaudio {
+        public void firstInstall() throws Exception {
+
+        }
+
+        public void updateSelfPackage() throws Exception {
+            //用到的xsdl的so库
+            PatcherFile.copy(PatcherFile.TYPE_ASSETS, new String[]{"/pulseaudio-xsdl.zip"});
+
+        }
+    }
 
 }

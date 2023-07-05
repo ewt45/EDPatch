@@ -1,20 +1,8 @@
 package com.ewt45.patchapp;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.pm.ApkChecksum;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ViewUtils;
-import android.util.DisplayMetrics;
-import android.view.View;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -23,11 +11,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.ewt45.patchapp.databinding.ActivityPtMainBinding;
 import com.ewt45.patchapp.unused.MyAdapter;
-import com.ewt45.patchapp.unused.MyService;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +25,7 @@ public class ActivityPatch extends AppCompatActivity {
     private ActivityPtMainBinding binding;
     private List<String> mDatas = new ArrayList<String>();
     private MyAdapter myAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,18 +47,19 @@ public class ActivityPatch extends AppCompatActivity {
         PatchUtils.setExternalFilesDir(getExternalFilesDir(null).getAbsolutePath());
 
         //判断版本号是否相同，若不同则删除原patcher
-        SharedPreferences sp =  getSharedPreferences("config",MODE_PRIVATE);
-        if(sp.getInt("versionCode",0)!=BuildConfig.VERSION_CODE){
-            File patcher = new File(PatchUtils.getPatchTmpDir(),"patcher.apk");
-            if(patcher.exists()){
-                boolean b=patcher.delete();
+        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
+        if (sp.getInt("versionCode", 0) != BuildConfig.VERSION_CODE
+                || PatchUtils.isPatcherApkChanged(this)) {         //patcher.apk 校验码不对 也重新解压
+            File patcher = PatchUtils.getLocalPatcherApk();
+            if (patcher.exists()) {
+                boolean b = patcher.delete();
             }
         }
+
         //写入版本号
-        getSharedPreferences("config",MODE_PRIVATE).edit().putInt("versionCode",BuildConfig.VERSION_CODE).apply();
+        getSharedPreferences("config", MODE_PRIVATE).edit().putInt("versionCode", BuildConfig.VERSION_CODE).apply();
 
         //通过检查patcher是否是最新的，如果不是就重新解压
-
 
 
         setContentView(binding.getRoot());
@@ -81,8 +69,6 @@ public class ActivityPatch extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-
 
 
     }
@@ -103,10 +89,10 @@ public class ActivityPatch extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Navigation.findNavController(this,R.id.nav_host_fragment_content_pt_main).navigate(R.id.settingPreferences);
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main).navigate(R.id.settingPreferences);
             return true;
-        }else if(id == R.id.action_help_step){
-            Navigation.findNavController(this,R.id.nav_host_fragment_content_pt_main).navigate(R.id.fragmentHelp);
+        } else if (id == R.id.action_help_step) {
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main).navigate(R.id.fragmentHelp);
         }
 
         return super.onOptionsItemSelected(item);

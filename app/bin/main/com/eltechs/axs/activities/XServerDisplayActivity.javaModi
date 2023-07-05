@@ -189,7 +189,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         if (Globals.getApplicationState() != null) {
             return false;
         }
-        FatalErrorActivity.showFatalError(getResources().getString(com.eltechs.axs.R.string.xda_guest_suddenly_died));
+        FatalErrorActivity.showFatalError(getResources().getString(com.eltechs.axs.R_original.string.xda_guest_suddenly_died));
         finish();
         return true;
     }

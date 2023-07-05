@@ -21,6 +21,11 @@ import com.example.datainsert.exagear.QH;
 public class MyProgressDialog extends ProgressDialog {
     Callback defaultCallback = new Callback() {
         @Override
+        public void prepare(int max) {
+            setMax(max);
+        }
+
+        @Override
         public void onFinish(String message) {
             done(message);
         }
@@ -133,6 +138,7 @@ public class MyProgressDialog extends ProgressDialog {
         default void updateProgress(int value) {
         }
 
+        default void prepare(int max){}
         ;
     }
 }

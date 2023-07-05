@@ -2,9 +2,9 @@ package com.eltechs.axs.helpers;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.eltechs.axs.R;
+import com.eltechs.axs.R_original;
+import com.eltechs.ed.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +20,7 @@ public class ZipInstallerAssets {
                 installCallback.installationFinished(dstDir.getAbsolutePath());
                 return;
             } else {
-                installCallback.installationFailed(context.getResources().getString(R.string.directory_is_occupied));
+                installCallback.installationFailed(context.getResources().getString(R_original.string.directory_is_occupied));
                 return;
             }
         }
@@ -54,6 +54,7 @@ public class ZipInstallerAssets {
                             }
                         });
                     } catch (IOException e2) {
+                        e2.printStackTrace();
                         try {
                             fileOutputStream2.close();
                         } catch (IOException ignored) {

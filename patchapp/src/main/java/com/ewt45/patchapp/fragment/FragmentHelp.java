@@ -41,7 +41,8 @@ public class FragmentHelp extends Fragment {
                         R.drawable.customresl,
                         R.drawable.softinput,
                         R.drawable.selectobb,
-                        0
+                        R.drawable.shortcut,
+                        R.drawable.multiwine
                 }
         ));
         return rootView;

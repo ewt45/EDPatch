@@ -20,6 +20,8 @@ import java.util.Map;
 
 public class test extends AppCompatActivity {
     private static final File mUserAreaDir = DriveD.getDriveDDir();
+    private static boolean staticNotFinal = false;
+    private final static boolean staticAndFinal  = true; //smali声明变量那一行就会赋值
     Object i2;
 
     public test() {
@@ -34,8 +36,7 @@ public class test extends AppCompatActivity {
 //        QH.logD("placeRectangle参数："+i1+","+f1+","+f2+","+f3+","+f4+","+f5+","+i2+","+f6+","+b);
 //    }
 
-    public test(Map<String, Object> map) {
-    }
+
 
     public static void reflectInvoke(ManageContainersFragment fragment) {
         for (Class<?> clz : fragment.getClass().getDeclaredClasses()) {

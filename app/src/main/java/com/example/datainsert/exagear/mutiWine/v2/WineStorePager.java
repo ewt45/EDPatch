@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.mutiWine.v2;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -16,14 +18,18 @@ import com.example.datainsert.exagear.RR;
 public class WineStorePager extends ViewPager {
 
     private final ViewGroup[] mViewPages;
+
     public WineStorePager(@NonNull Context context, ViewGroup[] pages) {
         super(context);
-
         mViewPages = pages;
+
+        String tabLocal = getS(RR.mw_tabTitles).split("\\$")[0];
+        String tabDownload = getS(RR.mw_tabTitles).split("\\$")[1];
+        String tabTips = getS(RR.mw_tabTitles).split("\\$")[2];
         //设置适配器
         setAdapter(new PagerAdapter() {
 
-            private final String[] mTabTitles = new String[]{RR.getS(RR.mw_tabLocal), RR.getS(RR.mw_tabDlable)};
+            private final String[] mTabTitles = new String[]{tabLocal, tabDownload, tabTips};
             private final View[] mViewPages = pages;
 
             @Override
@@ -65,19 +71,19 @@ public class WineStorePager extends ViewPager {
             @Override
             public void onPageSelected(int position) {
 
-                if(position==0 ){
+                if (position == 0) {
                     RecyclerView recyclerView = null;
-                    for(int i=0; i< mViewPages[0].getChildCount(); i++){
-                        View view  = mViewPages[0].getChildAt(i);
-                        if(view instanceof RecyclerView){
+                    for (int i = 0; i < mViewPages[0].getChildCount(); i++) {
+                        View view = mViewPages[0].getChildAt(i);
+                        if (view instanceof RecyclerView) {
                             recyclerView = (RecyclerView) view;
                             break;
                         }
                     }
-                    if(recyclerView ==null)
+                    if (recyclerView == null)
                         return;
                     RecyclerView.Adapter adapter = recyclerView.getAdapter(); //LocalWineAdapter的回收视图
-                    if(adapter instanceof LocalAdapter)
+                    if (adapter instanceof LocalAdapter)
                         ((LocalAdapter) adapter).refresh(false);
                 }
             }

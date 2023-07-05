@@ -47,6 +47,7 @@ public class ManageContainersFragment extends Fragment {
     private String mProgressMessage;
     private RecyclerView mRecyclerView;
 
+
     @Override // android.support.v4.app.Fragment
     public void onAttach(Context context) {
         super.onAttach(context);

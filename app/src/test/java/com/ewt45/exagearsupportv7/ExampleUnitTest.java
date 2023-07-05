@@ -1,23 +1,30 @@
 package com.ewt45.exagearsupportv7;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import android.support.design.widget.FloatingActionButton;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
 import android.util.Log;
 
-import com.eltechs.axs.proto.input.annotations.ParamName;
+import com.example.datainsert.exagear.mutiWine.WineNameComparator;
+import com.example.datainsert.exagear.mutiWine.v2.HQParser;
+import com.example.datainsert.exagear.mutiWine.v2.HQWineInfo;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -28,6 +35,161 @@ import java.util.List;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
+    /**
+     * xsdl中。so文件名，需要按照assets中的txt重命名，然后才能正常使用pulseaudio
+     * @throws IOException
+     */
+    @Test
+    public void rename_xsdl_libname() throws IOException {
+        List<String> reNameLines = Files.readAllLines(Paths.get("E:\\tmp\\pa\\bin-map-arm64-v8a.txt"));
+        File parentFolder = new File("E:\\tmp\\pa");
+        for(int i=0; i<reNameLines.size(); i++){
+            String wrongName = reNameLines.get(i);
+            i++;
+            String rightName = reNameLines.get(i);
+            File[] wrongFiles =parentFolder.listFiles((dir, name) -> name.equals(wrongName));
+            if(wrongFiles.length>0)
+                wrongFiles[0].renameTo(new File(parentFolder,rightName));
+
+        }
+    }
+    @Test
+    public void FileUtils_copyDirectory_and_copyDirectoryToDirectory() throws IOException {
+        //copyDirectory只复制src中的子文件和文件夹，即dst目录下出现src目录下的子文件
+        //copyDirectoryToDirectory复制包括src文件夹本身，即dst目录下出现src目录
+        FileUtils.copyDirectory(
+                new File("E:\\tmp\\srcFolder"),
+                new File("E:\\tmp\\dstFolder"));
+//        FileUtils.copyDirectoryToDirectory();
+    }
+    @Test
+    public void extractDebManually() throws Exception {
+        File debFile = new File("E:\\tmp\\wine-devel_8.5~bionic-1_i386.deb");
+        byte[] bytes = FileUtils.readFileToByteArray(debFile);
+        byte[] dataBytes; //存储data.tar.xz 的字节数组
+
+        //捕捉一下数组越界吧，虽然一般应该不会
+        try {
+            int pos = 0;
+            String rHeader  ="!<arch>";
+            //deb文件头
+            byte[] headers = Arrays.copyOfRange(bytes,pos,pos+rHeader.length());
+            System.out.println(new String(headers,US_ASCII)); //直接new 一个String，设定ascii格式，就将byte数组转为字符串了=-=
+            if(!"!<arch>".equals(new String(headers, US_ASCII))){
+                throw new Exception("不是deb文件");
+            }
+            pos = pos+rHeader.length()+1; //还有个换行
+
+            String memberName;
+            int fileSize;
+            do{
+                //成员名，应该16字节
+                memberName =  new String(Arrays.copyOfRange(bytes,pos,pos+16)).trim();
+                System.out.println("成员："+memberName);
+                //如果不是需要解压的内容，就读取其大小并跳过这些长度
+                /*
+                char    fileName[16];
+                char    modification_timestamp[12];
+                char    ownerID[6];
+                char    groupID[6];
+                char    fileMode[8];
+                char    fileSize[10];
+                char    endMarker[2];
+                 */
+                pos = pos + 16+12+6+6+8; //读文件大小
+                String sizeStr = new String(Arrays.copyOfRange(bytes,pos,pos+10)).trim();
+                pos = pos + 10; //读结尾标识
+                String endMarker = new String(Arrays.copyOfRange(bytes,pos,pos+2));
+                //根据模版，只有结尾标识为这个的时候才读取下面的文件内容，不知道有什么说法
+                if(!endMarker.equals("`\n")){
+                    throw new Exception("成员"+memberName+"的endmarker"+endMarker+"不是`\\n");
+                }
+                pos = pos + 2 ; //读取内容
+                int sizeInt = Integer.parseInt(sizeStr);
+                dataBytes = Arrays.copyOfRange(bytes,pos,pos+sizeInt);
+                pos = pos + sizeInt;
+                //对齐偶数字节
+                if((pos & 1)!=0)
+                    pos++;
+            }while(!memberName.startsWith("data.tar"));
+
+            System.out.println("找到data.tar");
+            if(!memberName.endsWith(".xz")){
+                throw new Exception("data.tar不是xz压缩");
+            }
+
+            FileUtils.writeByteArrayToFile(new File("E:\\tmp\\data手动提取.tar.xz"),dataBytes,false);
+        }catch (IndexOutOfBoundsException e){
+            e.printStackTrace();
+        }
+
+
+        //解压tar.xz
+
+
+    }
+
+
+    @Test
+    public void readDebianRepositoryPackages() throws IOException {
+        String tagName = "wine-devel_8.4";
+        List<String> lines = FileUtils.readLines(new File("E:\\tmp\\Packages"));
+        String pkg = tagName.split("_")[0];
+        String version = tagName.split("_")[1];
+        String depPkg  = pkg+"-i386";
+
+        HQParser.InfoWrapper wrapper = new HQParser.InfoWrapper();
+        wrapper.lines = lines;
+        wrapper.pos = 0;
+
+        List<HQWineInfo> infoList = new ArrayList<>();
+        do {
+            HQParser.readOneInfo(wrapper);
+            HQWineInfo info = wrapper.info;
+            //otherosfs是正常的，其他可能是调试什么的。版本带~rc的是抢先体验，会造成多个info版本号完全相同。winehq是纯快捷方式不需要
+            if(info.section.equals("otherosfs") && !info.version.contains("~rc") && !info.mpackage.contains("winehq"))
+                infoList.add(info);
+
+        } while (wrapper.pos<wrapper.lines.size());
+
+        //把依赖包从列表中挪到主包中，
+        for(int i=0; i<infoList.size();i++){
+            HQWineInfo depInfo = infoList.get(i);
+            if(depInfo.mpackage.endsWith("-i386")){
+                infoList.remove(i);
+                i--;
+                //寻找对应的主包
+                for(HQWineInfo mainInfo:infoList){
+                    if(mainInfo.getTagName().equals(depInfo.getTagName().replace("-i386",""))){
+                        assert mainInfo.depInfo == null;
+                        mainInfo.depInfo = depInfo;
+                            break;
+                    }
+                }
+            }
+        }
+        Collections.sort(infoList,new WineNameComparator());
+
+        for(HQWineInfo info: infoList){
+            assert info.depInfo!=null;
+            System.out.println(info);
+        }
+
+    }
+
+    @Test
+    public void willForLoopSimpleFormatAffectIndex(){
+        //不行，这种for循环的写法 如果remove会报iterator的错
+        List<String> list = Arrays.asList("1","2","3","4","5");
+        for(String s:list){
+            if(s.equals("2") || s.equals("4"))
+                list.remove(s);
+            else
+                System.out.println(s);
+        }
+    }
+
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
@@ -37,7 +199,7 @@ public class ExampleUnitTest {
     public void multipleSpaceSplit() {
         String testStr = "671940c6dd1c3fac9715a6d2b64b5a028e0f20fee04b482ff5788f54f0f4fadb  wine-8.10-x86.tar.xz";
         String[] arr = testStr.split(" ");
-       System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(arr));
     }
 
     @Test

@@ -52,7 +52,6 @@ public class MutiWine {
     public static String KEY_WINE_PATTERN_PATH = "winePatternPath";
     public static String KEY_WINE_CONTAINER_NAME = "NAME";
     public static String KEY_CONTAINER_ID = "CID";
-    public static String KEY_RENDERER = "RENDERER"; //偏好xml中渲染方式的KEY
 
     /**
      * ex的managerContainersFragment里的onCreateOptionsMenu方法
@@ -72,7 +71,7 @@ public class MutiWine {
         Log.d(TAG, "setOptionMenu: 开始设置右上角菜单，获取到的fragment实例为" + fragmentInstance +
                 "\n读取到的wine版本有" + WineVersion.wineList);
         //管理wine版本界面
-        menu.add(getS(RR.mw_manTitle))
+        menu.add(getS(RR.mw_fragTitle))
                 .setIcon(QH.rslvID(R.drawable.ic_file_download_24dp, 0x7f0800a1))
                 .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setOnMenuItemClickListener(item -> {
@@ -131,57 +130,59 @@ public class MutiWine {
      *
      * @param id   容器id
      * @param list 环境变量列表
+     * @deprecated 环境变量通过添加action {@link com.example.datainsert.exagear.action.AddEnvironmentVariables}实现
      */
+    @Deprecated
     public static void addEnvVars(Long id, List<String> list) {
-        String winePath = null;//wine执行路径，从xdroid_n/envp.txt中读取
-        File envpFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "home/xdroid_" + id + "/envp.txt");
-        try {
-            List<String> lines = FileUtils.readLines(envpFile);
-            for (String s : lines) {
-                if (s.startsWith(KEY_WINE_INSTALL_PATH))
-                    winePath = s.substring((KEY_WINE_INSTALL_PATH + "=").length());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            //如果不存在v2的txt，考虑读取v1的pref
-            winePath = Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + id, Context.MODE_PRIVATE).getString(KEY_WINE_INSTALL_PATH, "/usr");
-        }
-        if (winePath == null) {
-            winePath = "usr";
-        }
-
-        SharedPreferences sp = Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + id, Context.MODE_PRIVATE);
-        //添加执行路径（会覆盖原来的 $PATH不起作用，只能把默认的都写一遍了，希望没有漏掉）
-        list.add("PATH="
-                + winePath
-                + "/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games");
-        Log.d(TAG, "getEnvVarBin: wine执行路径为" + list.get(list.size() - 1));
-        //添加链接库路径（可以用于设置渲染模式）
-        String[] rendererValues = {""};
-        try {
-            rendererValues = Globals.getAppContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_renderer_values, 0x7f030009));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String renderer = sp.getString(KEY_RENDERER, rendererValues[0]);
-        String ldPath = ""; //不同渲染模式选择不同链接库路径
-        if ("llvmpipe".equals(renderer))
-            ldPath = "/usr/bin/llvmpipe";
-        else if ("virgloverlay".equals(renderer)) {
-            //如果是vo，顺便添加一下vtest_win
-            list.add("VTEST_WIN=1");
-            list.add("VTEST_SOCK=");
-            ldPath = "/usr/bin/virgloverlay";
-        } else if ("virpipe".equals(renderer))
-            //这里 三合一 vtest叫virpipe，ubt启动设置那个类里，只有判断是virpipe的时候才会new MCat().改动时注意
-            ldPath = "/usr/bin/vtest";
-        else if ("gallium_xlib_zink_turnip".equals(renderer))
-            ldPath = "/usr/bin/zink";
-        list.add("LD_LIBRARY_PATH="
-                + ":" + ldPath
-                + ":/usr/lib/i386-linux-gnu"
-                + ":" + sp.getString(KEY_WINE_INSTALL_PATH, "/usr") + "/lib");
-        Log.d(TAG, "getEnvVarBin: 链接库路径为" + list.get(list.size() - 1) + ", 所选模式为" + renderer);
+//        String winePath = null;//wine执行路径，从xdroid_n/envp.txt中读取
+//        File envpFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "home/xdroid_" + id + "/envp.txt");
+//        try {
+//            List<String> lines = FileUtils.readLines(envpFile);
+//            for (String s : lines) {
+//                if (s.startsWith(KEY_WINE_INSTALL_PATH))
+//                    winePath = s.substring((KEY_WINE_INSTALL_PATH + "=").length());
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            //如果不存在v2的txt，考虑读取v1的pref
+//            winePath = Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + id, Context.MODE_PRIVATE).getString(KEY_WINE_INSTALL_PATH, "/usr");
+//        }
+//        if (winePath == null) {
+//            winePath = "usr";
+//        }
+//
+//        SharedPreferences sp = Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + id, Context.MODE_PRIVATE);
+//        //添加执行路径（会覆盖原来的 $PATH不起作用，只能把默认的都写一遍了，希望没有漏掉）
+//        list.add("PATH="
+//                + winePath
+//                + "/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games");
+//        Log.d(TAG, "getEnvVarBin: wine执行路径为" + list.get(list.size() - 1));
+//        //添加链接库路径（可以用于设置渲染模式）
+//        String[] rendererValues = {""};
+//        try {
+//            rendererValues = Globals.getAppContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_renderer_values, 0x7f030009));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        String renderer = sp.getString(KEY_RENDERER, rendererValues[0]);
+//        String ldPath = ""; //不同渲染模式选择不同链接库路径
+//        if ("llvmpipe".equals(renderer))
+//            ldPath = "/usr/bin/llvmpipe";
+//        else if ("virgloverlay".equals(renderer)) {
+//            //如果是vo，顺便添加一下vtest_win
+//            list.add("VTEST_WIN=1");
+//            list.add("VTEST_SOCK=");
+//            ldPath = "/usr/bin/virgloverlay";
+//        } else if ("virpipe".equals(renderer))
+//            //这里 三合一 vtest叫virpipe，ubt启动设置那个类里，只有判断是virpipe的时候才会new MCat().改动时注意
+//            ldPath = "/usr/bin/vtest";
+//        else if ("gallium_xlib_zink_turnip".equals(renderer))
+//            ldPath = "/usr/bin/zink";
+//        list.add("LD_LIBRARY_PATH="
+//                + ":" + ldPath
+//                + ":/usr/lib/i386-linux-gnu"
+//                + ":" + sp.getString(KEY_WINE_INSTALL_PATH, "/usr") + "/lib");
+//        Log.d(TAG, "getEnvVarBin: 链接库路径为" + list.get(list.size() - 1) + ", 所选模式为" + renderer);
     }
 
 
@@ -211,17 +212,18 @@ public class MutiWine {
      * @param oldId 被复制的容器id
      * @param newId 新容器id
      * @deprecated 废弃，无作用。改在执行新建task时一并写入xdroid文件夹
+     * (还是留着吧，复制不走新建的那个task。如果apk从v1升到v2的就有这个功能，直接装v2的就没这个功能，反正就一个名字也不影响啥）
      */
     @Deprecated
     public static void cloneWineVerToContainerConfig(Long oldId, Long newId) {
-//        //旧容器设置
-//        SharedPreferences sp = Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + oldId, Context.MODE_PRIVATE);
-//        //复制旧容器设置
-//        Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + newId, Context.MODE_PRIVATE).edit()
-//                .putString(KEY_WINE_VERSION, sp.getString(KEY_WINE_VERSION, ""))
-//                .putString(KEY_WINE_INSTALL_PATH, sp.getString(KEY_WINE_INSTALL_PATH, "/usr"))
-//                //顺便修改一下容器的名字，提高辨识度
-//                .putString(KEY_WINE_CONTAINER_NAME, sp.getString("NAME", "Container_" + newId)).apply();
+        //旧容器设置
+        SharedPreferences sp = Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + oldId, Context.MODE_PRIVATE);
+        //复制旧容器设置
+        Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + newId, Context.MODE_PRIVATE).edit()
+                .putString(KEY_WINE_VERSION, sp.getString(KEY_WINE_VERSION, ""))
+                .putString(KEY_WINE_INSTALL_PATH, sp.getString(KEY_WINE_INSTALL_PATH, "/usr"))
+                //顺便修改一下容器的名字，提高辨识度
+                .putString(KEY_WINE_CONTAINER_NAME, sp.getString("NAME", "Container_" + newId)).apply();
     }
 
     /**
@@ -261,7 +263,11 @@ public class MutiWine {
         @Override // android.os.AsyncTask
         protected void onPreExecute() {
             mIsAsyncTaskRun = true;
-            mProgressDialog= ProgressDialog.show(mFragment.getContext(),"", getS(RR.mw_newContProgress),true,false);
+            mProgressDialog = ProgressDialog.show(mFragment.getContext(), "", getS(RR.mw_newContProgress), true, false);
+            //如果guestcont-pattern不存在手动创建
+            File patternFile  = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/guestcont-pattern/");
+            if(!patternFile.exists())
+                patternFile.mkdirs();
         }
 
         @Override // android.os.AsyncTask

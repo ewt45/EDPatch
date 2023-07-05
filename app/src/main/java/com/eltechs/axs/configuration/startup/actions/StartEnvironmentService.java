@@ -27,12 +27,8 @@ public class StartEnvironmentService<StateClass extends EnvironmentAware> extend
 
             @Override // com.eltechs.axs.environmentService.AXSEnvironment.StartupCallback
             public void serviceFailed(Throwable th) {
-                if(QH.isTesting()){
-                    Log.e("StartEnvironmentService", "serviceFailed: ", th);
-                    StartEnvironmentService.this.sendDone();
-                }else{
-                    StartEnvironmentService.this.sendError("Failed to start the environment emulation service.", th);
-                }
+                Log.e("StartEnvironmentService", "serviceFailed: ", th);
+                StartEnvironmentService.this.sendError("Failed to start the environment emulation service.", th);
             }
         }, this.trayConfiguration);
     }

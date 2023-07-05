@@ -10,8 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import com.eltechs.axs.CommonApplicationConfigurationAccessor;
 import com.eltechs.axs.KeyCodesX;
-import com.eltechs.axs.PointerEventReporter;
-import com.eltechs.axs.R;
+import com.eltechs.axs.R_original;
 import com.eltechs.axs.TouchScreenControlsFactory;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
@@ -91,7 +90,7 @@ public class OxygenInterfaceOverlay implements XServerDisplayActivityInterfaceOv
     }
 
     private static Button createSyncButton(Activity activity, final ViewOfXServer viewOfXServer, int i) {
-        String string = activity.getResources().getString(R.string.fal_sync);
+        String string = activity.getResources().getString(R_original.string.fal_sync);
         Button button = new Button(activity);
         button.setWidth(50);
         button.setMaxWidth(50);
@@ -132,8 +131,8 @@ public class OxygenInterfaceOverlay implements XServerDisplayActivityInterfaceOv
     }
 
     private static Button createRunButton(Activity activity, final ViewFacade viewFacade, int i) {
-        final String string = activity.getResources().getString(R.string.mm_run_off);
-        final String string2 = activity.getResources().getString(R.string.mm_run_on);
+        final String string = activity.getResources().getString(R_original.string.mm_run_off);
+        final String string2 = activity.getResources().getString(R_original.string.mm_run_on);
         final Button button = new Button(activity);
         button.setWidth(50);
         button.setMaxWidth(50);

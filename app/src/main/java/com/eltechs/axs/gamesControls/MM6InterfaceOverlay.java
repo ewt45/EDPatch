@@ -3,7 +3,6 @@ package com.eltechs.axs.gamesControls;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -13,7 +12,7 @@ import android.widget.ScrollView;
 import com.eltechs.axs.CommonApplicationConfigurationAccessor;
 import com.eltechs.axs.GestureStateMachine.GestureMouseMode;
 import com.eltechs.axs.KeyCodesX;
-import com.eltechs.axs.R;
+import com.eltechs.axs.R_original;
 //import com.eltechs.axs.StickyKeyPress;
 import com.eltechs.axs.TouchScreenControlsFactory;
 import com.eltechs.axs.activities.XServerDisplayActivity;
@@ -29,10 +28,8 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.helpers.ButtonHelpers;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.eltechs.axs.xserver.KeyButNames;
-import com.eltechs.axs.xserver.KeyboardModifiersListener;
 import com.eltechs.axs.xserver.ViewFacade;
-import com.eltechs.axs.xserver.impl.masks.Mask;
+
 import java.util.Arrays;
 @SuppressLint("WrongConstant")
 
@@ -109,8 +106,8 @@ public class MM6InterfaceOverlay implements XServerDisplayActivityInterfaceOverl
     }
 
     private static Button createRunButton(Activity activity, final ViewFacade viewFacade, int i) {
-        final String string = activity.getResources().getString(R.string.mm_run_off);
-        final String string2 = activity.getResources().getString(R.string.mm_run_on);
+        final String string = activity.getResources().getString(R_original.string.mm_run_off);
+        final String string2 = activity.getResources().getString(R_original.string.mm_run_on);
         final Button button = new Button(activity);
 
         return button;
@@ -228,15 +225,15 @@ public class MM6InterfaceOverlay implements XServerDisplayActivityInterfaceOverl
     }
 
     private static ImageButton createMouseModeButton(Activity activity, final GestureMouseMode gestureMouseMode, int i, int i2) {
-        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, i, i2, R.drawable.mouse_right);
+        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, i, i2, R_original.drawable.mouse_right);
 
         gestureMouseMode.addListener(new GestureMouseMode.MouseModeChangeListener() { // from class: com.eltechs.axs.gamesControls.MM6InterfaceOverlay.4
             @Override // com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeChangeListener
             public void mouseModeChanged(GestureMouseMode gestureMouseMode2, GestureMouseMode.MouseModeState mouseModeState) {
                 if (mouseModeState == GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT) {
-                    createRegularImageButton.setImageResource(R.drawable.mouse_left);
+                    createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
                 } else {
-                    createRegularImageButton.setImageResource(R.drawable.mouse_right);
+                    createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
                 }
             }
         });
