@@ -2,18 +2,27 @@ package com.example.datainsert.exagear.mutiWine;
 
 
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.mutiWine.WineVersion.CONTAINER_NAME_NO_WINE;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
@@ -39,10 +48,13 @@ import java.util.List;
 public class MutiWine {
     private static final int VERSION_FOR_EDPATCH = 2;
     private static final String TAG = "MutiWine";
+    /**
+     * 创建容器时没有识别到已启用的wine，是否显示
+     */
+    private static final String PREF_KEY_SHOULD_SHOW_TIP_CONTAINER_NO_WINE = "SHOULD_SHOW_TIP_CONTAINER_NO_WINE";
     //pref前缀，用于容器设置，记录wine版本，需要根据apk包名自行修改
     //内容有：wineVersion，wineExecutePath
     public static String CONTAINER_CONFIG_FILE_KEY_PREFIX = GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
-
     //pref前缀，用于新建容器时临时记录wine版本，和启动容器时临时记录wine版本
     //内容有：新建容器时 wineVersion，wineExecutePath，winePatternPath
     public static String TMP_WINE_VER_PREF = "tmpWineVerPref";
@@ -124,7 +136,6 @@ public class MutiWine {
         //为什么子菜单的内容不会进到这个监听啊（啊原来只监听本menuitem。。。）
     }
 
-
     /**
      * 启动容器时，在StartGuest里调用，添加环境变量（wine的执行路径和链接库路径）
      *
@@ -184,7 +195,6 @@ public class MutiWine {
 //                + ":" + sp.getString(KEY_WINE_INSTALL_PATH, "/usr") + "/lib");
 //        Log.d(TAG, "getEnvVarBin: 链接库路径为" + list.get(list.size() - 1) + ", 所选模式为" + renderer);
     }
-
 
     /**
      * 新建容器时，从临时pref中读取wine版本信息，并写入新建容器的设置pref中。
@@ -265,8 +275,8 @@ public class MutiWine {
             mIsAsyncTaskRun = true;
             mProgressDialog = ProgressDialog.show(mFragment.getContext(), "", getS(RR.mw_newContProgress), true, false);
             //如果guestcont-pattern不存在手动创建
-            File patternFile  = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/guestcont-pattern/");
-            if(!patternFile.exists())
+            File patternFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/guestcont-pattern/");
+            if (!patternFile.exists())
                 patternFile.mkdirs();
         }
 
@@ -307,6 +317,14 @@ public class MutiWine {
 //            mFragment.refreshContainersList();
             mProgressDialog.dismiss();
             mIsAsyncTaskRun = false;
+
+            //如果没识别到wine，提醒一下用户吧
+            if (mWineVersion.name.equals(CONTAINER_NAME_NO_WINE)) {
+                QH.showTipDialogWithDisable(
+                        mFragment.requireActivity(),
+                        getS(RR.mw_contNoWineTips),
+                        PREF_KEY_SHOULD_SHOW_TIP_CONTAINER_NO_WINE);
+            }
         }
     }
 

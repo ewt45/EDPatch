@@ -415,6 +415,10 @@ public class SmaliFile {
         return version;
     }
 
+    public void getStaticFinalField(){
+
+    }
+
 
 //    public static class ModPosition {
 //

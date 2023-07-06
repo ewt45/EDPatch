@@ -11,7 +11,7 @@
     <string name="actmsg_funcfab">добавление функции: кнопки настроек</string>
     <string name="actmsg_funcresl">добавление функции: выбора разрешений экрана</string>
     <string name="funcname_fab">Кнопка настроек\n- Выбор локации диска D\n- Кастомное управление</string>
-    <string name="funcname_prefresl">Выбор разрешений экрана</string>
+    <string name="funcname_prefresl">Настройки контейнера - Кастомное разрешение</string>
     <string name="funcname_softinput">Исправление работы клавиатуры на android 11+</string>
     <string name="btntxt_startpatch">запуск исправлений</string>
     <string name="btntxt_installnew">установить исправленный apk</string>
@@ -71,4 +71,5 @@
     <string name="actmsg_funcmw">добавление функции: MultiWine v2</string>
     <string name="fraghelp_body_mw">Добавляется значок загрузки необходимой версии wine в левом верхнем углу страницы \"создание контейнеров\", тапните на вкладку \"добавление/удаление wine\".\n- Установка wine: Вы можете редактировать загруженные или предустановленные версии wine. После выбора опции Установить (Извлечь) выбранная версия wine будет отображаться как \'Активная\', теперь её можно выбрать при создании нового контейнера. Используйте опцию Удалить (удалить папку с wine), чтобы уменьшить объем занятой внутренней памяти вашего девайса. Файлы wine хранятся в папке Z:/opt/WineCollection.\n- Загрузка файлов wine: загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице \'Установленные\'.\nКак добавить предустановленные версии wine в кэши:\n`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : имя папки необходимого wine, оно отображается при создании контейнеров, и должно быть уникальным.\n- `$WineFolder`: он должен содержать двоичный файл `./bin/wine`.\n- так же в `$TagFolder` должен быть `.tar.xz` архивный файл, из которого будет извлечена `$WineFolder`.</string>
     <string name="funcname_mw">MultiWine v2</string>
+    <string name="funcname_renderer">Настройки контейнера - Выбор рендера</string>
 </resources>

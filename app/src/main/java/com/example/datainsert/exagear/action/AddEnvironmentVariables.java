@@ -1,17 +1,21 @@
 package com.example.datainsert.exagear.action;
 
 
+import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.Turnip_DXVK;
 import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.VirGL_Overlay;
 import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.VirGL_built_in;
+import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.VirtIO_GPU;
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
 import static com.example.datainsert.exagear.mutiWine.MutiWine.KEY_WINE_INSTALL_PATH;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import com.eltechs.axs.Globals;
+import com.eltechs.axs.Mcat;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.eltechs.axs.applicationState.UBTLaunchConfigurationAware;
@@ -19,6 +23,7 @@ import com.eltechs.axs.configuration.UBTLaunchConfiguration;
 import com.eltechs.axs.configuration.startup.actions.AbstractStartupAction;
 import com.eltechs.ed.fragments.ContainerSettingsFragment;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
+import com.example.datainsert.exagear.QH;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -104,12 +109,15 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             //调用so
             File virglServerFile = new File(getAppContext().getApplicationInfo().nativeLibraryDir, "libvirgl_test_server.so");
             try {
-                ProcessBuilder builder = new ProcessBuilder(virglServerFile.getAbsolutePath(), "");
+                ProcessBuilder builder = new ProcessBuilder(virglServerFile.getAbsolutePath());
                 builder.environment().put("TMPDIR", getApplicationState().getExagearImage().getPath().getAbsolutePath() + "/tmp");
+//                builder.environment().put("VTEST_SOCK", "");
 //                builder.directory(paDir);
                 builder.redirectErrorStream(true);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    builder.redirectOutput(new File("/sdcard/virglLog.txt"));
+                    File logDir = new File(Globals.getAppContext().getExternalFilesDir(null),"logs");
+                    logDir.mkdirs();
+                    builder.redirectOutput(new File(logDir,"virglLog.txt"));
                 }
                 builder.start();
 
@@ -117,6 +125,12 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (testRenderExist("VirtIO_GPU") && VirtIO_GPU.name.equals(rendererName)) {
+            if (QH.classExist("com.eltechs.axs.MCat"))
+                new Mcat().start();
+        } else if (testRenderExist("Turnip_DXVK") && Turnip_DXVK.name.equals(rendererName)) {
+            ubtConfig.addEnvironmentVariable("GALLIUM_DRIVER", "zink");
+            ubtConfig.addEnvironmentVariable("MESA_VK_WSI_DEBUG", "sw");
         }
 
         if (!ldPath.equals(""))

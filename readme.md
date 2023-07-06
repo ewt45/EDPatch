@@ -34,10 +34,12 @@
   - [自定义d盘路径](https://ewt45.github.io/blogs/2022/winter/exagearFab/driveD.html)
   - [自定义操作模式](https://www.bilibili.com/video/BV1fL41167Ji/)
 - [强制显示鼠标光标](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
-- [自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
+- [环境设置- 自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [手动选择obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
 - exe快捷方式直接启动
+- 多版本wine共存 v2
+- 环境设置 - 渲染方式
 
 ## 第三方依赖
 
@@ -50,6 +52,29 @@
 
 
 ## 更新历史
+
+### v0.0.4
+- 新功能：
+1. multiwine v2 可在线下载wine。在容器管理界面右上角新增下载按钮，点击进入wine版本管理界面。
+  - “本地”页面：对已下载或预置的wine进行管理。点击安装（解压）后，会显示“已启用”，已启用的wine会显示在新建容器时的选项中。可通过卸载（删除已解压文件夹）来减少本地占用。本地存放位置为：z:/opt/WineCollection。
+  - “可下载”页面：从网络下载更多版本的wine。下载源可选择WineHQ（官方构建）或Kron4ek（第三方，体积小），其中WineHQ仅提供 ubuntu 18 的对应列表，Kron4ek不提供 staging 版本。下载成功后会显示在“本地”页面。若由于网络原因下载失败，可以尝试切换下载线路。
+  - 创建一个容器后，该容器对应wine路径存放在/home/xdroid_n/envp.txt中。
+  - 如何在数据包中预置wine：一个wine二进制文件的路径：`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`
+    - `$TagFolder` : 该文件夹名对应一个版本的wine名字，用于新建容器时显示。
+    - `$WineFolder` : 该文件夹包含./bin/wine二进制文件。
+    - wine压缩包（要求为 .tar.xz格式）也要放在`$TagFolder` 下，并且确保将其解压到同目录后，会出现`$WineFolder`。
+
+2. 环境设置- 渲染方式
+  - 多wine共存 v2 不包括 根据容器设置中的渲染方式设置动态链接库（libGL.so.1）路径的功能。 若apk之前存在选择渲染方式的功能，在升到多wine v2后，请使用ed自助补丁额外一添加添加 环境设置-渲染方式，以便继续支持选择渲染方式功能，注意添加渲染方式后，不同渲染的路径与之前有所不同，可以编辑apk中的dex，找到 ContainerSettingsFragment$renderEntries.smali 查看并自行修改。
+  - 目前添加了6种渲染方式。程序会根据选择的渲染，设置不同的动态链接库路径。需要在指定位置分别放入不同渲染的libGL.so.1。与原先的切换渲染方式比较：
+    - 原先切换渲染：启动容器后，每次切换渲染，将libGL.so解压到 /usr/lib/i386-linux-gnu 覆盖原文件。
+    - 现在切换渲染：将libGL.so放入不同的文件夹（如/opt/lib/vo, /opt/lib/tz） 中。每次切换渲染，进入容器设置页面切换选项，进入容器。各有利弊，请选择自己喜欢的方式。
+  - 另外，某些渲染方式还会有额外的操作：
+    - virgl overlay: 自动添加参数 VTEST_WIN=1  VTEST_SOCK=
+    - VirGL_built_in: 通过java新建进程，自动运行 libvirgl_test_server.so（仅xegw的apk支持）。不需要Mcat和/opt/start.sh。 无需virgl overlay的启动服务。日志输出到Android/data/包名/logs/virglLog.txt。
+    - virtio-gpu: 尝试启动Mcat。在xegw之前，Mcat用于启动proot环境，即无免termux使用该渲染。在第一版的xegw apk中，mcat被重写 设定为运行/opt/start.sh，用于启动virgl built-in，不会自动启动proot。
+    - turnip dxvk: 自动添加参数 GALLIUM_DRIVER=zink MESA_VK_WSI_DEBUG=sw
+  - 原先启动mcat的方式为：dex中，在UBTLaunchConfigureation -> addArgumentsToEnvironment函数中，读取该容器渲染设置的值，并将其设置到GALLIUM_DRIVER= 环境变量。若值为virpipe则启动Mcat。现在由于值并非GALLIUM_DRIVER的有效值，所以建议删除UBTLaunchConfigureation中的相关代码。
 
 ### v0.0.3
 - 修改的apk使用默认密钥签名，安装修改后的apk不再需要手动重新签名或卸载原有apk。

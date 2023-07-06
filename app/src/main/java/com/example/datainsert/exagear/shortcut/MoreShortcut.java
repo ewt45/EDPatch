@@ -1,12 +1,18 @@
 package com.example.datainsert.exagear.shortcut;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.FileUriExposedException;
 import android.os.PersistableBundle;
+import android.support.v4.content.ContentResolverCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,6 +25,7 @@ import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.ed.BuildConfig;
 import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.XDGLink;
 import com.eltechs.ed.activities.EDStartupActivity;
@@ -101,6 +108,16 @@ public class MoreShortcut {
         });
 
 
+//        popupMenu.getMenu().add("编辑").setOnMenuItemClickListener(item->{
+//            Intent shareIntent = new Intent();
+//            shareIntent.setAction(Intent.ACTION_SEND);
+//            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+//            Uri uri = FileProvider.getUriForFile(Globals.getAppContext(), BuildConfig.APPLICATION_ID.concat(".provider"), xdgLink.linkFile);
+//            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+//            shareIntent.setType("text/plain");
+//            Globals.getAppContext().startActivity(shareIntent);
+//            return true;
+//        });
     }
 
 

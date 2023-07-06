@@ -1,5 +1,7 @@
 package com.eltechs.ed.fragments;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -35,21 +37,20 @@ import java.util.List;
 
 public class ContainerSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String ARG_CONT_ID = "CONT_ID";
-    private static final int VERSION_FOR_EDPATCH = 2;
     private static final String TAG = "ContSettingsFragment";
 
     /**
      * 如果能找到对应类，就启动对应功能。edpatch添加功能时复制对应类即可。
      */
-    private final static boolean enable_custom_resolution = false;
-    private final static boolean enable_different_renderers = false;
+    private final static boolean enable_custom_resolution = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetResolution");
+    private final static boolean enable_different_renderers = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetRenderer");
     public static String KEY_RENDERER = "RENDERER"; //偏好xml中渲染方式的KEY
-
 
     /**
      * 用于记录本次dialog期间选定的分辨率
      */
     private String curResolution;
+
 
     @Override // android.support.v7.preference.PreferenceFragmentCompat
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
@@ -72,7 +73,8 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 
         //新建preference时的context需要为 从已构建的preference获取的contextwrapper，否则样式会不同
         ListPreference renderPref = new ListPreference(getPreferenceManager().getContext());
-        renderPref.setTitle("Renderer");
+        renderPref.setTitle(getS(RR.render_title));
+        renderPref.setDialogTitle(getS(RR.render_title));
         renderPref.setKey(KEY_RENDERER);
         renderPref.setSummary("%s");
         renderPref.setOrder(3);
@@ -156,7 +158,7 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         //添加自定义的选项
         //开关
         Switch switchToCustom = new Switch(requireContext());
-        switchToCustom.setText(RR.getS(RR.CstRsl_swtTxt));
+        switchToCustom.setText(getS(RR.CstRsl_swtTxt));
         LinearLayout resolutionLinearLayout = new LinearLayout(requireContext());
         resolutionLinearLayout.setOrientation(LinearLayout.VERTICAL);
 //            LinearLayout rsSwitchLLayout = new LinearLayout(requireContext());
@@ -168,11 +170,11 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         //输入文本
         LinearLayout rsEditLLayout = new LinearLayout(requireContext());
         EditText widthEText = new EditText(requireContext());
-        widthEText.setHint(RR.getS(RR.CstRsl_editW));
+        widthEText.setHint(getS(RR.CstRsl_editW));
 //        widthEText.setInputType(InputType.TYPE_NULL);
 //        widthEText.setFocusable(false);
         EditText heightEText = new EditText(requireContext());
-        heightEText.setHint(RR.getS(RR.CstRsl_editH));
+        heightEText.setHint(getS(RR.CstRsl_editH));
         TextView commaText = new TextView(requireContext());
         commaText.setText(",");
         rsEditLLayout.addView(widthEText);
@@ -289,11 +291,14 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
      * 需要在添加环境变量的那个action（即外部）获取对应的字符串，如果硬编码，modder需要修改两处，可能会忽略。用enum只需要改一处即可。
      */
     public enum renderEntries {
-        LLVMPipe("LLVMPipe", "usr/lib/llvm"),
-        VirGL_Overlay("VirGL Overlay", "usr/lib/virgloverlay"),
-        VirGL_built_in("VirGL built-in", "usr/lib/virglbuiltin"),
-        VirtIO_GPU("VirtIO-GPU", "usr/lib/virtiogpu"),
-        Zink_Turnip("Zink Turnip", "usr/lib/zinkturnip");
+        LLVMPipe("LLVMPipe", "/opt/lib/llvm"),
+        VirGL_Overlay("VirGL Overlay", "/opt/lib/vo"),
+        VirGL_built_in("VirGL built-in", "/opt/lib/vb"),
+        VirtIO_GPU("VirtIO-GPU", "/opt/lib/vg"),
+        Turnip_Zink("Turnip Zink", "/opt/lib/tz"),
+        Turnip_DXVK("Turnip DXVK","/opt/lib/td"),
+        ;
+
 
         public final String name;
         public final String path;

@@ -6,27 +6,16 @@ import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.thread.Func;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.checkerframework.checker.units.qual.A;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 /**
  * 用于自己的apk的smali加入到exagear 的smali中
@@ -37,12 +26,23 @@ public class PatcherFile {
     static String TAG = "PatcherFile";
 
     /**
+     * {@link #copy(int, String[], String[], String)}
+     */
+    public static void copy(int type, String[] strings) throws Exception{
+        copy(type,strings,new String[0],null);
+    }
+
+
+    /**
+     *
      * 将自己的apk中的smali复制到exagear的输出文件夹中
      *
      * @param type    类型，目前仅支持smali和assets
-     * @param strings 要复制的文件名。格式如："/com/a/b/*", "/com/a/b/c.smali" 斜线开头，星号或文件名结尾(不要星号了）
+     * @param names 要复制的文件名。格式如："/com/a/b", "/com/a/b/c.smali" 斜线开头，完整文件（夹）名结尾
+     * @param preservedFields 需要从旧smali复制过来的成员变量名（用于标识其他功能是否启用）
+     * @param setFieldLine 当前添加功能对应成员变量的完整行。e.g. {@code .field private static final enable_custom_resolution:Z = true}
      */
-    public static void copy(int type, String[] strings) throws Exception {
+    public static void copy(int type, String[] names, String[] preservedFields, String setFieldLine) throws Exception {
 //        if(type!=TYPE_SMALI)
 //            throw new Exception("不支持的类型："+type);
         String subfolder;
@@ -57,7 +57,7 @@ public class PatcherFile {
             LinkedList<File> fileList = new LinkedList<>();
 
             //要求传的不带*和/了，文件还是文件夹自己判断
-            for (String str : strings) {
+            for (String str : names) {
                 File oneFile = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/" + subfolder + str);
                 if (oneFile.isDirectory())
                     fileList.addFirst(oneFile);
@@ -96,13 +96,20 @@ public class PatcherFile {
                         .replace("com/eltechs/ed", PatchUtils.getPackageName());
                 //复制过去
                 File dstFile = new File(dstPath);
+                //考虑要保留的成员变量flag
+                Map<String,String> oldFields = getPreservedFields(dstFile, preservedFields);
                 FileUtils.copyFile(file, dstFile);
                 //如果需要，替换代码中包名.不对，路径包含包名和文本包含包名没有关系，应该对每个文件文本都进行检查
-                parsePkgNameInFile(dstFile);
+                List<String> allLines = PatchUtils.scanAndParsePkgName(FileUtils.readLines(dstFile,StandardCharsets.UTF_8).toArray(new String[0]));
+
+                restorePreservedFields(allLines,oldFields,setFieldLine);
+
+                dstFile.delete();
+                FileUtils.writeLines(dstFile,StandardCharsets.UTF_8.name(),allLines);
             }
         } else {
             //TODO: 星号判断去掉
-            for (String str : strings) {
+            for (String str : names) {
                 String srcPath = PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/" + subfolder + str;
                 String dstPath = PatchUtils.getPatchTmpDir().getAbsolutePath() + "/tmp/" + subfolder + str;
                 File srcFile = new File(srcPath);
@@ -131,6 +138,61 @@ public class PatcherFile {
 
     }
 
+    /**
+     * 复制文件后，将旧文件中的指定成员变量复原
+     *
+     * @param allLines     该文件所有行
+     * @param oldFields    指定成员变量及其对应的完整行
+     * @param setFieldLine
+     */
+    private static void restorePreservedFields(List<String> allLines, Map<String, String> oldFields, String setFieldLine) {
+        for(String field: oldFields.keySet()){
+            for(int i=0; i<allLines.size();i++){
+                String line = allLines.get(i);
+                if(line.startsWith(".field") && line.contains(field)){
+                    allLines.remove(i);
+                    allLines.add(i,oldFields.get(field));
+                }
+            }
+
+        }
+
+        //将指定行覆写
+        if(setFieldLine!=null){
+            String setFieldName = setFieldLine.split(":")[0].split("static final ")[1];
+            for(int i=0; i<allLines.size();i++){
+                String line = allLines.get(i);
+                if(line.startsWith(".field") && line.contains(setFieldName)){
+                    allLines.remove(i);
+                    allLines.add(i,setFieldLine);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 从一个smali文件中获取指定成员变量
+     * @param dstFile smali文件
+     * @param preservedFields 要保留的变量名，必须为final static
+     * @return map k为传入的preservedFields，v为完整的一行
+     */
+    private static Map<String, String> getPreservedFields(File dstFile, String[] preservedFields) throws IOException {
+        Map<String,String> fieldsMap = new HashMap<>();
+        if(!dstFile.getName().endsWith(".smali") || !dstFile.exists())
+            return fieldsMap;
+
+        List<String> allLines = FileUtils.readLines(dstFile,StandardCharsets.UTF_8);
+        for(String field:preservedFields){
+            for(String line:allLines){
+                if(line.trim().startsWith(".field") && line.contains("static final") && line.contains(field))
+                    fieldsMap.put(field,line);
+            }
+        }
+
+        return fieldsMap;
+    }
+
 
     /**
      * 将文件中代码替换包名为对应apk的包名
@@ -140,34 +202,39 @@ public class PatcherFile {
      */
     private static void parsePkgNameInFile(File dstFile) {
         try {
-            //获取文件内容并替换包名（类形式，字符串形式）
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dstFile), StandardCharsets.UTF_8));
-            String line;
-            List<String> mAllLines = new ArrayList<>();
-            //找到该smali类名
-            while ((line = br.readLine()) != null) {
-                //如果不是空行的话就添加到列表中
-                if (!line.equals("")) {
-                    mAllLines.add(line
-                            .replace("com/eltechs/ed", PatchUtils.getPackageName())
-                            .replace("com.eltechs.ed", PatchUtils.getPackageName().replace('/', '.')));
-                }
-            }
-            br.close();
-            //生成新文件
-            File newFile = new File(dstFile.getAbsolutePath() + ".1"); //修改后的文件
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), StandardCharsets.UTF_8));
-            for (String s : mAllLines) {
-                bw.write(s);
-                bw.newLine();
-            }
-            bw.flush();
-            bw.close();
-            //重命名修改后的文件
+            List<String> allLines = PatchUtils.scanAndParsePkgName(FileUtils.readLines(dstFile,StandardCharsets.UTF_8).toArray(new String[0]));
             dstFile.delete();
-            if (!newFile.renameTo(dstFile)) {
-                Log.e(TAG, "close: 新建的临时smali文件无法重命名为原本的smali文件", new Exception("重命名失败"));
-            }
+            FileUtils.writeLines(dstFile,StandardCharsets.UTF_8.name(),allLines);
+
+
+//            //获取文件内容并替换包名（类形式，字符串形式）
+//            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(dstFile), StandardCharsets.UTF_8));
+//            String line;
+//            List<String> mAllLines = new ArrayList<>();
+//            //找到该smali类名
+//            while ((line = br.readLine()) != null) {
+//                //如果不是空行的话就添加到列表中
+//                if (!line.equals("")) {
+//                    mAllLines.add(line
+//                            .replace("com/eltechs/ed", PatchUtils.getPackageName())
+//                            .replace("com.eltechs.ed", PatchUtils.getPackageName().replace('/', '.')));
+//                }
+//            }
+//            br.close();
+//            //生成新文件
+//            File newFile = new File(dstFile.getAbsolutePath() + ".1"); //修改后的文件
+//            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile), StandardCharsets.UTF_8));
+//            for (String s : mAllLines) {
+//                bw.write(s);
+//                bw.newLine();
+//            }
+//            bw.flush();
+//            bw.close();
+//            //重命名修改后的文件
+//            dstFile.delete();
+//            if (!newFile.renameTo(dstFile)) {
+//                Log.e(TAG, "close: 新建的临时smali文件无法重命名为原本的smali文件", new Exception("重命名失败"));
+//            }
 
         } catch (Exception e) {
             e.printStackTrace();

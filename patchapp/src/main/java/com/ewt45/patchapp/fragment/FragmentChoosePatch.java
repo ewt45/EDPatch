@@ -27,6 +27,7 @@ import com.ewt45.patchapp.thread.Func;
 import com.ewt45.patchapp.thread.FuncCursor;
 import com.ewt45.patchapp.thread.FuncFAB;
 import com.ewt45.patchapp.thread.FuncMultiWine;
+import com.ewt45.patchapp.thread.FuncRenderer;
 import com.ewt45.patchapp.thread.FuncResl;
 import com.ewt45.patchapp.thread.FuncSInput;
 import com.ewt45.patchapp.thread.FuncSelObb;
@@ -82,6 +83,7 @@ public class FragmentChoosePatch extends Fragment {
         funcList.add(new FuncWithCheckBox(binding.checkSelobb, new FuncSelObb()));
         funcList.add(new FuncWithCheckBox(binding.checkShortcut,new FuncShortcut()));
         funcList.add(new FuncWithCheckBox(binding.checkMw,new FuncMultiWine()));
+        funcList.add(new FuncWithCheckBox(binding.checkRenderer,new FuncRenderer()));
         return binding.getRoot();
     }
 

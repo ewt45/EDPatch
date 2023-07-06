@@ -29,10 +29,12 @@
   - Выбор локации диска D
   - Кастомное управление
 - [Отображать курсор](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
-- [Выбор разрешений экрана](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
+- [Настройки контейнера - Кастомное разрешение](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [Исправление работы клавиатуры на android 11+](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [Выбор файла obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
 - Добавить ярлыки .exe на рабочий стол Android
+- MultiWine v2
+- Настройки контейнера - Выбор рендера
 
 ## Third-party project dependencies
 - [apktool](https://ibotpeaches.github.io/Apktool/)
@@ -46,6 +48,25 @@
 
 
 ## Change Log
+
+### v0.0.4
+
+- MultiWine v2: Добавляется значок загрузки необходимой версии wine в левом верхнем углу страницы "создание контейнеров", тапните на вкладку "добавление/удаление wine".
+  - Установка wine: Вы можете редактировать загруженные или предустановленные версии wine. После выбора опции Установить (Извлечь) выбранная версия wine будет отображаться как 'Активная', теперь её можно выбрать при создании нового контейнера. Используйте опцию Удалить (удалить папку с wine), чтобы уменьшить объем занятой внутренней памяти вашего девайса. Файлы wine хранятся в папке Z:/opt/WineCollection.
+  - Загрузка файлов wine: загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице 'Установленные'.
+  - Как добавить предустановленные версии wine в кэши: `/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`
+    - `$TagFolder` : имя папки необходимого wine, оно отображается при создании контейнеров, и должно быть уникальным.
+    - `$WineFolder`: он должен содержать двоичный файл `./bin/wine`.
+    - так же в `$TagFolder` должен быть `.tar.xz` архивный файл, из которого будет извлечена `$WineFolder`.
+
+- Настройки контейнера - Выбор рендера
+  - the renderer option is separated from multiwine now. multiwine v2 alone doesn't have the ability to set environment variables by renderer options in container settings. you need to add the function separately from edpatch.
+  - what render options do:
+    - each renderer has a diffrent path for libraries e.g.libGL.so.1, this path will be added as LD_LIBRARY_PATH=xxx so that you don't need to replace it at /usr/lib/i386-linux-gnu everytime. If you want to change this path, go to apk's dex -> ContainerSettingsFragment$renderEntries.smali
+    - virgl overlay: add VTEST_WIN=1  VTEST_SOCK=
+    - VirGL_built_in: run libvirgl_test_server.so from java process (without need of Mcat and /opt/start.sh) , logs output at /sdcard/virglLog.txt
+    - virtio-gpu: try to start Mcat, which used to launch a proot environment for this renderer, but xegw replaces the old mcat so it won't work unless you put the old mcat.so back.
+    - turnip dxvk: add GALLIUM_DRIVER=zink MESA_VK_WSI_DEBUG=sw
 
 ### v0.0.3
 - Использовать подпись по умолчанию, нет необходимости удалять установленный apk или переподписывать apk вручную. Но он может быть распознан как вирус.

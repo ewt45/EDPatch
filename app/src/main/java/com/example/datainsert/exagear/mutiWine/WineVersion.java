@@ -14,6 +14,7 @@ import java.util.Collections;
 public class WineVersion {
     //wine版本信息列表
     public static ArrayList<WineVersion> wineList = new ArrayList<>();
+    static final String CONTAINER_NAME_NO_WINE="Container";
     /**
      * 用于按钮显示，不一定表示对应的tag名
      */
@@ -71,7 +72,7 @@ public class WineVersion {
 
         //如果一个都没找到，至少添加一个
         if (wineList.isEmpty())
-            wineList.add(new WineVersion("No active Wine found", ""));
+            wineList.add(new WineVersion(CONTAINER_NAME_NO_WINE, ""));
 
         //按名称 排下序
         Collections.sort(wineList, new WineNameComparator());

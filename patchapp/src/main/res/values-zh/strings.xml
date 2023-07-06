@@ -23,7 +23,7 @@
     <string name="funcname_fab_drived">自定义D盘路径（悬浮操作按钮）</string>
     <string name="funcname_fab_cstmCtrl">自定义操作模式（悬浮操作按钮）</string>
     <string name="funcname_cursorimg">强制显示鼠标光标</string>
-    <string name="funcname_prefresl">自定义分辨率</string>
+    <string name="funcname_prefresl">环境设置 - 自定义分辨率</string>
     <string name="funcname_softinput">修复安卓11及以上输入法闪退</string>
     <string name="funcname_selobb">初次启动手动选择obb</string>
     <string name="btntxt_startpatch">开始修改</string>
@@ -72,5 +72,6 @@
     <string name="actmsg_funcmw">添加功能: 多版本wine共存 v2</string>
     <string name="fraghelp_body_mw">在容器管理界面右上角新增下载按钮，点击进入wine版本管理界面。\n- 本地：对已下载或预置的wine进行管理。点击安装（解压）后，会显示“已启用”，已启用的wine会显示在新建容器时的选项中。可通过卸载（删除已解压文件夹）来减少本地占用。本地存放位置为：z:/opt/WineCollection。\n- 可下载：从网络下载更多版本的wine。下载源可选择WineHQ（官方构建）或Kron4ek（第三方，体积小），其中WineHQ仅提供 ubuntu 18 的对应列表，Kron4ek不提供 staging 版本。下载成功后会显示在“本地”页面。若由于网络原因下载失败，可以尝试切换下载线路。\n\n如何在数据包中预置wine：\n一个wine二进制文件的路径：`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : 该文件夹名对应一个版本的wine名字，用于新建容器时显示。\n- `$WineFolder` : 该文件夹包含./bin/wine二进制文件。\n- wine压缩包（要求为 .tar.xz格式）也要放在`$TagFolder` 下，并且确保将其解压到同目录后，会出现`$WineFolder`。\n</string>
     <string name="funcname_mw">多版本Wine共存 v2</string>
+    <string name="funcname_renderer">环境设置 - 图形渲染设置</string>
 
 </resources>

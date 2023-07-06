@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.ewt45.patchapp.databinding.ActivityPtMainBinding;
 import com.ewt45.patchapp.unused.MyAdapter;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -53,6 +54,7 @@ public class ActivityPatch extends AppCompatActivity {
             File patcher = PatchUtils.getLocalPatcherApk();
             if (patcher.exists()) {
                 boolean b = patcher.delete();
+                Log.d("TAG", "onCreate: 发现更新的patcher.删除本地patcher.apk");
             }
         }
 

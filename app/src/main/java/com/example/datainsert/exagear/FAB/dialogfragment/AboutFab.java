@@ -166,29 +166,29 @@ public class AboutFab extends BaseFragment {
 //            e.printStackTrace();
 //        }
 
-        //启动pulseaudio （貌似多次启动会导致失效，要么就启动一次，要么就先停止再启动）
-        if (!pulseStarted) {
-            Log.d(TAG, "callWhenFirstStart: pulseaudio未启动，启动pulseaudio");
-            //解压必要文件
-            File paDir = new File(Globals.getAppContext().getFilesDir(), "pulseaudio-xsdl");
-            if (paDir.exists() && (!paDir.isDirectory() || paDir.list().length == 0))
-                paDir.delete();//解压要求paDir不存在
-            ZipInstallerAssets.installIfNecessary(Globals.getAppContext(), new ZipInstallerAssets.InstallCallback() {
-                @Override
-                public void installationFailed(String str) {
-                    Log.e(TAG, "installationFailed: ", new Exception(str));
-                    paDir.delete();
-                }
-
-                @Override
-                public void installationFinished(String str) {
-                    Log.d(TAG, "installationFinished: " + str);
-                    //设置pulseaudio路径并启动pulseaudio
-                    setEnv(paDir.getAbsolutePath());
-                    pulseStarted = startPulseaudio() == 0;
-                }
-            }, paDir, "pulseaudio-xsdl.zip");
-        }
+//        //启动pulseaudio （貌似多次启动会导致失效，要么就启动一次，要么就先停止再启动）
+//        if (!pulseStarted) {
+//            Log.d(TAG, "callWhenFirstStart: pulseaudio未启动，启动pulseaudio");
+//            //解压必要文件
+//            File paDir = new File(Globals.getAppContext().getFilesDir(), "pulseaudio-xsdl");
+//            if (paDir.exists() && (!paDir.isDirectory() || paDir.list().length == 0))
+//                paDir.delete();//解压要求paDir不存在
+//            ZipInstallerAssets.installIfNecessary(Globals.getAppContext(), new ZipInstallerAssets.InstallCallback() {
+//                @Override
+//                public void installationFailed(String str) {
+//                    Log.e(TAG, "installationFailed: ", new Exception(str));
+//                    paDir.delete();
+//                }
+//
+//                @Override
+//                public void installationFinished(String str) {
+//                    Log.d(TAG, "installationFinished: " + str);
+//                    //设置pulseaudio路径并启动pulseaudio
+//                    setEnv(paDir.getAbsolutePath());
+//                    pulseStarted = startPulseaudio() == 0;
+//                }
+//            }, paDir, "pulseaudio-xsdl.zip");
+//        }
     }
 
     @Override

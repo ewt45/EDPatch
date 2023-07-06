@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+//函数名，函数参数，变量名也不能随意改。这样用户添加的旧功能，尝试读取旧变量名，添加另外一个功能时RR被复制成新的，旧变量名就没了
+
+//使用sparseArray，可以不连续的数值，可以不按顺序的数值。在版本更迭的时候，数值可以更改，不影响未更新的功能，但是成员变量名不能更改。
 public class RR {
     /**
      * 存储按键按钮的framelayout布局.在dialogfragment里用这个来寻找当前是否存在该布局
@@ -128,13 +131,14 @@ public class RR {
     public static int mw_refreshBtn = 109;
     public static int mw_dlSourceBtn = 110;
     public static int mw_dataSizeMB = 111;
-
     public static int mw_dialog_download = 112;
     public static int mw_dialog_extract = 113;
     public static int mw_dialog_checksum = 114;
     public static int mw_localMenuItem = 115;
     public static int mw_localState = 116;
     public static int mw_tips = 117;
+    public static int mw_contNoWineTips = 118;
+    public static int render_title = 119;
 
 
     public static String locale = refreshLocale();
@@ -273,6 +277,8 @@ public class RR {
                 "<li>&ensp; “本地”页面：<br/>对已下载或预置的wine进行管理。点击安装（解压）后，会显示“已启用”，已启用的wine会显示在新建容器时的选项中。可通过卸载（删除已解压文件夹）来减少本地占用。本地存放位置为：z:/opt/WineCollection。</li>\n" +
                 "<li>&ensp; “可下载”页面：<br/>从网络下载更多版本的wine。下载源可选择WineHQ（官方构建）或Kron4ek（第三方，体积小），其中WineHQ仅提供 ubuntu 18 的对应列表，Kron4ek不提供 staging 版本。下载成功后会显示在“本地”页面。若由于网络原因下载失败，可以尝试切换下载线路。</li>\n" +
                 "</ul>\n");
+        zhArray.put(mw_contNoWineTips, "没有检测到已启用的wine，本次创建的容器可能无法启动。建议删除该容器，点击下载按钮下载并安装wine后，重新创建容器。");
+        zhArray.put(render_title,"图形渲染设置");
 
         /*
 
@@ -410,6 +416,8 @@ public class RR {
                 "<li>&ensp; Local:<br/>Edit the downloaded or bundled Wines. After Clicking Install (extract) option, it will be displayed as 'active', which can be selected when creating a new container. Use Uninstall (delete extracted folder) option to reduce local storage. Wines are stored at z:/opt/WineCollection.</li>\n" +
                 "<li>&ensp; Downloadable:<br/>Download all kinds of Wines from the Internet. Available sources are WineHQ(Official build, only ubuntu18-builds are listed) and Kron4ek(shrinked size, staging versions are not included). Downloaded Wines appear at 'Local' page. </li>\n" +
                 "</ul>\n");
+        enArray.put(mw_contNoWineTips, "No active Wine detected. This container probably can not launch. Please delete it, click the download button to install Wines and try again.");
+        enArray.put(render_title,"Renderer");
 
 
         /*
@@ -549,6 +557,8 @@ public class RR {
                 "<li>&ensp; Установка wine:<br/>Вы можете редактировать загруженные или предустановленные версии wine. После выбора опции Установить (Извлечь) выбранная версия wine будет отображаться как 'Активная', теперь её можно выбрать при создании нового контейнера. Используйте опцию Удалить (удалить папку с wine), чтобы уменьшить объем затятой внутренней памяти вашего девайса. Файлы wine хранятся в папке Z:/opt/WineCollection.</li>\n" +
                 "<li>&ensp; Загрузка файлов wine:<br/>загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице 'Установленные'.</li>\n" +
                 "</ul>\n");
+        ruArray.put(mw_contNoWineTips, "Активный Wine не найден. Этот контейнер вероятно, не может запуститься. Удалите его, затем нажмите кнопку загрузки, чтобы установить необходимый Wine и повторите попытку.");
+        ruArray.put(render_title,"Renderer");
 
         stringMap.put("zh", zhArray);
         stringMap.put("en", enArray);

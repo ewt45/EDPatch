@@ -151,7 +151,7 @@ public class PatchUtils {
             try (InputStream is = context.getAssets().open("patcher/release/patcher.apk");
                  ByteArrayOutputStream bos = new ByteArrayOutputStream();) {
                 IOUtils.copy(is, bos);
-                assetSha = bos.toByteArray();
+                assetSha = digest.digest(bos.toByteArray());
             }
             return !Arrays.equals(localSha, assetSha);
 

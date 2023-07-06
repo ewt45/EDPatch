@@ -35,7 +35,7 @@ public class FuncFAB implements Func {
     public Integer call() throws Exception {
         Sub1DriveD sub1DriveD = new Sub1DriveD();
         Sub2Control sub2Control = new Sub2Control();
-        Sub3Pulseaudio sub3Pulseaudio = new Sub3Pulseaudio();
+//        Sub3Pulseaudio sub3Pulseaudio = new Sub3Pulseaudio();
 
         int mergeVersion = getInstalledVersion();
 
@@ -55,10 +55,10 @@ public class FuncFAB implements Func {
             sub2Control.firstInstall();
         }
 
-        if (((mergeVersion >> 8) & 0x0000000f) == INVALID_VERSION) {
-            Log.d(TAG, "call: 首次安装子功能-pulseaudio");
-            sub3Pulseaudio.firstInstall();
-        }
+//        if (((mergeVersion >> 8) & 0x0000000f) == INVALID_VERSION) {
+//            Log.d(TAG, "call: 首次安装子功能-pulseaudio");
+//            sub3Pulseaudio.firstInstall();
+//        }
 
         //复制自己的类
         Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
@@ -70,7 +70,7 @@ public class FuncFAB implements Func {
         //复制子功能自己的类
         sub1DriveD.updateSelfPackage();
         sub2Control.updateSelfPackage();
-        sub3Pulseaudio.updateSelfPackage();
+//        sub3Pulseaudio.updateSelfPackage();
         return R.string.actmsg_funcfab;
     }
 

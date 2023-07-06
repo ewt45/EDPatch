@@ -9,12 +9,18 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
@@ -134,5 +140,57 @@ public class QH {
         //contentdrawable和maskdrawable用来限制波纹边界
         background = new RippleDrawable(ColorStateList.valueOf(Color.GRAY),  contentDrawable,  maskDrawable);
         ViewCompat.setBackground(view, background);
+    }
+
+    /**
+     * 测试某个包名是否存在。用于多个功能使用同一个类时，该类判断哪些功能是添加的，哪些是没添加的
+     * @param name 类完整名（包名，类名）
+     * @return 是否存在. 在自己测试apk中始终返回 true
+     */
+    public static boolean classExist( String name){
+        if(QH.isTesting())
+            return true;
+        boolean exist = false;
+        try {
+            Class.forName(name);
+            exist = true;
+        } catch (Exception ignored) {
+        }
+        return  exist;
+    }
+
+    /**
+     * 构建一个对话框。显示一条消息以及 下次不再提示的按钮。
+     * 若已经设置过不再提示则不会显示
+     * @param a context 不能为global获取的
+     * @param tips 文字内容
+     * @param PREF_KEY_SHOULD_SHOW_TIP 写到QH.getPreference()里的key。若为true则显示对话框
+     */
+    public static  void showTipDialogWithDisable(Context a,String tips,String PREF_KEY_SHOULD_SHOW_TIP){
+        //如果已经设置过，就不再显示
+        if(!QH.isTesting() && !QH.getPreference().getBoolean(PREF_KEY_SHOULD_SHOW_TIP,true))
+            return;
+
+        TextView textView = new TextView(a);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        textView.setLineSpacing(0, 1.5f);
+        textView.setText(tips);
+
+        CheckBox checkBox = new CheckBox(a);
+        checkBox.setText(RR.getS(RR.shortcut_DontShowUp));
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> QH.getPreference().edit().putBoolean(PREF_KEY_SHOULD_SHOW_TIP, !isChecked).apply());
+        LinearLayout.LayoutParams checkParams = new LinearLayout.LayoutParams(-2, -2);
+        checkParams.topMargin = 20;
+
+        LinearLayout linearLayout = new LinearLayout(a);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        int padding = QH.px(a, RR.attr.dialogPaddingDp);
+        linearLayout.setPadding(padding, padding, padding, padding);
+        linearLayout.addView(textView);
+        linearLayout.addView(checkBox, checkParams);
+        ScrollView scrollView = new ScrollView(a);
+        scrollView.addView(linearLayout);
+        new AlertDialog.Builder(a).setView(scrollView).setPositiveButton(android.R.string.yes, null).create().show();
+
     }
 }

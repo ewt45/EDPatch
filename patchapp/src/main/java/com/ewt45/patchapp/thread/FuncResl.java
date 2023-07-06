@@ -10,17 +10,20 @@ import com.ewt45.patchapp.patching.SmaliFile;
 import java.io.File;
 
 /**
- * 版本号改为2. 添加了中英双语 */
+ * 版本号改为2. 添加了中英双语
+ */
 public class FuncResl implements Func {
     private static final String TAG = "FuncResl";
+
     @Override
     public int getLatestVersion() {
         return 2;
     }
+
     @Override
     public int getInstalledVersion() {
-        int version = SmaliFile.findVersionInClass("com.eltechs.ed.fragments.ContainerSettingsFragment");
-        if(version!=INVALID_VERSION)
+        int version = SmaliFile.findVersionInClass("com.eltechs.ed.fragments.ConSetResolution");
+        if (version != INVALID_VERSION)
             return version;
 
         try {
@@ -44,9 +47,14 @@ public class FuncResl implements Func {
     @Override
     public Integer call() throws Exception {
 
+//        PatcherFile.copy(TYPE_SMALI,
+//                new String[]{"/com/eltechs/ed/fragments/ContainerSettingsFragment.smali"},
+//                new String[]{"enable_different_renderers"},
+//                ".field private static final enable_custom_resolution:Z = true");
 
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",
+                "/com/example/datainsert/exagear/containerSettings/ConSetResolution.smali", //复制标识类
                 "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
 
