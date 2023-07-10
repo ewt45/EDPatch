@@ -37,6 +37,7 @@ public class FragmentHelp extends Fragment {
                 new int[]{
                         R.drawable.drived,
                         R.drawable.cstmctrl,
+                        R.drawable.pulseaudio,
                         R.drawable.showcursor,
                         R.drawable.customresl,
                         R.drawable.softinput,

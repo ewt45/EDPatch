@@ -9,6 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.eltechs.ed"
+        // minSdkVersion >= 23 并且 Android Gradle plugin >= 3.6.0情况下，打包时android:extractNativeLibs=false.即 so不解压，这样会有问题
         minSdk 21
         //noinspection ExpiredTargetSdkVersion
         targetSdk 27

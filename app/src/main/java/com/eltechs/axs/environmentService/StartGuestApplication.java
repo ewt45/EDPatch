@@ -24,8 +24,8 @@ public class StartGuestApplication<StateClass extends UBTLaunchConfigurationAwar
 
     @Override // com.eltechs.axs.configuration.startup.StartupAction
     public void execute() {
-        UBTLaunchConfigurationAware uBTLaunchConfigurationAware = (UBTLaunchConfigurationAware) getApplicationState();
-        final GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = (GuestApplicationsTrackerComponent) ((EnvironmentAware) uBTLaunchConfigurationAware).getEnvironment().getComponent(GuestApplicationsTrackerComponent.class);
+        UBTLaunchConfigurationAware uBTLaunchConfigurationAware = getApplicationState();
+        final GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = ((EnvironmentAware) uBTLaunchConfigurationAware).getEnvironment().getComponent(GuestApplicationsTrackerComponent.class);
         guestApplicationsTrackerComponent.startGuestApplication(uBTLaunchConfigurationAware.getUBTLaunchConfiguration());
         if (this.terminateAXSOnGuestExit) {
             guestApplicationsTrackerComponent.addListener(new GuestApplicationsLifecycleAdapter() { // from class: com.eltechs.axs.environmentService.StartGuestApplication.1

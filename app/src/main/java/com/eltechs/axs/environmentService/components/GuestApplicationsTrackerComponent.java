@@ -1,5 +1,7 @@
 package com.eltechs.axs.environmentService.components;
 
+import android.util.Log;
+
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.MemsplitConfigurationAware;
 import com.eltechs.axs.configuration.UBTLaunchConfiguration;
@@ -12,6 +14,7 @@ import java.io.IOException;
 
 /* loaded from: classes.dex */
 public class GuestApplicationsTrackerComponent extends EnvironmentComponent {
+    private static final String TAG ="GuestApplicationsTrackerComponent";
     private final UnixSocketConfiguration socketConf;
     private GuestApplicationsTracker tracker;
 
@@ -49,7 +52,7 @@ public class GuestApplicationsTrackerComponent extends EnvironmentComponent {
     }
 
     public void startGuestApplication(UBTLaunchConfiguration uBTLaunchConfiguration) {
-        //如果后台同时启动了两个ex的xserver，这里会报null错误
+        //如果后台同时启动了两个ex的xserver，这里会报null错误(不对，是因为我在service里上一个component报错了还强制启动这个component）
         this.tracker.startGuestApplication(uBTLaunchConfiguration, getEnvironment());
     }
 

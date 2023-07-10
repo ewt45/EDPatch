@@ -43,8 +43,8 @@ public class AXSEnvironmentService extends Service {
 
     @Override // android.app.Service
     public int onStartCommand(Intent intent, int i, int i2) {
-        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.LAX);
-        StrictMode.setVmPolicy(StrictMode.VmPolicy.LAX);
+//        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.LAX);
+//        StrictMode.setVmPolicy(StrictMode.VmPolicy.LAX);
         EnvironmentAware environmentAware = Globals.getApplicationState();
         AXSEnvironment.StartupCallback startupCallback = environmentAware.getEnvironment().startupCallback;
         environmentAware.setEnvironmentServiceInstance(this);
@@ -56,11 +56,11 @@ public class AXSEnvironmentService extends Service {
         } catch (IOException e) {
             //自己的代码里并不能正常启动，但是也不能停止
             Log.e(TAG, "onStartCommand: 现在还会报错嘛" );
-            if(QH.isTesting()){
-                startupCallback.serviceStarted();
-                configureAsForegroundService();
-                return Service.START_NOT_STICKY;
-            }
+//            if(QH.isTesting()){
+//                startupCallback.serviceStarted();
+//                configureAsForegroundService();
+//                return Service.START_NOT_STICKY;
+//            }
             stopSelf();
             environmentAware.setEnvironmentServiceInstance(QH.isTesting()?this:null);
             startupCallback.serviceFailed(e);
@@ -88,9 +88,7 @@ public class AXSEnvironmentService extends Service {
 
     private void startEnvironmentComponents() throws IOException {
         try {
-            Iterator<EnvironmentComponent> it = getEnvironment().iterator();
-            while (it.hasNext()) {
-                EnvironmentComponent next = it.next();
+            for (EnvironmentComponent next : getEnvironment()) {
                 next.start();
                 this.startedComponents.add(0, next);
             }

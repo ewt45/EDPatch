@@ -10,7 +10,7 @@
     <string name="funcname_cursorimg">Отображать курсор</string>
     <string name="actmsg_funcfab">добавление функции: кнопки настроек</string>
     <string name="actmsg_funcresl">добавление функции: выбора разрешений экрана</string>
-    <string name="funcname_fab">Кнопка настроек\n- Выбор локации диска D\n- Кастомное управление</string>
+    <string name="funcname_fab">Кнопка настроек\n- Выбор локации диска D\n- Кастомное управление\n- PulseAudio (XSDL)</string>
     <string name="funcname_prefresl">Настройки контейнера - Кастомное разрешение</string>
     <string name="funcname_softinput">Исправление работы клавиатуры на android 11+</string>
     <string name="btntxt_startpatch">запуск исправлений</string>
@@ -43,7 +43,7 @@
     <string name="fraghelp_body_attention_2">После нажатия кнопки "Запуск исправлений", пожалуйста, не нажимайте другие кнопки и не сворачивайте приложение, иначе могут возникнуть проблемы.</string>
     <string name="fraghelp_body_attention_3">"Исправленный apk находится в /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. Вы можете проверить это вручную с помощью любого файлового менеджера. "</string>
     <string name="fraghelp_body_attention_4">Если опция \"Использовать подпись по умолчанию\" в настройках не отмечена, после исправления вам необходимо сначала удалить существующие apk, если используют то же имя пакета или тот же sharedUserId (оверлей ExaGear и VirGL). Если вам нужен внеший оверлей VirGL, подпишите их с той же подписью вручную.</string>
-    <string name="fraghelp_body_fab">Добавьте кнопку настроек действия в правом нижнем углу, предоставляющую возможность настроить некоторые дополнительные функции. На данный момент это функции: Изменение местоположения диска D.</string>
+    <string name="fraghelp_body_fab">"Добавьте кнопку настроек действия в правом нижнем углу, предоставляющую возможность настроить некоторые дополнительные функции. "</string>
     <string name="fraghelp_body_drived">Расположение диска D внутри контейнера обычно соответствует каталогу /storage/emulated/0/Donwload или Exagear в файловой системе Android.\nЭта функция позволяет пользователю изменить местоположение каталога и настроить его имя. После изменения местоположения будет проверка доступности. В случае успешного изменения приложение необходимо перезапустить, чтобы местоположение было обновлено.</string>
     <string name="fraghelp_body_softinput">Исправлен сбой при отображении вызова клавиатуры на Android 11 и выше.  После исправления запуск клавиатуры будет задержан на одну секунду.</string>
     <string name="fraghelp_body_selobb">Если apk установлен и не может обнаружить файл obb, пользователю будет предоставлен возможность выбора файла obb с помощью файлового менеджера. \nВ Android 11 и более поздних версиях файловый менеджер не может просматривать каталог Android/data или Android/obb.</string>
@@ -72,4 +72,6 @@
     <string name="fraghelp_body_mw">Добавляется значок загрузки необходимой версии wine в левом верхнем углу страницы \"создание контейнеров\", тапните на вкладку \"добавление/удаление wine\".\n- Установка wine: Вы можете редактировать загруженные или предустановленные версии wine. После выбора опции Установить (Извлечь) выбранная версия wine будет отображаться как \'Активная\', теперь её можно выбрать при создании нового контейнера. Используйте опцию Удалить (удалить папку с wine), чтобы уменьшить объем занятой внутренней памяти вашего девайса. Файлы wine хранятся в папке Z:/opt/WineCollection.\n- Загрузка файлов wine: загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице \'Установленные\'.\nКак добавить предустановленные версии wine в кэши:\n`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : имя папки необходимого wine, оно отображается при создании контейнеров, и должно быть уникальным.\n- `$WineFolder`: он должен содержать двоичный файл `./bin/wine`.\n- так же в `$TagFolder` должен быть `.tar.xz` архивный файл, из которого будет извлечена `$WineFolder`.</string>
     <string name="funcname_mw">MultiWine v2</string>
     <string name="funcname_renderer">Настройки контейнера - Выбор рендера</string>
+    <string name="funcname_fab_pulse">PulseAudio (XSDL)</string>
+    <string name="fraghelp_body_pulse">PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.</string>
 </resources>

@@ -11,7 +11,6 @@ import static com.example.datainsert.exagear.mutiWine.MutiWine.KEY_WINE_INSTALL_
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.Environment;
 import android.util.Log;
 
 import com.eltechs.axs.Globals;
@@ -22,16 +21,14 @@ import com.eltechs.axs.applicationState.UBTLaunchConfigurationAware;
 import com.eltechs.axs.configuration.UBTLaunchConfiguration;
 import com.eltechs.axs.configuration.startup.actions.AbstractStartupAction;
 import com.eltechs.ed.fragments.ContainerSettingsFragment;
-import com.eltechs.ed.guestContainers.GuestContainersManager;
+import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.QH;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -67,6 +64,13 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
         //添加多个盘符
 
         //添加pulseaudio环境变量
+        try {
+            Class.forName("com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio");
+            startPulseAudio(ubtConfig);
+        } catch (ClassNotFoundException e) {
+            Log.w(TAG, "execute: 功能未安装：pulseaudio");
+        }
+
 
         //wine程序位置的环境变量
         try {
@@ -87,6 +91,11 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
         ubtConfig.addEnvironmentVariable("LD_LIBRARY_PATH", LD_LIBRARY_PATH.toString());
 
         sendDone();
+    }
+
+    private void startPulseAudio(UBTLaunchConfiguration ubtConfig) {
+        PulseAudio.installAndRun();
+        ubtConfig.addEnvironmentVariable("PULSE_SERVER","tcp:127.0.0.1:4713");
     }
 
     private void addRendererPath(SharedPreferences sp, UBTLaunchConfiguration ubtConfig) {

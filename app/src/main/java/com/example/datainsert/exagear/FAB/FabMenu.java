@@ -18,6 +18,7 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.AboutFab;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
+import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.QH;
 
@@ -36,7 +37,7 @@ public class FabMenu {
              */
             0x2
                     | 0x1 << 4 //自定义按键的版本号
-//                    | 0x1 << 8 //pulseaudio
+                    | 0x1 << 8 //pulseaudio
             ;
 
 
@@ -72,6 +73,7 @@ public class FabMenu {
         final List<Class<? extends BaseFragment>> fragmentClsArray = new ArrayList<>(); //使用add的添加方式，便于在smali中删除
         fragmentClsArray.add(DriveD.class);
         fragmentClsArray.add(CustomControls.class);
+        fragmentClsArray.add(PulseAudio.class);
         fragmentClsArray.add(AboutFab.class);
         //先调用一次初次启动需要执行的操作
         for (Class<? extends BaseFragment> clz : fragmentClsArray) {

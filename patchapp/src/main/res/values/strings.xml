@@ -11,7 +11,7 @@
     <string name="actmsg_funcfab">add function: float action button</string>
     <string name="actmsg_funcresl">add function: custom resolution</string>
     <string name="funcname_cursorimg">show cursor</string>
-    <string name="funcname_fab">float action button\n- Custom location of drive D\n- Custom Control</string>
+    <string name="funcname_fab">float action button\n- Custom location of drive D\n- Custom Control\n- PulseAudio (XSDL)</string>
     <string name="funcname_prefresl">container settings - custom resolution</string>
     <string name="funcname_softinput">android 11+ soft-input no-crashing</string>
     <string name="btntxt_startpatch">start patch</string>
@@ -44,7 +44,7 @@
     <string name="fraghelp_body_attention_2">After clicking\"start patch\" button, please don\'t click or move to other view, otherwise problems may occur.</string>
     <string name="fraghelp_body_attention_3">"The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. You can check it manually with third-party file manager app. "</string>
     <string name="fraghelp_body_attention_4">If  the option \" use default signature\" in Settings is unchecked, after patching you need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) first. If you need virgl overlay, please resign them with the same signature manually.</string>
-    <string name="fraghelp_body_fab">Add a floating action button at the right-end of the layout, providing some extra functions. Currently functions: Changing the drive d location.</string>
+    <string name="fraghelp_body_fab">"Add a floating action button at the right-end of the layout, providing some extra functions. "</string>
     <string name="fraghelp_body_drived">The location of drive D inside the container is normally corresponding to /storage/emulated/0/Donwload or Exagear directory in android file system.\nThis function allows user to change the directory\'s location and customize its name. There will be an availability check after changing the location. If changed successfully, app needs to be restart so that the location will be updated.</string>
     <string name="fraghelp_body_softinput">Fix the crash of showing softinput method on android11 and above. After fixed, the launching of input method will be delayed for one second.</string>
     <string name="fraghelp_body_selobb">If apk is installed and it can\'t detect obb file, a method will be provided for user to select the obb file with system file picker. \nOn android 11 and above system file picker cannot view the Android/data or Android/obb directory.</string>
@@ -76,4 +76,6 @@
     <string name="fraghelp_body_mw">Added a download icon on the left-top of  \"containers manager\" page, click to enter the \"add/remove wines\" page.\n- Local: Edit the downloaded or bundled Wines. After Clicking Install (extract) option, it will be displayed as \'active\', which can be selected when creating a new container. Use Uninstall (delete extracted folder) option to reduce local storage. Wines are stored at z:/opt/WineCollection.\n- Downloadable: Download all kinds of Wines from the Internet. Available sources are WineHQ(Official build, only ubuntu18-builds are listed) and Kron4ek(shrinked size, staging versions are not included). Downloaded Wines appear at \'Local\' page. \n\nhow to add bundled Wines into caches:\n`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : the folder\'s name represents this wine\'s name. it shows when creating containers, should be unique.\n- `$WineFolder` : it should contains the `./bin/wine` binary file.\n- also in `$TagFolder` there should be a `.tar.xz` archive file, from which `$WineFolder` will be extracted.</string>
     <string name="funcname_mw">MultiWine v2</string>
     <string name="funcname_renderer">container settings - renderer options</string>
+    <string name="funcname_fab_pulse">PulseAudio (XSDL)</string>
+    <string name="fraghelp_body_pulse">PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.</string>
 </resources>

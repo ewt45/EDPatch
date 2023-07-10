@@ -19,22 +19,22 @@ public class FuncAddEnvs implements Callable<Void> {
     public Void call() throws Exception {
         //检查功能是否存在
         SmaliFile startGuest = new SmaliFile().findSmali("com.eltechs.ed.startupActions.StartGuest");
-        if (startGuest.containsLine("AddEnvironmentVariables")) {
-            startGuest.close();
-            Log.d(TAG, "call: AddEnvironmentVariables action已存在，跳过添加");
-            return null;
+        if (!startGuest.containsLine("AddEnvironmentVariables")) {
+            Log.d(TAG, "call: 在Startguest不存在插入语句，开始插入");
+            //将功能添加到StartGuest，StartEnvironmentService之前
+            startGuest
+                    .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method public execute()V")
+                    .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_INSERT,
+                            new String[]{"Lcom/eltechs/axs/configuration/startup/actions/StartEnvironmentService;"},
+                            new String[]{"new-instance v3, Lcom/example/datainsert/exagear/action/AddEnvironmentVariables;" ,
+                                    "invoke-direct {v3}, Lcom/example/datainsert/exagear/action/AddEnvironmentVariables;-><init>()V" ,
+                                    "invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z"}
+                    );
+        }else{
+            Log.d(TAG, "call: 在Startguest已存在插入语句，跳过插入");
         }
+        startGuest.close();
 
-        //将功能添加到StartGuest，StartEnvironmentService之前
-        startGuest
-                .limit(SmaliFile.LIMIT_TYPE_METHOD, ".method public execute()V")
-                .patch(SmaliFile.LOCATION_BEFORE, SmaliFile.ACTION_INSERT,
-                        new String[]{"Lcom/eltechs/axs/configuration/startup/actions/StartEnvironmentService;"},
-                        new String[]{"new-instance v3, Lcom/example/datainsert/exagear/action/AddEnvironmentVariables;" ,
-                                "invoke-direct {v3}, Lcom/example/datainsert/exagear/action/AddEnvironmentVariables;-><init>()V" ,
-                                "invoke-interface {v2, v3}, Ljava/util/List;->add(Ljava/lang/Object;)Z"}
-                )
-                .close();
 
         //复制自己的类
         PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
