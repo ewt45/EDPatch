@@ -264,7 +264,7 @@
             android:id="@+id/func_recycler"
             android:layout_width="match_parent"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
 
 <!--        <android.support.v7.widget.CardView-->
 <!--            android:layout_width="match_parent"-->

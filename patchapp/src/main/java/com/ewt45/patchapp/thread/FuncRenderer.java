@@ -19,11 +19,22 @@ public class FuncRenderer implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 1;
+        return 2;
     }
 
     @Override
     public Integer call() throws Exception {
+
+        //Mcat可能在别的类(UBTLaunchConfiguration)有调用，尝试寻找并删除
+        SmaliFile ubtLanConfig = new SmaliFile().findSmali("com.eltechs.axs.configuration.UBTLaunchConfiguration");
+        for(int i=0; i<ubtLanConfig.getAllLines().size(); i++){
+            if(ubtLanConfig.getAllLines().get(i).contains(" Lcom/eltechs/axs/Mcat;->start()V")){
+                ubtLanConfig.getAllLines().remove(i);
+                i--;
+            }
+        }
+        ubtLanConfig.close();
+
 
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",

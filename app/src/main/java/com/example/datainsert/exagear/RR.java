@@ -139,12 +139,14 @@ public class RR {
     public static int mw_tips = 117;
     public static int mw_contNoWineTips = 118;
     public static int render_title = 119;
+    public static int fab_hide = 120;
     public static int pa_title = 130;
     public static int pa_explain = 131;
     public static int pa_checkRun = 132;
     public static int pa_checkLog = 133;
     public static int pa_btnParam = 134;
     public static int pa_troubleShooting = 135;
+
 
 
     public static String locale = refreshLocale();
@@ -281,6 +283,7 @@ public class RR {
                 "</ul>\n");
         zhArray.put(mw_contNoWineTips, "没有检测到已启用的wine，本次创建的容器可能无法启动。建议删除该容器，点击下载按钮下载并安装wine后，重新创建容器。");
         zhArray.put(render_title, "图形渲染设置");
+        zhArray.put(fab_hide,"隐藏");
         zhArray.put(pa_title, "PulseAudio (XSDL)");
         zhArray.put(pa_explain, "PulseAudio用于播放音频，可以缓解一部分声音问题。本功能用到的PulseAudio服务端提取自Xserver XSDL，需要手机支持64位。");
         zhArray.put(pa_checkRun, "开启pulseaudio服务$在启动容器时一并启动PulseAudio服务");
@@ -294,7 +297,6 @@ public class RR {
                 "\n3. 启动容器时导出环境变量：PULSE_SERVER=tcp:127.0.0.1:4713。本功能在启动容器时会自动添加环境变量，无需额外设置。可通过过Exaterm或Putty确认环境变量。" +
                 "\n4. wine注册表声音驱动项设置正确：某些数据包会在左下角起点提供切换pulse声音的便捷注册表项。也可以手动修改：左下角起点 - 运行 - 输入regedit打开，找到以下路径：[HKEY_CURENT_USER\\Software\\Wine\\Drivers] 若右侧包含“Audio”项，则该项的值应包含字符串“pulse”。" +
                 "\n \n ");
-
 
         /*
 
@@ -434,6 +436,7 @@ public class RR {
                 "</ul>\n");
         enArray.put(mw_contNoWineTips, "No active Wine detected. This container probably can not launch. Please delete it, click the download button to install Wines and try again.");
         enArray.put(render_title, "Renderer");
+        enArray.put(fab_hide,"Hide");
         enArray.put(pa_title, "PulseAudio (XSDL)");
         enArray.put(pa_explain, "PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.");
         enArray.put(pa_checkRun, "Enable PulseAudio service$Start PulseAudio server when launching a container");
@@ -589,19 +592,19 @@ public class RR {
                 "<li>&ensp; Загрузка файлов wine:<br/>загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице 'Установленные'.</li>\n" +
                 "</ul>\n");
         ruArray.put(mw_contNoWineTips, "Активный Wine не найден. Этот контейнер вероятно, не может запуститься. Удалите его, затем нажмите кнопку загрузки, чтобы установить необходимый Wine и повторите попытку.");
-        ruArray.put(render_title, "Renderer");
+        ruArray.put(fab_hide,"Скрыть");
         ruArray.put(pa_title, "PulseAudio (XSDL)");
-        ruArray.put(pa_explain, "PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.");
-        ruArray.put(pa_checkRun, "Enable PulseAudio service$Start PulseAudio server when launching a container");
-        ruArray.put(pa_checkLog, "Output logs$Save runtime logs to Android/data/%s/files/logs/palog.txt");
-        ruArray.put(pa_btnParam, "Edit launching params$Wrong params will result in errors, please modify with caution");
-        ruArray.put(pa_troubleShooting, "Troubleshooting ⓘ$" +
-                "Check if PulseAudio service is working properly: After Launching the container, click start menu - Run - type winecfg to open it - Audio: \"Selected drivers\" should be winepulse.drv, click \"Test Sound\" button to hear the test sound." +
-                "\n\nIf the result is incorrect, please check the following conditions:" +
-                "$1. Pulseaudio elf file is executed correctly: Check \"Output logs\" option, launch the container and look into the log for errors. If started with default parameters, there should be \"Daemon startup successful.\"" +
-                "\n2. Pulse tcp module is loaded correctly: If started with default parameters, . /pulseaudio.conf will automatically load the tcp module without additional settings: load-module module-native-protocol-tcp auth-anonymous=true port=4713." +
-                "\n3. Export environment variables: PULSE_SERVER=tcp:127.0.0.1:4713. This function will automatically add environment variables when starting the container, no additional settings are needed. Environment variables can be confirmed with Exaterm or Putty." +
-                "\n4. Wine sound driver in registry: Some caches provides a convenient registry entry for switching into pulse sound at the start menu. Or you can change it manually: Click start menu - Run - Type regedit to open it and find the following path: [HKEY_CURENT_USER\\Software\\Wine\\Drivers]. If \"Audio\" appears at the right side, it's value should contain the string \"pulse\"." +
+        ruArray.put(pa_explain, "PulseAudio используется для воспроизведения звука, уменьшения проблемы связанных со звуком. Эта функция использует сервер PulseAudio, извлеченный из apk Xserver XSDL. Что требуется поддержка 64-битной версии Андроид на вашем девайсе.");
+        ruArray.put(pa_checkRun, "Включить службу PulseAudio$Запускать сервер PulseAudio при запуске контейнера");
+        ruArray.put(pa_checkLog, "Вывод лога$Сохранить лог в Android/data/%s/files/logs/palog.txt");
+        ruArray.put(pa_btnParam, "Изменить параметры запуска$Неверные параметры приведут к ошибкам изменяйте их только с пониманием того что делаете.");
+        ruArray.put(pa_troubleShooting, "Устранение неполадок ⓘ$" +
+                "Проверьте, правильно ли работает служба PulseAudio: для этого после запуска контейнера щелкните меню Пуск - Выполнить - введите winecfg, чтобы открыть его, на вкладке Аудио: \"В выбранные драйверы\" должны быть winepulse.drv, нажмите кнопку \"Проверить звук\", чтобы услышать тестовый звук." +
+                "\n\nЕсли нет результата, проверьте следующие условия:" +
+                "$1. Файл Pulseaudio для работы выполняется правильно: установите флаг \"Вывод лога\", запустите контейнер и просмотрите лог на наличие ошибок. При запуске с параметрами по умолчанию должно быть сообщение \"Успешный запуск образа\"" +
+                "\n2. Модуль Pulse tcp загружается правильно: если он запущен с параметрами по умолчанию, .  /pulseaudio.conf автоматически загрузит модуль tcp без дополнительных настроек: load-module module-native-protocol-tcp auth-anonymous=true port=4713." +
+                "\n3. Экспорт переменных среды: PULSE_SERVER=tcp:127.0.0.1:4713. Эта функция автоматически добавит переменные окружения при запуске контейнера, никаких дополнительных настроек не требуется. Переменные среды можно проверить с помощью Exaterm или Putty." +
+                "\n4. Драйвер звука Wine в реестре: некоторые кеши предоставляют удобную запись в реестре для переключения на Pulseaudio в меню Пуск. Или вы можете отредактировать его вручную: Нажмите меню Пуск - Выполнить - введите regedit, чтобы открыть редактор реестра, и найдите следующий путь: [HKEY_CURENT_USER\\Software\\Wine\\Drivers]. создайте строковый параметр \"Audio\" и укажите его значением \"pulse\"." +
                 "\n \n ");
 
 

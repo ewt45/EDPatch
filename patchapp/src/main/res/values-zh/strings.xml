@@ -75,5 +75,6 @@
     <string name="funcname_renderer">环境设置 - 图形渲染设置</string>
     <string name="funcname_fab_pulse">PulseAudio (XSDL) （悬浮操作按钮）</string>
     <string name="fraghelp_body_pulse">PulseAudio用于播放音频，可以缓解一部分声音问题。本功能用到的PulseAudio服务端提取自Xserver XSDL，需要手机支持64位。</string>
+    <string name="fraghelp_body_renderer">- 多wine共存v2 不包含渲染路径分离功能（v1时这两功能混杂在一起），升为v2后，想继续使用渲染路径分离请单独添加此功能。\n- 在容器设置中添加一个渲染设置，为不同的渲染指定不同的动态链接库路径LD_LIBRARY_PATH。系统会优先从从该路径寻找libGL.so.1等文件。路径可以在/opt/renderers.txt中配置。\n- 添加该功能后，需要多做一步准备工作，将每个渲染对应的libGL.so.1复制到自己定义的路径。之后每次切换渲染在容器设置中选择即可。\n- 此外，某些渲染方式还会有额外的操作（容器设置中选中对应项也会有文字提示）：\n\t- 非turnip渲染：指定一个不存在的VK_ICD_FILENAMES路径，以防与turnip冲突而无法使用。\n\t- VirGL_built_in: 新建java进程运行 libvirgl_test_server.so（仅xegw的apk支持）。不需要Mcat和/opt/start.sh。日志输出到Android/data/包名/logs/virglLog.txt。\n\t- virtio-gpu: 尝试启动Mcat。在xegw之前，Mcat用于启动proot环境，即免termux使用该渲染。在第一版的xegw apk中，mcat被重写 设定为运行/opt/start.sh，用于启动virgl built-in，不会自动启动proot。</string>
 
 </resources>

@@ -1,12 +1,16 @@
 package com.eltechs.ed.fragments;
 
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.RR.refreshLocale;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.renderersMap;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
@@ -15,6 +19,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
@@ -26,10 +32,12 @@ import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.containerSettings.ConSetRenderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,20 +45,19 @@ import java.util.List;
 
 public class ContainerSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String ARG_CONT_ID = "CONT_ID";
-    private static final String TAG = "ContSettingsFragment";
-
     /**
      * 如果能找到对应类，就启动对应功能。edpatch添加功能时复制对应类即可。
      */
-    private final static boolean enable_custom_resolution = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetResolution");
-    private final static boolean enable_different_renderers = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetRenderer");
+    public final static boolean enable_custom_resolution = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetResolution");
+    public final static boolean enable_different_renderers = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetRenderer");
+    private static final String TAG = "ContSettingsFragment";
     public static String KEY_RENDERER = "RENDERER"; //偏好xml中渲染方式的KEY
+
 
     /**
      * 用于记录本次dialog期间选定的分辨率
      */
     private String curResolution;
-
 
     @Override // android.support.v7.preference.PreferenceFragmentCompat
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
@@ -60,7 +67,8 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         setPreferencesFromResource(QH.rslvID(R.xml.container_prefs, 0x7f100000), rootKey);
 
         //新设置：渲染器
-        if (funcEnabled(enable_different_renderers)) {
+        if (enable_different_renderers) {
+            ConSetRenderer.readRendererTxt();
             buildRendererPref();
         }
     }
@@ -71,6 +79,11 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
             getPreferenceScreen().removePreference(getPreferenceManager().findPreference(KEY_RENDERER));
         }
 
+        //如果空的就不加了
+        ConSetRenderer.readRendererTxt();
+        if (renderersMap.size() == 0)
+            return;
+
         //新建preference时的context需要为 从已构建的preference获取的contextwrapper，否则样式会不同
         ListPreference renderPref = new ListPreference(getPreferenceManager().getContext());
         renderPref.setTitle(getS(RR.render_title));
@@ -78,12 +91,17 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         renderPref.setKey(KEY_RENDERER);
         renderPref.setSummary("%s");
         renderPref.setOrder(3);
-        List<String> entriesList = new ArrayList<>();
-        for (renderEntries enums : renderEntries.values())
-            entriesList.add(enums.name);
+//        Set<String> entryValueList = renderersMap.keySet();
+
+        List<String> entriesList = new ArrayList<>(); //用户友好名称，内容为name
+        List<String> entryValueList = new ArrayList<>(); //存储的值， 内容为key
+        for (String key : renderersMap.keySet()) {
+            entriesList.add(renderersMap.get(key).getString("name"));
+            entryValueList.add(key);
+        }
         renderPref.setEntries(entriesList.toArray(new String[0]));
-        renderPref.setEntryValues(entriesList.toArray(new String[0])); //entry和value用同一个吧，也没啥区别
-        renderPref.setDefaultValue(entriesList.get(0));
+        renderPref.setEntryValues(entryValueList.toArray(new String[0]));
+        renderPref.setDefaultValue(entryValueList.get(0));
         getPreferenceScreen().addPreference(renderPref);
     }
 
@@ -123,8 +141,10 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
      */
     @Override
     public void onDisplayPreferenceDialog(Preference preference) {
-        if (preference.getKey().equals("SCREEN_SIZE") && funcEnabled(enable_custom_resolution)) {
+        if (preference.getKey().equals("SCREEN_SIZE") && enable_custom_resolution) {
             buildResolutionDialog(preference);
+        } else if (preference.getKey().equals(KEY_RENDERER) && enable_different_renderers) {
+            ConSetRenderer.buildRendererDialog((ListPreference) preference);
         } else {
             super.onDisplayPreferenceDialog(preference);
             return;
@@ -132,9 +152,8 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 
     }
 
-    private boolean funcEnabled(boolean func) {
-        return func || QH.isTesting();
-    }
+
+
 
     private void buildResolutionDialog(Preference preference) {
         //如果是分辨率选项，自定义一下
@@ -196,38 +215,32 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 
 
         //设置监听，点击单选项时存到curResolution
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                String selectStr = ((RadioButton) group.findViewById(checkedId)).getText().toString();
-                for (int i = 0; i < strEntries.length; i++) {
-                    if (strEntries[i].equals(selectStr)) {
-                        curResolution = strValues[i];
-                        break;
-                    }
+        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            String selectStr = ((RadioButton) group.findViewById(checkedId)).getText().toString();
+            for (int i = 0; i < strEntries.length; i++) {
+                if (strEntries[i].equals(selectStr)) {
+                    curResolution = strValues[i];
+                    break;
                 }
             }
         });
         //设置监听，开关切换时禁用和开启对应项
-        switchToCustom.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    //禁用radiobutton
-                    for (int i = 0; i < radioGroup.getChildCount(); i++) {
-                        radioGroup.getChildAt(i).setEnabled(false);
-                    }
-                    //启用edittext
-                    widthEText.setEnabled(true);
-                    heightEText.setEnabled(true);
-
-                } else {
-                    for (int i = 0; i < radioGroup.getChildCount(); i++) {
-                        radioGroup.getChildAt(i).setEnabled(true);
-                    }
-                    widthEText.setEnabled(false);
-                    heightEText.setEnabled(false);
+        switchToCustom.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                //禁用radiobutton
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                    radioGroup.getChildAt(i).setEnabled(false);
                 }
+                //启用edittext
+                widthEText.setEnabled(true);
+                heightEText.setEnabled(true);
+
+            } else {
+                for (int i = 0; i < radioGroup.getChildCount(); i++) {
+                    radioGroup.getChildAt(i).setEnabled(true);
+                }
+                widthEText.setEnabled(false);
+                heightEText.setEnabled(false);
             }
         });
 
@@ -253,20 +266,17 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         }
 
         Log.d(TAG, "onDisplayPreferenceDialog: 获取到的array为" + Arrays.toString(strEntries));
-        new AlertDialog.Builder(requireContext()).setView(dialogView).setTitle(preference.getTitle()).setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //关闭对话框且点的是确认键，则修改sharePref
-                //如果是自定义分辨率，检查完整性并转为字符串形式
-                if (switchToCustom.isChecked()) {
-                    //不知道怎么取消退出dialog，如果没填就改成0吧
-                    curResolution = (TextUtils.isEmpty(widthEText.getText().toString()) ? "0" : widthEText.getText().toString()) + "," + (TextUtils.isEmpty(heightEText.getText().toString()) ? "0" : heightEText.getText().toString());
-                }
-                preference.getSharedPreferences().edit().putString("SCREEN_SIZE", curResolution).apply();
-//                    Toast.makeText(getContext(), "修改设置成功，重启应用生效", Toast.LENGTH_SHORT).show();
-                //更新summary的显示
-                preference.setSummary(curResolution);
+        new AlertDialog.Builder(requireContext()).setView(dialogView).setTitle(preference.getTitle()).setPositiveButton(android.R.string.yes, (dialog, which) -> {
+            //关闭对话框且点的是确认键，则修改sharePref
+            //如果是自定义分辨率，检查完整性并转为字符串形式
+            if (switchToCustom.isChecked()) {
+                //不知道怎么取消退出dialog，如果没填就改成0吧
+                curResolution = (TextUtils.isEmpty(widthEText.getText().toString()) ? "0" : widthEText.getText().toString()) + "," + (TextUtils.isEmpty(heightEText.getText().toString()) ? "0" : heightEText.getText().toString());
             }
+            preference.getSharedPreferences().edit().putString("SCREEN_SIZE", curResolution).apply();
+//                    Toast.makeText(getContext(), "修改设置成功，重启应用生效", Toast.LENGTH_SHORT).show();
+            //更新summary的显示
+            preference.setSummary(curResolution);
         }).setNegativeButton(android.R.string.cancel, null).show();
     }
 
@@ -283,30 +293,6 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 //        else if(KEY_RENDERER.equals(preference.getKey())){
 //            preference.setSummary(((ListPreference) preference).getValue());
 //        }
-    }
-
-
-    /**
-     * 渲染器选项。entry和entryvalue都用这一个了
-     * 需要在添加环境变量的那个action（即外部）获取对应的字符串，如果硬编码，modder需要修改两处，可能会忽略。用enum只需要改一处即可。
-     */
-    public enum renderEntries {
-        LLVMPipe("LLVMPipe", "/opt/lib/llvm"),
-        VirGL_Overlay("VirGL Overlay", "/opt/lib/vo"),
-        VirGL_built_in("VirGL built-in", "/opt/lib/vb"),
-        VirtIO_GPU("VirtIO-GPU", "/opt/lib/vg"),
-        Turnip_Zink("Turnip Zink", "/opt/lib/tz"),
-        Turnip_DXVK("Turnip DXVK","/opt/lib/td"),
-        ;
-
-
-        public final String name;
-        public final String path;
-
-        renderEntries(String name, String path) {
-            this.name = name;
-            this.path = path;
-        }
     }
 
 

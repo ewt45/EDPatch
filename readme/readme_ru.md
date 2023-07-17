@@ -28,6 +28,7 @@
 - [Кнопка настроек](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
   - Выбор локации диска D
   - Кастомное управление
+  - PulseAudio (XSDL)
 - [Отображать курсор](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [Настройки контейнера - Кастомное разрешение](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [Исправление работы клавиатуры на android 11+](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
@@ -42,12 +43,34 @@
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 - [apksig](https://android.googlesource.com/platform/tools/apksig)
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
-
+- [Gson](https://github.com/google/gson)
+- [org.tukaani.xz](https://tukaani.org/xz/)
 
 
 
 
 ## Change Log
+
+
+### v0.0.5
+- New functions available:
+1. PulseAudio (XSDL): PulseAudio используется для воспроизведения звука, уменьшения проблемы связанных со звуком. Эта функция использует сервер PulseAudio, извлеченный из apk Xserver XSDL. Что требуется поддержка 64-битной версии Андроид на вашем девайсе.
+
+- Old functions updated:
+1. Кнопка настроек:
+  - Long press to hide.
+  - export logcat logs: If there's a folder named logcat in drive d, the logs will be saved inside this folder. Helpful when debugging.
+2. Настройки контейнера - Выбор рендера:
+   - Раньше Multiwine v1 поддерживал по умолчанию использование разных рендеров для каждого контейнера в v2 этого больше нет. Если вы хотите продолжать использовать разные рендеры для каждого контейнера в MultiWine v2 вам нужно исправить ее вручную.
+   - Установите разные LD_LIBRARY_PATH для разных рендеров. libGL.so.1 будет загружаться с выбранного пути с более высоким приоритетом. Вы можете редактировать пути самостоятельно в файле Z:/opt/renderers.txt.
+   - Некоторые параметры рендера имеют дополнительные опции при загрузке:
+     - Не работает рендер Turnip: Перенаправьте VK_ICD_FILENAMES в несуществующий файл, этот параметр на случай, если Turnip рендеры не будут работать.
+     - Встроенный VirGl: запуск libvirgl_test_server.so в новом java-процессе. Работает только в apk  с поддержкой xegw. Больше нет необходимости в Mcat и /opt/start.sh.
+       Лог при этом выводится в Android/data/packageName/logs/virglLog.txt.
+     - VirtIO-GPU: запускается через Mcat. До Xegw Mcat использовался для запуска среды proot для этого рендера, но в xegw он переписан для запуска /opt/start.sh и не запускает proot автоматически.
+
+- Others:
+  - apk size shrunk.
 
 ### v0.0.4
 

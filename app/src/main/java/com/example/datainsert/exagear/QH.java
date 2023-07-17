@@ -26,6 +26,11 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 
+import java.io.File;
+
+/**
+ * 不要随意修改已有方法的定义，否则会与旧功能不兼容。但是可以修改其内容
+ */
 public class QH {
     private final static String TAG = "Helpers";
     public final static String MY_SHARED_PREFERENCE_SETTING = "some_settings";
@@ -192,5 +197,19 @@ public class QH {
         scrollView.addView(linearLayout);
         new AlertDialog.Builder(a).setView(scrollView).setPositiveButton(android.R.string.yes, null).create().show();
 
+    }
+
+    public static class Files{
+        /**
+         * 日志输出的文件夹。设为Android/data/包名/files/logs
+         * @return file对象。确保该文件夹已经创建
+         */
+        public static File logsDir(){
+            File logDir = new File(Globals.getAppContext().getExternalFilesDir(null), "logs");
+            if(!logDir.exists()){
+                boolean b = logDir.mkdirs();
+            }
+            return logDir;
+        }
     }
 }

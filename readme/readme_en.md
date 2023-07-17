@@ -29,6 +29,7 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 - [float action button](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
   - Custom location of drive D
   - Custom Control
+  - PulseAudio (XSDL)
 - [show cursor](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [container settings - custom resolution](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [android 11+ soft-input no-crashing](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
@@ -45,9 +46,32 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 - [apksig](https://android.googlesource.com/platform/tools/apksig)
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
+- [Gson](https://github.com/google/gson)
+- [org.tukaani.xz](https://tukaani.org/xz/)
 
 
 ## Change Log
+
+
+### v0.0.5
+- New functions available:
+1. PulseAudio (XSDL): PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.
+
+- Old functions updated:
+1. float action button:
+   - Long press to hide.
+   - export logcat logs: If there's a folder named logcat in drive d, the logs will be saved inside this folder. Helpful when debugging.
+2. container settings - renderer:
+   - Multiwine v1 used to be combined with this function internally, but v2 no more. If v2 is patched, you have to patch this manually if you want to continue to use it.
+   - Set diffrent LD_LIBRARY_PATH for different renderers. libGL.so.1 will be loaded from this path with higher priority. You can edit paths in z:/opt/renderers.txt.
+   - Some renderer options have additional operations:
+     - None turnip renderers: Redirect VK_ICD_FILENAMES to a non-exist file, in case these renderers won't work.
+     - virgl built-in: Launch libvirgl_test_server.so in a new java process. Only works in xegw apk. No need of Mcat or /opt/start.sh. Log is outputed at Android/data/packageName/logs/virglLog.txt.
+     - virtio-gpu: start Mcat. Before Xegw, mcat is used to start proot environment for this renderer, but in xegw it is rewriten to launch /opt/start.sh and won't launch proot automatically.
+
+- Others:
+  - apk size shrunk.
+
 
 ### v0.0.4
 

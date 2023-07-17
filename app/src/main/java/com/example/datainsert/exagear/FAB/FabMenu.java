@@ -21,6 +21,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,9 @@ public class FabMenu {
 
     @SuppressLint("RtlHardcoded")
     public FabMenu(AppCompatActivity a) {
+        //重启activity时刷新locale
+        RR.locale = RR.refreshLocale();
+
         FloatingActionButton fab = new FloatingActionButton(a);
         //不知道为什么，下面设置了customSize，这里如果是wrap content 宽高都变成0
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(AndroidHelpers.dpToPx(60), AndroidHelpers.dpToPx(60));//AndroidHelpers.dpToPx(60),AndroidHelpers.dpToPx(60)

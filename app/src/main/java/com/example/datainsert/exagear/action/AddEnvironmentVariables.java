@@ -1,10 +1,13 @@
 package com.example.datainsert.exagear.action;
 
 
-import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.Turnip_DXVK;
-import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.VirGL_Overlay;
-import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.VirGL_built_in;
-import static com.eltechs.ed.fragments.ContainerSettingsFragment.renderEntries.VirtIO_GPU;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.LLVMPipe;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.Turnip_DXVK;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.Turnip_Zink;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirGL_Overlay;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirGL_built_in;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirtIO_GPU;
+import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.renderersMap;
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
 import static com.example.datainsert.exagear.mutiWine.MutiWine.KEY_WINE_INSTALL_PATH;
 
@@ -23,13 +26,17 @@ import com.eltechs.axs.configuration.startup.actions.AbstractStartupAction;
 import com.eltechs.ed.fragments.ContainerSettingsFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.containerSettings.ConSetRenderer;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 作为action，在startguest启动时添加环境变量。
@@ -39,10 +46,15 @@ import java.util.List;
 public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAware & EnvironmentAware & ExagearImageAware>
         extends AbstractStartupAction<StateClass> {
     private static final String TAG = "AddEnvironmentVariables";
+    private static Mcat mcat;
     /**
      * 可能多个地方用到的，放到成员变量里，最后再加入。每次拼接的时候，路径前带冒号(e.g.  LD_LIBRARY_PATH.insert(0,ldPath).insert(0,':'); )
      */
     private StringBuilder LD_LIBRARY_PATH = new StringBuilder(":/usr/lib/i386-linux-gnu");
+
+    public AddEnvironmentVariables() {
+
+    }
 
     @Override
     public void execute() {
@@ -82,70 +94,102 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
 
         //添加渲染对应的ld_library_path环境变量 (改成在容器设置里修改
         try {
-            Field field = ContainerSettingsFragment.class.getField("KEY_RENDERER"); //直接获取成员，抛出的是NoSuchFieldError 不属于exception
-            addRendererPath(sp, ubtConfig);
+            Field field = ContainerSettingsFragment.class.getField("enable_different_renderers"); //直接获取成员，抛出的是NoSuchFieldError 不属于exception
+            if (ContainerSettingsFragment.enable_different_renderers) {
+                addRendererPath(sp, ubtConfig);
+            }
         } catch (Exception | NoSuchFieldError e) {
             Log.w(TAG, "execute: 功能未安装：环境设置-渲染器新选择" + e.getMessage());
         }
-        //最后再添加动态库路径环境变量到ubt
-        ubtConfig.addEnvironmentVariable("LD_LIBRARY_PATH", LD_LIBRARY_PATH.toString());
+        //最后再添加动态库路径环境变量到ubt（不对，如果这样会覆盖上一次的，要求没改LD的话就不添加。主要是适配多wine v1 且每添加新渲染设置的情况）
+        List<String> envList = ubtConfig.getGuestEnvironmentVariables();
+        for (String var : envList) {
+            if (var.startsWith("LD_LIBRARY_PATH=")) {
+                String oldLDPath = var.substring("LD_LIBRARY_PATH=".length());
+                LD_LIBRARY_PATH.append(oldLDPath.startsWith(":") ? "" : ":").append(oldLDPath); //添加分隔符并将原变量添加到末尾
+                envList.remove(var);
+                break;
+            }
+        }
+        ubtConfig.addEnvironmentVariable("LD_LIBRARY_PATH", LD_LIBRARY_PATH.deleteCharAt(0).toString()); //删除第一个冒号
 
         sendDone();
     }
 
     private void startPulseAudio(UBTLaunchConfiguration ubtConfig) {
         PulseAudio.installAndRun();
-        ubtConfig.addEnvironmentVariable("PULSE_SERVER","tcp:127.0.0.1:4713");
+        ubtConfig.addEnvironmentVariable("PULSE_SERVER", "tcp:127.0.0.1:4713");
     }
 
     private void addRendererPath(SharedPreferences sp, UBTLaunchConfiguration ubtConfig) {
 
-        ContainerSettingsFragment.renderEntries[] entries = ContainerSettingsFragment.renderEntries.values();
+        ConSetRenderer.readRendererTxt();
 
-        String rendererName = sp.getString(ContainerSettingsFragment.KEY_RENDERER, entries[0].name);
-        String ldPath = "";
-        for (ContainerSettingsFragment.renderEntries entry : entries)
-            if (entry.name.equals(rendererName))
-                ldPath = entry.path;
+        if (renderersMap.size() == 0) {
+            Log.d(TAG, "addRendererPath: 渲染方式map为空，不设置ldPath");
+            return;
+        }
+
+        String altRendererName = renderersMap.keySet().iterator().next();
+        String saveRendererName = sp.getString(ContainerSettingsFragment.KEY_RENDERER, "no_such_key");
+        //如果存的值在map中搜不到，那就换成默认的（map中第一个）（在新建容器时，loadDefault()方法可能写入的值并非是map包含的值）
+        String rendererName = renderersMap.containsKey(saveRendererName) ? saveRendererName : altRendererName;
+
+        //先去除掉原先设置的GALLIUM_DRIVER吧
+        for (int i = 0; i < ubtConfig.getGuestEnvironmentVariables().size(); i++)
+            if (ubtConfig.getGuestEnvironmentVariables().get(i).startsWith("GALLIUM_DRIVER=")) {
+                ubtConfig.getGuestEnvironmentVariables().remove(i);
+                break;
+            }
 
         //一些渲染的额外设置
-
-        if (testRenderExist("VirGL_Overlay") && VirGL_Overlay.name.equals(rendererName)) {
-            //默认取消悬浮窗
-            ubtConfig.addEnvironmentVariable("VTEST_WIN", "1");
+        if (LLVMPipe.toString().equals(rendererName)) {
+//            ubtConfig.addEnvironmentVariable("GALLIUM_DRIVER", "llvmpipe"); //gallium其实不指定也行吧
+            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/lvp_icd.i686.json"); //除turnip外其余都不指定vulkan，不过llvm以后或许可以用lavapipe
+        } else if (VirGL_Overlay.toString().equals(rendererName)) {
+            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
+            ubtConfig.addEnvironmentVariable("VTEST_WIN", "1");            //默认取消悬浮窗
             ubtConfig.addEnvironmentVariable("VTEST_SOCK", "");
-        } else if (testRenderExist("VirGL_built_in") && VirGL_built_in.name.equals(rendererName)) {
-            //调用so
-            File virglServerFile = new File(getAppContext().getApplicationInfo().nativeLibraryDir, "libvirgl_test_server.so");
+        } else if (VirGL_built_in.toString().equals(rendererName)) {
+            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
+            File logFile = new File(QH.Files.logsDir(), "virglLog.txt");
             try {
-                ProcessBuilder builder = new ProcessBuilder(virglServerFile.getAbsolutePath());
+                //调用so
+                ProcessBuilder builder = new ProcessBuilder(getAppContext().getApplicationInfo().nativeLibraryDir + "/libvirgl_test_server.so");
                 builder.environment().put("TMPDIR", getApplicationState().getExagearImage().getPath().getAbsolutePath() + "/tmp");
-//                builder.environment().put("VTEST_SOCK", "");
-//                builder.directory(paDir);
-                builder.redirectErrorStream(true);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    File logDir = new File(Globals.getAppContext().getExternalFilesDir(null),"logs");
-                    logDir.mkdirs();
-                    builder.redirectOutput(new File(logDir,"virglLog.txt"));
+                    builder.redirectErrorStream(true);
+                    builder.redirectOutput(logFile);
                 }
                 builder.start();
-
-//                Runtime.getRuntime().exec(virglServerFile.getAbsolutePath());
             } catch (IOException e) {
+                try (PrintWriter printWriter = new PrintWriter(logFile);) {
+                    e.printStackTrace(printWriter);
+                } catch (FileNotFoundException ignored) {
+                }
                 e.printStackTrace();
             }
-        } else if (testRenderExist("VirtIO_GPU") && VirtIO_GPU.name.equals(rendererName)) {
-            if (QH.classExist("com.eltechs.axs.MCat"))
-                new Mcat().start();
-        } else if (testRenderExist("Turnip_DXVK") && Turnip_DXVK.name.equals(rendererName)) {
+        } else if (VirtIO_GPU.toString().equals(rendererName)) {
+            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
+            if (QH.classExist("com.eltechs.axs.MCat")) {
+                if (mcat == null)
+                    mcat = new Mcat();
+                mcat.start();
+            }
+        } else if (Turnip_Zink.toString().equals(rendererName)) {
+
+        } else if (Turnip_DXVK.toString().equals(rendererName)) {
             ubtConfig.addEnvironmentVariable("GALLIUM_DRIVER", "zink");
             ubtConfig.addEnvironmentVariable("MESA_VK_WSI_DEBUG", "sw");
         }
 
-        if (!ldPath.equals(""))
+        //渲染对应的路径从map中获取。map通过刚才的readRendererTxt初始化，从本地txt中读取
+        String ldPath = Objects.requireNonNull(renderersMap.get(rendererName)).getString("path");
+        if (ldPath != null && !"".equals(ldPath))
             LD_LIBRARY_PATH.insert(0, ldPath).insert(0, ":");
 
         Log.d(TAG, "getEnvVarBin: 渲染路径为" + ldPath + ", 模式为" + rendererName);
+
 
 //        String[] rendererValues = {""};
 //        try {
@@ -172,17 +216,6 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
 //        Log.d(TAG, "getEnvVarBin: 渲染路径为" + ldPath + ", 模式为" + renderer);
     }
 
-    /**
-     * enum可能被修改，所以最好加个判断其是否存在
-     */
-    private boolean testRenderExist(String name) {
-        try {
-            ContainerSettingsFragment.renderEntries.valueOf(name);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
 
     private void addWinePath(SharedPreferences sp, UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
         //网上查，环境变量中路径即使带空格也无所谓。只通过冒号分割。

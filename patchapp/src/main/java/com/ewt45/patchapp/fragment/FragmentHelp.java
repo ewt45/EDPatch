@@ -6,6 +6,8 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ewt45.patchapp.AndroidUtils;
 import com.ewt45.patchapp.R;
 
 import java.io.IOException;
@@ -31,6 +34,11 @@ public class FragmentHelp extends Fragment {
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
 //        layoutManager.setOrientation(HORIZONTAL);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        if (requireActivity().getWindowManager().getDefaultDisplay().getWidth() > AndroidUtils.toPx(requireContext(), 800)) {
+            GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, LinearLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(layoutManager);
+        }
+
         recyclerView.setAdapter(new FuncdescpAdapter(
                 getResources().getStringArray(R.array.func_name),
                 getResources().getStringArray(R.array.func_description),
@@ -43,7 +51,8 @@ public class FragmentHelp extends Fragment {
                         R.drawable.softinput,
                         R.drawable.selectobb,
                         R.drawable.shortcut,
-                        R.drawable.multiwine
+                        R.drawable.multiwine,
+                        R.drawable.renderer
                 }
         ));
         return rootView;
@@ -75,6 +84,7 @@ public class FragmentHelp extends Fragment {
             if (images[i] != 0)
                 viewHolder.image.setImageResource(images[i]);
 
+
         }
 
         @Override
@@ -83,12 +93,14 @@ public class FragmentHelp extends Fragment {
         }
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
+            private final CardView root;
             private final TextView title;
             private final TextView description;
             private final GifImageView image;
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
+                root = (CardView) itemView;
                 title = itemView.findViewById(R.id.title);
                 description = itemView.findViewById(R.id.description);
                 image = itemView.findViewById(R.id.gif_image);

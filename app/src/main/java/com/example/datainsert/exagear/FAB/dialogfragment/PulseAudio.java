@@ -28,6 +28,8 @@ import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -39,14 +41,17 @@ public class PulseAudio extends BaseFragment {
     private final static File logFile = new File(Globals.getAppContext().getExternalFilesDir(""), "logs/palog.txt");
     private final static File paWorkDir = new File(Globals.getAppContext().getFilesDir(), "pulseaudio-xsdl");
     /**
-     * 是否在启动容器时启动pulse。默认为true
+     * 是否在启动容器时启动pulse。默认为PREF_VAL_PULSE_AUTORUN(true)
      */
     private static final String PREF_KEY_PULSE_AUTORUN = "PULSE_AUTORUN";
+    private static boolean PREF_DEF_VAL_PULSE_AUTORUN = true;
     /**
      * 使用自定义参数启动pulse，为“”则使用默认参数。
      */
     private static final String PREF_KEY_PULSE_LAUNCH_PARAMS = "PULSE_CUSTOM_PARAMS";
-    private static final String DEFAULT_LAUNCH_PARAMS = "./pulseaudio --start -n -F ./pulseaudio.conf --exit-idle-time=-1 --disable-shm --daemonize=true --dl-search-path=" + paWorkDir.getAbsolutePath() + " --log-target=stderr --log-level=debug";
+    private static final String DEFAULT_LAUNCH_PARAMS =
+            "./pulseaudio --start --exit-idle-time=-1 -n -F ./pulseaudio.conf --daemonize=true";
+//            "./pulseaudio --start -n -F ./pulseaudio.conf --exit-idle-time=-1 --disable-shm --daemonize=true --dl-search-path=" + paWorkDir.getAbsolutePath() + " --log-target=stderr --log-level=debug";
 
     /**
      * 是否输出日志，默认为false
@@ -97,6 +102,7 @@ public class PulseAudio extends BaseFragment {
                     "./pulseaudio",
                     "--kill"
             );
+
             builder.environment().put("HOME", dir);
             builder.environment().put("TMPDIR", dir);
             builder.environment().put("LD_LIBRARY_PATH", dir);
@@ -111,8 +117,13 @@ public class PulseAudio extends BaseFragment {
             builder.start().waitFor();
             Log.d(TAG, "startPulseaudio: 停止pulseaudio用了多长时间：" + (System.currentTimeMillis() - startTime));
 
+            //删除残留.config文件夹和pulse-xxxx文件夹，防止pa_pid_file_create() failed.?
+            for(File subFile :paWorkDir.listFiles())
+                if(subFile.isDirectory() && (subFile.getName().contains(".config")|| subFile.getName().startsWith("pulse-")))
+                    FileUtils.deleteDirectory(subFile);
+
             //如果设置不开启pulse，直接返回
-            if (!getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, true))
+            if (!getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN))
                 return;
 
 
@@ -185,7 +196,7 @@ public class PulseAudio extends BaseFragment {
         checkEnableLog.setText(checkLogStr[0]);
         checkEnableLog.setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(PREF_KEY_PULSE_ENABLE_LOG, isChecked).apply());
         checkEnableLog.setChecked(getPreference().getBoolean(PREF_KEY_PULSE_ENABLE_LOG, true));
-        checkEnableLog.setEnabled(getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, true));
+        checkEnableLog.setEnabled(getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN));
         linearRoot.addView(checkEnableLog, paddingParams);
         linearRoot.addView(getDescriptionTextView(String.format(checkLogStr[1], requireContext().getPackageName())));
 
@@ -193,7 +204,7 @@ public class PulseAudio extends BaseFragment {
             getPreference().edit().putBoolean(PREF_KEY_PULSE_AUTORUN, isChecked).apply();
             checkEnableLog.setEnabled(isChecked);
         });
-        checkAutorun.setChecked(getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, true));
+        checkAutorun.setChecked(getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN));
 
 
         //修改启动参数

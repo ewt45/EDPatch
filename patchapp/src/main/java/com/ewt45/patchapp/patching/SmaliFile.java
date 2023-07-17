@@ -389,7 +389,13 @@ public class SmaliFile {
         return false;
     }
 
-
+    /**
+     * 获取该文件内全部行。请谨慎修改
+     * @return 列表
+     */
+    public List<String> getAllLines() {
+        return mAllLines;
+    }
 
     /**
      * 从某个smali文件中，尝试寻找成员变量，以获取当前功能的安装版本号

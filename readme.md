@@ -33,12 +33,13 @@
 - [悬浮操作按钮](https://ewt45.github.io/blogs/2022/winter/exagearFab/) 
   - [自定义d盘路径](https://ewt45.github.io/blogs/2022/winter/exagearFab/driveD.html)
   - [自定义操作模式](https://www.bilibili.com/video/BV1fL41167Ji/)
+  - PulseAudio (XSDL)
 - [强制显示鼠标光标](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [环境设置- 自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
 - [手动选择obb](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
-- exe快捷方式直接启动
-- 多版本wine共存 v2
+- [exe快捷方式直接启动](https://www.bilibili.com/video/BV1QM4y1v7RG/)
+- [多版本wine共存 v2](https://www.bilibili.com/video/BV1bk4y1K7jR/)
 - 环境设置 - 渲染方式
 
 ## 第三方依赖
@@ -49,9 +50,31 @@
 - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 - [apksig](https://android.googlesource.com/platform/tools/apksig)
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
-
+- [Gson](https://github.com/google/gson)
+- [org.tukaani.xz](https://tukaani.org/xz/)
 
 ## 更新历史
+
+### v0.0.5
+- 添加新功能：
+1. PulseAudio (XSDL): PulseAudio用于播放音频，可以缓解一部分声音问题。本功能用到的PulseAudio服务端提取自Xserver XSDL，需要手机支持64位。
+
+- 更新旧功能：
+1. 悬浮操作按钮（齿轮）：
+   - 长按可隐藏。
+   - 导出logcat日志：若d盘位置存在名为logcat的文件夹，则将logcat日志保存到这个文件夹中。便于检查输出和调试。
+2. 环境设置 - 渲染方式：
+   - 多wine共存v2 不包含渲染路径分离功能（v1时这两功能混杂在一起），升为v2后，想继续使用渲染路径分离请单独添加此功能。
+   - 在容器设置中添加一个渲染设置，为不同的渲染指定不同的动态链接库路径LD_LIBRARY_PATH。系统会优先从从该路径寻找libGL.so.1等文件。路径可以在/opt/renderers.txt中配置。
+   - 添加该功能后，需要多做一步准备工作，将每个渲染对应的libGL.so.1复制到自己定义的路径。之后每次切换渲染在容器设置中选择即可。
+   - 此外，某些渲染方式还会有额外的操作（容器设置中选中对应项也会有文字提示）：
+       - 非turnip渲染：指定一个不存在的VK_ICD_FILENAMES路径，以防与turnip冲突而无法使用。
+       - VirGL_built_in: 新建java进程运行 libvirgl_test_server.so（仅xegw的apk支持）。不需要Mcat和/opt/start.sh。日志输出到Android/data/包名/logs/virglLog.txt。
+       - virtio-gpu: 尝试启动Mcat。在xegw之前，Mcat用于启动proot环境，即免termux使用该渲染。在第一版的xegw apk中，mcat被重写 设定为运行/opt/start.sh，用于启动virgl built-in，不会自动启动proot。
+
+- 其他
+  - pulseaudio启动方法， icd路径 均由在那老虎山上大佬提供
+  - 缩减apk体积
 
 ### v0.0.4
 - 新功能：

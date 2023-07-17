@@ -2,6 +2,7 @@ package com.ewt45.patchapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +12,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.ScaleAnimation;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ewt45.patchapp.ActionPool;
 import com.ewt45.patchapp.MyApplication;
@@ -34,7 +43,6 @@ import com.ewt45.patchapp.thread.FuncSelObb;
 import com.ewt45.patchapp.thread.FuncShortcut;
 import com.ewt45.patchapp.thread.SignApk;
 import com.ewt45.patchapp.thread.SignalDone;
-import com.ewt45.patchapp.thread.WriteFuncVer;
 import com.ewt45.patchapp.widget.SelectApkDialog;
 
 import org.apache.commons.io.FileUtils;
@@ -70,7 +78,6 @@ public class FragmentChoosePatch extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         binding = FragmentChoosePatchBinding.inflate(inflater, container, false);
 
@@ -84,6 +91,7 @@ public class FragmentChoosePatch extends Fragment {
         funcList.add(new FuncWithCheckBox(binding.checkShortcut,new FuncShortcut()));
         funcList.add(new FuncWithCheckBox(binding.checkMw,new FuncMultiWine()));
         funcList.add(new FuncWithCheckBox(binding.checkRenderer,new FuncRenderer()));
+
         return binding.getRoot();
     }
 
