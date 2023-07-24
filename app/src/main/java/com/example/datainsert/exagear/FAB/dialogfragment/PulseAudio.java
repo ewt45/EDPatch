@@ -63,8 +63,7 @@ public class PulseAudio extends BaseFragment {
     public static void installAndRun() {
         //启动pulseaudio （貌似多次启动会导致失效，要么就启动一次，要么就先停止再启动）
         //解压要求paDir不存在
-        File paDir = new File(Globals.getAppContext().getFilesDir(), "pulseaudio-xsdl");
-        if (paDir.exists() && (!paDir.isDirectory() || paDir.list().length == 0) && !paDir.delete())
+        if (paWorkDir.exists() && (!paWorkDir.isDirectory() || paWorkDir.list().length == 0) && !paWorkDir.delete())
             return;
 
         //解压必要文件
@@ -72,7 +71,7 @@ public class PulseAudio extends BaseFragment {
             @Override
             public void installationFailed(String str) {
                 Log.e(TAG, "installationFailed: pulseaudio-xsdl.zip解压失败： ", new Exception(str));
-                boolean b = paDir.delete();
+                boolean b = paWorkDir.delete();
             }
 
             @Override
@@ -82,7 +81,7 @@ public class PulseAudio extends BaseFragment {
                 killAndStartPulseaudio();
             }
 
-        }, paDir, "pulseaudio-xsdl.zip");
+        }, paWorkDir, "pulseaudio-xsdl.zip");
     }
 
     /**
@@ -119,8 +118,14 @@ public class PulseAudio extends BaseFragment {
 
             //删除残留.config文件夹和pulse-xxxx文件夹，防止pa_pid_file_create() failed.?
             for(File subFile :paWorkDir.listFiles())
-                if(subFile.isDirectory() && (subFile.getName().contains(".config")|| subFile.getName().startsWith("pulse-")))
+                if(subFile.isDirectory() &&  subFile.getName().startsWith("pulse-"))
                     FileUtils.deleteDirectory(subFile);
+                else if(subFile.isDirectory() && subFile.getName().contains(".config")){
+                    //config不知道要不要删啊，留着daemon.conf 其他的删了吧
+                    for(File subInConfig:subFile.listFiles())
+                        if(!subInConfig.getName().equals("daemon.conf") && !subInConfig.getName().equals("daemon.conf.d"))
+                            FileUtils.deleteQuietly(subFile);
+                }
 
             //如果设置不开启pulse，直接返回
             if (!getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN))
