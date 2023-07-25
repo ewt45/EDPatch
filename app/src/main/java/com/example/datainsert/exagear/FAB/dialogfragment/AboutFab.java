@@ -126,10 +126,6 @@ public class AboutFab extends BaseFragment {
 
         //尝试重定向logcat到文件中：
         redirectLogcat();
-
-
-
-
     }
 
     /**
@@ -142,11 +138,14 @@ public class AboutFab extends BaseFragment {
         appFirstLaunching = false;
 
         File logcatDir = new File(DriveD.getDriveDDir(),"logcat");
+        File logcatFile = new File(logcatDir,"logcat.txt");
         if(!logcatDir.exists())
+            return;
+        if(logcatFile.length()>5*1024*1024 && !logcatFile.delete())
             return;
         try {
             System.out.println("callWhenFirstStart: 不执行吗？");
-            Runtime.getRuntime().exec("logcat -f "+logcatDir.getAbsolutePath()+"/logcat.txt"+" *:V" );// "*:S",
+            Runtime.getRuntime().exec("logcat -f "+logcatFile.getAbsolutePath()+" *:V" );// "*:S",
 //            Process process = Runtime.getRuntime().exec(new String[]{"killall","-9","logat;","/system/bin/logat","-c;","/system/bin/logcat","-f",filePath });
         } catch (IOException e) {
             e.printStackTrace();

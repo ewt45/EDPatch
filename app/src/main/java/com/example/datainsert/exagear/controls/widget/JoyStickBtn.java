@@ -89,6 +89,8 @@ public class JoyStickBtn extends BaseMoveBtn {
     //    private ViewFacade mViewFacade;
     private ViewOfXServer mViewOfXServer;
     private PointerEventReporter mPointReporter;
+    private MousePosInject mMousePosInject;
+
     /**
      * 按钮和圆形背景直径
      */
@@ -142,8 +144,10 @@ public class JoyStickBtn extends BaseMoveBtn {
 
     public void setViewFacade(ViewOfXServer viewOfXServer) {
         mViewOfXServer = viewOfXServer;
-        if (mViewOfXServer != null)
+        if (mViewOfXServer != null){
             mPointReporter = new PointerEventReporter(viewOfXServer);
+            mMousePosInject = new MousePosInject(mPointReporter,50);
+        }
     }
 
     @Override
@@ -173,7 +177,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         if (mParams.getPresetKey() == MOUSE_MOVE) {
             Log.d(TAG, String.format("handleInjectStart: 中央？传入的坐标是viewofxserver宽高的一半？ %d, %d", mViewOfXServer.getWidth() / 2, mViewOfXServer.getHeight() / 2));
             //设置位置到中央
-            mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
+//            mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
         } else if (mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
             //设置位置到中央并按下
             mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
@@ -221,7 +225,9 @@ public class JoyStickBtn extends BaseMoveBtn {
             return;
         if (mParams.getPresetKey() == MOUSE_MOVE) {
             //设置位置到中央
-            mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
+//            mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
+            if(mMousePosInject!=null)
+                mMousePosInject.stop();
         } else if (mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
             //松开按键,设置位置到中央
             mPointReporter.buttonReleased(mParams.getPresetKey().getKeys()[0]);
@@ -237,6 +243,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         }
 
     }
+
 
     /**
      * 根据偏移量，注入对应方向的按键
@@ -255,7 +262,15 @@ public class JoyStickBtn extends BaseMoveBtn {
             return;
 
         if (mParams.getPresetKey() == MOUSE_MOVE || mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
+            //计算光标坐标。计算方法：按下点为圆心，半径为一个设定值（比如100），然后求出倍率 100 / 根号dx2+dy2， dx和dy乘以倍率就是光标相对圆心偏移的距离
+            //然后怎么办，是移动到位置就不管了，还是只要没松手就每30/50毫秒传送一次坐标？
 
+            if(mMousePosInject!=null){
+                int fixedRadius = 100;
+                float ratio = (float) (fixedRadius/Math.sqrt(dx*dx+dy*dy));
+                mMousePosInject.updatePointPos(mCenterXYPoint.x+dx*ratio,mCenterXYPoint.y+dy*ratio);
+                mMousePosInject.start();
+            }
 
         } else {
             //先判断是否在0-3/8π范围内，确定上下，然后再判断是否在1/8π-1/2π范围内，叠加左右
@@ -353,8 +368,8 @@ public class JoyStickBtn extends BaseMoveBtn {
 
         //选择预设按键，或者自定义
         Spinner spinKeys = new Spinner(c,Spinner.MODE_DIALOG);
-        final String[] spinOptions = new String[]{"W A S D", "↑ ↓ ← →", getS(RR.cmCtrl_JoyEditKeyCstm)};
-        final JoyParams.PresetKey[] spinValues = new JoyParams.PresetKey[]{WASD, ARROWS, CUSTOM};
+        final String[] spinOptions = new String[]{WASD.getName(), ARROWS.getName(), MOUSE_MOVE.getName(),CUSTOM.getName()};
+        final JoyParams.PresetKey[] spinValues = new JoyParams.PresetKey[]{WASD, ARROWS,MOUSE_MOVE, CUSTOM};
         ArrayAdapter<String> spinKeyPosAdapter = new SpinArrayAdapterSmSize(c, android.R.layout.simple_spinner_item, spinOptions);
         spinKeyPosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinKeys.setAdapter(spinKeyPosAdapter);

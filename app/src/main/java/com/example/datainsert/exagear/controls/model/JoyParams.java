@@ -1,5 +1,9 @@
 package com.example.datainsert.exagear.controls.model;
 
+import static com.example.datainsert.exagear.RR.getS;
+
+import com.example.datainsert.exagear.RR;
+
 import java.io.Serializable;
 
 public class JoyParams implements Serializable {
@@ -71,12 +75,12 @@ public class JoyParams implements Serializable {
     }
 
     public enum PresetKey {
-        WASD(new int[]{17, 31, 30, 32}, "WASD"),
-        ARROWS(new int[]{103, 108, 105, 106}, "方向键上下左右"),
-        MOUSE_MOVE(new int[]{}, "鼠标移动"),
+        WASD(new int[]{17, 31, 30, 32}, "W A S D"),
+        ARROWS(new int[]{103, 108, 105, 106}, "↑ ↓ ← →"),
+        MOUSE_MOVE(new int[]{0,0,0,0}, "鼠标移动"),
         MOUSE_LEFT_CLICK(new int[]{1, 1, 1, 1}, "鼠标左键点击"),
         MOUSE_RIGHT_CLICK(new int[]{3, 3, 3, 3}, "鼠标右键点击"),
-        CUSTOM(new int[]{17, 31, 30, 32}, "自定义"),
+        CUSTOM(new int[]{17, 31, 30, 32}, getS(RR.cmCtrl_JoyEditKeyCstm)),
         ;
 
         private final int[] keys;
@@ -86,7 +90,7 @@ public class JoyParams implements Serializable {
             keys = ints;
             this.name = name;
         }
-
+        public String getName(){return name;}
         public int[] getKeys() {
             return keys;
         }

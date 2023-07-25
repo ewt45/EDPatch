@@ -15,7 +15,7 @@
             android:layout_height="64dp"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/sa_application_logo" />
 
         <LinearLayout
             android:layout_width="256dp"
@@ -27,12 +27,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="111"
+                android:text="@string/sa_title"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
                 android:id="@+id/sa_step_description"
-                android:text="aaa"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="10dp" />
@@ -65,10 +64,10 @@
 
         <ImageButton
             android:id="@+id/adButtonGp"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="#00000000"
-            android:src="@drawable/someimg" />
+            android:src="@drawable/get_it_on_google_play" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -81,6 +80,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:singleLine="true"
-            android:text="aaaaa" />
+            android:text="@string/sa_ad_button_hide" />
     </LinearLayout>
 </LinearLayout>

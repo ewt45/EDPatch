@@ -91,7 +91,7 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
                         try {
                             AtomicFile atomicFile = new AtomicFile(file);
                             FileOutputStream startWrite = atomicFile.startWrite();
-                            startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX + "解压中，请等待...").getBytes());
+                            startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX + "解压中，请等待111...").getBytes());
                             atomicFile.finishWrite(startWrite);
                         } catch (IOException ignored) {
                         }

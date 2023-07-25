@@ -1,5 +1,9 @@
 package com.example.datainsert.exagear.obb;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.Build;
+import android.util.AtomicFile;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,10 +11,21 @@ import android.view.ViewGroup;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.axs.applicationState.CurrentActivityAware;
 import com.eltechs.axs.helpers.ZipInstallerObb;
+import com.eltechs.ed.BuildConfig;
 import com.eltechs.ed.R;
+import com.eltechs.ed.activities.EDStartupActivity;
 import com.ewt45.exagearsupportv7.ui.home.HomeFragment;
 import com.example.datainsert.exagear.QH;
+
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 public class ProcessInstallObb {
     static String TAG = "ProcessInstallObb";
@@ -22,12 +37,11 @@ public class ProcessInstallObb {
      */
     public static void start(ZipInstallerObb zipInstallerObb){
         Log.d(TAG, "start: 开始新建选择obb的fragment");
-        ApplicationStateBase applicationStateBase = Globals.getApplicationState();
+        CurrentActivityAware applicationStateBase = Globals.getApplicationState();
         if(applicationStateBase==null){
-            Log.d(TAG, "start: Globals.getApplicationState()为null，无法获取acitivity");
             return;
         }
-        FrameworkActivity edStartupActivity = applicationStateBase.getCurrentActivity();
+        FrameworkActivity<?> edStartupActivity = applicationStateBase.getCurrentActivity();
         //防止多次添加
         SelectObbFragment fragment= (SelectObbFragment) edStartupActivity.getSupportFragmentManager().findFragmentByTag(SelectObbFragment.TAG);
         if(fragment==null){
@@ -50,9 +64,33 @@ public class ProcessInstallObb {
         //显示fragment
         edStartupActivity.getSupportFragmentManager().beginTransaction().show(fragment).addToBackStack(null).commit();
 
+
+
         //高度怎么不wrapcontent了呢
 //        startupAdButtons.requestLayout();
 //        startupAdButtons.invalidate();
+    }
+
+    /**
+     * 在原本的副文本显示区显示文字
+     */
+    private static void showTextOnTop(Context edStartupActivity){
+        //尝试将文字显示到上方原本的显示区
+        final File progressFile = new File(edStartupActivity.getFilesDir(), "ed_progress");
+        try {
+            if (progressFile.exists() && !progressFile.delete())
+                return;
+            if(!progressFile.createNewFile())
+                return;
+
+            AtomicFile atomicFile = new AtomicFile(progressFile);
+            FileOutputStream startWrite = atomicFile.startWrite();
+            String pkgName = edStartupActivity.getPackageName();
+            startWrite.write((-1 + IOUtils.LINE_SEPARATOR_UNIX + String.format(Locale.getDefault(),"未找到obb数据包。数据包应位于%s/%s/main.%d.%s.obb。若不会放数据包，可以点击按钮手动定位找到obb文件（该方式无法查看Android/obb或data目录）",edStartupActivity.getObbDir().getAbsolutePath(),pkgName,BuildConfig.VERSION_CODE,pkgName)).getBytes());
+            atomicFile.finishWrite(startWrite);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void startest(HomeFragment homeFragment){

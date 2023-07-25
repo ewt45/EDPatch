@@ -7,12 +7,15 @@ import com.eltechs.axs.xserver.ViewFacade;
 
 /**
  * 用于处理鼠标滚轮按钮。普通按钮应该是按下就行。鼠标滚轮按钮应该是不停按下松开按下松开，这样才能不停滚动
+
  */
 public class MouseWheelInject {
     private final int fingerLocationPollIntervalMs; //按下的频率
     private final ViewFacade viewFacade;
     private final byte keycode;
     private InfiniteTimer timer;
+    private int x;
+    private int y;
 
     public MouseWheelInject(
             ViewFacade viewFacade,
@@ -22,7 +25,6 @@ public class MouseWheelInject {
         this.keycode = keycode;
         this.fingerLocationPollIntervalMs = fingerLocationPollIntervalMs;
     }
-
 
     public void start(){
         Log.d("", "start: 开始滚动鼠标滚轮");

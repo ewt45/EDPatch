@@ -41,14 +41,22 @@ public class SelectObbFragment extends Fragment {
     static final int PICK_OBB_FILE = 123;
     TextView mTv;
     Button mBtn;
-    public static File obbFile=null; //用于zipinstallerobb获取和删除临时obb
+    /**
+     * 用于zipinstallerobb获取和删除临时obb。
+     * 仅当tmp.obb存在时才应不为null
+     */
+    public static File obbFile=null;
+
+    /**
+     * fragment内部获取tmp.obb的file对象时用。因为obbFile不应随意从null变为File实例，
+     */
+    private static final File mInternalObbFile =  new File(Globals.getAppContext().getFilesDir(), "tmp.obb");;
     private ZipInstallerObb zipInstallerObb;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: 新建视图");
-        obbFile = new File(requireContext().getFilesDir(), "tmp.obb");
 
         LinearLayout root = new LinearLayout(requireContext());
         root.setOrientation(LinearLayout.VERTICAL);
@@ -100,7 +108,6 @@ public class SelectObbFragment extends Fragment {
 //
 //        textView.setText(str);
 
-        File file = new File(Globals.getAppContext().getFilesDir(), PROGRESS_FILE_NAME);
     }
 
     @Override
@@ -123,9 +130,8 @@ public class SelectObbFragment extends Fragment {
      */
     public static void delCopiedObb(){
         //删obb
-        if(obbFile!=null){
-            obbFile.delete();
-            obbFile = null;
+        if(mInternalObbFile.exists()){
+            boolean b = mInternalObbFile.delete();
         }
 
         //将选择obb部分的视图移除。
@@ -184,8 +190,8 @@ public class SelectObbFragment extends Fragment {
         }
         fragment.mTv.setText(getS(RR.SelObb_selResult).split("\\$")[1]);
 
-        if (obbFile.exists()) {
-            obbFile.delete();
+        if (mInternalObbFile.exists()) {
+            boolean b = mInternalObbFile.delete();
         }
         //禁用选择按钮
         fragment.mBtn.setEnabled(false);
@@ -193,14 +199,14 @@ public class SelectObbFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try {
-                    InputStream is = fragment.requireContext().getContentResolver().openInputStream(uri);
-                    FileOutputStream fos = new FileOutputStream(obbFile);
-                    IOUtils.copy(is, fos);
-                    is.close();
-                    fos.close();
-                    //复制完了之后再进入常规解压数据包操作
-                    fragment.zipInstallerObb.installImageFromObbIfNeeded();
+                try (InputStream is = fragment.requireContext().getContentResolver().openInputStream(uri);
+                     FileOutputStream fos = new FileOutputStream(mInternalObbFile);){
+                    if(is!=null){
+                        IOUtils.copy(is, fos);
+                        obbFile = mInternalObbFile; //仅在复制完成后才赋值
+                        //复制完了之后再进入常规解压数据包操作
+                        fragment.zipInstallerObb.installImageFromObbIfNeeded();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
 
