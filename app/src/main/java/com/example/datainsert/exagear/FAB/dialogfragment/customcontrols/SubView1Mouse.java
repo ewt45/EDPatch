@@ -7,6 +7,8 @@ import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_MOVE_RELATIVE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_OFFWINDOW_DISTANCE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_SENSITIVITY;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_VIEWPORT_ENABLE;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_VIEWPORT_INTERVAL;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SHOW_CURSOR;
 
 import android.content.Context;
@@ -14,8 +16,10 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
@@ -24,12 +28,14 @@ import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
 public class SubView1Mouse extends LinearLayout {
     SeekBar seekPointerSpeed;
     Button btnResetSpeed;
-    SeekBar seekViewport;
+    LinearLayout viewportOptions;
+    CheckBox checkMsViewport;
     private static final String TAG= "SubView1Mouse";
     public SubView1Mouse(Context c) {
         super(c);
@@ -89,13 +95,42 @@ public class SubView1Mouse extends LinearLayout {
 
         //允许鼠标移出屏幕（视角转动模式） 用户手动调节速度吧
           //
-        seekViewport = new SeekBar(c);
-        seekViewport.setMax(60);
-        seekViewport.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0));
-        seekViewport.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,progress).apply()));
-        LinearLayout linearSeekViewport = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msOffScr),seekViewport,true);
-        setDialogTooltip(linearSeekViewport.getChildAt(0), getS(RR.cmCtrl_s1_msOffScrTip));
-        addView(linearSeekViewport);
+//        seekViewport = new SeekBar(c);
+//        seekViewport.setMax(60);
+//        seekViewport.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0));
+//        seekViewport.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,progress).apply()));
+        //类型为鼠标移动时显示选项 对应发送时间间隔。
+        SeekBar repeatIntervalSeek = new SeekBar(c);
+        repeatIntervalSeek.setMax(100);//5-105
+        repeatIntervalSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL,progress).apply()));
+        repeatIntervalSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL,20)+5);
+        //类型为鼠标移动时显示选项 每次移动距离
+        SeekBar mouseMoveLenSeek = new SeekBar(c);
+        mouseMoveLenSeek.setMax(60); //1-61
+        mouseMoveLenSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,progress).apply()));
+        mouseMoveLenSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,20));
+
+        viewportOptions = new LinearLayout(c);
+        viewportOptions.setOrientation(LinearLayout.HORIZONTAL);
+        viewportOptions.addView(getOneLineWithTitle(c,"更新位置时间间隔",repeatIntervalSeek,true),seekParams);
+        viewportOptions.addView(getOneLineWithTitle(c,"每次鼠标移动距离",mouseMoveLenSeek,true),seekParams);
+        viewportOptions.getChildAt(0).setPadding(0,0,0,0);
+        viewportOptions.getChildAt(1).setPadding(0,0,0,0);
+
+        checkMsViewport = new CheckBox(c);
+        checkMsViewport.setText("限制移动距离");
+        checkMsViewport.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getPreference().edit().putBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,isChecked).apply();
+            clickedMoveViewport(isChecked);
+        });
+        checkMsViewport.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,false));
+
+//        LinearLayout linearSeekViewport = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msOffScr),seekViewport,true);
+
+
+        setDialogTooltip(checkMsViewport, getS(RR.cmCtrl_s1_msOffScrTip));
+        addView(checkMsViewport);
+        addView(viewportOptions);
 
         //初始化是否禁用
         clickedCheckMoveRel(getPreference().getBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, false));
@@ -121,8 +156,13 @@ public class SubView1Mouse extends LinearLayout {
         seekPointerSpeed.setFocusable(isChecked);
         btnResetSpeed.setEnabled(isChecked);
         btnResetSpeed.setFocusable(isChecked);
-        seekViewport.setEnabled(isChecked );
+        checkMsViewport.setEnabled(isChecked);
+        clickedMoveViewport(isChecked && checkMsViewport.isChecked());
     }
 
-
+    private void clickedMoveViewport(boolean isChecked){
+        viewportOptions.setVisibility(isChecked?VISIBLE:GONE);
+//        ((ViewGroup)viewportOptions.getChildAt(0)).getChildAt(1).setEnabled(isChecked);
+//        ((ViewGroup)viewportOptions.getChildAt(1)).getChildAt(1).setEnabled(isChecked);
+    }
 }

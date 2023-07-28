@@ -377,7 +377,7 @@ public class FragmentChoosePatch extends Fragment {
             }
 
             binding.btnStartPatch.setEnabled(true);
-            binding.btnInstallNew.setEnabled(true);
+            binding.btnInstallNew.setEnabled(PatchUtils.getExaNewPatchedApk().exists()); //如果还没生成过apk 不应enable
             binding.progressbar.setVisibility(View.GONE);
             binding.btnSelectApkInstalled.setEnabled(true);
             binding.btnSelectApkFiles.setEnabled(true);

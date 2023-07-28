@@ -1,5 +1,9 @@
 package com.example.datainsert.exagear.controls.axs.GestureStateMachine;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_VIEWPORT_ENABLE;
+import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_VIEWPORT_INTERVAL;
+
 import com.eltechs.axs.Finger;
 import com.eltechs.axs.GestureStateMachine.AbstractGestureFSMState;
 import com.eltechs.axs.GestureStateMachine.GestureContext;
@@ -8,8 +12,11 @@ import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
 import com.eltechs.axs.helpers.Assert;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.MouseViewportAdapter;
 import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.OffsetMouseAdapter;
 import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
+import com.example.datainsert.exagear.controls.widget.JoyStickBtn;
 
 import java.util.List;
 
@@ -83,7 +90,7 @@ public class State1FMouseMove extends AbstractGestureFSMState implements TouchEv
         public State1FMouseMove create(GestureContext gestureContext, PointerContext pointerContext, boolean reportIfNewF) {
             return new State1FMouseMove(gestureContext, pointerContext,
                     new RelativeMouseMoveCstmSpdAdapter(
-//                            isViewport ? new ViewportMouseAdapter(gestureContext):
+                            getPreference().getBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,false) ? new MouseViewportAdapter(gestureContext) :
                             new OffsetMouseAdapter(gestureContext),
 //                             new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()),
                             gestureContext.getViewFacade(), gestureContext.getHostView()),

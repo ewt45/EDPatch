@@ -1,5 +1,6 @@
 package com.ewt45.patchapp.thread;
 
+import static com.ewt45.patchapp.patching.PatcherFile.TYPE_LIB_ARMV7;
 import static com.ewt45.patchapp.patching.PatcherFile.TYPE_SMALI;
 
 import com.ewt45.patchapp.PatchUtils;
@@ -57,6 +58,20 @@ public class FuncResl implements Func {
                 "/com/example/datainsert/exagear/containerSettings/ConSetResolution.smali", //复制标识类
                 "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
+
+//        //测试xegw v2
+//        PatcherFile.copy(TYPE_SMALI, new String[]{
+//                "/com/termux/x11",
+//                "/com/eltechs/axs/widgets/viewOfXServer/ViewOfXServer.smali",
+//                "/com/eltechs/axs/xserver/Keyboard.smali",
+//                "/com/eltechs/axs/Keyboard.smali",
+//                "/com/eltechs/axs/xserver/Pointer.smali",
+//        });
+//        PatcherFile.copy(TYPE_LIB_ARMV7,new String[]{
+//                "/libexec-helper.so",
+//                "/libxkbcomp.so",
+//                "/libXlorie.so",
+//        });
 
 
         return R.string.actmsg_funcresl;

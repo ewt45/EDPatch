@@ -35,11 +35,9 @@ public class SignApk implements Action {
 
     @Override
     public Integer call() throws Exception {
-        File buildApkPath = new File(PatchUtils.getPatchTmpDir().getAbsolutePath()+"/tmp/dist");
-        File inApkFile = new File(buildApkPath, "tmp.apk");
+        File inApkFile = new File(PatchUtils.getExaExtractDir(), "dist/tmp.apk");
         try (RandomAccessFile apkFile = new RandomAccessFile(inApkFile, "r")) {
             DataSource in = DataSources.asDataSource(apkFile);
-            File outFile = new File(buildApkPath,"tmp_sign.apk");
             List<ApkSigner.SignerConfig> ecP256SignerConfig = Collections.singletonList(
                     getSignerConfig());//getDefaultSignerConfigFromResources(EC_P256_SIGNER_RESOURCE_NAME,false)
             ApkSigner.Builder apkSignerBuilder = new ApkSigner.Builder(ecP256SignerConfig)
@@ -49,7 +47,7 @@ public class SignApk implements Action {
                     .setV4SigningEnabled(false)
 //                    .setOtherSignersSignaturesPreserved(true)
                     .setInputApk(in)
-                    .setOutputApk(outFile);
+                    .setOutputApk(PatchUtils.getExaNewPatchedApk());
 
             apkSignerBuilder.build().sign();
             mAssetManager=null;

@@ -1,5 +1,7 @@
 package com.ewt45.patchapp.thread;
 
+import static com.ewt45.patchapp.patching.PatcherFile.TYPE_ASSETS;
+import static com.ewt45.patchapp.patching.PatcherFile.TYPE_LIB_ARMV7;
 import static com.ewt45.patchapp.patching.PatcherFile.TYPE_SMALI;
 import static com.ewt45.patchapp.patching.SmaliFile.ACTION_DELETE;
 import static com.ewt45.patchapp.patching.SmaliFile.ACTION_INSERT;
@@ -8,6 +10,7 @@ import static com.ewt45.patchapp.patching.SmaliFile.LOCATION_BEFORE;
 
 import android.util.Log;
 
+import com.ewt45.patchapp.MyApplication;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.patching.PatcherFile;
@@ -71,6 +74,7 @@ public class FuncFAB implements Func {
         sub1DriveD.updateSelfPackage();
         sub2Control.updateSelfPackage();
         sub3Pulseaudio.updateSelfPackage();
+
         return R.string.actmsg_funcfab;
     }
 
@@ -243,7 +247,8 @@ public class FuncFAB implements Func {
 //                    "/com/eltechs/axs/finiteStateMachine/FiniteStateMachine.smali"
             });
             //糟了，现在xegw也需要改Pointer.smali，所以只能检测一下非xegw才复制这个
-            if (!new File(PatchUtils.getPatchTmpDir(), "tmp/lib/armeabi-v7a/libXegw.so").exists()){
+            if (!new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXegw.so").exists()
+            && ! new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXlorie.so").exists()){
                 Log.d(TAG, "updateSelfPackage: x11 server为ex原始的，可以复制Pointer.smali");
                 PatcherFile.copy(TYPE_SMALI, new String[]{
                         "/com/eltechs/axs/xserver/Pointer.smali"});//控制鼠标是否允许移出屏幕

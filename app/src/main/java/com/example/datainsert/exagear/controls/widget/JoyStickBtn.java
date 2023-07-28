@@ -36,6 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.eltechs.axs.Finger;
+import com.eltechs.axs.GuestAppActionAdapters.MouseMoveAdapter;
 import com.eltechs.axs.PointerEventReporter;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
@@ -43,6 +44,7 @@ import com.example.datainsert.exagear.FAB.widget.SimpleItemSelectedListener;
 import com.example.datainsert.exagear.FAB.widget.SpinArrayAdapterSmSize;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.MouseViewportAdapter;
 import com.example.datainsert.exagear.controls.model.JoyParams;
 
 import java.util.ArrayList;
@@ -89,7 +91,17 @@ public class JoyStickBtn extends BaseMoveBtn {
     //    private ViewFacade mViewFacade;
     private ViewOfXServer mViewOfXServer;
     private PointerEventReporter mPointReporter;
-    private MousePosInject mMousePosInject;
+    private MouseMoveAdapter mMousePosInject;
+    /**
+     * 类型为鼠标移动时，两次发送鼠标移动事件的时间间隔（毫秒）。之后应该移到JoyParams中
+     * 先固定50吧。
+     */
+    public static int mTimerRepeatMs=25;
+    /**
+     * 类型为鼠标移动时，每次发送鼠标移动事件 移动的距离。之后应该移到JoyParams中
+     */
+    private static int mMouseMoveLength = 20;
+
 
     /**
      * 按钮和圆形背景直径
@@ -146,7 +158,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         mViewOfXServer = viewOfXServer;
         if (mViewOfXServer != null){
             mPointReporter = new PointerEventReporter(viewOfXServer);
-            mMousePosInject = new MousePosInject(mPointReporter,50);
+            mMousePosInject = new MouseViewportAdapter(mViewOfXServer,mPointReporter);
         }
     }
 
@@ -226,8 +238,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         if (mParams.getPresetKey() == MOUSE_MOVE) {
             //设置位置到中央
 //            mPointReporter.pointerMove(mViewOfXServer.getWidth() / 2f, mViewOfXServer.getHeight() / 2f);
-            if(mMousePosInject!=null)
-                mMousePosInject.stop();
+
         } else if (mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
             //松开按键,设置位置到中央
             mPointReporter.buttonReleased(mParams.getPresetKey().getKeys()[0]);
@@ -248,8 +259,8 @@ public class JoyStickBtn extends BaseMoveBtn {
     /**
      * 根据偏移量，注入对应方向的按键
      *
-     * @param dx
-     * @param dy
+     * @param dx 手指当前位置距摇杆中心点位置 x
+     * @param dy 手指当前位置距摇杆中心点位置 y
      */
     private void injectMultiKeysByDirections(float dx, float dy) {
         /*
@@ -264,14 +275,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         if (mParams.getPresetKey() == MOUSE_MOVE || mParams.getPresetKey() == MOUSE_LEFT_CLICK || mParams.getPresetKey() == MOUSE_RIGHT_CLICK) {
             //计算光标坐标。计算方法：按下点为圆心，半径为一个设定值（比如100），然后求出倍率 100 / 根号dx2+dy2， dx和dy乘以倍率就是光标相对圆心偏移的距离
             //然后怎么办，是移动到位置就不管了，还是只要没松手就每30/50毫秒传送一次坐标？
-
-            if(mMousePosInject!=null){
-                int fixedRadius = 100;
-                float ratio = (float) (fixedRadius/Math.sqrt(dx*dx+dy*dy));
-                mMousePosInject.updatePointPos(mCenterXYPoint.x+dx*ratio,mCenterXYPoint.y+dy*ratio);
-                mMousePosInject.start();
-            }
-
+            mMousePosInject.moveTo(dx,dy);
         } else {
             //先判断是否在0-3/8π范围内，确定上下，然后再判断是否在1/8π-1/2π范围内，叠加左右
             float tanCurrent = Math.abs(dx / dy);
@@ -386,7 +390,6 @@ public class JoyStickBtn extends BaseMoveBtn {
         LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_JoyEditKeys), spinKeys, false);
 //        setDialogTooltip(oneLineSpinKeyPos.getChildAt(0),"");
         linearRoot.addView(oneLineSpinKeyPos);
-
 
         linearRoot.addView(linearCustomOuter);
 

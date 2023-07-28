@@ -63,6 +63,28 @@ public class PatchUtils {
         return new File(getPatchTmpDir(), "patcher.apk");
     }
 
+    /**
+     * 获取用于获取功能smali的patcher apk 的解包后文件夹，位于/patchtmp/patcher
+     * @return
+     */
+    public static File getPatcherExtractDir(){
+        return  new File(getPatchTmpDir(),"patcher");
+    }
+
+    /**
+     * 获取exa apk解包后的文件夹。位于/patchtmp/tmp
+     * @return
+     */
+    public static File getExaExtractDir(){ return new File(getPatchTmpDir(),"tmp"); }
+
+    /**
+     * 获取添加功能后的已签名的exa apk。位于/patchtmp/tmp/dist/tmp_sign.apk
+     * @return file对象。该文件不一定存在
+     */
+    public static File getExaNewPatchedApk(){
+        return  new File(getExaExtractDir(),"dist/tmp_sign.apk");
+    }
+
     public static void copyToExternalFiles(Context c, Uri uri) throws Exception {
         //获取文件名
         List<String> list = uri.getPathSegments();

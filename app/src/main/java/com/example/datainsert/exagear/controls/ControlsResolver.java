@@ -41,7 +41,8 @@ public class ControlsResolver {
      */
     public final static String PREF_KEY_MOUSE_SENSITIVITY = "mouse_move_sensitivity";
     /**
-     * 转动视角模式。允许鼠标移出屏幕. 默认0
+     * 转动视角模式。允许鼠标移出屏幕. 默认0 （xegw 已改）
+     * 搭配注册表， 限制鼠标移动距离中心点的距离。仅在PREF_KEY_MOUSE_VIEWPORT_ENABLE为true时才可修改。范围1-61.默认20
      */
     public final static String PREF_KEY_MOUSE_OFFWINDOW_DISTANCE = "mouse_off_distance";
     /**
@@ -52,6 +53,19 @@ public class ControlsResolver {
      * 按钮是否使用圆形。默认为false，即形状使用默认样式的方形。
      */
     public final static String PREF_KEY_BTN_ROUND_SHAPE = "btn_round_shape";
+
+    /**
+     * 是否启动鼠标移动距离限制。默认为false。若启用，则同时启用调整距离的seekbar。搭配注册表作为第一人称视角移动速度
+     */
+    public final static String PREF_KEY_MOUSE_VIEWPORT_ENABLE = "mouse_viewport_enable";
+
+    /**
+     * 当鼠标移动作为视角移动时，发送移动事件的时间间隔。
+     * 范围5-105.默认25（值为20）. getPreference().getInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL,20)+5
+     * 仅当PREF_KEY_MOUSE_VIEWPORT_ENABLE为true时启用
+     */
+    public final static String PREF_KEY_MOUSE_VIEWPORT_INTERVAL = "mouse_viewport_interval";
+
 
     public static XServerDisplayActivityInterfaceOverlay getCurrentControls(Controls controls) {
 //        //如果preference不存在，不写入直接获取会出错吗(没问题）

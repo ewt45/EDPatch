@@ -142,7 +142,9 @@ public class RegularKeyBtn extends BaseMoveBtn {
         //如果是连发，切换颜色
         if (mOneKey.isTrigger()) {
             isKeepingPress = !isKeepingPress;
+//            ((RippleDrawable)getBackground()).setColor(ColorStateList.valueOf(isKeepingPress ? mTxColor : mBgColor));
             setBackgroundTintList(ColorStateList.valueOf(isKeepingPress ? mTxColor : mBgColor));
+            getBackground().setAlpha(getPreference().getInt(PREF_KEY_BTN_ALPHA, 255));
             setTextColor(isKeepingPress ? mBgColor : mTxColor);
         }
     }

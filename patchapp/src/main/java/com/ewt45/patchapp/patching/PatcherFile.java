@@ -23,6 +23,7 @@ import java.util.Map;
 public class PatcherFile {
     public final static int TYPE_SMALI = 0;
     public final static int TYPE_ASSETS = 1;
+    public final static int TYPE_LIB_ARMV7 = 2;
     static String TAG = "PatcherFile";
 
     /**
@@ -50,6 +51,8 @@ public class PatcherFile {
             subfolder = "smali";
         else if (type == TYPE_ASSETS)
             subfolder = "assets";
+        else if (type == TYPE_LIB_ARMV7)
+            subfolder = "lib/armeabi-v7a";
         else
             subfolder = "";
 
@@ -58,15 +61,21 @@ public class PatcherFile {
 
             //要求传的不带*和/了，文件还是文件夹自己判断
             for (String str : names) {
-                File oneFile = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/" + subfolder + str);
+                File oneFile = new File(PatchUtils.getPatcherExtractDir(),subfolder + str);
+                if(!oneFile.exists()){
+                    Log.e(TAG, "copy: 该文件不存在，无法复制："+oneFile.getAbsolutePath() );
+                    continue;
+                }
                 if (oneFile.isDirectory())
                     fileList.addFirst(oneFile);
                 else {
                     //如果是文件，需要考虑到内部类（即同类名，但带$的smali）
                     fileList.add(oneFile);
                     File parent = oneFile.getParentFile();
-                    String baseFileName = oneFile.getName().substring(0, oneFile.getName().length() - ".smali".length());
-                    if (parent == null)
+                    String baseFileName = oneFile.getName().length() > ".smali".length()
+                            ? oneFile.getName().substring(0, oneFile.getName().length() - ".smali".length())
+                            : null;
+                    if (parent == null || baseFileName == null)
                         continue;
                     File[] innerClasses = parent.listFiles((dir, name) -> name.startsWith(baseFileName + "$"));
                     if (innerClasses != null)
@@ -118,20 +127,6 @@ public class PatcherFile {
                 } else {
                     FileUtils.copyFile(srcFile, new File(dstPath));
                 }
-
-//                if (str.endsWith("*")) {
-//                    //如果是目录，就去掉斜线和星号
-//                    String substring = str.substring(0, str.length() - 2);
-//                    String srcPath = PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/" + subfolder + substring;
-//                    String dstPath = PatchUtils.getPatchTmpDir().getAbsolutePath() + "/tmp/" + subfolder + substring;
-//                    //复制目录,应该会覆盖原有文件吧？
-//                    FileUtils.copyDirectory(new File(srcPath), new File(dstPath));
-//                } else {
-//                    String srcPath = PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/" + subfolder + str;
-//                    String dstPath = PatchUtils.getPatchTmpDir().getAbsolutePath() + "/tmp/" + subfolder + str;
-//                    FileUtils.copyFile(new File(srcPath), new File(dstPath));
-//                }
-
             }
         }
 

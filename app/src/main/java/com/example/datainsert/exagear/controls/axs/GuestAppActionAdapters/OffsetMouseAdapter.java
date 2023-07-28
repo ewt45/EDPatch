@@ -20,6 +20,10 @@ public class OffsetMouseAdapter implements MouseMoveAdapter {
     float[] downPointerXYInView = {0,0};
     //上次moveTo接收到的dx和dy。如果都是0就不注入这次事件了
     float[] lastDeltaXY = {0,0};
+    public OffsetMouseAdapter(ViewOfXServer viewOfXServer, PointerEventReporter pointerEventReporter){
+        this.viewOfXServer = viewOfXServer;
+        this.mReporter = pointerEventReporter;
+    }
     public OffsetMouseAdapter(GestureContext gestureContext) {
         this.viewOfXServer = gestureContext.getHostView();
         this.mReporter  =gestureContext.getPointerReporter();
