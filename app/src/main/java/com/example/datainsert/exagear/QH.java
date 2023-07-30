@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
@@ -103,7 +104,7 @@ public class QH {
     }
 
     /**
-     * 自己的代码都用同一个sharePreference吧。通过这个函数获取。
+     * 自己的代码都用同一个sharePreference吧。通过这个函数获取。 preference名 {@link #MY_SHARED_PREFERENCE_SETTING}
      * 写入或读取。写入:.edit().apply()
      */
     public static SharedPreferences getPreference() {
@@ -199,6 +200,12 @@ public class QH {
 
     }
 
+//    /**
+//     * d8 （android gradle plugin 8.1.0) 优化会把不同类的api判断整合到一个类中，导致复制时无法判断应该复制哪些。试试用这种方法回避
+//     */
+//    public static boolean requireMinSDK(int version){
+//        return Build.VERSION.SDK_INT >= version;
+//    }
     public static class Files{
         /**
          * 日志输出的文件夹。设为Android/data/包名/files/logs
@@ -212,4 +219,6 @@ public class QH {
             return logDir;
         }
     }
+
+
 }

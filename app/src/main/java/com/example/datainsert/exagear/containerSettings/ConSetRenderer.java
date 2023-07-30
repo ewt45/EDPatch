@@ -24,6 +24,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,20 +32,50 @@ import java.util.Map;
 
 public class ConSetRenderer {
     public static final String DEFAULT_RENDERER_TXT_CONTENT = "" +
-            "# 每个key代表一种渲染方式，该值不能随意修改。name代表环境设置中此选项显示的名称。path代表选择该选项后，启动容器时设置的LD_LIBRARY_PATH路径。若缺少name行或path行，该渲染方式不会显示在选项中。" +
-            "\n# Each 'key' represents a renderer, its value shouldn't be changed. 'name' represents the name of this renderer option in container settings. 'path' represents the path to LD_LIBRARY_PATH that is set when the container is started. 'key' with no 'name' or 'path' line will not be added to options in container settings." +
-            "\n\nkey:" + RenEnum.LLVMPipe + "\n  name:LLVMPipe" + "\n  path:/opt/lib/llvm" +
-            "\n\nkey:" + RenEnum.VirGL_Overlay + "\n  name:VirGL Overlay" + "\n  path:/opt/lib/vo" +
-            "\n\nkey:" + RenEnum.VirGL_built_in + "\n  name:VirGL built-in" + "\n  path:/opt/lib/vb" +
-            "\n\nkey:" + RenEnum.VirtIO_GPU + "\n  name:VirtIO-GPU" + "\n  path:/opt/lib/vg" +
-            "\n\nkey:" + RenEnum.Turnip_Zink + "\n  name:Turnip Zink" + "\n  path:/opt/lib/tz" +
-            "\n\nkey:" + RenEnum.Turnip_DXVK + "\n  name:Turnip DXVK" + "\n  path:/opt/lib/td";
-    private static final String TAG = "ConSetRenderer";
+            "# 每个key代表一种渲染方式，该值不能随意修改。name代表环境设置中此选项显示的名称。env代表选择该选项后，启动容器时设置环境变量。其中LD_LIBRARY_PATH路径可以存放libGl.so.1等文件。删去某个key及其对应name,env行后，该渲染方式不会显示在选项中。" +
+            "\n# Each 'key' represents a renderer, its value shouldn't be changed. 'name' represents the name of this renderer option in container settings. 'env' is the env variables added when launching container. LD_LIBRARY_PATH is the path where libs like libGL.so.1 are placed. Delete 'key', 'name', 'env' lines and its corresponding renderer will not be added to options in container settings." +
+
+            "\n\nkey:" + RenEnum.LLVMPipe +
+            "\n  name:LLVMPipe" +
+            "\n  env:LD_LIBRARY_PATH=/opt/lib/llvm" +
+            "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.i686.json" +
+
+            "\n\nkey:" + RenEnum.VirGL_Overlay +
+            "\n  name:VirGL Overlay" +
+            "\n  env:LD_LIBRARY_PATH=/opt/lib/vo" +
+            "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/virtio_icd.i686.json" +
+            "\n  env:VTEST_WIN=1" +
+            "\n  env:VTEST_SOCK=" +
+
+            "\n\nkey:" + RenEnum.VirGL_built_in +
+            "\n  name:VirGL built-in" +
+            "\n  env:LD_LIBRARY_PATH=/opt/lib/vb" +
+            "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/virtio_icd.i686.json" +
+
+            "\n\nkey:" + RenEnum.VirtIO_GPU +
+            "\n  name:VirtIO-GPU" +
+            "\n  env:LD_LIBRARY_PATH=/opt/lib/vg" +
+            "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/virtio_icd.i686.json" +
+
+            "\n\nkey:" + RenEnum.Turnip_Zink +
+            "\n  name:Turnip Zink" +
+            "\n  env:LD_LIBRARY_PATH=/opt/lib/tz" +
+            "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/freedreno_icd.i686.json" +
+
+            "\n\nkey:" + RenEnum.Turnip_DXVK +
+            "\n  name:Turnip DXVK" +
+            "\n  env:LD_LIBRARY_PATH=/opt/lib/td" +
+            "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/freedreno_icd.i686.json" +
+            "\n  env:GALLIUM_DRIVER=zink" +
+            "\n  env:MESA_VK_WSI_DEBUG=sw";
     /**
      * 1: 初次添加
      * 2: 路径和名称存在/opt/renderers.txt中。点击选项下方有文字提示修改了哪些内容
+     * 3: renderers.txt 中，改为存储环境变量，以便用户可以自定义 （icd，为dxvk的tz指定不同的libvulkan_freedreno.so）
      */
-    private static final int VERSION_FOR_EDPATCH = 2;
+    private static final int VERSION_FOR_EDPATCH = 3;
+    private static final String TAG = "ConSetRenderer";
+
     /**
      * 从/opt/renderers.txt读取并存储到map.
      * <p>
@@ -55,9 +86,9 @@ public class ConSetRenderer {
      */
     public static Map<String, Bundle> renderersMap = new LinkedHashMap<>();//要求有序，否则顺序会乱
 
-    static {
-        ConSetRenderer.readRendererTxt();
-    }
+//    static {
+//        ConSetRenderer.readRendererTxt();
+//    }
 
     /**
      * 从/opt/renderers.txt读取并存储到map
@@ -82,29 +113,29 @@ public class ConSetRenderer {
 
             for (int i = 0; i < lines.size(); i++) {
                 String trimLine = lines.get(i).trim();
-                if (trimLine.startsWith("#") || trimLine.equals("") || i + 3 > lines.size())
+                if (trimLine.startsWith("#") || trimLine.equals(""))
                     continue;
 
-                if (!(trimLine.startsWith("key:") || i + 3 <= lines.size()))
+                if (!trimLine.startsWith("key:") || i + 1 >= lines.size() || !lines.get(i + 1).trim().startsWith("name:"))
                     continue;
 
-                //读取三个属性
-                String localLine;
-                localLine = lines.get(i).trim();
-                String key = localLine.startsWith("key:") ? localLine.substring("key:".length()).trim() : null;
-                localLine = lines.get(i + 1).trim();
-                String name = localLine.startsWith("name:") ? localLine.substring("name:".length()).trim() : null;
-                localLine = lines.get(i + 2).trim();
-                String path = localLine.startsWith("path:") ? localLine.substring("path:".length()).trim() : null;
+                //读取2个属性
+                String key = lines.get(i).trim().substring("key:".length()).trim();
+                i++;
+                String name = lines.get(i).trim().substring("name:".length()).trim();
 
-                if (key != null && name != null && path != null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", name);
-                    bundle.putString("path", path);
-                    renderersMap.put(key, bundle);
-
-                    i += 2;//只有在完整读取三行之后才跳到第三行，否则不管，让for自动一行一行过渡
+                //读取环境变量
+                ArrayList<String> envList = new ArrayList<>();
+                while (i + 1 < lines.size() && lines.get(i + 1).trim().startsWith("env:")) {
+                    envList.add(lines.get(i + 1).trim().substring("env:".length()).trim());
+                    i++;
                 }
+
+                Bundle bundle = new Bundle();
+                bundle.putString("name", name);
+                bundle.putStringArrayList("env", envList);
+                renderersMap.put(key, bundle);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -152,9 +183,17 @@ public class ConSetRenderer {
             //每一项太长了，先默认缩成一行，点击展开
             Bundle rendBundle = renderersMap.get(keys[i].toString()); //一定能获取到，因为上面获取renEnum如果报错就不会走到这
             assert rendBundle != null;
-            String infoTotal = String.format("LD_LIBRARY_PATH=%s", rendBundle.getString("path")) +
-                    ((renEnum.info.length() > 0) ? "\n" + renEnum.info : "");
-            for (String oneStr : infoTotal.split("\n")) {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            ArrayList<String> envList = rendBundle.getStringArrayList("env");
+            assert envList!=null;
+            for (String s : envList)
+                stringBuilder.append(s).append('\n');
+            stringBuilder.append(renEnum.info);
+
+            for (String oneStr : stringBuilder.toString().split("\n")) {
+                if(oneStr.equals(""))
+                    continue;
                 TextView tvInfo = new TextView(c);
                 tvInfo.setTextIsSelectable(true);
 //                tvInfo.setLineSpacing(0, 1.2f);
@@ -199,18 +238,14 @@ public class ConSetRenderer {
      * 需要在添加环境变量的那个action（即外部）获取对应的字符串，如果硬编码，modder需要修改两处，可能会忽略。用enum只需要改一处即可。
      */
     public enum RenEnum {
-        LLVMPipe("VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.i686.json"),
-        VirGL_Overlay("VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.i686.json" +
-                "\nVTEST_WIN=1" +
-                "\nVTEST_SOCK="),
-        VirGL_built_in("VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.i686.json" +
-                "\nTMPDIR=z:/tmp libvirgl_test_server.so"),
+        LLVMPipe(""),
+        VirGL_Overlay(""),
+        VirGL_built_in("TMPDIR=z:/tmp libvirgl_test_server.so"),
         VirtIO_GPU("new Mcat().start()"),
         Turnip_Zink(""),
-        Turnip_DXVK("GALLIUM_DRIVER=zink" +
-                "\nMESA_VK_WSI_DEBUG=sw"),
+        Turnip_DXVK(""),
         ;
-        public final String info ;
+        public final String info;
 
         RenEnum(String s) {
             info = s;

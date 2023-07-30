@@ -38,7 +38,11 @@ public class AboutFab extends BaseFragment {
      * 首次安装应用后显示提示。默认false表示还没显示过提示。
      */
     private static final String PREF_FIRST_LAUNCH_INFO_SHOWN = "PREF_FIRST_LAUNCH_INFO_SHOWN";
+    /**
+     * 走到这里时，应用是否曾经启动过了。（虽然如果process被杀了再重建这个会变为false）
+     */
     private static boolean appFirstLaunching = true;
+    private static boolean logcatStarted = false;
 
 
 
@@ -115,8 +119,8 @@ public class AboutFab extends BaseFragment {
      */
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-        boolean firstLaunch = !QH.isTesting() && getPreference().getBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, false);
-        if (!firstLaunch) {
+        boolean disableShowInfo = !QH.isTesting() && getPreference().getBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, false);
+        if (!disableShowInfo) {
             getPreference().edit().putBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, true).apply();
             Snackbar snackbar = Snackbar.make(FabMenu.getMainFrameView(activity), getS(RR.firstLaunch_snack), Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction(android.R.string.yes, v -> snackbar.dismiss());
@@ -125,7 +129,7 @@ public class AboutFab extends BaseFragment {
 
 
         //尝试重定向logcat到文件中：
-        redirectLogcat();
+        redirectLogcat();  
     }
 
     /**
@@ -133,7 +137,8 @@ public class AboutFab extends BaseFragment {
      * 要求：app为第一次启动（否则每次退出容器就被清空了） 并且 d盘对应目录存在名为logcat文件夹
      */
     private void redirectLogcat() {
-        if(!appFirstLaunching)
+
+        if(!(appFirstLaunching || !logcatStarted))
             return;
         appFirstLaunching = false;
 
@@ -141,15 +146,17 @@ public class AboutFab extends BaseFragment {
         File logcatFile = new File(logcatDir,"logcat.txt");
         if(!logcatDir.exists())
             return;
-        if(logcatFile.length()>5*1024*1024 && !logcatFile.delete())
+        if(logcatFile.exists() && !logcatFile.delete())
             return;
         try {
             System.out.println("callWhenFirstStart: 不执行吗？");
             Runtime.getRuntime().exec("logcat -f "+logcatFile.getAbsolutePath()+" *:V" );// "*:S",
 //            Process process = Runtime.getRuntime().exec(new String[]{"killall","-9","logat;","/system/bin/logat","-c;","/system/bin/logcat","-f",filePath });
+            logcatStarted=true;
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override

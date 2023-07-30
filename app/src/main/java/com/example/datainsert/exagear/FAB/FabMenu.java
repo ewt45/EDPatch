@@ -19,6 +19,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.AboutFab;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
+import com.example.datainsert.exagear.FAB.dialogfragment.Xegw2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
@@ -78,6 +79,8 @@ public class FabMenu {
         fragmentClsArray.add(DriveD.class);
         fragmentClsArray.add(CustomControls.class);
         fragmentClsArray.add(PulseAudio.class);
+        if(QH.classExist("com.termux.x11.CmdEntryPoint"))
+            fragmentClsArray.add(Xegw2.class); //仅当xegw 2.0存在时才显示该选项
         fragmentClsArray.add(AboutFab.class);
         //先调用一次初次启动需要执行的操作
         for (Class<? extends BaseFragment> clz : fragmentClsArray) {

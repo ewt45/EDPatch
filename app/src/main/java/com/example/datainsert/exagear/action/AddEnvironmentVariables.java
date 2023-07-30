@@ -14,6 +14,7 @@ import static com.example.datainsert.exagear.mutiWine.MutiWine.KEY_WINE_INSTALL_
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.eltechs.axs.Globals;
@@ -35,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +52,7 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
     /**
      * 可能多个地方用到的，放到成员变量里，最后再加入。每次拼接的时候，路径前带冒号(e.g.  LD_LIBRARY_PATH.insert(0,ldPath).insert(0,':'); )
      */
-    private StringBuilder LD_LIBRARY_PATH = new StringBuilder(":/usr/lib/i386-linux-gnu");
+    private final StringBuilder LD_LIBRARY_PATH = new StringBuilder(":/usr/lib/i386-linux-gnu");
 
     public AddEnvironmentVariables() {
 
@@ -98,8 +100,10 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             if (ContainerSettingsFragment.enable_different_renderers) {
                 addRendererPath(sp, ubtConfig);
             }
-        } catch (Exception | NoSuchFieldError e) {
+        } catch ( NoSuchFieldException  | NoSuchFieldError e) {
             Log.w(TAG, "execute: 功能未安装：环境设置-渲染器新选择" + e.getMessage());
+        } catch (Exception e){
+            Log.w(TAG, "execute: 执行过程中出错？" ,e);
         }
         //最后再添加动态库路径环境变量到ubt（不对，如果这样会覆盖上一次的，要求没改LD的话就不添加。主要是适配多wine v1 且每添加新渲染设置的情况）
         List<String> envList = ubtConfig.getGuestEnvironmentVariables();
@@ -143,15 +147,8 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             }
 
         //一些渲染的额外设置
-        if (LLVMPipe.toString().equals(rendererName)) {
-//            ubtConfig.addEnvironmentVariable("GALLIUM_DRIVER", "llvmpipe"); //gallium其实不指定也行吧
-            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/lvp_icd.i686.json"); //除turnip外其余都不指定vulkan，不过llvm以后或许可以用lavapipe
-        } else if (VirGL_Overlay.toString().equals(rendererName)) {
-            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
-            ubtConfig.addEnvironmentVariable("VTEST_WIN", "1");            //默认取消悬浮窗
-            ubtConfig.addEnvironmentVariable("VTEST_SOCK", "");
-        } else if (VirGL_built_in.toString().equals(rendererName)) {
-            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
+        if (VirGL_built_in.toString().equals(rendererName)) {
+//            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
             File logFile = new File(QH.Files.logsDir(), "virglLog.txt");
             try {
                 //调用so
@@ -170,50 +167,32 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
                 e.printStackTrace();
             }
         } else if (VirtIO_GPU.toString().equals(rendererName)) {
-            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
+//            ubtConfig.addEnvironmentVariable("VK_ICD_FILENAMES", "/usr/share/vulkan/icd.d/virtio_icd.i686.json");
             if (QH.classExist("com.eltechs.axs.MCat")) {
                 if (mcat == null)
                     mcat = new Mcat();
                 mcat.start();
             }
-        } else if (Turnip_Zink.toString().equals(rendererName)) {
-
-        } else if (Turnip_DXVK.toString().equals(rendererName)) {
-            ubtConfig.addEnvironmentVariable("GALLIUM_DRIVER", "zink");
-            ubtConfig.addEnvironmentVariable("MESA_VK_WSI_DEBUG", "sw");
         }
 
-        //渲染对应的路径从map中获取。map通过刚才的readRendererTxt初始化，从本地txt中读取
-        String ldPath = Objects.requireNonNull(renderersMap.get(rendererName)).getString("path");
-        if (ldPath != null && !"".equals(ldPath))
-            LD_LIBRARY_PATH.insert(0, ldPath).insert(0, ":");
+        //添加环境变量（包括LD_LIBRARY_PATH）
+        Bundle bundle = renderersMap.get(rendererName);
+        assert bundle != null;
+        ArrayList<String> envList = bundle.getStringArrayList("env");
+        assert envList != null;
+        for (String oneEnv : envList) {
+            String[] oneEnvSplit = oneEnv.trim().split("=", 2);
+            if (oneEnvSplit.length != 2)
+                continue;
+            if (oneEnvSplit[0].equals("LD_LIBRARY_PATH")) {
+                if (!"".equals(oneEnvSplit[1]))
+                    LD_LIBRARY_PATH.insert(0, oneEnvSplit[1]).insert(0, ":");
+            } else{
+                ubtConfig.addEnvironmentVariable(oneEnvSplit[0], oneEnvSplit[1]);
+            }
+        }
 
-        Log.d(TAG, "getEnvVarBin: 渲染路径为" + ldPath + ", 模式为" + rendererName);
-
-
-//        String[] rendererValues = {""};
-//        try {
-//            rendererValues = getAppContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_renderer_values, 0x7f030009));
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        String renderer = sp.getString(KEY_RENDERER, rendererValues[0]);
-//        String ldPath = ""; //不同渲染模式选择不同链接库路径
-//        if ("llvmpipe".equals(renderer))
-//            ldPath = "/usr/bin/llvmpipe";
-//        else if ("virgloverlay".equals(renderer)) {
-//            //如果是vo，顺便添加一下vtest_win
-//            ubtConfig.addEnvironmentVariable("VTEST_WIN","1");
-//            ubtConfig.addEnvironmentVariable("VTEST_SOCK","");
-//            ldPath = "/usr/bin/virgloverlay";
-//        } else if ("virpipe".equals(renderer))
-//            //这里 三合一 vtest叫virpipe，ubt启动设置那个类里，只有判断是virpipe的时候才会new MCat().改动时注意
-//            ldPath = "/usr/bin/vtest";
-//        else if ("gallium_xlib_zink_turnip".equals(renderer))
-//            ldPath = "/usr/bin/zink";
-//
-//        LD_LIBRARY_PATH.insert(0,':').insert(0,ldPath);
-//        Log.d(TAG, "getEnvVarBin: 渲染路径为" + ldPath + ", 模式为" + renderer);
+        Log.d(TAG, String.format("所选渲染模式：%s, 环境变量：%s",rendererName, envList));
     }
 
 

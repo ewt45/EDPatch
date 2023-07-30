@@ -1,5 +1,13 @@
 package com.eltechs.axs.activities;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -91,14 +99,20 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
 
     public void hideDecor() {
         final View decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(7942);
+        decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
         decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() { // from class: com.eltechs.axs.activities.XServerDisplayActivity.1MyOnSystemUiVisibilityChangeListener
             @Override // android.view.View.OnSystemUiVisibilityChangeListener
             public void onSystemUiVisibilityChange(int i) {
                 if (i == 0) {
-                    decorView.setSystemUiVisibility(260);
+                    decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE); //260
                 } else {
-                    decorView.setSystemUiVisibility(5894);
+                    decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            |SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    ); //5894
                 }
             }
         });
