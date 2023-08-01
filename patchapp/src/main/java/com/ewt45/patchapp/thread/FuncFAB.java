@@ -39,6 +39,7 @@ public class FuncFAB implements Func {
         Sub1DriveD sub1DriveD = new Sub1DriveD();
         Sub2Control sub2Control = new Sub2Control();
         Sub3Pulseaudio sub3Pulseaudio = new Sub3Pulseaudio();
+        Sub4Xegw sub4Xegw = new Sub4Xegw();
 
         int mergeVersion = getInstalledVersion();
 
@@ -63,6 +64,11 @@ public class FuncFAB implements Func {
             sub3Pulseaudio.firstInstall();
         }
 
+        if (((mergeVersion >> 12) & 0x0000000f) == INVALID_VERSION) {
+            Log.d(TAG, "call: 首次安装子功能-xegw");
+            sub4Xegw.firstInstall();
+        }
+
         //复制自己的类
         Log.d(TAG, "btnStartPatch: 开始复制自己的smali");
         PatcherFile.copy(TYPE_SMALI, new String[]{
@@ -74,6 +80,7 @@ public class FuncFAB implements Func {
         sub1DriveD.updateSelfPackage();
         sub2Control.updateSelfPackage();
         sub3Pulseaudio.updateSelfPackage();
+        sub4Xegw.updateSelfPackage();
 
         return R.string.actmsg_funcfab;
     }
@@ -154,17 +161,25 @@ public class FuncFAB implements Func {
 
     @Override
     public int getLatestVersion() {
-        //由多个版本号构成，每个占4位
+    /*
+    由多个版本号构成，每个占4位
 
-        /*
-        自定义d盘的版本号，如果这个为0说明整个fabmenu没有
-        1：初版（旧版没写入版本号）
-        2：初次安装后会自动创建Exagear文件夹
-         */
-        return 0x2
-                | 0x1 << 4//自定义按键的版本号
-                | 0x1 << 8 //pulseaudio
-                ;
+    自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+    1：初版（旧版没写入版本号）
+    2：初次安装后会自动创建Exagear文件夹
+
+    自定义按键的版本号
+    2: 修改了第一人称视角的移动逻辑。修复长按按钮 透明度消失问题
+
+    pulseaudio
+    2：保留 deamon.conf
+     */
+        return
+                0x2 //自定义d盘的版本号
+                        | 0x2 << 4 //自定义按键的版本号
+                        | 0x2 << 8 //pulseaudio
+                        | 0x1 << 12 //Xegw
+        ;
 
     }
 
@@ -272,6 +287,18 @@ public class FuncFAB implements Func {
             new FuncAddEnvs().call();
             //用到的xsdl的so库
             PatcherFile.copy(PatcherFile.TYPE_ASSETS, new String[]{"/pulseaudio-xsdl.zip"});
+
+        }
+    }
+
+    /**
+     * 1: 可选-legacy-drawing选项
+     */
+    public static class Sub4Xegw{
+        public void firstInstall(){
+
+        }
+        public void updateSelfPackage(){
 
         }
     }

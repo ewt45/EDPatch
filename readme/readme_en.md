@@ -30,6 +30,7 @@ So I'm wondering if I can make an application. The user only needs to click a bu
   - Custom location of drive D
   - Custom Control
   - PulseAudio (XSDL)
+  - Xegw
 - [show cursor](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [container settings - custom resolution](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [android 11+ soft-input no-crashing](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
@@ -52,6 +53,19 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 
 ## Change Log
 
+### v0.0.6
+- New functions available:
+1. Xegw: In the gear button. Provide -legacy-drawing param to solve the problem of only a black screen with an arrow mouse displaying.
+
+- Old functions updated:
+1. pulseaudio: keep .config/pulse/deamon.conf while deleting other cache files.
+2. Custom Control
+  - First-person viewport movement: Renamed to Restrict mouse movement. Two options are shown when checked: Position-update interval and Limited distance. New mouse movement option for joystick buttons. Touchpad mode is also adjusted to limit or not the movement distance according to the settings.
+  - Fix the problem of transparency lost when button is in long-press mode.
+3. container settings - renderers:In renderer.txt, 'path' lines are changed to 'env' lines, so that more custom env params can be added by user，After upgrading this function, it is recommended to delete /opt/renderers.txt and then open the container settings once to see the formatting in the automatically generated txt.
+
+- Others:
+1. Disable Install button if there's no patched apk.
 
 ### v0.0.5
 - New functions available:
@@ -70,7 +84,7 @@ So I'm wondering if I can make an application. The user only needs to click a bu
      - virtio-gpu: start Mcat. Before Xegw, mcat is used to start proot environment for this renderer, but in xegw it is rewriten to launch /opt/start.sh and won't launch proot automatically.
 
 - Others:
-  - apk size shrunk.
+1. apk size shrunk.
 
 
 ### v0.0.4

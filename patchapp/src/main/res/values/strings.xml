@@ -11,7 +11,7 @@
     <string name="actmsg_funcfab">add function: float action button</string>
     <string name="actmsg_funcresl">add function: custom resolution</string>
     <string name="funcname_cursorimg">show cursor</string>
-    <string name="funcname_fab">float action button - Custom location of drive D - Custom Control - PulseAudio (XSDL)</string>
+    <string name="funcname_fab">float action button\n - Custom location of drive D\n - Custom Control\n - PulseAudio (XSDL)\n - Xegw</string>
     <string name="funcname_prefresl">container settings - custom resolution</string>
     <string name="funcname_softinput">android 11+ soft-input no-crashing</string>
     <string name="btntxt_startpatch">start patch</string>

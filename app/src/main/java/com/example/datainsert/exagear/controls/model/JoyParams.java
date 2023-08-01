@@ -77,7 +77,7 @@ public class JoyParams implements Serializable {
     public enum PresetKey {
         WASD(new int[]{17, 31, 30, 32}, "W A S D"),
         ARROWS(new int[]{103, 108, 105, 106}, "↑ ↓ ← →"),
-        MOUSE_MOVE(new int[]{0,0,0,0}, "鼠标移动"),
+        MOUSE_MOVE(new int[]{0,0,0,0}, "\uD83D\uDDB1️️"),//🖱️
         MOUSE_LEFT_CLICK(new int[]{1, 1, 1, 1}, "鼠标左键点击"),
         MOUSE_RIGHT_CLICK(new int[]{3, 3, 3, 3}, "鼠标右键点击"),
         CUSTOM(new int[]{17, 31, 30, 32}, getS(RR.cmCtrl_JoyEditKeyCstm)),

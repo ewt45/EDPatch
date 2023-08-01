@@ -19,7 +19,7 @@
     <string name="tv_patchstep1">1. 选择apk</string>
     <string name="btntxt_selectapkinstalled">已安装应用</string>
     <string name="btntxt_selectapkfiles">本地文件</string>
-    <string name="funcname_fab">悬浮操作按钮\n - 自定义D盘路径\n - 自定义操作模式\n - PulseAudio (XSDL)</string>
+    <string name="funcname_fab">悬浮操作按钮\n - 自定义D盘路径\n - 自定义操作模式\n - PulseAudio (XSDL)\n - Xegw</string>
     <string name="funcname_fab_drived">自定义D盘路径（悬浮操作按钮）</string>
     <string name="funcname_fab_cstmCtrl">自定义操作模式（悬浮操作按钮）</string>
     <string name="funcname_cursorimg">强制显示鼠标光标</string>

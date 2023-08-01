@@ -10,7 +10,7 @@
     <string name="funcname_cursorimg">Отображать курсор</string>
     <string name="actmsg_funcfab">добавление функции: кнопки настроек</string>
     <string name="actmsg_funcresl">добавление функции: выбора разрешений экрана</string>
-    <string name="funcname_fab">Кнопка настроек - Выбор локации диска D - Кастомное управление - PulseAudio (XSDL)</string>
+    <string name="funcname_fab">Кнопка настроек \n - Выбор локации диска D\n - Кастомное управление \n - PulseAudio (XSDL)\n -Xegw</string>
     <string name="funcname_prefresl">Настройки контейнера - Кастомное разрешение</string>
     <string name="funcname_softinput">Исправление работы клавиатуры на android 11+</string>
     <string name="btntxt_startpatch">запуск исправлений</string>

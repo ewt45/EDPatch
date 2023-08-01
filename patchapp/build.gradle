@@ -33,7 +33,12 @@ android {
         baseline = file("lint-baseline.xml")
     }
 }
-
+// 自定义打包名称
+android.applicationVariants.configureEach { variant ->
+    variant.outputs.configureEach {
+        outputFileName = "EDPatch-beta.apk"
+    }
+}
 dependencies {
 
     //noinspection GradleCompatible

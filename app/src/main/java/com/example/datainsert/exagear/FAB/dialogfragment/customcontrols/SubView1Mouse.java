@@ -3,6 +3,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
+import static com.example.datainsert.exagear.RR.cmCtrl_s1_msMoveViewport;
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_MOVE_RELATIVE;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_MOUSE_OFFWINDOW_DISTANCE;
@@ -110,15 +111,16 @@ public class SubView1Mouse extends LinearLayout {
         mouseMoveLenSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,progress).apply()));
         mouseMoveLenSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,20));
 
+        String[] viewportStrs = getS(RR.cmCtrl_s1_msMoveViewport).split("\\$");
         viewportOptions = new LinearLayout(c);
         viewportOptions.setOrientation(LinearLayout.HORIZONTAL);
-        viewportOptions.addView(getOneLineWithTitle(c,"更新位置时间间隔",repeatIntervalSeek,true),seekParams);
-        viewportOptions.addView(getOneLineWithTitle(c,"每次鼠标移动距离",mouseMoveLenSeek,true),seekParams);
+        viewportOptions.addView(getOneLineWithTitle(c,viewportStrs[1],repeatIntervalSeek,true),seekParams);
+        viewportOptions.addView(getOneLineWithTitle(c,viewportStrs[2],mouseMoveLenSeek,true),seekParams);
         viewportOptions.getChildAt(0).setPadding(0,0,0,0);
         viewportOptions.getChildAt(1).setPadding(0,0,0,0);
 
         checkMsViewport = new CheckBox(c);
-        checkMsViewport.setText("限制移动距离");
+        checkMsViewport.setText(viewportStrs[0]);
         checkMsViewport.setOnCheckedChangeListener((buttonView, isChecked) -> {
             getPreference().edit().putBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,isChecked).apply();
             clickedMoveViewport(isChecked);
@@ -126,9 +128,7 @@ public class SubView1Mouse extends LinearLayout {
         checkMsViewport.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,false));
 
 //        LinearLayout linearSeekViewport = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msOffScr),seekViewport,true);
-
-
-        setDialogTooltip(checkMsViewport, getS(RR.cmCtrl_s1_msOffScrTip));
+//        setDialogTooltip(checkMsViewport, getS(RR.cmCtrl_s1_msOffScrTip));
         addView(checkMsViewport);
         addView(viewportOptions);
 

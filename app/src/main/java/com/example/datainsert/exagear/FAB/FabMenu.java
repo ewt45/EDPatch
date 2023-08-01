@@ -30,16 +30,25 @@ import java.util.List;
 public class FabMenu {
     private static final String TAG = "FabMenu";
 
-    //由多个版本号构成，每个占4位
+
+    /*
+    由多个版本号构成，每个占4位
+
+    自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+    1：初版（旧版没写入版本号）
+    2：初次安装后会自动创建Exagear文件夹
+
+    自定义按键的版本号
+    2: 修改了第一人称视角的移动逻辑。修复长按按钮 透明度消失问题
+
+    pulseaudio
+    2：保留 deamon.conf
+     */
     private static final int VERSION_FOR_EDPATCH =
-            /*
-            自定义d盘的版本号，如果这个为0说明整个fabmenu没有
-            1：初版（旧版没写入版本号）
-            2：初次安装后会自动创建Exagear文件夹
-             */
-            0x2
-                    | 0x1 << 4 //自定义按键的版本号
-                    | 0x1 << 8 //pulseaudio
+            0x2 //自定义d盘的版本号
+                    | 0x2 << 4 //自定义按键的版本号
+                    | 0x2 << 8 //pulseaudio
+                    | 0x1 << 12 //Xegw
             ;
 
 
@@ -79,7 +88,7 @@ public class FabMenu {
         fragmentClsArray.add(DriveD.class);
         fragmentClsArray.add(CustomControls.class);
         fragmentClsArray.add(PulseAudio.class);
-        if(QH.classExist("com.termux.x11.CmdEntryPoint"))
+        if (QH.classExist("com.termux.x11.CmdEntryPoint"))
             fragmentClsArray.add(Xegw2.class); //仅当xegw 2.0存在时才显示该选项
         fragmentClsArray.add(AboutFab.class);
         //先调用一次初次启动需要执行的操作

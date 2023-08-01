@@ -26,6 +26,7 @@ class DialogOptions {
          CheckBox checkLegacyDraw = new CheckBox(c);
          checkLegacyDraw.setText("-legacy-drawing");
          checkLegacyDraw.setOnCheckedChangeListener((buttonView, isChecked) -> QH.getPreference().edit().putBoolean(CmdEntryPoint.PREF_KEY_LEGACY_DRAW,isChecked).apply());
+         checkLegacyDraw.setChecked(QH.getPreference().getBoolean(CmdEntryPoint.PREF_KEY_LEGACY_DRAW,false));
          linearRoot.addView(checkLegacyDraw,paddingParams);
          linearRoot.addView(getDescriptionTextView(c,"如果启动容器后只显示黑屏和一个箭头鼠标，勾选此选项可以解决问题，但是渲染效率会变低。"));
 

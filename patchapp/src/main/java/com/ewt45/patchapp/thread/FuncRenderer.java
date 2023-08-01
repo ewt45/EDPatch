@@ -19,7 +19,7 @@ public class FuncRenderer implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 2;
+        return 3;
     }
 
     @Override
@@ -35,6 +35,8 @@ public class FuncRenderer implements Func {
         }
         ubtLanConfig.close();
 
+        //启动容器时添加环境变量
+        new FuncAddEnvs().call();
 
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",

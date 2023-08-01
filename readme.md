@@ -34,6 +34,7 @@
   - [自定义d盘路径](https://ewt45.github.io/blogs/2022/winter/exagearFab/driveD.html)
   - [自定义操作模式](https://www.bilibili.com/video/BV1fL41167Ji/)
   - PulseAudio (XSDL)
+  - Xegw
 - [强制显示鼠标光标](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [环境设置- 自定义分辨率](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
 - [安卓11+调起输入法](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
@@ -54,6 +55,20 @@
 - [org.tukaani.xz](https://tukaani.org/xz/)
 
 ## 更新历史
+
+### v0.0.6
+- 添加新功能:
+1. Xegw: 在齿轮按钮选项中。为xegw x11服务准备，可以开启 -legacy-drawing参数，以解决只显示黑屏和箭头鼠标的问题。
+
+- 更新旧功能:
+1. pulseaudio: 每次启动时删除缓存文件，但是保留.config/pulse/deamon.conf.
+2. 自定义操作模式
+    - 第一人称视角移动 选项修改。改为移动距离限制。勾选时显示两个选项：两次发送移动事件的最小时间间隔，和每次发送移动事件的移动距离。摇杆按钮新增鼠标移动选项。触摸板模式也根据设置调整为是否限制移动距离。
+    - 修复按钮在长按模式下，透明度变为不透明的问题。
+3. 环境设置 - 渲染方式: renderer.txt删除path行，改为存储环境变量(env行)，用户可以自行添加更多环境变量。升级该功能后，建议删除/opt/renderers.txt，然后打开一次容器设置，查看自动生成的txt中的格式。
+
+- 其他:
+1. 未生成修改后apk时，禁用安装按钮。
 
 ### v0.0.5
 - 添加新功能：

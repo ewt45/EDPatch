@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
+import com.example.datainsert.exagear.RR;
 import com.termux.x11.CmdEntryPoint;
 
 /**
@@ -21,10 +22,7 @@ public class Xegw2 extends BaseFragment{
     @SuppressLint("SetTextI18n")
     @Override
     protected ViewGroup buildUI() {
-        Context c = requireContext();
-        LinearLayout linearRoot = CmdEntryPoint.getViewForFabDialog(this);
-
-        return linearRoot;
+        return CmdEntryPoint.getViewForFabDialog(this);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class Xegw2 extends BaseFragment{
 
     @Override
     public String getTitle() {
-        return "Xegw";
+        return RR.getS(RR.xegw_title);
     }
 
     @Override
