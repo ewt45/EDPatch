@@ -152,7 +152,6 @@ public class RR {
     public static int xegw_legacyDraw_tip = 139;
 
 
-
     public static String locale = refreshLocale();
 
     static {
@@ -193,7 +192,7 @@ public class RR {
         zhArray.put(cmCtrl_s1_showCursorTip, "设置进入容器后鼠标光标显示或隐藏。\n若因为添加“强制显示光标”功能导致同时显示默认鼠标光标和游戏自带光标，使用该选项可隐藏默认鼠标光标。");
         zhArray.put(cmCtrl_s1_relMove, "鼠标移动使用相对定位（手势控制 2）");
         zhArray.put(cmCtrl_s1_relMoveTip, "勾选后采用第二种手势控制。\n\n**手势控制 1**：\n- 单指点击 = 鼠标在手指位置左键点击\n- 单指按下后立刻移动 = 鼠标滚轮\n- 单指长按后移动 = 鼠标在手指位置左键按下（拖拽）\n- 单指长按后松开 = 鼠标在手指位置右键点击\n- 双指点击 = 显示/隐藏安卓输入法\n- 双指按下后移动 = 缩放窗口（松开一根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单\n\n**手势控制 2**：\n- 单指点击 = 鼠标原处左键点击\n- 单指移动 = 鼠标位置移动\n- 二指点击 = 鼠标原处右键点击\n- 二指按下后立刻移动 = 鼠标滚轮\n- 二指长按后移动 = 鼠标在当前位置左键按下（拖拽）\n- 三指按下并移动 = 缩放窗口（松开1根手指变为移动窗口）\n- 三指点击 = 弹出操作选项菜单");
-        zhArray.put(cmCtrl_s1_msMoveViewport,"限制移动距离$更新位置时间间隔$每次移动距离");
+        zhArray.put(cmCtrl_s1_msMoveViewport, "限制移动距离$更新位置时间间隔$每次移动距离");
         zhArray.put(cmCtrl_s2_layoutMode, "布局方式");
         zhArray.put(cmCtrl_s2_layoutModeTip, "左右侧栏：经典布局，按键位于主画面的左右两侧，每一侧可以有多列，每一列可以有多个按键。\n\n自由位置：按钮可以自由摆放（需要启动容器后，三指触屏调出菜单项，进入编辑模式后才能编辑位置）。可以添加摇杆按钮。\n\n两种布局数据分开存储，位于手机存储目录/Android/data/包名/files/custom_control2(3).txt，可以手动备份，但不保证日后的更新能兼容。");
         zhArray.put(cmCtrl_s2_LSideTitle, "左侧按键栏");
@@ -288,7 +287,7 @@ public class RR {
                 "</ul>\n");
         zhArray.put(mw_contNoWineTips, "没有检测到已启用的wine，本次创建的容器可能无法启动。建议删除该容器，点击下载按钮下载并安装wine后，重新创建容器。");
         zhArray.put(render_title, "图形渲染设置");
-        zhArray.put(fab_hide,"隐藏");
+        zhArray.put(fab_hide, "隐藏");
         zhArray.put(pa_title, "PulseAudio (XSDL)");
         zhArray.put(pa_explain, "PulseAudio用于播放音频，可以缓解一部分声音问题。本功能用到的PulseAudio服务端提取自Xserver XSDL，需要手机支持64位。");
         zhArray.put(pa_checkRun, "开启pulseaudio服务$在启动容器时一并启动PulseAudio服务");
@@ -302,9 +301,9 @@ public class RR {
                 "\n3. 启动容器时导出环境变量：PULSE_SERVER=tcp:127.0.0.1:4713。本功能在启动容器时会自动添加环境变量，无需额外设置。可通过过Exaterm或Putty确认环境变量。" +
                 "\n4. wine注册表声音驱动项设置正确：某些数据包会在左下角起点提供切换pulse声音的便捷注册表项。也可以手动修改：左下角起点 - 运行 - 输入regedit打开，找到以下路径：[HKEY_CURENT_USER\\Software\\Wine\\Drivers] 若右侧包含“Audio”项，则该项的值应包含字符串“pulse”。" +
                 "\n \n ");
-        zhArray.put(xegw_title,"Xegw (termux:x11)");
-        zhArray.put(xegw_info,"x11服务端用于显示图形画面，由于exa实现的x11服务端比较简陋，无法支持dxvk等，所以将termux:x11实现的x11服务端移植到exa内，以期实现更好的渲染效果。感谢termux:x11开发者Twaik的帮助。");
-        zhArray.put(xegw_legacyDraw_tip,"如果启动容器后只显示黑屏和一个箭头鼠标，勾选此选项可以解决问题，但是渲染效率会变低。");
+        zhArray.put(xegw_title, "Xegw (termux:x11)");
+        zhArray.put(xegw_info, "x11服务端用于显示图形画面，由于exa实现的x11服务端比较简陋，无法支持dxvk等，所以将termux:x11实现的x11服务端移植到exa内，以期实现更好的渲染效果。感谢termux:x11开发者Twaik的帮助。");
+        zhArray.put(xegw_legacyDraw_tip, "如果启动容器后只显示黑屏和一个箭头鼠标，勾选此选项可以解决问题，但是渲染效率会变低。");
         /*
 
 
@@ -349,7 +348,7 @@ public class RR {
         enArray.put(cmCtrl_s1_showCursorTip, "Display or hide the mouse cursor in containers.\nIf there are two cursors in game checking this option may help to hide one.");
         enArray.put(cmCtrl_s1_relMove, "Move mouse relatively (Gesture Mode 2)");
         enArray.put(cmCtrl_s1_relMoveTip, "If checked, the second Gesture mode will be used.\n\n**Gesture Mode 1**:\n- One finger click = Mouse left click at finger's position\n- One finger press and move = Mouse wheel scroll\n- One finger long press and move = Mouse left button press (drag)\n- One finger long click = Mouse right click\n- Two fingers click = toggle android keyboard\n- Two fingers press and move = resize the window (release one finger to move the window)\n- Three fingers click = Show popup menu\n\n**Gesture Mode 2**:\n- One finger click = Mouse left click at its own position\n- One finger move = Mouse move with finger's movement\n- Two fingers click = Mouse right click\n- Two fingers press and move = Mouse wheel scroll\n- Tow fingers long press and move = Mouse left button press (drag)\n- Three fingers press and move 1 or 2 of them = Resize the window (release 1 or 2 of them to move the window)\n- Three fingers click = Show popup menu");
-        enArray.put(cmCtrl_s1_msMoveViewport,"Restrict mouse movement$Position-update interval$Limited distance");
+        enArray.put(cmCtrl_s1_msMoveViewport, "Restrict mouse movement$Position-update interval$Limited distance");
         enArray.put(cmCtrl_s2_layoutMode, "Layout Mode");
         enArray.put(cmCtrl_s2_layoutModeTip, "Left&Right Sidebar: Classic layout. Key buttons are put in the sidebar and the main frame won't be overlaid.\n\nFree Position: Buttons can be placed anywhere (you need to enter a container, three-fingers click to edit a button's position). The joystick-style button is available.\n\nCustom data is stored on device at Android/data/PACKAGE_NAME/files/custom_control2(3).txt. They can be backed up manually, but may not be compatible with future updates (if there is any).");
         enArray.put(cmCtrl_s2_LSideTitle, "Left Sidebar");
@@ -444,7 +443,7 @@ public class RR {
                 "</ul>\n");
         enArray.put(mw_contNoWineTips, "No active Wine detected. This container probably can not launch. Please delete it, click the download button to install Wines and try again.");
         enArray.put(render_title, "Renderer");
-        enArray.put(fab_hide,"Hide");
+        enArray.put(fab_hide, "Hide");
         enArray.put(pa_title, "PulseAudio (XSDL)");
         enArray.put(pa_explain, "PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.");
         enArray.put(pa_checkRun, "Enable PulseAudio service$Start PulseAudio server when launching a container");
@@ -458,9 +457,9 @@ public class RR {
                 "\n3. Export environment variables: PULSE_SERVER=tcp:127.0.0.1:4713. This function will automatically add environment variables when starting the container, no additional settings are needed. Environment variables can be confirmed with Exaterm or Putty." +
                 "\n4. Wine sound driver in registry: Some caches provides a convenient registry entry for switching into pulse sound at the start menu. Or you can change it manually: Click start menu - Run - Type regedit to open it and find the following path: [HKEY_CURENT_USER\\Software\\Wine\\Drivers]. If \"Audio\" appears at the right side, it's value should contain the string \"pulse\"." +
                 "\n \n ");
-        enArray.put(xegw_title,"Xegw (termux:x11)");
-        enArray.put(xegw_info,"The x11 server is used for displaying graphics. Since the original x11 server implemented in exagear is rather simple and can't support dxvk, etc., the x11 server implemented in termux:x11 is ported to exagear so as to achieving better rendering. Thanks for the help of Twaik, developer of termux:x11.");
-        enArray.put(xegw_legacyDraw_tip,"If black screen with an arrow cursor are displayed after starting the container, checking this option will solve the problem, but rendering may be slower.");
+        enArray.put(xegw_title, "Xegw (termux:x11)");
+        enArray.put(xegw_info, "The x11 server is used for displaying graphics. Since the original x11 server implemented in exagear is rather simple and can't support dxvk, etc., the x11 server implemented in termux:x11 is ported to exagear so as to achieving better rendering. Thanks for the help of Twaik, developer of termux:x11.");
+        enArray.put(xegw_legacyDraw_tip, "If black screen with an arrow cursor are displayed after starting the container, checking this option will solve the problem, but rendering may be slower.");
 
 
         /*
@@ -508,7 +507,7 @@ public class RR {
         ruArray.put(cmCtrl_s1_showCursorTip, "Отображать или скрывать курсор мыши в контейнерах.\nЕсли в игре два курсора, включение этой опции может помочь скрыть один.");
         ruArray.put(cmCtrl_s1_relMove, "Отображение курсора как тачпада (Режим жестов 2)");
         ruArray.put(cmCtrl_s1_relMoveTip, "Если флаг установлен, будет использоваться Режим жестов 2.\n\n**Режим жестов 1**:\n- Тап одним пальцем = Клик левой кнопкой мыши на позиции пальца\n- Тап и перемещение одним пальцем = Прокрутка мышью\n- Долгий тап одним пальцем и перемещение = Нажатие левой кнопки мыши (Перетаскивание)\n- Тап одним пальцем с удержанием = Клик правой кнопкой мыши\n- Тап двумя пальцами = Вызов клавиатуры Android\n- Тап двумя пальцами с удержанием и движение в разные стороны = Изменить размер окна (отпустите один палец, чтобы переместить окно)\n- Тап тремя пальцами = Показать меню\n\n**Режим жестов 2**:\n- Тап одним пальцем = Клик левой кнопкой мыши в позиции положения курсора\n- Движение одним пальцем = Движение курсора мыши\n- Тап двумя пальцами = Клик правой кнопкой мыши\n- Тап двумя пальцами и движение = Прокрутка колесика мыши\n- Тап двумя пальцами с удержанием и перемещение = Нажатие левой кнопки мыши (перетаскивание)\n- Тап тремя пальцами и перемещение 1 или 2 из них = Изменение размера окна (отпустите 1 или 2 пальца, чтобы переместить окно)\n- Тап тремя пальцами = Показать меню");
-        ruArray.put(cmCtrl_s1_msMoveViewport,"Ограничить движение мыши$Интервал обновления позиции$Ограничить расстояние");
+        ruArray.put(cmCtrl_s1_msMoveViewport, "Ограничить движение мыши$Интервал обновления позиции$Ограничить расстояние");
         ruArray.put(cmCtrl_s2_layoutMode, "Режим макета");
         ruArray.put(cmCtrl_s2_layoutModeTip, "Левая и правая боковые панели это классический макет. Кнопки ключей размещаются на боковых панелях, и основной экран не перекрывается.\n\nСвободная позиция: кнопки можно размещать где угодно (тап тремя пальцами для вызова меню, выбрать редактировать и изменить положение кнопки).  Доступна кнопка в виде джойстика.\n\nПользовательские данные хранятся на устройстве в Android/data/ИМЯ_ПАКЕТА/files/custom_control2(3).txt. Их можно создать как резервную копию вручную. Они могут быть несовместимы с будущими обновлениями(если они будут).");
         ruArray.put(cmCtrl_s2_LSideTitle, "Левая боковая панель");
@@ -602,7 +601,8 @@ public class RR {
                 "<li>&ensp; Загрузка файлов wine:<br/>загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице 'Установленные'.</li>\n" +
                 "</ul>\n");
         ruArray.put(mw_contNoWineTips, "Активный Wine не найден. Этот контейнер вероятно, не может запуститься. Удалите его, затем нажмите кнопку загрузки, чтобы установить необходимый Wine и повторите попытку.");
-        ruArray.put(fab_hide,"Скрыть");
+        ruArray.put(fab_hide, "Скрыть");
+        ruArray.put(render_title, "Выбор рендера");
         ruArray.put(pa_title, "PulseAudio (XSDL)");
         ruArray.put(pa_explain, "PulseAudio используется для воспроизведения звука, уменьшения проблемы связанных со звуком. Эта функция использует сервер PulseAudio, извлеченный из apk Xserver XSDL. Что требуется поддержка 64-битной версии Андроид на вашем девайсе.");
         ruArray.put(pa_checkRun, "Включить службу PulseAudio$Запускать сервер PulseAudio при запуске контейнера");
@@ -616,9 +616,9 @@ public class RR {
                 "\n3. Экспорт переменных среды: PULSE_SERVER=tcp:127.0.0.1:4713. Эта функция автоматически добавит переменные окружения при запуске контейнера, никаких дополнительных настроек не требуется. Переменные среды можно проверить с помощью Exaterm или Putty." +
                 "\n4. Драйвер звука Wine в реестре: некоторые кеши предоставляют удобную запись в реестре для переключения на Pulseaudio в меню Пуск. Или вы можете отредактировать его вручную: Нажмите меню Пуск - Выполнить - введите regedit, чтобы открыть редактор реестра, и найдите следующий путь: [HKEY_CURENT_USER\\Software\\Wine\\Drivers]. создайте строковый параметр \"Audio\" и укажите его значением \"pulse\"." +
                 "\n \n ");
-        ruArray.put(xegw_title,"Xegw (termux:x11)");
-        ruArray.put(xegw_info,"Xserver x11 используется для отображения графики. Поскольку исходный Xserver x11, реализованный в ExaGear, довольно прост он не может поддерживать dxvk и т. д., Xserver x11, реализованный в Termux-x11 перенесен в exagear для достижения лучшего рендеринга. Спасибо за помощь Twaik, разработчику Termux-x11.");
-        ruArray.put(xegw_legacyDraw_tip,"Если после запуска контейнера отображается только чёрный экран со стрелкой-курсором, включение этого параметра решит проблему, но рендеринг может замедлиться.");
+        ruArray.put(xegw_title, "Xegw (termux:x11)");
+        ruArray.put(xegw_info, "Xserver x11 используется для отображения графики. Поскольку исходный Xserver x11, реализованный в ExaGear, довольно прост он не может поддерживать dxvk и т. д., Xserver x11, реализованный в Termux-x11 перенесен в exagear для достижения лучшего рендеринга. Спасибо за помощь Twaik, разработчику Termux-x11.");
+        ruArray.put(xegw_legacyDraw_tip, "Если после запуска контейнера отображается только чёрный экран со стрелкой-курсором, включение этого параметра решит проблему, но рендеринг может замедлиться.");
 
 
 
@@ -641,12 +641,12 @@ public class RR {
         if (locale == null)
             locale = Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
 //        Log.d("S", "get: 获取字符串，当前系统语言为" + locale + ", 要获取的字符串为" + id);
-        if (stringMap.containsKey(locale)) {
-            return Objects.requireNonNull(stringMap.get(locale)).get(id, "");
-        } else {
-            return Objects.requireNonNull(stringMap.get("en")).get(id, "");
-        }
-
+        String returnStr = null;
+        if(stringMap.containsKey(locale))
+            returnStr = Objects.requireNonNull(stringMap.get(locale)).get(id);
+        if(returnStr==null) //即使有对应语言的数组，也可能忘了加对应翻译
+            returnStr = Objects.requireNonNull(stringMap.get("en")).get(id,"");
+        return returnStr;
     }
 
     public static class attr {
