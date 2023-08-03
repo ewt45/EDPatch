@@ -77,7 +77,13 @@ public class GuestContainerConfig {
         setStartupActions("");
         setRunGuide("");
         setRunGuideShown(false);
+//        setRendererDefault();
         MutiWine.writeWineVerToContainerConfig(mCont.mId);
+    }
+
+    //原exa不存在的方法。可以用这个来设置默认渲染方式
+    public void setRendererDefault(){
+         this.mSp.edit().putString("RENDERER","Turnip_DXVK").apply();
     }
 
     public String getName() {
@@ -112,7 +118,7 @@ public class GuestContainerConfig {
 
     public void setScreenInfo(ScreenInfo screenInfo) {
         SharedPreferences.Editor edit = this.mSp.edit();
-        String str = Integer.toString(screenInfo.widthInPixels) + "," + screenInfo.heightInPixels;
+        String str = screenInfo.widthInPixels + "," + screenInfo.heightInPixels;
         String[] strArr = SUPPORTED_RESOLUTIONS;
         boolean z = false;
         int length = strArr.length;

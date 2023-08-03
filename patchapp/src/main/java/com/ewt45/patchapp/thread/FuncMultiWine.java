@@ -58,7 +58,6 @@ public class FuncMultiWine implements Func{
                 "/com/google/gson", //json依赖
                 "/org/tukaani/xz", //xz解压依赖
                 "/com/example/datainsert/exagear/mutiWine",
-                "/com/example/datainsert/exagear/shortcut",
                 "/com/example/datainsert/exagear/RR.smali",
                 "/com/example/datainsert/exagear/QH.smali",
         });

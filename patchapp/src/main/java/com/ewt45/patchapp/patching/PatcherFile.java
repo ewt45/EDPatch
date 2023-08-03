@@ -242,7 +242,7 @@ public class PatcherFile {
 
     public static String[] getSmaliMethod(String smaliLocation, String methodName) throws IOException {
         //定位smali文件
-        File oneFile = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/smali/ " + smaliLocation);
+        File oneFile = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/patcher/smali/" + smaliLocation);
         List<String> fileLines = FileUtils.readLines(oneFile, StandardCharsets.UTF_8);
         int start = -1, end = -1;
 
