@@ -24,12 +24,15 @@ cmake_minimum_required(VERSION 3.4.1)
 #add_library(axs-helpers SHARED src/main/cpp/axs-helpers.cpp)
 #add_library(ipc-helpers SHARED src/main/cpp/ipc-helpers.cpp)
 #add_library(xconnector-fairepoll SHARED src/main/cpp/xconnector-fairepoll.cpp)
-add_library(Xegw SHARED src/main/cpp/Xegw.cpp)
+#add_library(Xegw SHARED src/main/cpp/Xegw.cpp)
 add_library(some-helper SHARED src/main/cpp/some-helper.c)
 # Specifies a path to native header files.
-include_directories(src/main/cpp/)
+include_directories(build/generated/ap_generated_sources/debug/out)
 
-target_link_libraries(Xegw "-llog")
+#添加子项目的cmakelist.txt
+#add_subdirectory("src/main/cpp/libadrenotools")
+
+#target_link_libraries(Xegw "-llog")
 target_link_libraries(some-helper "-llog")
 
 
