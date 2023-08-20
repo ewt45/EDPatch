@@ -7,6 +7,7 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Icon;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.FileUriExposedException;
@@ -41,7 +42,11 @@ import java.io.IOException;
 import java.util.List;
 
 public class MoreShortcut {
-    private static final int VERSION_FOR_EDPATCH = 1;
+    /**
+     * 1: 初次添加
+     * 2: 支持图标（如果有）
+     */
+    private static final int VERSION_FOR_EDPATCH = 2;
     private static final String TAG = "MoreShortcut";
     private static final String DESKTOP_FILE_ABSOLUTE_PATH = "desktop_file_absolute_path";
     private static final String CONTAINER_ID = "container_id";
@@ -191,11 +196,11 @@ public class MoreShortcut {
                             .setIntent(info.getIntent()) //设置intent又不一定非要指向目标activity，那难道会加到栈中？如果不指定
                             .setActivity(info.getActivity()) //设置目标activity
                             ;
-//                    if (icon != null)
-//                        builder.setIcon(Icon.createWithBitmap(icon));
-//                    else{
-//                        Log.d(TAG, "setDynamicShortcuts: 没有图标："+xdgLink.guestCont.mIconsPath+"/"+xdgLink.icon + ".png");
-//                    }
+                    if (icon != null)
+                        builder.setIcon(Icon.createWithBitmap(icon));
+                    else{
+                        Log.d(TAG, "setDynamicShortcuts: 没有图标："+xdgLink.guestCont.mIconsPath+"/"+xdgLink.icon + ".png");
+                    }
                     list.remove(i);
                     list.add(i, builder.build());
                 } catch (IOException e) {

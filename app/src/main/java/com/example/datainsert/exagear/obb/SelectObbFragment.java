@@ -96,7 +96,6 @@ public class SelectObbFragment extends Fragment {
         root.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
         return root;
     }
-    private static final String PROGRESS_FILE_NAME = "ed_progress";
     private void addTextToOriHintPlace(String str) {
         FrameworkActivity a = ((ApplicationStateBase)Globals.getApplicationState()).getCurrentActivity();
         if(!(a instanceof EDStartupActivity))

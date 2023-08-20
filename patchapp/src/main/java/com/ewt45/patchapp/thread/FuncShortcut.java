@@ -17,7 +17,7 @@ public class FuncShortcut implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 1;
+        return 2;
     }
 
     @Override

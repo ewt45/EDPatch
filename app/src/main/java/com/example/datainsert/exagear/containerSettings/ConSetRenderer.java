@@ -72,8 +72,9 @@ public class ConSetRenderer {
      * 1: 初次添加
      * 2: 路径和名称存在/opt/renderers.txt中。点击选项下方有文字提示修改了哪些内容
      * 3: renderers.txt 中，改为存储环境变量，以便用户可以自定义 （icd，为dxvk的tz指定不同的libvulkan_freedreno.so）
+     * 4: 支持未知渲染（没有在enum中定义的）
      */
-    private static final int VERSION_FOR_EDPATCH = 3;
+    private static final int VERSION_FOR_EDPATCH = 4;
     private static final String TAG = "ConSetRenderer";
 
     /**
@@ -109,14 +110,17 @@ public class ConSetRenderer {
                 FileUtils.writeLines(configFile, "UTF-8", Arrays.asList(DEFAULT_RENDERER_TXT_CONTENT.split("\n")));
             }
 
-            List<String> lines = FileUtils.readLines(configFile);
+            List<String> lines = new ArrayList<>();
+            for(String s: FileUtils.readLines(configFile)){
+                String trim = s.trim();
+                if( !(trim.startsWith("#") || trim.length() ==0))
+                    lines.add(trim);
+            }
 
             for (int i = 0; i < lines.size(); i++) {
-                String trimLine = lines.get(i).trim();
-                if (trimLine.startsWith("#") || trimLine.equals(""))
-                    continue;
+                String line = lines.get(i);
 
-                if (!trimLine.startsWith("key:") || i + 1 >= lines.size() || !lines.get(i + 1).trim().startsWith("name:"))
+                if (!line.startsWith("key:") || i + 1 >= lines.size() || !lines.get(i + 1).trim().startsWith("name:"))
                     continue;
 
                 //读取2个属性
@@ -166,13 +170,10 @@ public class ConSetRenderer {
             radioBtnParams.topMargin = AndroidHelpers.dpToPx(16);
             radioGroup.addView(radioButton, radioBtnParams);
 
-            //每个渲染的简介
-            ConSetRenderer.RenEnum renEnum;
-            try {
-                renEnum = ConSetRenderer.RenEnum.valueOf(keys[i].toString());
-            } catch (Exception e) {
-                continue; //找不到对应的enum就直接跳过了，下面应该没啥其他要做的了吧？
-            }
+            //如果该值在txt中未记录，就不显示介绍。如果在txt中记录但不属于enum中已定义的，可以显示环境变量
+            Bundle rendBundle = renderersMap.get(keys[i].toString());
+            if(rendBundle == null)
+                continue;
 
             LinearLayout linearInfo = new LinearLayout(c);
             linearInfo.setOrientation(LinearLayout.VERTICAL);
@@ -180,17 +181,21 @@ public class ConSetRenderer {
             tvInfoParams.topMargin = AndroidHelpers.dpToPx(4);
             tvInfoParams.setMarginStart(AndroidHelpers.dpToPx(16));
 
-            //每一项太长了，先默认缩成一行，点击展开
-            Bundle rendBundle = renderersMap.get(keys[i].toString()); //一定能获取到，因为上面获取renEnum如果报错就不会走到这
-            assert rendBundle != null;
-
             StringBuilder stringBuilder = new StringBuilder();
             ArrayList<String> envList = rendBundle.getStringArrayList("env");
             assert envList!=null;
             for (String s : envList)
                 stringBuilder.append(s).append('\n');
-            stringBuilder.append(renEnum.info);
 
+            //预定义渲染的简介
+            try {
+                ConSetRenderer.RenEnum renEnum = ConSetRenderer.RenEnum.valueOf(keys[i].toString());
+                stringBuilder.append(renEnum.info);
+            } catch (Exception e) {
+//                continue; //找不到对应的enum就直接跳过了，下面应该没啥其他要做的了吧？
+            }
+
+            //每一项太长了，先默认缩成一行，点击展开
             for (String oneStr : stringBuilder.toString().split("\n")) {
                 if(oneStr.equals(""))
                     continue;
