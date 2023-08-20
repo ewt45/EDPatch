@@ -53,6 +53,16 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 
 ## Change Log
 
+### v0.1.0
+- Old functions updated:
+1. container settings - renderers
+  - fix: if lines start with # appears in the middle of txt, the lines below will not be read correctly.
+  - txt supports adding undefined renderers.(copy a renderer lines, change its key, name and env) after added it will be shown in the options.
+2. app shortcut
+  - support icons. (if any)
+3. show cursor
+  - fix: in the last version(v0.0.6) assets/mouse.png is missing
+
 ### v0.0.6
 - New functions available:
 1. Xegw: In the gear button. Provide -legacy-drawing param to solve the problem of only a black screen with an arrow mouse displaying.
