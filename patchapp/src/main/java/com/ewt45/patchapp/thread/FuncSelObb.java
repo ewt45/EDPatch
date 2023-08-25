@@ -41,7 +41,7 @@ public class FuncSelObb implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 2;
+        return 3;
     }
     @Override
     public Integer call() throws Exception {

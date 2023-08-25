@@ -7,11 +7,13 @@ import android.util.AtomicFile;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.CurrentActivityAware;
+import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.helpers.ZipInstallerObb;
 import com.eltechs.ed.BuildConfig;
 import com.eltechs.ed.R;
@@ -24,12 +26,17 @@ import org.apache.commons.io.IOUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class ProcessInstallObb {
     static String TAG = "ProcessInstallObb";
-    private static final int VERSION_FOR_EDPATCH = 2;
+    /*
+    3: 点击空白处之后不会报tmp.obb找不到的错误。支持读取直装版数据包（apk/assets/obb/*.* 或apk/lib/armeabi-v7a/libres.so）
+     */
+    private static final int VERSION_FOR_EDPATCH = 3;
 
     /**
      * 检查是否需要解压数据包，如果需要是否存在，如果不存在显示fragment
@@ -42,6 +49,20 @@ public class ProcessInstallObb {
             return;
         }
         FrameworkActivity<?> edStartupActivity = applicationStateBase.getCurrentActivity();
+
+        //先检测一下是否为直装. 如果是直接从apk中提取，不显示按钮了
+        if(obbInApk(edStartupActivity)){
+            try {
+                zipInstallerObb.installImageFromObbIfNeeded();
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(edStartupActivity, "数据包解压失败", Toast.LENGTH_SHORT).show();
+                boolean b = SelectObbFragment.obbFile.delete();
+                SelectObbFragment.obbFile = null;
+            }
+        }
+
         //防止多次添加
         SelectObbFragment fragment= (SelectObbFragment) edStartupActivity.getSupportFragmentManager().findFragmentByTag(SelectObbFragment.TAG);
         if(fragment==null){
@@ -71,6 +92,44 @@ public class ProcessInstallObb {
 //        startupAdButtons.invalidate();
     }
 
+    /**
+     * 检查是否为直装版。
+     * - apk/assets/obb/* obb下只能有一个文件。如果有会复制到filesDir/tmp.obb
+     * - lib/arm/libres.so 如果有就将obbFile成员变量改为这个文件
+     * 若是，则修改SelectObbFragment.obbFile为对应file对象
+     */
+    private static boolean obbInApk(Context c){
+        try {
+            //libres.so
+            File libDir = new File(c.getApplicationInfo().nativeLibraryDir);
+            Log.d(TAG, "obbInApk: libDir = "+libDir.getAbsolutePath());
+            File libres = new File(libDir,"libres.so");
+            if(libres.exists()){
+                SelectObbFragment.obbFile = libres;
+                return true;
+            }
+
+            //assets
+            String[] fileList =  c.getAssets().list("obb");
+            if(fileList==null || fileList.length!=1)
+                return false;
+
+            if(SelectObbFragment.mInternalObbFile.exists()){
+                boolean b = SelectObbFragment.mInternalObbFile.delete();
+            }
+
+            try(InputStream is =  c.getAssets().open("obb/"+fileList[0]);
+                OutputStream os = new FileOutputStream(SelectObbFragment.mInternalObbFile)){
+                IOUtils.copy(is,os);
+                SelectObbFragment.obbFile = SelectObbFragment.mInternalObbFile;
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
     /**
      * 在原本的副文本显示区显示文字
      */

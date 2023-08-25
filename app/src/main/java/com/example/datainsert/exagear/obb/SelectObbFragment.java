@@ -50,7 +50,7 @@ public class SelectObbFragment extends Fragment {
     /**
      * fragment内部获取tmp.obb的file对象时用。因为obbFile不应随意从null变为File实例，
      */
-    private static final File mInternalObbFile =  new File(Globals.getAppContext().getFilesDir(), "tmp.obb");;
+    static final File mInternalObbFile =  new File(Globals.getAppContext().getFilesDir(), "tmp.obb");;
     private ZipInstallerObb zipInstallerObb;
 
     @Nullable
