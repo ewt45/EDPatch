@@ -150,6 +150,9 @@ public class RR {
     public static int xegw_title = 137;
     public static int xegw_info = 138;
     public static int xegw_legacyDraw_tip = 139;
+    public static int xegw_notification= 140;
+    public static int xegw_btyOpt =141;
+
 
 
     public static String locale = refreshLocale();
@@ -304,6 +307,8 @@ public class RR {
         zhArray.put(xegw_title, "Xegw (termux:x11)");
         zhArray.put(xegw_info, "x11服务端用于显示图形画面，由于exa实现的x11服务端比较简陋，无法支持dxvk等，所以将termux:x11实现的x11服务端移植到exa内，以期实现更好的渲染效果。感谢termux:x11开发者Twaik的帮助。");
         zhArray.put(xegw_legacyDraw_tip, "如果启动容器后只显示黑屏和一个箭头鼠标，勾选此选项可以解决问题，但是渲染效率会变低。");
+        zhArray.put(xegw_notification,"Xegw x服务端对应的进程，保留此通知以防应用切后台时进程被杀");
+        zhArray.put(xegw_btyOpt,"关闭电池优化$运行容器时，xegw在手机通知栏中示一条固定通知（加上exa原有的一共两个），这样应用切换后台时不会黑屏。\n\n若依然出现黑屏，请在手机设置中关闭本应用的电池优化（可以通过此按钮跳转），若关闭电池优化依然出现黑屏，请在手机设置中允许应用自启动（设置界面因系统而异，请自行寻找）。");
         /*
 
 
@@ -460,6 +465,8 @@ public class RR {
         enArray.put(xegw_title, "Xegw (termux:x11)");
         enArray.put(xegw_info, "The x11 server is used for displaying graphics. Since the original x11 server implemented in exagear is rather simple and can't support dxvk, etc., the x11 server implemented in termux:x11 is ported to exagear so as to achieving better rendering. Thanks for the help of Twaik, developer of termux:x11.");
         enArray.put(xegw_legacyDraw_tip, "If black screen with an arrow cursor are displayed after starting the container, checking this option will solve the problem, but rendering may be slower.");
+        enArray.put(xegw_notification,"Xegw xserver. Keep the notification to prevent disorder after switching app to background.");
+        enArray.put(xegw_btyOpt,"Disable battery optimization $After container starts, it shows a status bar notification for Xegw, so that Xegw process will not be killed when switching to the background and only a black screen is left when switching back.\n\nIf the problem is not solved, try to turn off the battery optimization of this app in Settings (through this button). If problem is still not solved, try to enable autostart of the app in Settings (this interface varies from ROM to ROM, so you need to find it yourself).");
 
 
         /*
@@ -619,6 +626,8 @@ public class RR {
         ruArray.put(xegw_title, "Xegw (termux:x11)");
         ruArray.put(xegw_info, "Xserver x11 используется для отображения графики. Поскольку исходный Xserver x11, реализованный в ExaGear, довольно прост он не может поддерживать dxvk и т. д., Xserver x11, реализованный в Termux-x11 перенесен в exagear для достижения лучшего рендеринга. Спасибо за помощь Twaik, разработчику Termux-x11.");
         ruArray.put(xegw_legacyDraw_tip, "Если после запуска контейнера отображается только чёрный экран со стрелкой-курсором, включение этого параметра решит проблему, но рендеринг может замедлиться.");
+        ruArray.put(xegw_notification,"Xegw xserver.  Не отключаете данное уведомление, чтобы предотвратить сбои после переключения ExaGear в фоновый режим.");
+        ruArray.put(xegw_btyOpt,"Отключить оптимизацию батареи$После запуска контейнера в строке состояния отображается уведомление для Xegw, поэтому процесс Xegw не будет завершаться при переключении в фоновый режим, при отключении будет отображаться только чёрный экран.\n\nЕсли это не решает проблему чёрного экрана при переходе в фоновый режим попробуйте отключить оптимизацию батареи для ExaGear в Настройках (с помощью этой кнопки). Если проблема все еще не решена, попробуйте включить автозапуск приложения ExaGear в Настройках, этот интерфейс расположатся в разных местах в зависимости от прошивки поэтому вам нужно найти это самим.");
 
 
 

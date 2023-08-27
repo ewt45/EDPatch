@@ -1,12 +1,19 @@
 package com.termux.x11;
 
 
+import static android.content.pm.ApplicationInfo.FLAG_TEST_ONLY;
 import static com.example.datainsert.exagear.QH.MY_SHARED_PREFERENCE_SETTING;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -14,24 +21,25 @@ import android.os.Messenger;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.util.Log;
 import android.view.Surface;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.helpers.AndroidHelpers;
+import com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity;
+import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +79,7 @@ public class CmdEntryPoint extends Service {
     static {
         try {
             System.loadLibrary("Xlorie");
-            System.loadLibrary("some-helper");
+//            System.loadLibrary("some-helper");
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
         }
@@ -134,7 +142,35 @@ public class CmdEntryPoint extends Service {
     public static void sendStartSignalInAppProcess() {
         Context context = Globals.getAppContext();
         if (context != null) {
+//            setGPUTurbo();
             context.startService(new Intent(context, CmdEntryPoint.class));
+        }
+    }
+
+    public static void setGPUTurbo(){
+        File workDir = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(),"opt/gpuclock");
+        File logFile = new File(workDir,"log.txt");
+
+        List<String> cmdList = new ArrayList<>();
+        cmdList.add("./gpulock-lock-exe");
+        if(QH.getPreference().getBoolean(DialogOptions.PREF_KEY_GPU_CLOCK, true))
+            cmdList.add("1");
+        try {
+            ProcessBuilder builder = new ProcessBuilder(cmdList);
+            builder.directory(workDir);
+            if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                builder.redirectErrorStream(true);
+                boolean b = logFile.getParentFile().mkdirs();
+                builder.redirectOutput(logFile);
+            }
+            builder.start();
+        }catch (Exception e){
+            try (PrintWriter printWriter = new PrintWriter(logFile);) {
+                e.printStackTrace(printWriter);
+            } catch (FileNotFoundException ignored) {
+
+            }
+            e.printStackTrace();
         }
     }
 
@@ -165,15 +201,17 @@ public class CmdEntryPoint extends Service {
         Log.e(TAG, "onCreate: pid=" + Process.myPid());
         wrapStart(this);
 
+        //显示前台通知，防止切后台后，service被杀
+        configureAsForegroundService();
         //尝试锁定gpu最高频率
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        super.onStartCommand(intent, flags, startId);
-        Log.d(TAG, "onStartCommand: 仅startService能走到这里来. flag返回sticky");
-        return START_STICKY;
+        Log.d(TAG, "onStartCommand: 仅startService能走到这里来. flag返回sticky？算了还是用super的吧");
+        return   super.onStartCommand(intent, flags, startId);
+
     }
 
     /**
@@ -193,7 +231,30 @@ public class CmdEntryPoint extends Service {
         Log.d(TAG, "onDestroy: 在这里直接结束进程吧");
         super.onDestroy();
         this.mMessenger = null;
+        //关闭前台通知
+        stopForeground(true);
         Process.killProcess(Process.myPid());
+    }
+
+    /**
+     * 启动前台服务通知
+     */
+    private void configureAsForegroundService() {
+//        TrayConfiguration trayConfiguration = ((EnvironmentAware) Globals.getApplicationState()).getEnvironment().trayConfiguration;
+        Intent intent = new Intent(this, SwitchToAxsFromSystemTrayActivity.class);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 26) {
+            notificationManager.createNotificationChannel(new NotificationChannel("notification_channel_id", "ExaGear", NotificationManager.IMPORTANCE_MIN));
+        }
+
+        Notification build = new NotificationCompat.Builder(this, "notification_channel_id")
+                .setSmallIcon((getApplicationInfo().flags &  FLAG_TEST_ONLY) !=0? R.drawable.tray:0x7f0800cc)
+                .setContentText(RR.getS(RR.xegw_notification))
+                .setContentTitle("Exagear")
+                .setContentIntent(PendingIntent.getActivity(this, 0, intent, 0))
+                .build();
+        notificationManager.notify(2, build);
+        startForeground(2, build);
     }
 
     public static native boolean start(String[] args);

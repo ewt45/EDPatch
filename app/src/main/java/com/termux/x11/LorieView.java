@@ -156,7 +156,8 @@ public class LorieView extends SurfaceView  {
     public native void sendMouseEvent(float x, float y, int whichButton, boolean buttonDown, boolean relative);
     public native void sendTouchEvent(int action, int id, int x, int y);
     public native boolean sendKeyEvent(int scanCode, int keyCode, boolean keyDown);
-    public native void sendTextEvent(String text);
+    public native void sendTextEvent(byte[] text);
+    public native void sendUnicodeEvent(int code);
 
     static {
         System.loadLibrary("Xlorie");

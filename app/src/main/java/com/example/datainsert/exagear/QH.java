@@ -9,8 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
-import android.os.Build;
-import android.support.v4.app.FragmentActivity;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
@@ -19,6 +18,8 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -200,7 +201,51 @@ public class QH {
 
     }
 
-//    /**
+    /**
+     * 生成一个带简介的设置项，类似于preference那种的
+     * @param v 可用来切换选项的按钮之类的
+     * @param title 按钮文字
+     * @param info  按钮说明。
+     * @param prefKey 按钮对应pref的key，默认为false
+     * @return 包含按钮的一个线性布局
+     */
+    public static LinearLayout getOnePrefLine(View v, String title, @Nullable String info, @Nullable String prefKey) {
+        Context c = v.getContext();
+
+        LinearLayout  linearRoot = new LinearLayout(c);
+        linearRoot.setOrientation(LinearLayout.HORIZONTAL);
+        linearRoot.addView(v);
+
+        if(v instanceof EditText){
+            throw new RuntimeException("edittext尚未实现");
+        }else if (v instanceof TextView)
+            ((TextView) v).setText(title);
+
+        if (v instanceof CompoundButton) {
+            ((CompoundButton) v).setChecked(getPreference().getBoolean(prefKey,false)); //默认都为false吧
+            ((CompoundButton) v).setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(prefKey, isChecked).apply());
+        }
+
+        if(info!=null){
+            TextView btnInfo = new TextView(c);
+
+            btnInfo.setText("  ⓘ  ");
+            btnInfo.getPaint().setFakeBoldText(true);
+            btnInfo.setOnClickListener(btnInfoV->{
+                new android.app.AlertDialog.Builder(c)
+                        .setMessage(info)
+                        .setPositiveButton(android.R.string.yes,null)
+                        .create().show();
+            });
+            LinearLayout.LayoutParams  layoutParams = new LinearLayout.LayoutParams(-2,-2);
+            layoutParams.setMarginStart(px(c,20));
+            linearRoot.addView(btnInfo,layoutParams);
+        }
+
+        return linearRoot;
+    }
+
+    //    /**
 //     * d8 （android gradle plugin 8.1.0) 优化会把不同类的api判断整合到一个类中，导致复制时无法判断应该复制哪些。试试用这种方法回避
 //     */
 //    public static boolean requireMinSDK(int version){
