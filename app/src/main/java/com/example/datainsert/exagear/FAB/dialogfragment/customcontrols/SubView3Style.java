@@ -103,7 +103,7 @@ public class SubView3Style extends LinearLayout {
         editInColor.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editInColor.setFilters(new InputFilter[]{new HexInputFilter(), new InputFilter.LengthFilter(6)});
         editInColor.setText(Integer.toHexString(getPreference().getInt(PREF_KEY_BTN_BG_COLOR, Color.WHITE)).substring(2));
-        editInColor.addTextChangedListener(new SimpleTextWatcher(s -> {
+        editInColor.addTextChangedListener((SimpleTextWatcher)s -> {
             String s1 = s.toString();
             while (s1.length() < 6)
                 s1 = s1.concat("f");
@@ -117,7 +117,7 @@ public class SubView3Style extends LinearLayout {
             getPreference().edit()
                     .putInt(PREF_KEY_BTN_BG_COLOR, bgColor)
                     .putInt(PREF_KEY_BTN_TXT_COLOR, txColor).apply();
-        }));
+        });
         //不显示键盘，改dialog的window的flag 输入法相关 就好了。
 //        editInColor.setOnClickListener(v->{
 //            editInColor.setFocusable(true);
@@ -170,13 +170,13 @@ public class SubView3Style extends LinearLayout {
         editSideColor.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editSideColor.setFilters(new InputFilter[]{new HexInputFilter(), new InputFilter.LengthFilter(6)});
         editSideColor.setText(Integer.toHexString(getPreference().getInt(PREF_KEY_SIDEBAR_COLOR, Color.BLACK)).substring(2));
-        editSideColor.addTextChangedListener(new SimpleTextWatcher(s -> {
+        editSideColor.addTextChangedListener((SimpleTextWatcher)s -> {
             String s1 = s.toString();
             while (s1.length() < 6)
                 s1 = s1.concat("f");
             int sideBgColor = Color.parseColor("#ff" + s1);
             getPreference().edit().putInt(PREF_KEY_SIDEBAR_COLOR, sideBgColor).apply();
-        }));
+        });
 //        LinearLayout linearSideColor = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),editSideColor,true);
 //        ((LayoutParams)linearSideColor.getChildAt(1).getLayoutParams()).topMargin=0;
 //        linearSideColor.getChildAt(1).setLayoutParams(linearSideColor.getChildAt(1).getLayoutParams());

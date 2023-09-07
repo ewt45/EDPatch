@@ -167,7 +167,7 @@ public class RR {
         zhArray.put(DriveD_ParDirKey_3, "外置SD卡(应用专属目录)");
         zhArray.put(DriveD_Explain, "请指定一个安卓文件夹作为D盘");
         zhArray.put(DriveD_DescTitle, "说明");
-        zhArray.put(DriveD_DescCont, "android11及以上，在非应用专属目录下的游戏加载/读档速度可能变慢。解决方法是将d盘修改到应用专属目录，或将游戏复制到c/z盘（c/z盘默认在应用专属目录）。 ");
+        zhArray.put(DriveD_DescCont, "android11及以上，在非应用专属目录下的游戏加载/读档速度可能变慢。解决方法是将d盘修改到应用专属目录，或将游戏复制到c/z盘（c/z盘固定在应用专属目录）。 ");
         zhArray.put(DriveD_SncBrBtn, "重启");
         zhArray.put(DriveD_SncBrTxt, "设置已更新，手动重启应用后生效");
         zhArray.put(DriveD_ToastExitFail, "设置未更新");
@@ -179,7 +179,7 @@ public class RR {
         zhArray.put(DriveD_check_3, "是文件夹类型");
         zhArray.put(DriveD_check_4, "具有该文件夹的读取权限");
         zhArray.put(DriveD_check_5, "具有该文件夹的写入权限");
-        zhArray.put(DriveD_NoStrgPmsn, "应用文件存储权限被禁止");
+        zhArray.put(DriveD_NoStrgPmsn, "应用的文件存储权限被禁止");
         zhArray.put(SelObb_info, "无法找到obb数据包。请检查数据包名称和位置，或手动选择obb文件。");
         zhArray.put(SelObb_btn, "手动选择");
         zhArray.put(SelObb_selResult, "所选文件不是obb数据包$选中obb。正在解压，请耐心等待……");
@@ -643,6 +643,8 @@ public class RR {
     }
 
     public static String refreshLocale() {
+        if(Globals.getApplicationState()==null)
+            return null;
         return Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
     }
 

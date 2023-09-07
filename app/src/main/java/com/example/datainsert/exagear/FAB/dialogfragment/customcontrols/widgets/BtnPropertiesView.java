@@ -53,7 +53,7 @@ public class BtnPropertiesView extends LinearLayout {
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setText(mOneKey.getName());
         editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
-        editText.addTextChangedListener(new SimpleTextWatcher(s -> mOneKey.setName(s.toString())));
+        editText.addTextChangedListener((SimpleTextWatcher)s -> mOneKey.setName(s.toString()));
         LinearLayout renameLinear = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
         addView(renameLinear);
 

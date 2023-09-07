@@ -3,40 +3,43 @@ package com.example.datainsert.exagear.FAB.widget;
 import android.content.Context;
 import android.support.design.widget.TextInputEditText;
 import android.view.Menu;
+import android.view.View;
 import android.widget.PopupMenu;
 
 
 public class MyTextInputEditText extends TextInputEditText {
 
 //    long lastPopCloseTime; //设一个这个，解决ex的popupMenu在clearFocus也弹出来
-    private PopupMenu popupMenu;
+    private PopupMenuCallback popupMenuCallback;
     public MyTextInputEditText(Context context,String[] keys,String[] values,String hint) {
         super(context);
         setHint(hint);
         //设置第一次点击提示填充
         if(keys!=null && values!=null){
-            popupMenu = new PopupMenu(context,this);
-            for (int i = 0; i < keys.length; i++) {
-                popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, keys[i]).setOnMenuItemClickListener(item -> {
-                    this.setText(values[item.getItemId()]);
-                    return true;
-                });
-            }
+            popupMenuCallback = anchor -> {
+                PopupMenu popupMenu = new PopupMenu(context,anchor);
+                for (int i = 0; i < keys.length; i++) {
+                    popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, keys[i]).setOnMenuItemClickListener(item -> {
+                        MyTextInputEditText.this.setText(values[item.getItemId()]);
+                        return true;
+                    });
+                }
+                popupMenu.show();
+            };
         }
         setOnClickListener(v-> {
-            if(popupMenu!=null) popupMenu.show();
+            if(popupMenuCallback!=null) popupMenuCallback.showPopupMenu(v);
         });
         setOnFocusChangeListener((v, hasFocus) -> {
-            if(hasFocus && popupMenu!=null)
-                popupMenu.show();
+            if(hasFocus && popupMenuCallback!=null) popupMenuCallback.showPopupMenu(v);
         });
 //        setAdapter(new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line,entries));
 //        setThreshold(0);
 
     }
 
-    public void setPopupMenu(PopupMenu popupMenu) {
-        this.popupMenu = popupMenu;
+    public void setPopupMenuCallback(PopupMenuCallback menuCallback){
+        this.popupMenuCallback = menuCallback;
     }
 
 
@@ -58,6 +61,10 @@ public class MyTextInputEditText extends TextInputEditText {
     }
 
     public void setTextChangeListener(Object updateCurrentParDir) {
+    }
+
+    public interface PopupMenuCallback{
+        void showPopupMenu(View anchor);
     }
 
     //    public static class AnyArrayAdapter<T> extends BaseAdapter implements Filterable {

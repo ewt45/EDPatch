@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.eltechs.axs.ExagearImageConfiguration.ExagearImageConfigurationHelpers;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.Mcat;
 import com.eltechs.axs.applicationState.EnvironmentAware;
@@ -24,7 +25,13 @@ import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.eltechs.axs.applicationState.UBTLaunchConfigurationAware;
 import com.eltechs.axs.configuration.UBTLaunchConfiguration;
 import com.eltechs.axs.configuration.startup.actions.AbstractStartupAction;
+import com.eltechs.axs.helpers.SafeFileHelpers;
+import com.eltechs.axs.helpers.StringHelpers;
+import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.fragments.ContainerSettingsFragment;
+import com.eltechs.ed.guestContainers.GuestContainersManager;
+import com.eltechs.ed.startupActions.StartGuest;
+import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.containerSettings.ConSetRenderer;
@@ -36,8 +43,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -76,6 +85,9 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
         SharedPreferences sp = getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + contId, Context.MODE_PRIVATE);
 
         //添加多个盘符
+        if (QH.classExist("com.example.datainsert.exagear.FAB.dialogfragment.drived.DrivePathChecker")) {
+            addDrives(sp, ubtConfig, contId, xdroidFile);
+        } else Log.w(TAG, "execute: 功能未安装：修改磁盘路径 ");
 
         //添加pulseaudio环境变量
         try {
@@ -100,10 +112,10 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             if (ContainerSettingsFragment.enable_different_renderers) {
                 addRendererPath(sp, ubtConfig);
             }
-        } catch ( NoSuchFieldException  | NoSuchFieldError e) {
+        } catch (NoSuchFieldException | NoSuchFieldError e) {
             Log.w(TAG, "execute: 功能未安装：环境设置-渲染器新选择" + e.getMessage());
-        } catch (Exception e){
-            Log.w(TAG, "execute: 执行过程中出错？" ,e);
+        } catch (Exception e) {
+            Log.w(TAG, "execute: 执行过程中出错？", e);
         }
         //最后再添加动态库路径环境变量到ubt（不对，如果这样会覆盖上一次的，要求没改LD的话就不添加。主要是适配多wine v1 且每添加新渲染设置的情况）
         List<String> envList = ubtConfig.getGuestEnvironmentVariables();
@@ -118,6 +130,46 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
         ubtConfig.addEnvironmentVariable("LD_LIBRARY_PATH", LD_LIBRARY_PATH.deleteCharAt(0).toString()); //删除第一个冒号
 
         sendDone();
+    }
+
+    private void addDrives(SharedPreferences sp, UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
+        try {
+            //如果是第一次创建的也许没有dosdevices这个文件夹？考虑一下好了
+
+            // 读取在PrepareGuestImage中已设置的vpath路径(先把原先StartGuest的d盘删去）
+            String oldDriveDStr = StringHelpers.appendTrailingSlash(DriveD.getDriveDDir().getAbsolutePath());
+            List<String> vpaths = FileUtils.readLines(getApplicationState().getExagearImage().getVpathsList(), StandardCharsets.UTF_8);
+            for (int i = 0; i < vpaths.size(); i++) {
+                if (vpaths.get(i).equals(oldDriveDStr)) {
+                    vpaths.remove(i);
+                    i--;
+                }
+            }
+
+            //除了 cez盘其他先全删掉
+            String dosDevicesPath = GuestContainersManager.getInstance(getAppContext()).getGuestWinePrefixPath() + "/dosdevices";
+            File dosDevicesFile;
+            if ((dosDevicesFile = new File(dosDevicesPath)).exists())
+                for (File dosFile : dosDevicesFile.listFiles()) {
+                    char driveName = dosFile.getName().charAt(0);
+                    if (driveName != 'c' && driveName != 'e' && driveName != 'z')
+                        dosFile.delete();;
+                }
+
+            //获取fab中设置的磁盘及其路径
+            List<String> driveList = DriveD.savedTxtFileRead();
+            for (String drive : driveList) {
+                String[] splits = drive.split(" ");
+                String driveName = splits[0].toLowerCase(Locale.ENGLISH), fileParent = splits[1], fileName = splits[2];
+                SafeFileHelpers.symlink(fileParent + "/" + fileName, dosDevicesPath + "/" + driveName + ":");  //创建wine的盘符
+                vpaths.add(StringHelpers.appendTrailingSlash(fileParent + "/" + fileName));  //挂载安卓路径到rootfs中
+            }
+
+            //重新写入vpath-list 文本中
+            new ExagearImageConfigurationHelpers(getApplicationState().getExagearImage()).createVpathsList(vpaths.toArray(new String[0]));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void startPulseAudio(UBTLaunchConfiguration ubtConfig) {
@@ -187,12 +239,12 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             if (oneEnvSplit[0].equals("LD_LIBRARY_PATH")) {
                 if (!"".equals(oneEnvSplit[1]))
                     LD_LIBRARY_PATH.insert(0, oneEnvSplit[1]).insert(0, ":");
-            } else{
+            } else {
                 ubtConfig.addEnvironmentVariable(oneEnvSplit[0], oneEnvSplit[1]);
             }
         }
 
-        Log.d(TAG, String.format("所选渲染模式：%s, 环境变量：%s",rendererName, envList));
+        Log.d(TAG, String.format("所选渲染模式：%s, 环境变量：%s", rendererName, envList));
     }
 
 

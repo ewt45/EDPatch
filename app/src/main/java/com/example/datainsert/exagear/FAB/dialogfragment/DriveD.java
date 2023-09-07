@@ -1,91 +1,60 @@
 package com.example.datainsert.exagear.FAB.dialogfragment;
 
-import static android.content.DialogInterface.BUTTON_NEGATIVE;
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.example.datainsert.exagear.RR.getS;
 
-import android.Manifest;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StrikethroughSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
+import android.view.SubMenu;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
-import com.example.datainsert.exagear.FAB.FabMenu;
+import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.eltechs.axs.helpers.AndroidHelpers;
+import com.eltechs.ed.R;
+import com.example.datainsert.exagear.FAB.dialogfragment.drived.DrivePathChecker;
+import com.example.datainsert.exagear.FAB.dialogfragment.drived.SimpleTabSelectListener;
 import com.example.datainsert.exagear.FAB.widget.MyTextInputEditText;
+import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-public class DriveD extends BaseFragment implements DialogInterface.OnClickListener {
-    public final static String TAG = "DriveD";
-    private static final String[] dstDirArrKeys = new String[]{"Exagear", "Download"};
-    private static final String[] dstDirArrVals = new String[]{"Exagear", "Download"};
-    private static final String[] parDirArrKeys = new String[]{getS(RR.DriveD_ParDirKey_1), getS(RR.DriveD_ParDirKey_2), getS(RR.DriveD_ParDirKey_3)};
-    private static final ParDirEnum[] parDirArrVals = new ParDirEnum[]{ParDirEnum.ExternalStorage, ParDirEnum.ExternalFilesDir, ParDirEnum.SDCardExternalFilesDir};
-    //sharedpreference里记录父路径和文件夹的key
-    public static String PREF_KEY_PAR_IND = "PREF_KEY_PAR_IND"; //值为int
-    public static String PREF_KEY_DST_NAME = "PREF_KEY_DST_IND"; //值为string
-    public static String PREF_VAL_DST_NAME = "Exagear";//没有自定义的时候，默认的文件夹名,可以改这个默认的路径
-    String[] testCheckStr = new String[]{getS(RR.DriveD_check_1), getS(RR.DriveD_check_2), getS(RR.DriveD_check_3), getS(RR.DriveD_check_4), getS(RR.DriveD_check_5)};
-    //用于动态显示父目录和测试结果的textview
-    private TextView tvTestResult;
-    private MyTextInputEditText tvInputParDir;
-    //用于编辑文件夹名的edittext
-    private MyTextInputEditText tvInputDstDir;
-    //当前设置的父目录和文件夹名称
-    private int currentParDir; //考虑到持久化保存，还是用enum好一些，也许外部路径会有变化？
-    private String currentDstDirName;
-
+public class DriveD extends BaseFragment {
+    private static final String TAG = "DriveD";
+    private static final File drivesSavedFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath().getAbsolutePath(), "opt/drives.txt");
+    //PREF_VAL_DST_NAME 没有自定义的时候，默认的文件夹名,可以改这个默认的路径
+    public static String PREF_VAL_PAR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath(), PREF_VAL_DST_NAME = "Exagear"; //值为string
     /**
-     * 根据parDirEnum生成对应文件路径字符串并返回
-     *
-     * @param parDirEnum enum
-     * @return 文件字符串，
+     * 存储的盘符及其路径。列表，列表的一项是字盘符名（大写），父路径，文件夹名 用空格分开
      */
-    private static File dirEnumToFile(ParDirEnum parDirEnum) {
-        File parDir = null;
-        try {
-            if (parDirEnum == ParDirEnum.ExternalFilesDir) {
-                parDir = Globals.getAppContext().getExternalFilesDir(null);
-            } else if (parDirEnum == ParDirEnum.ExternalStorage) {
-                parDir = Environment.getExternalStorageDirectory();
-            } else if (parDirEnum == ParDirEnum.SDCardExternalFilesDir) {
-                parDir = Globals.getAppContext().getExternalFilesDirs(null)[1];
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return parDir;
-    }
+    private List<String> drivesList = new ArrayList<>();
+    private DrivePathChecker mPathChecker;
 
     /**
      * 在StartGuest中初始化d盘路径时调用，返回对应的file
@@ -93,325 +62,239 @@ public class DriveD extends BaseFragment implements DialogInterface.OnClickListe
      * @return file
      */
     public static File getDriveDDir() {
-        if (getPreference() == null)
-            return null;
-        File parFile = dirEnumToFile(parDirArrVals[getPreference().getInt(PREF_KEY_PAR_IND, 0)]);
+        String[] splits = savedTxtFileRead().get(0).split(" ");
+        return new File(splits[1], splits[2]);
+//        return new File("/storage/BA73-022B");//825E-837B
+    }
+
+    /**
+     * 从txt中读取存储的盘符及其路径
+     * 生成： 列表，列表的一项是字符串数组，数组0是盘符名，数组1是盘符路径
+     * 运行此函数后，保证drivesList中至少有一个元素
+     */
+    public static List<String> savedTxtFileRead() {
+        List<String> drivesList = new ArrayList<>();
+
+        //初始化前，应考虑从旧版迁移（读取sp中的数据）
+        String oldWayDst = getPreference().getString("PREF_KEY_DST_IND", null);
+        int oldWayPar = getPreference().getInt("PREF_KEY_PAR_IND", -1);
+        String[] oldWayParList = new String[]{Environment.getExternalStorageDirectory().getAbsolutePath(), Globals.getAppContext().getExternalFilesDir(null).getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath()};//sdcard的数组不好模拟，干脆替换成外部存储吧
+        if (oldWayDst != null && oldWayPar != -1) {
+            drivesList.add("D " + oldWayParList[oldWayPar] + " " + oldWayDst);
+            savedTxtFileWrite(drivesList);
+            getPreference().edit().remove("PREF_KEY_DST_IND").remove("PREF_KEY_PAR_IND").apply();
+        }
+
         try {
-            return new File(parFile, getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
-        } catch (Exception e) {
+            drivesList = FileUtils.readLines(drivesSavedFile, StandardCharsets.UTF_8);
+        } catch (IOException e) {
             e.printStackTrace();
-            return null;
+        }
+
+        for (int i = 0; i < drivesList.size(); i++)
+            if (drivesList.get(i).split(" ").length != 3) {
+                drivesList.remove(i);
+                i--;
+            }
+
+        if (drivesList.size() == 0)
+            drivesList.add(String.format("%s %s %s", "D", PREF_VAL_PAR_NAME, PREF_VAL_DST_NAME));
+
+        return drivesList;
+    }
+
+    /**
+     * 将列表存储到txt中。格式：一个列表项为一行，盘符名和盘符路径用空格分开
+     */
+    private static void savedTxtFileWrite(List<String> drivesList) {
+        try {
+            FileUtils.writeLines(drivesSavedFile, StandardCharsets.UTF_8.name(), drivesList, false);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return super.onCreateDialog(savedInstanceState);
+    private void addMenuItem(String displayText, String inputText, TextView textView, Menu menu) {
+        menu.add(displayText).setOnMenuItemClickListener(item -> {
+            textView.setText(inputText);
+            return true;
+        });
+
+    }
+
+    /**
+     * 设置tvInput的文本改变的监听器。内容：更新路径到list，让pathchecker检查路径可用性
+     */
+    private void setTextChangeListener(MyTextInputEditText tvInput, TabLayout tabLayout, boolean isPar) {
+        tvInput.addTextChangedListener((SimpleTextWatcher) s -> {
+            int pos = tabLayout.getSelectedTabPosition();
+            String[] splits = drivesList.get(pos).split(" ");
+            drivesList.set(pos, String.format("%s %s %s", splits[0], isPar ? s.toString() : splits[1], isPar ? splits[2] : s.toString()));
+            if (isPar) mPathChecker.setStrPar(s.toString());
+            else mPathChecker.setStrDst(s.toString());
+            mPathChecker.updateCheckResult();
+        });
     }
 
     @Override
     protected ViewGroup buildUI() {
         Context c = requireContext();
-        tvTestResult = getTextViewWithText(c, "");
+
+        drivesList = savedTxtFileRead();
 
         LinearLayout rootView = new LinearLayout(c);
         rootView.setOrientation(LinearLayout.VERTICAL);
-        rootView.addView(getTextViewWithText(c, getS(RR.DriveD_Explain)));
+        LinearLayout.LayoutParams paddingParams = new LinearLayout.LayoutParams(-1, -2);
+        paddingParams.topMargin = AndroidHelpers.dpToPx(24);
 
-        TextInputLayout textInputLayout = new TextInputLayout(c);
-        textInputLayout.addView(setupETPar());
-        rootView.addView(textInputLayout);
-
-        TextInputLayout textInputLayout2 = new TextInputLayout(c);
-        textInputLayout2.addView(setupETDst());
-        rootView.addView(textInputLayout2);
-
-        tvTestResult.setTextIsSelectable(true);
-        rootView.addView(tvTestResult);
+        rootView.addView(getTextViewWithText(c, "请为该磁盘设置对应的安卓文件夹路径"));
 
 
-        rootView.addView(getOneLineWithTitle(c, getS(RR.DriveD_DescTitle), getTextViewWithText(c, getS(RR.DriveD_DescCont)), false));
-        //初始化当前路径
-        tvInputDstDir.setText(getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME));
-        updateCurrentParDir(getPreference().getInt(PREF_KEY_PAR_IND, 0));
-        return rootView;
-    }
+        //盘符名
+        TabLayout tabLayout = new TabLayout(c);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        tabLayout.setZ(100);
+        for (String s : drivesList)
+            tabLayout.addTab(tabLayout.newTab().setText(s.charAt(0) + ":\\"));
 
-    /**
-     * 当本dialog关闭时的操作
-     */
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == BUTTON_POSITIVE) {
-            //将设置更新到preference。整个dialog应该只有此时向pref中写入数据
-            if (checkCurrDirAvailable()
-                    //如果当前路径可用，且设置与之前设置不一样了
-                    && (currentParDir != getPreference().getInt(PREF_KEY_PAR_IND, 0)
-                    || !currentDstDirName.equals(getPreference().getString(PREF_KEY_DST_NAME, PREF_VAL_DST_NAME))
-            )
+        //跟在盘符tab后的操作按钮
 
-            ) {
-                getPreference().edit().putInt(PREF_KEY_PAR_IND, currentParDir).putString(PREF_KEY_DST_NAME, currentDstDirName).apply();
-//                Toast.makeText(requireActivity(), "设置已更新", Toast.LENGTH_SHORT).show();
-                Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), getS(RR.DriveD_SncBrTxt), Snackbar.LENGTH_LONG)
-                        .setAction(getS(RR.DriveD_SncBrBtn), v -> android.os.Process.killProcess(android.os.Process.myPid()))
-                        .show();
-            } else {
-                Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), getS(RR.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
+        ImageButton btnDriveOpt = new ImageButton(c);
+        btnDriveOpt.setBackground(requireContext().getDrawable(QH.rslvID(R.drawable.ic_add_24dp, 0x7f08009b)));
+        btnDriveOpt.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(c, v);
+            popupMenu.getMenu().add("新建盘符").setOnMenuItemClickListener(item -> {
+                //找到合适的盘符
+                List<Character> existedDriveNameList = new ArrayList<>(Arrays.asList('A', 'B', 'C', 'E', 'Z'));
+                char properDriveName = '0';
+                for (String s : drivesList)
+                    existedDriveNameList.add(s.charAt(0));
+                for (int i = 0x41; i < 0x5B; i++)
+                    if (!existedDriveNameList.contains((char) i)) {
+                        properDriveName = (char) i;
+                        break;
+                    }
+                //添加到list中； 新建tab并选中
+                if (properDriveName != '0') {
+                    drivesList.add(String.format("%s %s %s", properDriveName, PREF_VAL_PAR_NAME, PREF_VAL_DST_NAME));
+                    tabLayout.addTab(tabLayout.newTab().setText(properDriveName + ":\\"), true);
+                }
+                return true;
+            });
+            popupMenu.getMenu().add("删除当前盘符").setEnabled(tabLayout.getTabCount() > 1).setOnMenuItemClickListener(item -> {
+                //从list中删除->删除tab-> 选择一个新tab
+                int delPos = tabLayout.getSelectedTabPosition();
+                drivesList.remove(delPos);
+                tabLayout.removeTabAt(delPos);
+                Objects.requireNonNull(tabLayout.getTabAt(0)).select();
+                return true;
+            });
+            popupMenu.show();
+        });
+
+        LinearLayout linearTab = new LinearLayout(c);
+        linearTab.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams btnAddParams = new LinearLayout.LayoutParams(-2, -2);
+        btnAddParams.gravity = Gravity.CENTER_VERTICAL;
+        btnAddParams.setMarginStart(QH.px(requireContext(), 8));
+        btnAddParams.setMarginEnd(QH.px(requireContext(), 16));
+        linearTab.addView(tabLayout);
+        linearTab.addView(btnDriveOpt, btnAddParams);
+        HorizontalScrollView scrollTab = new HorizontalScrollView(c);
+        scrollTab.addView(linearTab);
+        rootView.addView(scrollTab, new LinearLayout.LayoutParams(-1, -2));
+
+        //文件夹父目录
+        MyTextInputEditText tvInputParDir = new MyTextInputEditText(requireContext(), null, null, getS(RR.DriveD_EditParTitle));
+        tvInputParDir.setInputType(InputType.TYPE_NULL);
+        tvInputParDir.setPopupMenuCallback(v -> {
+            PopupMenu popupMenu = new PopupMenu(requireContext(), v);
+            Map<Menu, String[]> menuMap = new HashMap<>(); //记录submenu需要添加的选项
+
+            menuMap.put(popupMenu.getMenu().addSubMenu("手机存储"), new String[]{Environment.getExternalStorageDirectory().getAbsolutePath(), requireContext().getExternalFilesDir(null).getAbsolutePath()});
+
+            SubMenu subMenuExt = popupMenu.getMenu().addSubMenu("其他外部存储设备");
+            File[] extFiles = c.getExternalFilesDirs(null);
+            if (extFiles.length > 1)
+                for (int i = 1; i < extFiles.length; i++) {
+                    String filesDirPath = extFiles[i].getAbsolutePath();
+                    String rootExtDevPath = filesDirPath.substring(0, filesDirPath.indexOf("/Android/data"));
+                    menuMap.put(subMenuExt.addSubMenu("设备" + i), new String[]{rootExtDevPath, filesDirPath});
+                }
+            else subMenuExt.getItem().setTitle("其他外部存储设备(无)").setEnabled(false);
+
+            for (Menu menu : menuMap.keySet()) {
+                addMenuItem("根目录", menuMap.get(menu)[0], tvInputParDir, menu);
+                addMenuItem("应用专属目录", menuMap.get(menu)[1], tvInputParDir, menu);
             }
-        } else if (which == BUTTON_NEGATIVE) {
-            Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), getS(RR.DriveD_ToastExitFail), Snackbar.LENGTH_LONG).show();
-        }
-    }
+            popupMenu.show();
+        });
+        setTextChangeListener(tvInputParDir, tabLayout, true);
+        TextInputLayout textInputLayout = new TextInputLayout(c);
+        textInputLayout.addView(tvInputParDir);
+        rootView.addView(textInputLayout, paddingParams);
 
-    /**
-     * 设置文件夹名称的edittext
-     */
-    private MyTextInputEditText setupETDst() {
-        tvInputDstDir = new MyTextInputEditText(requireContext(), dstDirArrKeys, dstDirArrVals, getS(RR.DriveD_EditDstTitle));
+        //文件夹自身名称
+        String[] dirNames = new String[]{"Exagear", "Download"};
+        MyTextInputEditText tvInputDstDir = new MyTextInputEditText(requireContext(), dirNames, dirNames, getS(RR.DriveD_EditDstTitle));
         tvInputDstDir.setInputType(
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 //        InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;用于禁用语法检查
         tvInputDstDir.setSingleLine();
         tvInputDstDir.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        tvInputDstDir.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        setTextChangeListener(tvInputDstDir, tabLayout, false);
+        TextInputLayout textInputLayout2 = new TextInputLayout(c);
+        textInputLayout2.addView(tvInputDstDir);
+        rootView.addView(textInputLayout2, paddingParams);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+        //显示文件夹完整路径及该路径是否可用
+        TextView tvTestResult = getTextViewWithText(c, "");
+        tvTestResult.setTextIsSelectable(true);
+        rootView.addView(tvTestResult);
 
+        //说明
+        rootView.addView(QH.getOnePrefLine(new TextView(c),"*应用专属目录",getS(RR.DriveD_DescCont),null),paddingParams);
+        
+        mPathChecker = new DrivePathChecker(tvInputParDir, tvInputDstDir, tvTestResult);
+
+        //初始化当前路径
+        tabLayout.addOnTabSelectedListener(new SimpleTabSelectListener() {
             @Override
-            public void afterTextChanged(Editable s) {
-                updateCurrentDstDir(s.toString().trim());
+            public void onTabSelectedOrReSel(TabLayout.Tab tab) {
+                String fullPath = drivesList.get(tab.getPosition());
+                tvInputParDir.setText(fullPath.split(" ")[1]);
+                tvInputDstDir.setText(fullPath.split(" ")[2]); //触发tvInput的监听，然后重新设置路径，并检查可用性
+//                btnDel.setEnabled(tabLayout.getTabCount() > 1); //当只有一个盘符的时候，不允许删除
             }
         });
-        return tvInputDstDir;
+        Objects.requireNonNull(tabLayout.getTabAt(0)).select();
+
+        return rootView;
     }
 
-    /**
-     * 更新文件夹名称请调用edittext.settext，然后会自动触发这个函数。
-     * 输入的当前文件夹名称更新后，更新成员变量currentDstDir(不要在这里设置edittext文本显示，否则会循环调用）
-     * 然后重新检查可用性并将结果显示到textview上
-     *
-     * @param s 新更新的文件夹名称
-     */
-    private void updateCurrentDstDir(String s) {
-        currentDstDirName = s;
-        checkCurrDirAvailable();
-    }
-
-    /**
-     * 设置文件夹父目录的edittext
-     */
-    private MyTextInputEditText setupETPar() {
-        tvInputParDir = new MyTextInputEditText(requireContext(), null, null, getS(RR.DriveD_EditParTitle));
-        tvInputParDir.setInputType(InputType.TYPE_NULL);
-        //设置弹窗菜单
-        PopupMenu popupMenu = new PopupMenu(requireContext(), this.tvInputParDir);
-        for (int i = 0; i < parDirArrKeys.length; i++) {
-            popupMenu.getMenu().add(Menu.NONE, i, Menu.NONE, parDirArrKeys[i]).setOnMenuItemClickListener(item -> {
-                //点击某个选项后更新成员变量和tv的文件夹父目录
-                updateCurrentParDir(item.getItemId());
-                return true;
-            });
-        }
-        tvInputParDir.setPopupMenu(popupMenu);
-        return tvInputParDir;
-    }
-
-    /**
-     * 更新父目录应调用此函数。
-     * 输入的当前文件夹父目录更新后，更新成员变量currentParDir以及edittext显示
-     * 然后重新检查可用性并将结果显示到textview上
-     *
-     * @param i 新更新的文件夹父目录
-     */
-    private void updateCurrentParDir(int i) {
-        currentParDir = i;
-        File file = dirEnumToFile(parDirArrVals[currentParDir]);
-        this.tvInputParDir.setText(file == null ? getS(RR.DriveD_getPathFail) : file.getAbsolutePath());
-        checkCurrDirAvailable();
-    }
-
-    /**
-     * 检查当前设置的文件夹是否有效，并将检查结果显示到textview上
-     *
-     * @return 是否有效
-     */
-    private boolean checkCurrDirAvailable() {
-        int result = 0;
-        //先更新一下文件夹名（不允许文件夹名为空，如果为""就改成Download) （不更新了，最后点击确定的时候再说吧）
-        //如果文件夹或父目录获取不到返回false。
-        if (currentDstDirName == null || currentDstDirName.equals("") || dirEnumToFile(parDirArrVals[currentParDir]) == null) {
-//            tvInputDstDir.setText(dstDirArrVals[0]);
-            setTvTestResult(null, result);
-            return false;
-        }
-        String str = null;
-        try {
-            File dstFile = new File(dirEnumToFile(parDirArrVals[currentParDir]), currentDstDirName);
-            //用位记录吧.从低位到高位：父目录是否存在，文件夹是否存在，是否为文件夹，是否可读，是否可写
-            result = 0b00000001
-                    | (dstFile.exists() ? 1 : 0) << 1
-                    | (dstFile.isDirectory() ? 1 : 0) << 2
-                    | (dstFile.canRead() ? 1 : 0) << 3
-                    | (dstFile.canWrite() ? 1 : 0) << 4;
-        } catch (Exception e) {
-            str = e.getLocalizedMessage();
-        }
-        setTvTestResult(str, result);
-        return result == 0b00011111;
-    }
-
-    /**
-     * 设置测试结果的文字到tv
-     *
-     * @param s         文字
-     * @param checkFlag 类型，0为错误，1为成功，null为exception
-     */
-    private void setTvTestResult(String s, int checkFlag) {
-        SpannableStringBuilder str = new SpannableStringBuilder("\n");
-        //有报错，或者没权限，或者无法获取路径，不进行下一步测试，直接红色消息显示商。
-        if (s != null) {
-            str.append(s);
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length() - s.length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        //检查是否有存储权限
-        else if (ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            str.append(getS(RR.DriveD_NoStrgPmsn));
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length() - getS(RR.DriveD_NoStrgPmsn).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", requireContext().getPackageName(), null));
-            startActivity(intent);
-        }
-        //如果父路径或子路径为null
-        else if (dirEnumToFile(parDirArrVals[currentParDir]) == null || currentDstDirName == null || "".equals(currentDstDirName)) {
-            str.append(getS(RR.DriveD_getPathFail));
-            str.setSpan(new ForegroundColorSpan(0xffF56C6C), str.length() - getS(RR.DriveD_getPathFail).length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        //获取文件夹file，并检查是否可用
-        else {
-            File parFile = dirEnumToFile(parDirArrVals[currentParDir]);
-            boolean stillGood = true; //判断当前是否已经循环到错误的地方。如果是的话下面都改成灰色
-            String completePath = parFile.getAbsolutePath() + "/" + currentDstDirName;
-            str.append(completePath);
-            str.setSpan(new StyleSpan(Typeface.BOLD), str.length() - completePath.length(), str.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            str.append("\n\n");
-            for (int i = 0; i < 5; i++) {
-                str.append(testCheckStr[i]);
-                if (stillGood) {
-                    stillGood = ((checkFlag >> i) & 0b000000001) == 1;
-                    str.append(stillGood ? " √" : " ×");
-                    str.setSpan(new ForegroundColorSpan(stillGood ? 0xff67C23A : 0xffF56C6C), str.length() - 1, str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                } else {
-                    str.setSpan(new StrikethroughSpan(), str.length() - testCheckStr[i].length(), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                }
-                str.append('\n');
-            }
-
-        }
-        tvTestResult.setText(str);
-    }
-
-    /**
-     * 初始化时，创建Exagear文件夹
-     */
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-        File file = new File(Environment.getExternalStorageDirectory(), PREF_VAL_DST_NAME);
+        File file = new File(PREF_VAL_PAR_NAME, PREF_VAL_DST_NAME);
         if (!file.exists()) {
             boolean b = file.mkdir();
             Log.d(TAG, "callWhenFirstStart: 初次安装后启动，尝试创建文件夹结果 " + b);
         }
-
     }
 
     @Override
     public String getTitle() {
-        return getS(RR.DriveD_Title);
+        return "修改磁盘路径";
     }
 
-    private enum ParDirEnum {
-        ExternalStorage,
-        ExternalFilesDir,
-        SDCardExternalFilesDir
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == BUTTON_POSITIVE) {
+            savedTxtFileWrite(drivesList);
+            //现在不需要重启了，因为d盘是在action里自己设置
+//            Snackbar.make(FabMenu.getMainFrameView((AppCompatActivity) requireActivity()), getS(RR.DriveD_SncBrTxt), Snackbar.LENGTH_LONG)
+//                    .setAction(getS(RR.DriveD_SncBrBtn), v -> android.os.Process.killProcess(android.os.Process.myPid()))
+//                    .show();
+        }
     }
-
-
-//    /**
-//     * 创建 “测试可用性”按钮
-//     *
-//     * @return 按钮
-//     */
-//    private Button getValidateBtn() {
-//        Button btn = new Button(requireActivity());
-//        btn.setText("测试可用性");
-//        btn.setOnClickListener(v -> checkCurrDirAvailable());
-//        return btn;
-//    }
-    //突然发现不是重启activity能解决的，放弃。让用户手动重启吧
-//    @Override
-//    public void onDismiss(DialogInterface dialog) {
-//        super.onDismiss(dialog);
-//        Log.d(TAG, "onDismiss: actvity类型是 "+requireActivity().getClass());
-//        if(requireActivity() instanceof EDMainActivity){
-//            EDMainActivity a = (EDMainActivity) requireActivity();
-////            ((StartupActionsCollectionAware)Globals.getApplicationState()).getStartupActionsCollection().addAction(new EmptyAction());
-////            a.signalUserInteractionFinished(WDesktop.UserRequestedAction.RESTART_ME);
-//            Intent intent = new Intent();
-//            intent.putExtra("AxsActivityResult", WDesktop.UserRequestedAction.RESTART_ME);
-//            a.setResult(2, intent);
-//            a.finish();
-//        }else{
-//            requireActivity().recreate();
-//        }
-//    }
-//    private Button getBrowseBtn() {
-//        Button btn = new Button(requireActivity());
-//        btn.setText("浏览文件夹");
-//        btn.setOnClickListener(v -> {
-//            try {
-//                File file = new File(dirEnumToFile(parDirArrVals[currentParDir]), tvInputDstDir.getText().toString().trim());
-////                MediaScannerConnection.scanFile(requireContext(), new String[]{file.getAbsolutePath()}, null,
-////                        new MediaScannerConnection.OnScanCompletedListener() {
-////                            @Override
-////                            public void onScanCompleted(String path, Uri uri) {
-////                                Log.d(TAG, "onScanCompleted: 扫描完成，uri是啥样的" + uri + ", path是啥样的" + path);
-////                                if (uri != null) {
-////                                    Intent intent = new Intent(Intent.ACTION_VIEW);
-////
-//////                                  DocumentsContract.Document.MIME_TYPE_DIR
-////                                    intent.setDataAndType(uri, DocumentsContract.Document.MIME_TYPE_DIR);
-////                                    //如果没有处理隐式intent的应用，用startActivity会崩溃
-////                                    if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-////                                        startActivity(intent);
-////                                    }
-////                                }
-////                            }
-////                        });
-//
-//                Intent intent = new Intent(Intent.ACTION_SEND);
-////                                  DocumentsContract.Document.MIME_TYPE_DIR
-//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//                Uri uri = FileProvider.getUriForFile(requireActivity(), BuildConfig.APPLICATION_ID+".provider",file);
-//                Log.d(TAG, "getBrowseBtn: fileProvider获取的uri为"+uri);
-//                intent.putExtra(Intent.EXTRA_STREAM, uri);
-//                intent.setType(DocumentsContract.Document.MIME_TYPE_DIR);
-////                                    intent.setDataAndType(Uri.parse("content://"+path), DocumentsContract.Document.MIME_TYPE_DIR);
-//                //如果没有处理隐式intent的应用，用startActivity会崩溃
-//                if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
-//                    startActivity(intent);
-//                }
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//        });
-//        return btn;
-//    }
 
 }

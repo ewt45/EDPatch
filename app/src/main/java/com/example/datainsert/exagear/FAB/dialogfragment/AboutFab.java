@@ -4,22 +4,33 @@ import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Typeface;
-import android.os.Environment;
+import android.net.Uri;
+import android.provider.DocumentsContract;
 import android.support.design.widget.Snackbar;
+import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
+import android.system.ErrnoException;
+import android.system.Os;
 import android.text.Html;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.eltechs.axs.Globals;
+import com.eltechs.axs.TouchEventAdapter;
+import com.eltechs.axs.activities.AxsActivity;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
@@ -95,6 +106,8 @@ public class AboutFab extends BaseFragment {
                 linearFun.getChildAt(animIndex).startAnimation(scale);
 
                 animIndex = (animIndex+1)%viewCount;
+                if(animIndex==0)
+                    showHiddenOptions(linearLayout);
             }
         };
 
@@ -110,8 +123,105 @@ public class AboutFab extends BaseFragment {
         }
 
         linearLayout.addView(linearFun);
-
         return linearLayout;
+
+//        ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity().registerActivityResultHandler((i, i2, intent) -> {
+//            Uri intentUri = intent.getData();
+//            DocumentFile documentFile = DocumentFile.fromTreeUri(requireContext(),intentUri);
+//            String documentId = DocumentsContract.getDocumentId(documentFile.getUri());// 实际路径，如/data/data/com.termux/home
+//            final String column = "_data";
+//            final String[] projection = {column};
+//            try(Cursor cursor = requireContext().getContentResolver().query(documentFile.getUri(), projection, null, null, null);) {
+//                if (cursor != null && cursor.moveToFirst()) {
+//                    final int index = cursor.getColumnIndexOrThrow(column);
+//                    String dataColumn= cursor.getString(index);
+//                    Log.d(TAG, "handleActivityResult: 获取到uri转为字符串="+dataColumn);
+//                }
+//            }
+//            return true;
+//        },123);
+
+    }
+
+    boolean isHiddenOptionsShowing;
+    /**
+     * 点击几次颜文字后显示隐藏选项
+     */
+    private void showHiddenOptions(LinearLayout linearRoot) {
+        if(isHiddenOptionsShowing)
+            return;
+        Context c = requireContext()    ;
+        LinearLayout linearHidden = new LinearLayout(c);
+        linearHidden.setOrientation(LinearLayout.VERTICAL);
+
+        TextView tvWarn = new TextView(c);
+        tvWarn.setText("请勿乱点，后果自负！\nDO NOT TOUCH ANYTHING UNLESS YOU KNOW WHAT YOU ARE DOING!");
+
+        Button btnSymPriExt = new Button(c);
+        btnSymPriExt.setText("/storage/emulated/0");
+        btnSymPriExt.setOnClickListener(v-> createOrDelSymFile("/storage/emulated/0","a_primary_storage"));
+
+        Button btnSymOthExt = new Button(c);
+        btnSymOthExt.setText("other storage device");
+        btnSymOthExt.setOnClickListener(v->{
+            PopupMenu popupMenu = new PopupMenu(c,v);
+            for(File filesDir:c.getExternalFilesDirs(null)){
+                if(filesDir.getAbsolutePath().startsWith("/storage/emulated/0"))
+                    continue;
+               try{
+                   String extDevPath = filesDir.getAbsolutePath().replace("/Android/data/"+c.getPackageName()+"/files","");
+                   popupMenu.getMenu().add(extDevPath).setOnMenuItemClickListener(item -> {
+                       createOrDelSymFile(item.getTitle().toString(),"a_"+item.getTitle().toString().replace("/","_"));
+                       return true;
+                   });
+               }catch ( Exception e){
+                   e.printStackTrace();
+               }
+            }
+
+            if(popupMenu.getMenu().size()==0)
+                popupMenu.getMenu().add("none").setEnabled(false);
+            popupMenu.show();
+        });
+
+        Button btnOpenDocTree = new Button(c);
+        btnOpenDocTree.setText("选择文件夹");
+        btnOpenDocTree.setOnClickListener(v->{
+            // Choose a directory using the system's file picker.
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            startActivityForResult(intent, 123);
+        });
+
+        linearHidden.addView(btnSymPriExt);
+        linearHidden.addView(btnSymOthExt);
+        linearHidden.addView(btnOpenDocTree);
+//        linearRoot.addView(linearHidden);
+        isHiddenOptionsShowing = true;
+    }
+
+    private void createOrDelSymFile(String androidPath,String symLinkDirName) {
+        Context c = requireContext();
+
+        try {
+            File symFile = new File(c.getFilesDir(), "image/"+symLinkDirName);
+            if (symFile.getCanonicalFile().exists()) {
+                symFile.delete();
+                Toast.makeText(c, "deleted", Toast.LENGTH_SHORT).show();
+            } else {
+                boolean isSuccess;
+                try {
+                    Os.symlink(androidPath, symFile.getAbsolutePath());
+                    isSuccess = true;
+                } catch (ErrnoException e) {
+                    e.printStackTrace();
+                    isSuccess = false;
+                }
+                Toast.makeText(c, "z:/"+symLinkDirName+" created, " + (isSuccess ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     /**

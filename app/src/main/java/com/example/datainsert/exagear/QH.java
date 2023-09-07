@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
@@ -34,10 +35,8 @@ import java.io.File;
  * 不要随意修改已有方法的定义，否则会与旧功能不兼容。但是可以修改其内容
  */
 public class QH {
-    private final static String TAG = "Helpers";
     public final static String MY_SHARED_PREFERENCE_SETTING = "some_settings";
-
-
+    private final static String TAG = "Helpers";
 
     /**
      * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
@@ -46,6 +45,7 @@ public class QH {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
     /**
      * 根据手机的分辨率从 px(像素) 的单位 转成为 dp(相对大小)
      */
@@ -53,17 +53,18 @@ public class QH {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
+
     /**
      * convert sp to its equivalent px
      */
-    public static int sp2px(Context c,int sp){
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,c.getResources().getDisplayMetrics());
+    public static int sp2px(Context c, int sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp, c.getResources().getDisplayMetrics());
     }
 
 
-    public static void logD(String s){
-        if(s==null)
-            s="空字符串";
+    public static void logD(String s) {
+        if (s == null)
+            s = "空字符串";
 
         Log.d("@myLog", s);
     }
@@ -79,7 +80,7 @@ public class QH {
         //先用白色计算一下最小透明度，如果是-1，就换黑色
         int minA = ColorUtils.calculateMinimumAlpha(Color.WHITE, bgColorNoAlpha, 4.5f);
         int solid = minA != -1 ? Color.WHITE : Color.BLACK;
-        if(minA == -1)
+        if (minA == -1)
             minA = ColorUtils.calculateMinimumAlpha(Color.BLACK, bgColorNoAlpha, 4.5f);
 //         return ((Color.alpha(bgColor)==0xff)?minA<<24:bgColor&0xff000000)+(solid&0x00ffffff);
         return (((255 + Color.alpha(bgColor)) / 2) << 24) + (solid & 0x00ffffff);
@@ -87,20 +88,21 @@ public class QH {
 
     /**
      * 一次性添加多个子布局（为什么官方api没有这种功能啊）
+     *
      * @param parent 父布局
-     * @param subs 多个子布局
+     * @param subs   多个子布局
      */
-    public static void addAllViews(ViewGroup parent, View... subs){
-        for(View v:subs)
+    public static void addAllViews(ViewGroup parent, View... subs) {
+        for (View v : subs)
             parent.addView(v);
     }
 
     /**
      * 用于判断当前包是否是自己的测试apk而非exagear
      */
-    public static boolean isTesting(){
+    public static boolean isTesting() {
         //包名改成一样的了，换一种方式？ 用manifest里的application label试试
-        return (Globals.getAppContext().getApplicationInfo().flags &  FLAG_TEST_ONLY) !=0;
+        return (Globals.getAppContext().getApplicationInfo().flags & FLAG_TEST_ONLY) != 0;
 //        return  Globals.getAppContext().getPackageName().equals("com.ewt45.exagearsupportv7");
     }
 
@@ -116,12 +118,13 @@ public class QH {
      * (原本在RSIDHelper类，不过就这一个方法单独一个类而且还要用到QH，不如直接整合到QH里了）
      * 用于处理使用的资源id。用自己的工程测试的时候，返回gradle自动分配的id，添加到待修改的apk后使用apk原有id。
      * 省的每次编译成smali都要手动替换，麻烦死了
-     * @param my 我自己的apk的资源id
+     *
+     * @param my  我自己的apk的资源id
      * @param ori 别人apk的资源id
      * @return 应该使用的资源id
      */
-    public static int rslvID(int my, int ori){
-        return isTesting()? my : ori;
+    public static int rslvID(int my, int ori) {
+        return isTesting() ? my : ori;
     }
 
     /**
@@ -129,15 +132,16 @@ public class QH {
      * <p/>
      * 获取当前acitivity，若在activity的onCreate阶段 获取到的是null
      */
-    public static FrameworkActivity getCurrentActivity(){
+    public static FrameworkActivity getCurrentActivity() {
         return ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity();
     }
 
     /**
      * 给布局设置一个背景，平时透明，点击时有波纹效果
+     *
      * @param view
      */
-    public static void setRippleBackground(View view){
+    public static void setRippleBackground(View view) {
         GradientDrawable contentDrawable = new GradientDrawable();
         contentDrawable.setColor(0);
         Drawable background;
@@ -145,17 +149,18 @@ public class QH {
         maskDrawable.setCornerRadius(10f);
         maskDrawable.setColor(-1);
         //contentdrawable和maskdrawable用来限制波纹边界
-        background = new RippleDrawable(ColorStateList.valueOf(Color.GRAY),  contentDrawable,  maskDrawable);
+        background = new RippleDrawable(ColorStateList.valueOf(Color.GRAY), contentDrawable, maskDrawable);
         ViewCompat.setBackground(view, background);
     }
 
     /**
      * 测试某个包名是否存在。用于多个功能使用同一个类时，该类判断哪些功能是添加的，哪些是没添加的
+     *
      * @param name 类完整名（包名，类名）
      * @return 是否存在. 在自己测试apk中始终返回 true
      */
-    public static boolean classExist( String name){
-        if(QH.isTesting())
+    public static boolean classExist(String name) {
+        if (QH.isTesting())
             return true;
         boolean exist = false;
         try {
@@ -163,19 +168,20 @@ public class QH {
             exist = true;
         } catch (Exception ignored) {
         }
-        return  exist;
+        return exist;
     }
 
     /**
      * 构建一个对话框。显示一条消息以及 下次不再提示的按钮。
      * 若已经设置过不再提示则不会显示
-     * @param a context 不能为global获取的
-     * @param tips 文字内容
+     *
+     * @param a                        context 不能为global获取的
+     * @param tips                     文字内容
      * @param PREF_KEY_SHOULD_SHOW_TIP 写到QH.getPreference()里的key。若为true则显示对话框
      */
-    public static  void showTipDialogWithDisable(Context a,String tips,String PREF_KEY_SHOULD_SHOW_TIP){
+    public static void showTipDialogWithDisable(Context a, String tips, String PREF_KEY_SHOULD_SHOW_TIP) {
         //如果已经设置过，就不再显示
-        if(!QH.isTesting() && !QH.getPreference().getBoolean(PREF_KEY_SHOULD_SHOW_TIP,true))
+        if (!QH.isTesting() && !QH.getPreference().getBoolean(PREF_KEY_SHOULD_SHOW_TIP, true))
             return;
 
         TextView textView = new TextView(a);
@@ -203,43 +209,48 @@ public class QH {
 
     /**
      * 生成一个带简介的设置项，类似于preference那种的
-     * @param v 可用来切换选项的按钮之类的
-     * @param title 按钮文字
-     * @param info  按钮说明。
+     *
+     * @param view    可用来切换选项的按钮之类的
+     * @param title   按钮文字
+     * @param info    按钮说明。
      * @param prefKey 按钮对应pref的key，默认为false
      * @return 包含按钮的一个线性布局
      */
-    public static LinearLayout getOnePrefLine(View v, String title, @Nullable String info, @Nullable String prefKey) {
-        Context c = v.getContext();
+    public static LinearLayout getOnePrefLine(@NonNull View view, String title, @Nullable String info, @Nullable String prefKey) {
+        Context c = view.getContext();
 
-        LinearLayout  linearRoot = new LinearLayout(c);
+        LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.HORIZONTAL);
-        linearRoot.addView(v);
+        linearRoot.addView(view);
 
-        if(v instanceof EditText){
+        if (view instanceof EditText) {
             throw new RuntimeException("edittext尚未实现");
-        }else if (v instanceof TextView)
-            ((TextView) v).setText(title);
+        } else if (view instanceof TextView)
+            ((TextView) view).setText(title);
 
-        if (v instanceof CompoundButton) {
-            ((CompoundButton) v).setChecked(getPreference().getBoolean(prefKey,false)); //默认都为false吧
-            ((CompoundButton) v).setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(prefKey, isChecked).apply());
+        if (view instanceof CompoundButton) {
+            ((CompoundButton) view).setChecked(getPreference().getBoolean(prefKey, false)); //默认都为false吧
+            ((CompoundButton) view).setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(prefKey, isChecked).apply());
         }
 
-        if(info!=null){
+        View.OnClickListener clickListener = v -> new android.app.AlertDialog.Builder(v.getContext())
+                .setMessage(info)
+                .setPositiveButton(android.R.string.yes, null)
+                .create().show();
+
+
+        if (info != null) {
             TextView btnInfo = new TextView(c);
 
             btnInfo.setText("  ⓘ  ");
             btnInfo.getPaint().setFakeBoldText(true);
-            btnInfo.setOnClickListener(btnInfoV->{
-                new android.app.AlertDialog.Builder(c)
-                        .setMessage(info)
-                        .setPositiveButton(android.R.string.yes,null)
-                        .create().show();
-            });
-            LinearLayout.LayoutParams  layoutParams = new LinearLayout.LayoutParams(-2,-2);
-            layoutParams.setMarginStart(px(c,20));
-            linearRoot.addView(btnInfo,layoutParams);
+            btnInfo.setOnClickListener(clickListener);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+            layoutParams.setMarginStart(px(c, 20));
+            linearRoot.addView(btnInfo, layoutParams);
+
+            if(view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
+                view.setOnClickListener(clickListener);
         }
 
         return linearRoot;
@@ -251,14 +262,15 @@ public class QH {
 //    public static boolean requireMinSDK(int version){
 //        return Build.VERSION.SDK_INT >= version;
 //    }
-    public static class Files{
+    public static class Files {
         /**
          * 日志输出的文件夹。设为Android/data/包名/files/logs
+         *
          * @return file对象。确保该文件夹已经创建
          */
-        public static File logsDir(){
+        public static File logsDir() {
             File logDir = new File(Globals.getAppContext().getExternalFilesDir(null), "logs");
-            if(!logDir.exists()){
+            if (!logDir.exists()) {
                 boolean b = logDir.mkdirs();
             }
             return logDir;

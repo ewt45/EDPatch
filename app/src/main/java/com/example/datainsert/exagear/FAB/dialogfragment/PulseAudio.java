@@ -10,6 +10,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -217,7 +218,7 @@ public class PulseAudio extends BaseFragment {
         editPars.setMaxWidth(AndroidHelpers.dpToPx(400));
         editPars.setSingleLine(true);
         editPars.setText(getPreference().getString(PREF_KEY_PULSE_LAUNCH_PARAMS, DEFAULT_LAUNCH_PARAMS));
-        editPars.addTextChangedListener(new SimpleTextWatcher(s -> getPreference().edit().putString(PREF_KEY_PULSE_LAUNCH_PARAMS, s.toString()).apply()));
+        editPars.addTextChangedListener((SimpleTextWatcher) s -> getPreference().edit().putString(PREF_KEY_PULSE_LAUNCH_PARAMS, s.toString()).apply());
 
         Button btnReset = new Button(c);
         btnReset.setText(getS(RR.cmCtrl_reset));
