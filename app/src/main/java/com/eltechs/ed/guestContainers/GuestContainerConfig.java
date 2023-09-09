@@ -77,13 +77,13 @@ public class GuestContainerConfig {
         setStartupActions("");
         setRunGuide("");
         setRunGuideShown(false);
-//        setRendererDefault();
+        setRendererDefault();
         MutiWine.writeWineVerToContainerConfig(mCont.mId);
     }
 
     //原exa不存在的方法。可以用这个来设置默认渲染方式
     public void setRendererDefault(){
-         this.mSp.edit().putString("RENDERER","Turnip_DXVK").apply();
+         this.mSp.edit().putString("RENDERER","llvmpipe").apply();//Turnip_DXVK
     }
 
     public String getName() {

@@ -2,6 +2,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment;
 
 import static android.content.DialogInterface.BUTTON_POSITIVE;
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.RR.getSArr;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
@@ -37,12 +39,11 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class DriveD extends BaseFragment {
@@ -114,14 +115,6 @@ public class DriveD extends BaseFragment {
         }
     }
 
-    private void addMenuItem(String displayText, String inputText, TextView textView, Menu menu) {
-        menu.add(displayText).setOnMenuItemClickListener(item -> {
-            textView.setText(inputText);
-            return true;
-        });
-
-    }
-
     /**
      * 设置tvInput的文本改变的监听器。内容：更新路径到list，让pathchecker检查路径可用性
      */
@@ -147,8 +140,7 @@ public class DriveD extends BaseFragment {
         LinearLayout.LayoutParams paddingParams = new LinearLayout.LayoutParams(-1, -2);
         paddingParams.topMargin = AndroidHelpers.dpToPx(24);
 
-        rootView.addView(getTextViewWithText(c, "请为该磁盘设置对应的安卓文件夹路径"));
-
+        rootView.addView(getTextViewWithText(c, getS(RR.DriveD2_info)));
 
         //盘符名
         TabLayout tabLayout = new TabLayout(c);
@@ -158,12 +150,12 @@ public class DriveD extends BaseFragment {
             tabLayout.addTab(tabLayout.newTab().setText(s.charAt(0) + ":\\"));
 
         //跟在盘符tab后的操作按钮
-
         ImageButton btnDriveOpt = new ImageButton(c);
         btnDriveOpt.setBackground(requireContext().getDrawable(QH.rslvID(R.drawable.ic_add_24dp, 0x7f08009b)));
         btnDriveOpt.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(c, v);
-            popupMenu.getMenu().add("新建盘符").setOnMenuItemClickListener(item -> {
+            //新建盘符
+            popupMenu.getMenu().add(getS(RR.DriveD2_newDrive)).setOnMenuItemClickListener(item -> {
                 //找到合适的盘符
                 List<Character> existedDriveNameList = new ArrayList<>(Arrays.asList('A', 'B', 'C', 'E', 'Z'));
                 char properDriveName = '0';
@@ -181,7 +173,8 @@ public class DriveD extends BaseFragment {
                 }
                 return true;
             });
-            popupMenu.getMenu().add("删除当前盘符").setEnabled(tabLayout.getTabCount() > 1).setOnMenuItemClickListener(item -> {
+            //删除当前盘符
+            popupMenu.getMenu().add(getS(RR.DriveD2_delDrive)).setEnabled(tabLayout.getTabCount() > 1).setOnMenuItemClickListener(item -> {
                 //从list中删除->删除tab-> 选择一个新tab
                 int delPos = tabLayout.getSelectedTabPosition();
                 drivesList.remove(delPos);
@@ -207,26 +200,31 @@ public class DriveD extends BaseFragment {
         //文件夹父目录
         MyTextInputEditText tvInputParDir = new MyTextInputEditText(requireContext(), null, null, getS(RR.DriveD_EditParTitle));
         tvInputParDir.setInputType(InputType.TYPE_NULL);
+        String[] deviceType = getSArr(RR.DriveD2_devType);
+        String[] parType = getSArr(RR.DriveD2_parType);
         tvInputParDir.setPopupMenuCallback(v -> {
             PopupMenu popupMenu = new PopupMenu(requireContext(), v);
-            Map<Menu, String[]> menuMap = new HashMap<>(); //记录submenu需要添加的选项
-
-            menuMap.put(popupMenu.getMenu().addSubMenu("手机存储"), new String[]{Environment.getExternalStorageDirectory().getAbsolutePath(), requireContext().getExternalFilesDir(null).getAbsolutePath()});
-
-            SubMenu subMenuExt = popupMenu.getMenu().addSubMenu("其他外部存储设备");
             File[] extFiles = c.getExternalFilesDirs(null);
-            if (extFiles.length > 1)
-                for (int i = 1; i < extFiles.length; i++) {
-                    String filesDirPath = extFiles[i].getAbsolutePath();
-                    String rootExtDevPath = filesDirPath.substring(0, filesDirPath.indexOf("/Android/data"));
-                    menuMap.put(subMenuExt.addSubMenu("设备" + i), new String[]{rootExtDevPath, filesDirPath});
-                }
-            else subMenuExt.getItem().setTitle("其他外部存储设备(无)").setEnabled(false);
 
-            for (Menu menu : menuMap.keySet()) {
-                addMenuItem("根目录", menuMap.get(menu)[0], tvInputParDir, menu);
-                addMenuItem("应用专属目录", menuMap.get(menu)[1], tvInputParDir, menu);
+
+            for (int i = 0; i < extFiles.length; i++) {
+                String filesDirPath = extFiles[i].getAbsolutePath();
+                int cutInd = filesDirPath.indexOf("/Android/data");
+                String rootExtDevPath = cutInd != -1 ? filesDirPath.substring(0, cutInd) : filesDirPath;
+                SubMenu subMenu = popupMenu.getMenu().addSubMenu(i == 0 ? deviceType[0] : deviceType[1] + " - " + i);//手机存储 其他外部存储设备
+                subMenu.add(parType[0]).setOnMenuItemClickListener(item -> { //根目录
+                    tvInputParDir.setText(rootExtDevPath);
+                    return true;
+                });
+                subMenu.add(parType[1]).setOnMenuItemClickListener(item -> { //应用专属目录
+                    tvInputParDir.setText(filesDirPath);
+                    return true;
+                });
             }
+
+            if (extFiles.length == 1)
+                popupMenu.getMenu().add(deviceType[2]).setEnabled(false); //其他外部存储设备(无)
+
             popupMenu.show();
         });
         setTextChangeListener(tvInputParDir, tabLayout, true);
@@ -248,25 +246,35 @@ public class DriveD extends BaseFragment {
         rootView.addView(textInputLayout2, paddingParams);
 
         //显示文件夹完整路径及该路径是否可用
-        TextView tvTestResult = getTextViewWithText(c, "");
+        TextView tvTestResult = new TextView(c);
         tvTestResult.setTextIsSelectable(true);
-        rootView.addView(tvTestResult);
+        rootView.addView(tvTestResult, paddingParams);
 
-        //说明
-        rootView.addView(QH.getOnePrefLine(new TextView(c),"*应用专属目录",getS(RR.DriveD_DescCont),null),paddingParams);
-        
+        //说明 (*应用专属目录)
+        rootView.addView(QH.getOnePrefLine(new TextView(c), "*" + parType[1], getS(RR.DriveD_DescCont), null), paddingParams);
+
         mPathChecker = new DrivePathChecker(tvInputParDir, tvInputDstDir, tvTestResult);
 
         //初始化当前路径
-        tabLayout.addOnTabSelectedListener(new SimpleTabSelectListener() {
+        TabLayout.OnTabSelectedListener tabSelectedListener = new SimpleTabSelectListener() {
             @Override
             public void onTabSelectedOrReSel(TabLayout.Tab tab) {
                 String fullPath = drivesList.get(tab.getPosition());
                 tvInputParDir.setText(fullPath.split(" ")[1]);
                 tvInputDstDir.setText(fullPath.split(" ")[2]); //触发tvInput的监听，然后重新设置路径，并检查可用性
-//                btnDel.setEnabled(tabLayout.getTabCount() > 1); //当只有一个盘符的时候，不允许删除
             }
-        });
+        };
+        //exa的库里还没有 TabLayout.BaseOnTabSelectedListener,只有OnTabSelectedListener。改依赖版本又没有用。试试反射吧
+        if(QH.isTesting()){
+            tabLayout.addOnTabSelectedListener(tabSelectedListener);
+        }else{
+            try {
+                TabLayout.class.getDeclaredMethod("addOnTabSelectedListener", TabLayout.OnTabSelectedListener.class)
+                        .invoke(tabLayout, tabSelectedListener);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
         Objects.requireNonNull(tabLayout.getTabAt(0)).select();
 
         return rootView;
@@ -283,7 +291,7 @@ public class DriveD extends BaseFragment {
 
     @Override
     public String getTitle() {
-        return "修改磁盘路径";
+        return getS(RR.DriveD2_title);
     }
 
     @Override

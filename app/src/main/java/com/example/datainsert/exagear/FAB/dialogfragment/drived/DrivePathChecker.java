@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.drived;
 
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.RR.getSArr;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -59,22 +60,23 @@ public class DrivePathChecker {
         if (fullPath == null)
             situation = getS(RR.DriveD_getPathFail);
         else {
+            String[] errors = getSArr(RR.DriveD2_errors);
             try {
                 File dstFile = new File(currentParDir, currentDstDirName);
                 if (ContextCompat.checkSelfPermission(Globals.getAppContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                    situation = getS(RR.DriveD_NoStrgPmsn);//"请先授予app存储权限"
-                else if (!dstFile.exists()) situation = "该路径不存在";
-                else if (!dstFile.isDirectory()) situation = "该路径对应的是文件而不是文件夹";
-                else if (!dstFile.canRead()) situation = "没有对该文件夹的读取权限";
-                else if (!dstFile.canWrite()) situation = "没有对该文件夹的写入权限";
+                    situation = errors[0];//"请先授予app存储权限"
+                else if (!dstFile.exists()) situation = errors[1];//该文件夹不存在
+                else if (!dstFile.isDirectory()) situation = errors[2];//该路径指向的是文件而不是文件夹
+                else if (!dstFile.canRead()) situation = errors[3];//没有对该文件夹的读取权限
+                else if (!dstFile.canWrite()) situation = errors[4];//没有对该文件夹的写入权限
                 else result = true;
             } catch (Exception e) {
-                situation = "读取该路径时出现错误: " + e.getLocalizedMessage();
+                situation = errors[5] + e.getLocalizedMessage();//"读取该路径时出现错误: "
             }
         }
 
         //将结果显示到textview上
-        SpannableStringBuilder tvResultStr = new SpannableStringBuilder("\n");
+        SpannableStringBuilder tvResultStr = new SpannableStringBuilder();
         int colorCorrect = 0xff67C23A, colorWrong = 0xffF56C6C;
         //完整路径
         if (fullPath != null) {

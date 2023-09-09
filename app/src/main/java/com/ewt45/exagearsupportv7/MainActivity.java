@@ -38,7 +38,6 @@ import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.R;
 import com.eltechs.ed.startupActions.WDesktop;
 import com.eltechs.ed.databinding.ActivityMainBinding;
-import com.example.datainsert.SymlinkLib;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.rightdrawer.RightDrawer;
 import com.example.datainsert.exagear.virgloverlay.OverlayBuildUI;

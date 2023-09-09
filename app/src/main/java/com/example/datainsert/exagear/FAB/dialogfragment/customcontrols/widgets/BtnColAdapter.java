@@ -152,8 +152,29 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
                             break;
                         }
                 }
+
+                //想办法保留原按钮的顺序
+                ArrayList<OneKey> newKeyList  = new ArrayList<>(Arrays.asList(newKeys));
+                ArrayList<OneKey> oldKeyList = new ArrayList<>(Arrays.asList(selfCol.getAllKeys()));
+                //过一遍旧列表，如果这个旧的，新的也有，新的里删除，如果这个旧的新的没有，旧的删除。最后把二者剩下的合并
+                for(int i=0; i<oldKeyList.size(); i++){
+                    boolean stillIn  = false;
+                    for(int j=0; j<newKeyList.size(); j++)
+                        if(newKeyList.get(j).getCode() == oldKeyList.get(i).getCode()){
+                            newKeyList.remove(j);
+                            stillIn=true;
+                            break;
+                        }
+                    if(!stillIn){
+                        oldKeyList.remove(i);
+                        i--;
+                    }
+                }
+                newKeyList.addAll(oldKeyList);
+
                 //submit需要新建一个列表，拷贝原列表
-                btnKeyRecyclerView.getAdapter().submitList(Arrays.asList(newKeys));
+                btnKeyRecyclerView.getAdapter().submitList(newKeyList);
+//                btnKeyRecyclerView.getAdapter().submitList(Arrays.asList(newKeys));
             });
         });
         LinearLayout.LayoutParams btnViewParams = new LinearLayout.LayoutParams(-2, -2);

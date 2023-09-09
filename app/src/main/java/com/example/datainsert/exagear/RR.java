@@ -150,9 +150,15 @@ public class RR {
     public static int xegw_title = 137;
     public static int xegw_info = 138;
     public static int xegw_legacyDraw_tip = 139;
-    public static int xegw_notification= 140;
-    public static int xegw_btyOpt =141;
-
+    public static int xegw_notification = 140;
+    public static int xegw_btyOpt = 141;
+    public static int DriveD2_info = 142;
+    public static int DriveD2_newDrive = 143;
+    public static int DriveD2_delDrive = 144;
+    public static int DriveD2_devType = 145;
+    public static int DriveD2_parType = 146;
+    public static int DriveD2_title = 147;
+    public static int DriveD2_errors = 148;
 
 
     public static String locale = refreshLocale();
@@ -307,9 +313,18 @@ public class RR {
         zhArray.put(xegw_title, "Xegw (termux:x11)");
         zhArray.put(xegw_info, "x11服务端用于显示图形画面，由于exa实现的x11服务端比较简陋，无法支持dxvk等，所以将termux:x11实现的x11服务端移植到exa内，以期实现更好的渲染效果。感谢termux:x11开发者Twaik的帮助。");
         zhArray.put(xegw_legacyDraw_tip, "如果启动容器后只显示黑屏和一个箭头鼠标，勾选此选项可以解决问题，但是渲染效率会变低。");
-        zhArray.put(xegw_notification,"Xegw x服务端对应的进程，保留此通知以防应用切后台时进程被杀");
-        zhArray.put(xegw_btyOpt,"关闭电池优化$运行容器时，xegw在手机通知栏中示一条固定通知（加上exa原有的一共两个），这样应用切换后台时不会黑屏。\n\n若依然出现黑屏，请在手机设置中关闭本应用的电池优化（可以通过此按钮跳转），若关闭电池优化依然出现黑屏，请在手机设置中允许应用自启动（设置界面因系统而异，请自行寻找）。");
+        zhArray.put(xegw_notification, "Xegw x服务端对应的进程，保留此通知以防应用切后台时进程被杀");
+        zhArray.put(xegw_btyOpt, "关闭电池优化$运行容器时，xegw在手机通知栏中示一条固定通知（加上exa原有的一共两个），这样应用切换后台时不会黑屏。\n\n若依然出现黑屏，请在手机设置中关闭本应用的电池优化（可以通过此按钮跳转），若关闭电池优化依然出现黑屏，请在手机设置中允许应用自启动（设置界面因系统而异，请自行寻找）。");
+        zhArray.put(DriveD2_title, "修改磁盘路径");
+        zhArray.put(DriveD2_info, "请为该磁盘设置对应的安卓文件夹路径");
+        zhArray.put(DriveD2_newDrive, "新建盘符");
+        zhArray.put(DriveD2_delDrive, "删除当前盘符");
+        zhArray.put(DriveD2_devType, "手机存储$其他外部存储设备$其他外部存储设备(无)");
+        zhArray.put(DriveD2_parType, "根目录$应用专属目录");
+        zhArray.put(DriveD2_errors, "请先授予app存储权限 $ 该文件夹不存在 $ 该路径指向的是文件而不是文件夹 $ 没有对该文件夹的读取权限 $ 没有对该文件夹的写入权限 $ 读取该路径时出现错误: ");
         /*
+
+
 
 
 
@@ -465,8 +480,15 @@ public class RR {
         enArray.put(xegw_title, "Xegw (termux:x11)");
         enArray.put(xegw_info, "The x11 server is used for displaying graphics. Since the original x11 server implemented in exagear is rather simple and can't support dxvk, etc., the x11 server implemented in termux:x11 is ported to exagear so as to achieving better rendering. Thanks for the help of Twaik, developer of termux:x11.");
         enArray.put(xegw_legacyDraw_tip, "If black screen with an arrow cursor are displayed after starting the container, checking this option will solve the problem, but rendering may be slower.");
-        enArray.put(xegw_notification,"Xegw xserver. Keep the notification to prevent disorder after switching app to background.");
-        enArray.put(xegw_btyOpt,"Disable battery optimization $After container starts, it shows a status bar notification for Xegw, so that Xegw process will not be killed when switching to the background and only a black screen is left when switching back.\n\nIf the problem is not solved, try to turn off the battery optimization of this app in Settings (through this button). If problem is still not solved, try to enable autostart of the app in Settings (this interface varies from ROM to ROM, so you need to find it yourself).");
+        enArray.put(xegw_notification, "Xegw xserver. Keep the notification to prevent disorder after switching app to background.");
+        enArray.put(xegw_btyOpt, "Disable battery optimization $After container starts, it shows a status bar notification for Xegw, so that Xegw process will not be killed when switching to the background and only a black screen is left when switching back.\n\nIf the problem is not solved, try to turn off the battery optimization of this app in Settings (through this button). If problem is still not solved, try to enable autostart of the app in Settings (this interface varies from ROM to ROM, so you need to find it yourself).");
+        enArray.put(DriveD2_title,"Change Locations of Drives");
+        enArray.put(DriveD2_info,"Set an android directory as this drive.");
+        enArray.put(DriveD2_newDrive,"New Drive");
+        enArray.put(DriveD2_delDrive,"Delete this Drive");
+        enArray.put(DriveD2_devType,"Phone's Storage$Other Storage Device$Other Storage Device (None)");
+        enArray.put(DriveD2_parType,"Root Dir$App-specific Files Dir");
+        enArray.put(DriveD2_errors,"Please allow the app's storage permission. $ The directory doesn't exist. $ The path denotes a file rather than a directory. $ App has no permission of reading contents of this directory. $ App has no permission of writing contents into this directory. $ Error: ");
 
 
         /*
@@ -626,9 +648,15 @@ public class RR {
         ruArray.put(xegw_title, "Xegw (termux:x11)");
         ruArray.put(xegw_info, "Xserver x11 используется для отображения графики. Поскольку исходный Xserver x11, реализованный в ExaGear, довольно прост он не может поддерживать dxvk и т. д., Xserver x11, реализованный в Termux-x11 перенесен в exagear для достижения лучшего рендеринга. Спасибо за помощь Twaik, разработчику Termux-x11.");
         ruArray.put(xegw_legacyDraw_tip, "Если после запуска контейнера отображается только чёрный экран со стрелкой-курсором, включение этого параметра решит проблему, но рендеринг может замедлиться.");
-        ruArray.put(xegw_notification,"Xegw xserver.  Не отключаете данное уведомление, чтобы предотвратить сбои после переключения ExaGear в фоновый режим.");
-        ruArray.put(xegw_btyOpt,"Отключить оптимизацию батареи$После запуска контейнера в строке состояния отображается уведомление для Xegw, поэтому процесс Xegw не будет завершаться при переключении в фоновый режим, при отключении будет отображаться только чёрный экран.\n\nЕсли это не решает проблему чёрного экрана при переходе в фоновый режим попробуйте отключить оптимизацию батареи для ExaGear в Настройках (с помощью этой кнопки). Если проблема все еще не решена, попробуйте включить автозапуск приложения ExaGear в Настройках, этот интерфейс расположатся в разных местах в зависимости от прошивки поэтому вам нужно найти это самим.");
-
+        ruArray.put(xegw_notification, "Xegw xserver.  Не отключаете данное уведомление, чтобы предотвратить сбои после переключения ExaGear в фоновый режим.");
+        ruArray.put(xegw_btyOpt, "Отключить оптимизацию батареи$После запуска контейнера в строке состояния отображается уведомление для Xegw, поэтому процесс Xegw не будет завершаться при переключении в фоновый режим, при отключении будет отображаться только чёрный экран.\n\nЕсли это не решает проблему чёрного экрана при переходе в фоновый режим попробуйте отключить оптимизацию батареи для ExaGear в Настройках (с помощью этой кнопки). Если проблема все еще не решена, попробуйте включить автозапуск приложения ExaGear в Настройках, этот интерфейс расположатся в разных местах в зависимости от прошивки поэтому вам нужно найти это самим.");
+        ruArray.put(DriveD2_title,"Изменить расположение дисков");
+        ruArray.put(DriveD2_info,"Установите каталог Android в качестве выбранного диска.");
+        ruArray.put(DriveD2_newDrive,"Создать новый Диск");
+        ruArray.put(DriveD2_delDrive,"Удалить этот Диск");
+        ruArray.put(DriveD2_devType,"Память телефона$Другое устройство памяти$Другое устройство памяти (Не обнаружено)");
+        ruArray.put(DriveD2_parType,"Корневой каталог$Каталог файлов приложения");
+        ruArray.put(DriveD2_errors," Необходимо дать приложению разрешение на хранение. $ Каталог не существует. $ Этот путь обозначает файл, а не каталог. $ Приложение не имеет разрешения на чтение содержимого этого каталога. $ Приложение не имеет разрешения на запись в этот каталог. $ Ошибка: ");
 
 
         /*
@@ -643,21 +671,31 @@ public class RR {
     }
 
     public static String refreshLocale() {
-        if(Globals.getApplicationState()==null)
+        if (Globals.getApplicationState() == null)
             return null;
         return Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
     }
 
+    /**
+     * 根据id，返回对应语言的字符串
+     */
     public static String getS(int id) {
         if (locale == null)
             locale = Globals.getAppContext().getResources().getConfiguration().locale.getLanguage();
 //        Log.d("S", "get: 获取字符串，当前系统语言为" + locale + ", 要获取的字符串为" + id);
         String returnStr = null;
-        if(stringMap.containsKey(locale))
+        if (stringMap.containsKey(locale))
             returnStr = Objects.requireNonNull(stringMap.get(locale)).get(id);
-        if(returnStr==null) //即使有对应语言的数组，也可能忘了加对应翻译
-            returnStr = Objects.requireNonNull(stringMap.get("en")).get(id,"");
+        if (returnStr == null) //即使有对应语言的数组，也可能忘了加对应翻译
+            returnStr = Objects.requireNonNull(stringMap.get("en")).get(id, "");
         return returnStr;
+    }
+
+    /**
+     * 获取id对应的字符串（getS），然后用'\\$' 分割成字符串数组并返回
+     */
+    public static String[] getSArr(int id) {
+        return getS(id).split("\\$");
     }
 
     public static class attr {

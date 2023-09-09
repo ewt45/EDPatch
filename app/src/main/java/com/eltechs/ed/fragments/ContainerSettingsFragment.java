@@ -1,16 +1,12 @@
 package com.eltechs.ed.fragments;
 
 import static com.example.datainsert.exagear.RR.getS;
-import static com.example.datainsert.exagear.RR.refreshLocale;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.renderersMap;
 
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.EditTextPreference;
 import android.support.v7.preference.ListPreference;
@@ -19,11 +15,8 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -32,9 +25,8 @@ import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.eltechs.axs.helpers.AndroidHelpers;
-import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.R;
+import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.containerSettings.ConSetRenderer;
@@ -103,6 +95,8 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         renderPref.setEntryValues(entryValueList.toArray(new String[0]));
         renderPref.setDefaultValue(entryValueList.get(0));
         getPreferenceScreen().addPreference(renderPref);
+        if(renderPref.getValue()==null || !entryValueList.contains(renderPref.getValue())) //如果设置的key不在txt中，设置为默认渲染，
+            renderPref.setValueIndex(0);
     }
 
     @Override
@@ -151,8 +145,6 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         }
 
     }
-
-
 
 
     private void buildResolutionDialog(Preference preference) {
@@ -205,6 +197,7 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         for (String str : strEntries) {
             RadioButton radioButton = new RadioButton(requireContext());
             radioButton.setText(str);
+            radioButton.setEnabled(!str.contains("==========="));
             radioGroup.addView(radioButton);
         }
 
@@ -282,9 +275,7 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 
     private void updatePreference(Preference preference) {
         if ((preference instanceof EditTextPreference)) {
-//            preference.dialog
-            EditTextPreference editTextPreference = (EditTextPreference) preference;
-            editTextPreference.setSummary(editTextPreference.getText());
+            preference.setSummary(((EditTextPreference) preference).getText());
         } else if ("SCREEN_SIZE".equals(preference.getKey())) {
             //这里default也改成strValues[0]
             String[] strValues = requireContext().getResources().getStringArray(QH.rslvID(R.array.cont_pref_screen_size_values, 0x7f030007));

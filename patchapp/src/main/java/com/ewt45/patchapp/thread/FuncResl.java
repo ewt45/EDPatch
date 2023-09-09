@@ -23,7 +23,7 @@ public class FuncResl implements Func {
 
     @Override
     public int getInstalledVersion() {
-        int version = SmaliFile.findVersionInClass("com.eltechs.ed.fragments.ConSetResolution");
+        int version = SmaliFile.findVersionInClass("com.example.datainsert.exagear.containerSettings.ConSetResolution");
         if (version != INVALID_VERSION)
             return version;
 

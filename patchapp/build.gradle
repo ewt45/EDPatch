@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.ewt45.patchapp'
-    compileSdk 32
+    compileSdk 28
 
     defaultConfig {
         applicationId "com.ewt45.patchapp"
         minSdk 21
         targetSdk 27
-        versionCode 8
-        versionName '0.1.0'
+        versionCode 9
+        versionName '0.1.1'
         resourceConfigurations += ['en', 'zh', 'ru']
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

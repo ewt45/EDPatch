@@ -2,9 +2,17 @@ plugins {
     id 'java'
 }
 
+//android{
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
+//}
+
 version 'unspecified'
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 //repositories {
 //    mavenCentral()
@@ -13,3 +21,5 @@ sourceCompatibility = 1.8
 dependencies {
     testImplementation 'junit:junit:4.13.2'
 }
+
+java.targetCompatibility = JavaVersion.VERSION_1_8

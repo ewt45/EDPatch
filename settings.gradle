@@ -15,7 +15,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "exagear support v7包"
 include ':app'
-include ':patchapp'
 include ':apksig'
-include ':overlayapp'
 include ':xml'
+include ':patchapp'
