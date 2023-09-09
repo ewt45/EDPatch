@@ -52,6 +52,20 @@
 
 ## Change Log
 
+### v0.1.1
+- Old functions updated:
+1. select obb manually
+- fix: clicking the blank space leads to an error of tmp.obb not found.
+- support bundled obb file (place it at `apk/assets/obb/*.obb` or `apk/lib/armeabi-v7a/libres.so`)
+2. Custom location of drive D
+- Name changed: `Change Locations of Drives`
+- able to add multiple drives. All containers use the same config, config file saved at z:/opt/drives.txt
+- able to display more that one external device, named as "other storage device - (1,2...)". The old name "Sd card" is not accurate. Root folder is now added as an option for external devices.
+3. Custom Control
+- fix: When editing one column of Left&Right side layout, reselect keys result in reset of key's order.
+
+- Others: fix: custom resolution function doesn't read the installed version number correctly.
+
 ### v0.1.0
 - Old functions updated:
 1. container settings - renderers
