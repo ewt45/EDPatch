@@ -20,14 +20,14 @@
     .registers 1
 
     .prologue
-    .line 22
+    .line 24
     invoke-static {}, Lcom/example/datainsert/exagear/FAB/dialogfragment/DriveD;->getDriveDDir()Ljava/io/File;
 
     move-result-object v0
 
     sput-object v0, Lcom/example/test;->mUserAreaDir:Ljava/io/File;
 
-    .line 23
+    .line 25
     const/4 v0, 0x0
 
     sput-boolean v0, Lcom/example/test;->staticNotFinal:Z
@@ -39,10 +39,10 @@
     .registers 1
 
     .prologue
-    .line 27
+    .line 29
     invoke-direct {p0}, Landroid/support/v7/app/AppCompatActivity;-><init>()V
 
-    .line 29
+    .line 31
     return-void
 .end method
 
@@ -53,7 +53,7 @@
     .prologue
     const/4 v4, 0x0
 
-    .line 42
+    .line 48
     invoke-virtual {p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
     move-result-object v5
@@ -69,7 +69,7 @@
 
     aget-object v0, v5, v4
 
-    .line 44
+    .line 50
     .local v0, "clz":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
     const-class v7, Landroid/os/AsyncTask;
 
@@ -83,7 +83,7 @@
 
     if-eqz v7, :cond_4b
 
-    .line 46
+    .line 52
     const/4 v7, 0x2
 
     :try_start_1b
@@ -107,13 +107,13 @@
 
     move-result-object v1
 
-    .line 47
+    .line 53
     .local v1, "constructor":Ljava/lang/reflect/Constructor;, "Ljava/lang/reflect/Constructor<Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;>;"
     const/4 v7, 0x1
 
     invoke-virtual {v1, v7}, Ljava/lang/reflect/Constructor;->setAccessible(Z)V
 
-    .line 48
+    .line 54
     const/4 v7, 0x2
 
     new-array v7, v7, [Ljava/lang/Object;
@@ -138,7 +138,7 @@
 
     check-cast v3, Landroid/os/AsyncTask;
 
-    .line 49
+    .line 55
     .local v3, "task":Landroid/os/AsyncTask;, "Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;"
     const/4 v7, 0x0
 
@@ -151,7 +151,7 @@
     .catch Ljava/lang/IllegalAccessException; {:try_start_1b .. :try_end_4b} :catch_54
     .catch Ljava/lang/InstantiationException; {:try_start_1b .. :try_end_4b} :catch_4e
 
-    .line 42
+    .line 48
     .end local v1    # "constructor":Ljava/lang/reflect/Constructor;, "Ljava/lang/reflect/Constructor<Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;>;"
     .end local v3    # "task":Landroid/os/AsyncTask;, "Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;"
     :cond_4b
@@ -160,24 +160,24 @@
 
     goto :goto_a
 
-    .line 50
+    .line 56
     :catch_4e
     move-exception v2
 
-    .line 52
+    .line 58
     .local v2, "e":Ljava/lang/ReflectiveOperationException;
     :goto_4f
     invoke-virtual {v2}, Ljava/lang/ReflectiveOperationException;->printStackTrace()V
 
     goto :goto_4b
 
-    .line 56
+    .line 62
     .end local v0    # "clz":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
     .end local v2    # "e":Ljava/lang/ReflectiveOperationException;
     :cond_53
     return-void
 
-    .line 50
+    .line 56
     .restart local v0    # "clz":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
     :catch_54
     move-exception v2
@@ -200,7 +200,7 @@
     .param p1, "a"    # F
 
     .prologue
-    .line 60
+    .line 66
     new-instance v2, Landroid/support/v7/widget/Toolbar;
 
     invoke-static {}, Lcom/eltechs/axs/Globals;->getAppContext()Landroid/content/Context;
@@ -209,16 +209,16 @@
 
     invoke-direct {v2, v3}, Landroid/support/v7/widget/Toolbar;-><init>(Landroid/content/Context;)V
 
-    .line 61
+    .line 67
     .local v2, "toolbar":Landroid/support/v7/widget/Toolbar;
-    const v3, 0x7f080091
+    const v3, 0x7f080093
 
     invoke-virtual {v2, v3}, Landroid/support/v7/widget/Toolbar;->setBackgroundResource(I)V
 
-    .line 62
+    .line 68
     const-class v1, Lcom/example/test;
 
-    .line 64
+    .line 70
     .local v1, "s":Ljava/lang/Class;, "Ljava/lang/Class<Lcom/example/test;>;"
     const/4 v3, 0x1
 
@@ -254,14 +254,14 @@
     .catch Ljava/lang/IllegalAccessException; {:try_start_12 .. :try_end_2b} :catch_3a
     .catch Ljava/lang/InstantiationException; {:try_start_12 .. :try_end_2b} :catch_41
 
-    .line 74
+    .line 80
     return-void
 
-    .line 65
+    .line 71
     :catch_2c
     move-exception v0
 
-    .line 66
+    .line 72
     .local v0, "e":Ljava/lang/NoSuchMethodException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -269,12 +269,12 @@
 
     throw v3
 
-    .line 67
+    .line 73
     .end local v0    # "e":Ljava/lang/NoSuchMethodException;
     :catch_33
     move-exception v0
 
-    .line 68
+    .line 74
     .local v0, "e":Ljava/lang/reflect/InvocationTargetException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -282,12 +282,12 @@
 
     throw v3
 
-    .line 69
+    .line 75
     .end local v0    # "e":Ljava/lang/reflect/InvocationTargetException;
     :catch_3a
     move-exception v0
 
-    .line 70
+    .line 76
     .local v0, "e":Ljava/lang/IllegalAccessException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -295,12 +295,12 @@
 
     throw v3
 
-    .line 71
+    .line 77
     .end local v0    # "e":Ljava/lang/IllegalAccessException;
     :catch_41
     move-exception v0
 
-    .line 72
+    .line 78
     .local v0, "e":Ljava/lang/InstantiationException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -314,7 +314,7 @@
     .param p1, "i"    # I
 
     .prologue
-    .line 79
+    .line 85
     :goto_0
     :try_start_0
     new-instance v0, Ljava/io/File;
@@ -323,31 +323,31 @@
 
     invoke-direct {v0, v1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
 
-    .line 80
+    .line 86
     .local v0, "file":Ljava/io/File;
     invoke-virtual {v0}, Ljava/io/File;->createNewFile()Z
 
-    .line 82
+    .line 88
     add-int/lit8 p1, p1, -0x1
 
-    .line 83
+    .line 89
     if-nez p1, :cond_16
 
-    .line 84
+    .line 90
     new-instance v1, Ljava/lang/RuntimeException;
 
     invoke-direct {v1}, Ljava/lang/RuntimeException;-><init>()V
 
     throw v1
 
-    .line 92
+    .line 98
     .end local v0    # "file":Ljava/io/File;
     :catch_14
     move-exception v1
 
     goto :goto_0
 
-    .line 85
+    .line 91
     .restart local v0    # "file":Ljava/io/File;
     :cond_16
     iget-object v2, p0, Lcom/example/test;->i2:Ljava/lang/Object;
@@ -356,10 +356,10 @@
     :try_end_19
     .catch Ljava/io/IOException; {:try_start_0 .. :try_end_19} :catch_14
 
-    .line 87
+    .line 93
     add-int/lit8 p1, p1, -0x2
 
-    .line 91
+    .line 97
     :try_start_1b
     monitor-exit v2
 
@@ -376,4 +376,35 @@
     throw v1
     :try_end_20
     .catch Ljava/io/IOException; {:try_start_1f .. :try_end_20} :catch_14
+.end method
+
+.method public static winlatorObb(Landroid/content/Context;Ljava/util/concurrent/atomic/AtomicReference;)I
+    .registers 4
+    .param p0, "context"    # Landroid/content/Context;
+    .annotation system Ldalvik/annotation/Signature;
+        value = {
+            "(",
+            "Landroid/content/Context;",
+            "Ljava/util/concurrent/atomic/AtomicReference",
+            "<",
+            "Ljava/io/File;",
+            ">;)I"
+        }
+    .end annotation
+
+    .prologue
+    .line 42
+    .local p1, "result":Ljava/util/concurrent/atomic/AtomicReference;, "Ljava/util/concurrent/atomic/AtomicReference<Ljava/io/File;>;"
+    new-instance v0, Ljava/io/File;
+
+    const-string v1, "/this/should/not/exist"
+
+    invoke-direct {v0, v1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
+
+    invoke-virtual {p1, v0}, Ljava/util/concurrent/atomic/AtomicReference;->set(Ljava/lang/Object;)V
+
+    .line 43
+    const/4 v0, 0x1
+
+    return v0
 .end method

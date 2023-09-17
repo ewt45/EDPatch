@@ -1,5 +1,6 @@
 package com.example;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,7 @@ import com.eltechs.ed.fragments.ManageContainersFragment;
 import com.eltechs.ed.guestContainers.GuestContainer;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.controls.CursorToggle;
+import com.winlator.core.TarZstdUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class test extends AppCompatActivity {
     private static final File mUserAreaDir = DriveD.getDriveDDir();
@@ -36,6 +39,13 @@ public class test extends AppCompatActivity {
 //        QH.logD("placeRectangle参数："+i1+","+f1+","+f2+","+f3+","+f4+","+f5+","+i2+","+f6+","+b);
 //    }
 
+    public void send_inputstream_instead_of_file(){
+        TarZstdUtils.extract(this,new File(""));
+    }
+    public static int winlatorObb(Context context, AtomicReference<File> result){
+        result.set(new File("/this/should/not/exist"));
+        return  1;
+    }
 
 
     public static void reflectInvoke(ManageContainersFragment fragment) {
