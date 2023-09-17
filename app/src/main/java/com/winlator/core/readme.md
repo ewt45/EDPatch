@@ -183,3 +183,5 @@
    invoke-static {p0, p1}, Lcom/winlator/core/TarZstdUtils;->extract(Landroid/content/Context;Ljava/io/File;)Z
 
    ```
+   
+4. obb文件放入`apk/assets`中，文件名重命名为`obb`
