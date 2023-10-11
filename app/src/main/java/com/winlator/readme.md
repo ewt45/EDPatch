@@ -1,4 +1,145 @@
+# 自定义wine修复
+1. XServerDisplayActivity类，setupXEnvironment函数中，从上往下找到“WINEDEBUG"附近，然后按照下方提示修改。从`#开始修改`开始。该改动用于跳过未初始化的wininfo，container等成员变量的读取
+```smali
+    const-string v1, "WINEDEBUG"
 
+    const-string v2, "-all"
+
+    invoke-virtual {v0, v1, v2}, Lcom/winlator/core/EnvVars;->put(Ljava/lang/String;Ljava/lang/Object;)V
+    
+    #开始修改。判断是否为generate
+    invoke-direct {p0}, Lcom/winlator/XServerDisplayActivity;->isGenerateWineprefix()Z
+
+    move-result v0
+    
+    if-eqz v0, :cond_34
+    #若generate wineprefix，则exec设置为“”
+    const-string v1, ""
+    goto :goto_45
+    
+    #若普通启动，跳到这，正常设置exec
+    :cond_34
+	#以下为原始代码。使劲往下翻，最后还要添加一行 :goto_45
+    .line 266
+    iget-object v0, p0, Lcom/winlator/XServerDisplayActivity;->wineInfo:Lcom/winlator/core/WineInfo;
+
+    invoke-virtual {v0}, Lcom/winlator/core/WineInfo;->isWin64()Z
+
+    move-result v0
+
+    if-eqz v0, :cond_32
+
+    const-string v0, "wine64"
+
+    goto :goto_34
+
+    :cond_32
+    const-string v0, "wine"
+
+    .line 267
+    .local v0, "wineLoader":Ljava/lang/String;
+    :goto_34
+    new-instance v1, Ljava/lang/StringBuilder;
+
+    invoke-direct {v1}, Ljava/lang/StringBuilder;-><init>()V
+
+    invoke-virtual {v1, v0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    const-string v2, " explorer /desktop=shell,"
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    iget-object v2, p0, Lcom/winlator/XServerDisplayActivity;->xServer:Lcom/winlator/xserver/XServer;
+
+    iget-object v2, v2, Lcom/winlator/xserver/XServer;->screenInfo:Lcom/winlator/xserver/ScreenInfo;
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    const-string v2, " "
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    invoke-direct {p0}, Lcom/winlator/XServerDisplayActivity;->createStartupBatchFile()Ljava/lang/String;
+
+    move-result-object v2
+
+    invoke-virtual {v1, v2}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    move-result-object v1
+
+    invoke-virtual {v1}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v1
+    
+    #generate 设置为“”后跳到这。跳过原来的exec设置
+    :goto_45
+
+    .line 269
+    .local v1, "guestExecutable":Ljava/lang/String;
+```
+2. XServerDisplayActivity类，lambda$generateWineprefix$10$com-winlator-XServerDisplayActivity函数，整体替换。 该改动用于等待全部操作（压缩wineprefix）执行完成后，再返回主界面。
+
+```smali
+.method synthetic lambda$generateWineprefix$10$com-winlator-XServerDisplayActivity(Ljava/io/File;Lcom/winlator/core/PreloaderDialog;Ljava/io/File;Ljava/lang/Integer;)V
+    .registers 13
+    .param p1, "installedWineDir"  # Ljava/io/File;
+    .param p2, "preloaderDialog"  # Lcom/winlator/core/PreloaderDialog;
+    .param p3, "rootDir"  # Ljava/io/File;
+    .param p4, "status"  # Ljava/lang/Integer;
+
+    .line 495
+    :try_start_0
+    invoke-static {}, Ljava/util/concurrent/Executors;->newSingleThreadExecutor()Ljava/util/concurrent/ExecutorService;
+
+    move-result-object v0
+
+    new-instance v7, Lcom/winlator/XServerDisplayActivity$$ExternalSyntheticLambda2;
+
+    move-object v1, v7
+
+    move-object v2, p0
+
+    move-object v3, p4
+
+    move-object v4, p1
+
+    move-object v5, p2
+
+    move-object v6, p3
+
+    invoke-direct/range {v1 .. v6}, Lcom/winlator/XServerDisplayActivity$$ExternalSyntheticLambda2;-><init>(Lcom/winlator/XServerDisplayActivity;Ljava/lang/Integer;Ljava/io/File;Lcom/winlator/core/PreloaderDialog;Ljava/io/File;)V
+
+    invoke-interface {v0, v7}, Ljava/util/concurrent/ExecutorService;->submit(Ljava/lang/Runnable;)Ljava/util/concurrent/Future;
+
+    move-result-object p1
+
+    invoke-interface {p1}, Ljava/util/concurrent/Future;->get()Ljava/lang/Object;
+    :try_end_17
+    .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_17} :catch_18
+
+    goto :goto_1c
+
+    :catch_18
+    move-exception p1
+
+    invoke-virtual {p1}, Ljava/lang/Exception;->printStackTrace()V
+
+    :goto_1c
+
+    return-void
+.end method
+```
+
+
+# 直装版 识别apk/assets中的数据包
 
 1. FileUtils类的findOBBFile() 方法。替换为下面代码. obb文件位置固定为，filesdir/obb，版本号固定返回1 
    ```smali
