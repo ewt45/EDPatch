@@ -65,19 +65,19 @@ public class TransformationHelpers {
         return matrix;
     }
 
-    public static void mapPoints(Matrix matrix, float[] fArr) {
-        Assert.state(fArr.length == 2);
+    public static void mapPoints(Matrix matrix, float[] points) {
+        Assert.state(points.length == 2);
         float[] fArr2 = new float[9];
         matrix.getValues(fArr2);
         float[] fArr3 = {0.0f, 0.0f, 0.0f};
-        float[] fArr4 = {fArr[0], fArr[1], 1.0f};
+        float[] fArr4 = {points[0], points[1], 1.0f};
         for (int i = 0; i < 3; i++) {
             for (int i2 = 0; i2 < 3; i2++) {
                 fArr3[i] = fArr3[i] + (fArr2[(i * 3) + i2] * fArr4[i2]);
             }
         }
-        fArr[0] = fArr3[0];
-        fArr[1] = fArr3[1];
+        points[0] = fArr3[0];
+        points[1] = fArr3[1];
     }
 
     public static float getScaleX(Matrix matrix) {

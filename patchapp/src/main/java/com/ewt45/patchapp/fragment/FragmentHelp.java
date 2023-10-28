@@ -39,6 +39,7 @@ public class FragmentHelp extends Fragment {
             recyclerView.setLayoutManager(layoutManager);
         }
 
+
         recyclerView.setAdapter(new FuncdescpAdapter(
                 getResources().getStringArray(R.array.func_name),
                 getResources().getStringArray(R.array.func_description),
@@ -52,7 +53,8 @@ public class FragmentHelp extends Fragment {
                         R.drawable.selectobb,
                         R.drawable.shortcut,
                         R.drawable.multiwine,
-                        R.drawable.renderer
+                        R.drawable.renderer,
+                        R.drawable.otherargv
                 }
         ));
         return rootView;

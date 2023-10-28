@@ -1,3 +1,5 @@
+[TOC]
+
 # 自定义wine修复
 1. XServerDisplayActivity类，setupXEnvironment函数中，从上往下找到“WINEDEBUG"附近，然后按照下方提示修改。从`#开始修改`开始。该改动用于跳过未初始化的wininfo，container等成员变量的读取
 ```smali

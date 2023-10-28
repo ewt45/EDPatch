@@ -51,7 +51,15 @@ public class GuestContainerConfig {
         guestContainer2.mConfig.setStartupActions(guestContainer.mConfig.getStartupActions());
         guestContainer2.mConfig.setRunGuide(guestContainer.mConfig.getRunGuide());
         guestContainer2.mConfig.setRunGuideShown(guestContainer.mConfig.getRunGuideShown());
+        SharedPreferences sp2 = guestContainer2.mConfig.mSp;
+        SharedPreferences sp1 = guestContainer.mConfig.mSp;
         MutiWine.cloneWineVerToContainerConfig(guestContainer.mId,guestContainer2.mId);
+//        sp2.edit()
+//                .putString("RENDERER",sp1.getString("RENDERER","not_configured"))
+//                .putString(KEY_SCREEN_SIZE, sp1.getString(KEY_SCREEN_SIZE,"default"))
+//                .putString(KEY_SCREEN_COLOR_DEPTH,sp1.getString(KEY_SCREEN_COLOR_DEPTH,"16"))
+//                .apply();
+//        guestContainer2.mConfig.setName(guestContainerConfig.getName()+"_clone");
     }
 
     /* JADX INFO: Access modifiers changed from: package-private */

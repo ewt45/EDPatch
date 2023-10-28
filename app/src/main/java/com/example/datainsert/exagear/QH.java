@@ -166,7 +166,7 @@ public class QH {
         try {
             Class.forName(name);
             exist = true;
-        } catch (Exception ignored) {
+        } catch (Throwable ignored) {
         }
         return exist;
     }
@@ -209,6 +209,7 @@ public class QH {
 
     /**
      * 生成一个带简介的设置项，类似于preference那种的
+     * pref存到自己的pref中。所以不能用于容器设置
      *
      * @param view    可用来切换选项的按钮之类的
      * @param title   按钮文字
@@ -255,6 +256,35 @@ public class QH {
 
         return linearRoot;
     }
+
+    /**
+     * 在视图右侧添加一个"  ⓘ  "，可点击弹出dialog显示说明。并将两者用线性布局包裹。
+     */
+    public static LinearLayout addInfoTrail(View view,String info){
+        View.OnClickListener clickListener = v -> new android.app.AlertDialog.Builder(v.getContext())
+                .setMessage(info)
+                .setPositiveButton(android.R.string.yes, null)
+                .create().show();
+
+        Context c = view.getContext();
+        TextView btnInfo = new TextView(c);
+
+        btnInfo.setText("  ⓘ  ");
+        btnInfo.getPaint().setFakeBoldText(true);
+        btnInfo.setOnClickListener(clickListener);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+        layoutParams.setMarginStart(px(c, 20));
+        LinearLayout linearRoot = new LinearLayout(c);
+        linearRoot.setOrientation(LinearLayout.HORIZONTAL);
+        linearRoot.addView(view);
+        linearRoot.addView(btnInfo, layoutParams);
+
+        if(view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
+            view.setOnClickListener(clickListener);
+        return linearRoot;
+    }
+
+
 
     //    /**
 //     * d8 （android gradle plugin 8.1.0) 优化会把不同类的api判断整合到一个类中，导致复制时无法判断应该复制哪些。试试用这种方法回避

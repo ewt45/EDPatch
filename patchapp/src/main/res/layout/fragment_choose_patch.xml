@@ -14,26 +14,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-<!--        <TextView-->
-<!--            android:layout_marginLeft="-8dp"-->
-<!--            android:layout_marginRight="-8dp"-->
-<!--            android:layout_marginTop="-8dp"-->
-<!--            android:padding="8dp"-->
-<!--            android:background="#7953d2"-->
-<!--            android:textColor="@color/white"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/tips_check_guide" />-->
+        <!--        <TextView-->
+        <!--            android:layout_marginLeft="-8dp"-->
+        <!--            android:layout_marginRight="-8dp"-->
+        <!--            android:layout_marginTop="-8dp"-->
+        <!--            android:padding="8dp"-->
+        <!--            android:background="#7953d2"-->
+        <!--            android:textColor="@color/white"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/tips_check_guide" />-->
 
 
         <!--        <android.support.v7.widget.CardView-->
-<!--            app:cardBackgroundColor="#50A5E8"-->
-<!--            android:layout_margin="8dp"-->
-<!--            app:contentPadding="16dp"-->
-<!--            app:cardCornerRadius="10dp"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content">-->
-<!--                    </android.support.v7.widget.CardView>-->
+        <!--            app:cardBackgroundColor="#50A5E8"-->
+        <!--            android:layout_margin="8dp"-->
+        <!--            app:contentPadding="16dp"-->
+        <!--            app:cardCornerRadius="10dp"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content">-->
+        <!--                    </android.support.v7.widget.CardView>-->
 
         <TextView
             android:layout_marginTop="8dp"
@@ -47,12 +47,14 @@
             android:orientation="horizontal">
 
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/btn_select_apk_installed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btntxt_selectapkinstalled" />
 
             <Button
+                android:textAllCaps="false"
                 android:id="@+id/btn_select_apk_files"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,6 +114,11 @@
                 android:text="@string/funcname_renderer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+            <CheckBox
+                android:id="@+id/check_otherargv"
+                android:text="@string/funcname_otherargv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <LinearLayout
             android:id="@+id/linear_test"
@@ -134,12 +141,15 @@
             android:orientation="horizontal">
 
             <Button
+                android:layout_gravity="center_vertical"
+                android:textAllCaps="false"
                 android:id="@+id/btn_start_patch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btntxt_startpatch" />
 
             <Button
+                android:layout_gravity="center_vertical"
                 android:id="@+id/btn_install_new"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

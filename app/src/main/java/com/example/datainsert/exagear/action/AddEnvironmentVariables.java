@@ -1,14 +1,16 @@
 package com.example.datainsert.exagear.action;
 
 
-import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.LLVMPipe;
-import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.Turnip_DXVK;
-import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.Turnip_Zink;
-import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirGL_Overlay;
+import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_DISABLE_SERVICE;
+import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_RUN_IB;
+import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_TASKSET;
+import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_DISABLE_SERVICE_DEFAULT;
+import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_RUN_IB_DEFAULT;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirGL_built_in;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirtIO_GPU;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.renderersMap;
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
+import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_TASKSET_DEFAULT;
 import static com.example.datainsert.exagear.mutiWine.MutiWine.KEY_WINE_INSTALL_PATH;
 
 import android.content.Context;
@@ -27,10 +29,8 @@ import com.eltechs.axs.configuration.UBTLaunchConfiguration;
 import com.eltechs.axs.configuration.startup.actions.AbstractStartupAction;
 import com.eltechs.axs.helpers.SafeFileHelpers;
 import com.eltechs.axs.helpers.StringHelpers;
-import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.fragments.ContainerSettingsFragment;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
-import com.eltechs.ed.startupActions.StartGuest;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.QH;
@@ -47,7 +47,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 /**
  * 作为action，在startguest启动时添加环境变量。
@@ -67,71 +66,185 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
 
     }
 
+
+
     @Override
     public void execute() {
-        UBTLaunchConfiguration ubtConfig = getApplicationState().getUBTLaunchConfiguration();
+        new Thread(() -> {
+            UBTLaunchConfiguration ubtConfig = getApplicationState().getUBTLaunchConfiguration();
 
-        //根据xdroid的真实路径确定容器id
-        File xdroidFile = new File(getApplicationState().getExagearImage().getPath(), "home/xdroid");
-        long contId = 0;
-        try {
-            contId = Long.parseLong(xdroidFile.getCanonicalFile().getName().replace("xdroid_", ""));
-        } catch (IOException e) {
-            e.printStackTrace();
-            sendError(e.getMessage(), e);
+            //根据xdroid的真实路径确定容器id
+            File xdroidFile = new File(getApplicationState().getExagearImage().getPath(), "home/xdroid");
+            long contId = 0;
+            try {
+                contId = Long.parseLong(xdroidFile.getCanonicalFile().getName().replace("xdroid_", ""));
+            } catch (IOException e) {
+                e.printStackTrace();
+                sendError(e.getMessage(), e);
 
-        }
-
-        SharedPreferences sp = getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + contId, Context.MODE_PRIVATE);
-
-        //添加多个盘符
-        if (QH.classExist("com.example.datainsert.exagear.FAB.dialogfragment.drived.DrivePathChecker")) {
-            addDrives(sp, ubtConfig, contId, xdroidFile);
-        } else Log.w(TAG, "execute: 功能未安装：修改磁盘路径 ");
-
-        //添加pulseaudio环境变量
-        try {
-            Class.forName("com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio");
-            startPulseAudio(ubtConfig);
-        } catch (ClassNotFoundException e) {
-            Log.w(TAG, "execute: 功能未安装：pulseaudio");
-        }
-
-
-        //wine程序位置的环境变量
-        try {
-            Class.forName("com.example.datainsert.exagear.mutiWine.MutiWine");
-            addWinePath(sp, ubtConfig, contId, xdroidFile);
-        } catch (Exception e) {
-            Log.w(TAG, "execute: 功能未安装：多wine共存 " + e.getMessage());
-        }
-
-        //添加渲染对应的ld_library_path环境变量 (改成在容器设置里修改
-        try {
-            Field field = ContainerSettingsFragment.class.getField("enable_different_renderers"); //直接获取成员，抛出的是NoSuchFieldError 不属于exception
-            if (ContainerSettingsFragment.enable_different_renderers) {
-                addRendererPath(sp, ubtConfig);
             }
-        } catch (NoSuchFieldException | NoSuchFieldError e) {
-            Log.w(TAG, "execute: 功能未安装：环境设置-渲染器新选择" + e.getMessage());
-        } catch (Exception e) {
-            Log.w(TAG, "execute: 执行过程中出错？", e);
-        }
-        //最后再添加动态库路径环境变量到ubt（不对，如果这样会覆盖上一次的，要求没改LD的话就不添加。主要是适配多wine v1 且每添加新渲染设置的情况）
-        List<String> envList = ubtConfig.getGuestEnvironmentVariables();
-        for (String var : envList) {
-            if (var.startsWith("LD_LIBRARY_PATH=")) {
-                String oldLDPath = var.substring("LD_LIBRARY_PATH=".length());
-                LD_LIBRARY_PATH.append(oldLDPath.startsWith(":") ? "" : ":").append(oldLDPath); //添加分隔符并将原变量添加到末尾
-                envList.remove(var);
-                break;
-            }
-        }
-        ubtConfig.addEnvironmentVariable("LD_LIBRARY_PATH", LD_LIBRARY_PATH.deleteCharAt(0).toString()); //删除第一个冒号
 
-        sendDone();
+            SharedPreferences sp = getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + contId, Context.MODE_PRIVATE);
+
+            //添加多个盘符
+            if (QH.classExist("com.example.datainsert.exagear.FAB.dialogfragment.drived.DrivePathChecker")) {
+                addDrives(sp, ubtConfig, contId, xdroidFile);
+            } else Log.w(TAG, "execute: 功能未安装：修改磁盘路径 ");
+
+            //添加pulseaudio环境变量
+            try {
+                Class.forName("com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio");
+                startPulseAudio(ubtConfig);
+            } catch (ClassNotFoundException e) {
+                Log.w(TAG, "execute: 功能未安装：pulseaudio");
+            }
+
+
+            //wine程序位置的环境变量
+            try {
+                Class.forName("com.example.datainsert.exagear.mutiWine.MutiWine");
+                addWinePath(sp, ubtConfig, contId, xdroidFile);
+            } catch (Exception e) {
+                Log.w(TAG, "execute: 功能未安装：多wine共存 " + e.getMessage());
+            }
+
+            //设置处理器核心
+            try {
+                if (QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetOtherArgv"))
+                    setOtherArgv(sp, ubtConfig, contId, xdroidFile);
+            }catch (Throwable throwable){
+                throwable.printStackTrace();
+            }
+
+
+            //添加渲染对应的ld_library_path环境变量 (改成在容器设置里修改
+            try {
+                Field field = ContainerSettingsFragment.class.getField("enable_different_renderers"); //直接获取成员，抛出的是NoSuchFieldError 不属于exception
+                if (ContainerSettingsFragment.enable_different_renderers) {
+                    addRendererPath(sp, ubtConfig);
+                }
+            } catch (NoSuchFieldException | NoSuchFieldError e) {
+                Log.w(TAG, "execute: 功能未安装：环境设置-渲染器新选择" + e.getMessage());
+            } catch (Exception e) {
+                Log.w(TAG, "execute: 执行过程中出错？", e);
+            }
+            //最后再添加动态库路径环境变量到ubt（不对，如果这样会覆盖上一次的，要求没改LD的话就不添加。主要是适配多wine v1 且每添加新渲染设置的情况）
+            List<String> envList = ubtConfig.getGuestEnvironmentVariables();
+            for (String var : envList) {
+                if (var.startsWith("LD_LIBRARY_PATH=")) {
+                    String oldLDPath = var.substring("LD_LIBRARY_PATH=".length());
+                    LD_LIBRARY_PATH.append(oldLDPath.startsWith(":") ? "" : ":").append(oldLDPath); //添加分隔符并将原变量添加到末尾
+                    envList.remove(var);
+                    break;
+                }
+            }
+            ubtConfig.addEnvironmentVariable("LD_LIBRARY_PATH", LD_LIBRARY_PATH.deleteCharAt(0).toString()); //删除第一个冒号
+
+            sendDone();
+        }, "线程：AddEnvironmentVariables").start();
     }
 
+    /**
+     * 设置cpu核心，ib.exe service.exe等
+     */
+    private void setOtherArgv(SharedPreferences sp, UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
+        String currCores = sp.getString(KEY_TASKSET, VAL_TASKSET_DEFAULT);
+        boolean useIB = sp.getBoolean(KEY_RUN_IB,VAL_RUN_IB_DEFAULT);
+        boolean disableServ = sp.getBoolean(KEY_DISABLE_SERVICE,VAL_DISABLE_SERVICE_DEFAULT);
+
+        //一般来说，执行命令为：xxx.sh  eval "带wine的命令行"。
+        // ubtConfig.getGuestArguments() 获取的列表第一个是脚本，第二个是带wine的命令行。
+        // ubtConfig.getGuestExecutable() 获取的只有脚本。
+        // 所以用arg，获取最后一个元素应该就行了吧
+        List<String> argvList = ubtConfig.getGuestArguments();
+        if (argvList == null || argvList.size() == 0)
+            return;
+        String wineCmd = argvList.get(argvList.size() - 1).trim(); //后面都修改这个带wine的执行命令。最后再把这个放入ubtConfig中
+        if(wineCmd.length()==0)
+            return;
+
+        //设置cpu核心
+        int wineIndex = setOtherArgv_findTargetIndexInCmd(wineCmd,"wine");
+        if (!wineCmd.contains("taskset ") && !"".equals(currCores) && wineIndex!=-1){
+            //将字符串插入命令行中
+            String taskSetStr = "taskset -c " + currCores + " ";
+            wineCmd = wineCmd.substring(0, wineIndex) + taskSetStr + wineCmd.substring(wineIndex);
+        }
+        //添加实时输入
+        if(QH.isTesting()){
+            //sleep 10s && eval "echo 能否获取wine进程？$(ps)"
+            wineCmd = wineCmd.substring(0,wineCmd.length()-1)+" & /opt/greadlines.sh\"";//taskset -apc 4-7 $(pidof wine)
+            //设置一下cwd（不知道为啥变到d盘去了）
+            ubtConfig.setGuestExecutablePath(ubtConfig.getFsRoot());
+        }
+
+        //设置ib自启 (仅当执行命令没包含ib且该选项开启时才添加）
+        int ibIndex = setOtherArgv_findTargetIndexInCmd(wineCmd, "ib");
+        if (useIB && ibIndex == -1) {
+            int insertIndex = wineCmd.startsWith("eval \"") ? 6 : 0;
+            wineCmd = wineCmd.substring(0, insertIndex) + "ib " + wineCmd.substring(insertIndex);
+        }
+
+        // WINEDLLOVERRIDES="services.exe,winedevice.exe=d"
+        //设置禁用services.exe （如果执行命令中存在该环境变量，则删除并整合到ubt的env列表中
+        if (disableServ) {
+            int insertIndex = wineCmd.startsWith("eval \"") ? wineCmd.length()-1 : wineCmd.length();
+            wineCmd = wineCmd.substring(0,insertIndex)+" & wine taskkill /f /im services.exe"+wineCmd.substring(insertIndex);
+//            List<String> envList = ubtConfig.getGuestEnvironmentVariables();
+//            String oldDll = "";
+//            //从ubt的环境变量中定位是否已经有该变量。
+//            for (int i = 0; i < envList.size(); i++){
+//                if (envList.get(i).startsWith("WINEDLLOVERRIDES=")) {
+//                    String[] split = envList.remove(i).split("=", 2);
+//                    if (split.length == 2 && split[1].length() > 2)
+//                        oldDll = split[1].substring(1, split[1].length() - 1);
+//                    break;
+//                }
+//            }
+//            //从执行命令中定位是否已经有该变量
+//            int dllIndex = wineCmd.indexOf("WINEDLLOVERRIDES=");
+//            int dllEnd = dllIndex == -1 ? -1 : wineCmd.indexOf(" ", dllIndex + "WINEDLLOVERRIDES=".length());//从等号完后找第一个空格。截取两端之间的内容
+//            if (dllEnd != -1) {
+//                String tmp = wineCmd.substring(dllIndex + "WINEDLLOVERRIDES=".length(), dllEnd);
+//                if (tmp.length() > 2)
+//                    oldDll = oldDll + (oldDll.length() > 0 ? ";" : "") + tmp.substring(1, tmp.length() - 1);
+//                wineCmd = wineCmd.substring(0, dllIndex) + wineCmd.substring(dllEnd);//删除执行命令中的环境变量
+//            }
+//            //加入禁用service的字符串 （顺序还有要求？？services放最后，explorer放windevice前）（那么每个单独的一个=d 会不会有变化？）
+//            //explorer.exe,winedevice.exe,plugplay.exe,rpcss.exe，svchost.exe,services.exe
+//            oldDll = oldDll + (oldDll.length() > 0 ? ";" : "")
+//                    + "svchost.exe,services.exe=d";
+////            + "explorer.exe=d;winedevice.exe=d;svchost.exe=d;services.exe=d";
+//            envList.add(String.format("WINEDLLOVERRIDES=\"%s\"",oldDll));
+        }
+
+        //把修改后的wine执行命令放入列表中
+        List<String> newArgvList = new ArrayList<>(argvList);
+        newArgvList.remove(argvList.size() - 1);
+        newArgvList.add(wineCmd);
+        ubtConfig.setGuestArguments(newArgvList.toArray(new String[0]));
+    }
+
+
+    /**
+     * 在执行命令中找到目标字符串的起始位置.
+     * 规则（以wine为例）：
+     * 1. 开头就是  wine+空格。返回0
+     * 2. 开头就是 eval[空格]"wine[空格] 返回6
+     * 3. 否则寻找 空格+wine+空格，返回找到的位置（如果不是-1，则+1 跳过开头的空格）
+     * @param target  目标字符串 前后不要带空格
+     * @param wineCmd 执行命令
+     * @return wine的起始位置，或-1
+     */
+    private static int setOtherArgv_findTargetIndexInCmd(String wineCmd, String target) {
+        target = target.trim();
+        int findIndex = -1;
+        if (wineCmd.startsWith(target + " ")) return 0;
+        if (wineCmd.startsWith("eval \""+target+" ")) return 6;
+        findIndex = wineCmd.indexOf(" "+target+" ");
+        if (findIndex != -1) findIndex++;
+        return findIndex;
+    }
     private void addDrives(SharedPreferences sp, UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
         try {
             //如果是第一次创建的也许没有dosdevices这个文件夹？考虑一下好了
@@ -153,7 +266,8 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
                 for (File dosFile : dosDevicesFile.listFiles()) {
                     char driveName = dosFile.getName().charAt(0);
                     if (driveName != 'c' && driveName != 'e' && driveName != 'z')
-                        dosFile.delete();;
+                        dosFile.delete();
+                    ;
                 }
 
             //获取fab中设置的磁盘及其路径

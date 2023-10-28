@@ -36,7 +36,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class VirGLOverlay extends BaseFragment {
+public class VirGLOverlay_old extends BaseFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

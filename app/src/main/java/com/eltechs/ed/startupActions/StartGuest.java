@@ -171,8 +171,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
     }
 
     public StartGuest(InstallPackage installPackage) {
-
-        this.mGcm = GuestContainersManager.getInstance(((ApplicationStateBase) getApplicationState()).getAndroidApplicationContext());
+        this.mGcm = GuestContainersManager.getInstance(((ApplicationStateBase<?>) getApplicationState()).getAndroidApplicationContext());
         this.mExeArgv = new ArrayList<>();
         this.mEnv = new ArrayList<>();
         this.mHideXServerImage = false;
@@ -182,11 +181,9 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
         this.mCont = installPackage.mCont;
         this.mExeWorkDir = new File(mUserAreaDir.getAbsolutePath());
         this.mExeArgv.addAll(Arrays.asList("/bin/bash", "-x", getRecipeGuestPath("install_packages.sh")));
-        String str = "";
-        Iterator it = installPackage.mPackages.iterator();
-        while (installPackage.mPackages.iterator().hasNext()) {
-            str = str + ((ContainerPackage) it.next()).mName + " ";
-        }
+        StringBuilder str = new StringBuilder();
+        for(ContainerPackage cpak: installPackage.mPackages)
+            str.append(cpak.mName).append(" ");
         this.mEnv.add("INSTALL_PACKAGES=" + str);
         this.mHideXServerImage = true;
         if (this.mCont.mConfig.getDefaultControlsNotShortcut()) {

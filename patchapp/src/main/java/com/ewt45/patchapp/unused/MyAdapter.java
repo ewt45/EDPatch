@@ -32,7 +32,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_layout, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_app_name, parent, false));
     }
 
     @Override
@@ -56,8 +56,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imageView = itemView.findViewById(R.id.item_iv);
-            textView = itemView.findViewById(R.id.item_name);
+            imageView = itemView.findViewById(R.id.app_icon);
+            textView = itemView.findViewById(R.id.app_name);
         }
     }
 }

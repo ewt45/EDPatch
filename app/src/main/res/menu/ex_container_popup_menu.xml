@@ -5,7 +5,6 @@
         android:id="@+id/container_run_explorer"
         android:title="Run Explorer" />
     <item
-        android:enabled="false"
         android:id="@+id/container_install_package"
         android:title="Install packages" />
     <item

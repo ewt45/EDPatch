@@ -220,6 +220,7 @@ public class ManageContainersFragment extends Fragment {
             return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.ex_basic_list_item_with_button, viewGroup, false));
         }
 
+        @SuppressLint("NonConstantResourceId")
         @Override // android.support.v7.widget.RecyclerView.Adapter
         public void onBindViewHolder(final ViewHolder viewHolder, int i) {
             viewHolder.mItem = this.mItems.get(i);
@@ -228,49 +229,39 @@ public class ManageContainersFragment extends Fragment {
             if (ManageContainersFragment.this.mGcm.getCurrentContainer() != null && viewHolder.mItem == ManageContainersFragment.this.mGcm.getCurrentContainer()) {
                 viewHolder.mView.setBackgroundResource(R.color.primary_light);
             }
-            viewHolder.mButton.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.ed.fragments.ManageContainersFragment.ContainersAdapter.1
+            viewHolder.mButton.setOnClickListener(view -> {
+                final GuestContainer guestContainer = (GuestContainer) ContainersAdapter.this.mItems.get(viewHolder.getAdapterPosition());
+                PopupMenu popupMenu = new PopupMenu(ManageContainersFragment.this.getContext(), view);
+                popupMenu.inflate(R.menu.ex_container_popup_menu);
+                popupMenu.setOnMenuItemClickListener(menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case R.id.container_clone /* 2131296332 */:
+                            new ContAsyncTask(1).execute(guestContainer);
+                            break;
+                        case R.id.container_delete /* 2131296333 */:
+                            new ContAsyncTask(2).execute(guestContainer);
+                            break;
+                        case R.id.container_install_package /* 2131296334 */:
+                            mListener.onManageContainersInstallPackages(guestContainer);
+                            break;
+                        case R.id.container_properties /* 2131296335 */:
+                            mListener.onManageContainerSettingsClick(guestContainer);
+                            break;
+                        case R.id.container_run_explorer /* 2131296336 */:
+                            mListener.onManageContainersRunExplorer(guestContainer);
+                            break;
+                    }
+                    return true;
+                });
+                popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() { // from class: com.eltechs.ed.fragments.ManageContainersFragment.ContainersAdapter.1.2
 
 
-                @Override // android.view.View.OnClickListener
-                public void onClick(View view) {
-                    final GuestContainer guestContainer = (GuestContainer) ContainersAdapter.this.mItems.get(viewHolder.getAdapterPosition());
-                    PopupMenu popupMenu = new PopupMenu(ManageContainersFragment.this.getContext(), view);
-                    popupMenu.inflate(R.menu.ex_container_popup_menu);
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() { // from class: com.eltechs.ed.fragments.ManageContainersFragment.ContainersAdapter.1.1
-
-
-                        @Override // android.widget.PopupMenu.OnMenuItemClickListener
-                        public boolean onMenuItemClick(MenuItem menuItem) {
-                            switch (menuItem.getItemId()) {
-                                case R.id.container_clone /* 2131296332 */:
-                                    new ContAsyncTask(1).execute(guestContainer);
-                                    break;
-                                case R.id.container_delete /* 2131296333 */:
-                                    new ContAsyncTask(2).execute(guestContainer);
-                                    break;
-                                case R.id.container_install_package /* 2131296334 */:
-                                    ManageContainersFragment.this.mListener.onManageContainersInstallPackages(guestContainer);
-                                    break;
-                                case R.id.container_properties /* 2131296335 */:
-                                    ManageContainersFragment.this.mListener.onManageContainerSettingsClick(guestContainer);
-                                    break;
-                                case R.id.container_run_explorer /* 2131296336 */:
-                                    ManageContainersFragment.this.mListener.onManageContainersRunExplorer(guestContainer);
-                                    break;
-                            }
-                            return true;
-                        }
-                    });
-                    popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() { // from class: com.eltechs.ed.fragments.ManageContainersFragment.ContainersAdapter.1.2
-
-
-                        @Override // android.widget.PopupMenu.OnDismissListener
-                        public void onDismiss(PopupMenu popupMenu2) {
-                            ManageContainersFragment.this.refreshContainersList();
-                        }
-                    });
-                    popupMenu.show();
-                }
+                    @Override // android.widget.PopupMenu.OnDismissListener
+                    public void onDismiss(PopupMenu popupMenu2) {
+                        ManageContainersFragment.this.refreshContainersList();
+                    }
+                });
+                popupMenu.show();
             });
         }
 

@@ -159,6 +159,16 @@ public class RR {
     public static int DriveD2_parType = 146;
     public static int DriveD2_title = 147;
     public static int DriveD2_errors = 148;
+    public static int taskset_info = 150;
+    public static int taskset_getCpuErr = 151;
+    public static int taskset_useCustom = 152;
+    public static int ib_autorun = 153;
+    public static int ib_autorun_tip = 154;
+    public static int service_exe_disable = 155;
+    public static int service_exe_disable_tip = 156;
+    public static int conSet_otherArgv_info = 157;
+    public static int conSet_otherArgv_title = 158;
+    public static int conSet_otherArgv_hint = 159;
 
 
     public static String locale = refreshLocale();
@@ -322,6 +332,16 @@ public class RR {
         zhArray.put(DriveD2_devType, "手机存储$其他外部存储设备$其他外部存储设备(无)");
         zhArray.put(DriveD2_parType, "根目录$应用专属目录");
         zhArray.put(DriveD2_errors, "请先授予app存储权限 $ 该文件夹不存在 $ 该路径指向的是文件而不是文件夹 $ 没有对该文件夹的读取权限 $ 没有对该文件夹的写入权限 $ 读取该路径时出现错误: ");
+        zhArray.put(taskset_info,"通常情况下，使用CPU大核心 (一般为4-7) 后运行效率提高，发热增加。\n\n新处理器的部分核心使用armv9架构，已不兼容32位应用，使用这些核心可能导致异常。\n\n参数插入逻辑：若执行命令已包含\"taskset \"，则不作任何修改；若不包含且此选项开启，则在执行命令中\"wine \"的位置前插入\"taskset -c [核心序号]\"。");
+        zhArray.put(taskset_getCpuErr,"错误：无法识别CPU核心个数");
+        zhArray.put(taskset_useCustom,"手动指定CPU核心");
+        zhArray.put(ib_autorun,"自动运行 ib.exe");
+        zhArray.put(ib_autorun_tip,"在启动容器后若想使用Input Bridge，需要运行ib.exe。勾选此选项，会在启动容器后自动运行ib.exe，若未安装ib.exe则无效。\n\n参数插入逻辑：若执行命令已包含\"ib \"，则不作任何修改；若不包含且此选项开启，则在命令开头处插入\"ib \"。");
+        zhArray.put(service_exe_disable,"禁用 services.exe");
+        zhArray.put(service_exe_disable_tip,"启动Wine后，后台默认会启动一个services.exe。某些游戏必须结束此进程才能正常运行。\n\n参数插入逻辑：在执行命令结尾添加\" & wine taskkill /f /im services.exe\"。");
+        zhArray.put(conSet_otherArgv_info,"- 额外参数会被插入到启动容器的执行命令中，可在/sdcard/x86-stderr.txt中查看。若出现问题请关闭选项。\n- 强烈建议在开启选项前，点击\" ⓘ \"查看说明。");
+        zhArray.put(conSet_otherArgv_title,"额外启动参数");
+        zhArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
         /*
 
 
@@ -489,7 +509,15 @@ public class RR {
         enArray.put(DriveD2_devType,"Phone's Storage$Other Storage Device$Other Storage Device (None)");
         enArray.put(DriveD2_parType,"Root Dir$App-specific Files Dir");
         enArray.put(DriveD2_errors,"Please allow the app's storage permission. $ The directory doesn't exist. $ The path denotes a file rather than a directory. $ App has no permission of reading contents of this directory. $ App has no permission of writing contents into this directory. $ Error: ");
-
+        enArray.put(taskset_info,"Using the large CPU cores (typically 4-7) usually increases efficiency and heat generation.\n\nSome newer cores use armv9 architecture, which doesn't support 32-bit apps and may result in problems if used.\n\nArgument Insertion: If the command already contains \"taskset \", no change will be made. If it doesn't and this option is enabled, \"taskset -c [cores]\" will be inserted in front of the \"wine \".");
+        enArray.put(taskset_useCustom,"Set CPU cores");
+        enArray.put(ib_autorun,"Autorun ib.exe");
+        enArray.put(ib_autorun_tip,"Input Bridge requires ib.exe running to work. If this option is enabled, it will run ib.exe automatically after container started. Still if fails if ib.exe is not installed.\n\nArgument Insertion: If the command already contains \"ib \", no change will be made. If it doesn't and this option is enabled, \"ib \" will be inserted at the beginning.");
+        enArray.put(service_exe_disable,"Kill services.exe");
+        enArray.put(service_exe_disable_tip,"When starting Wine, services.exe is running by default. Some games only run normally after this process is killed.\n\nArgument Insertion: add \" & wine taskkill /f /im services.exe\" at the end of the command.");
+        enArray.put(conSet_otherArgv_info,"- Params inserted when launching, viewable in /sdcard/x86-stderr.txt.\n- Please read notes in \" ⓘ \" before enabling options.");
+        enArray.put(conSet_otherArgv_title,"Additional Launching Arguments");
+        enArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
 
         /*
 
@@ -657,6 +685,15 @@ public class RR {
         ruArray.put(DriveD2_devType,"Память телефона$Другое устройство памяти$Другое устройство памяти (Не обнаружено)");
         ruArray.put(DriveD2_parType,"Корневой каталог$Каталог файлов приложения");
         ruArray.put(DriveD2_errors," Необходимо дать приложению разрешение на хранение. $ Каталог не существует. $ Этот путь обозначает файл, а не каталог. $ Приложение не имеет разрешения на чтение содержимого этого каталога. $ Приложение не имеет разрешения на запись в этот каталог. $ Ошибка: ");
+        ruArray.put(taskset_info,"Using the large CPU cores (typically 4-7) usually increases efficiency and heat generation.\n\nSome newer cores use armv9 architecture, which doesn't support 32-bit apps and may result in problems if used.\n\nArgument Insertion: If the command already contains \"taskset \", no change will be made. If it doesn't and this option is enabled, \"taskset -c [cores]\" will be inserted in front of the \"wine \".");
+        ruArray.put(taskset_useCustom,"Set CPU cores");
+        ruArray.put(ib_autorun,"Autorun ib.exe");
+        ruArray.put(ib_autorun_tip,"Input Bridge requires ib.exe running to work. If this option is enabled, it will run ib.exe automatically after container started. Still if fails if ib.exe is not installed.\n\nArgument Insertion: If the command already contains \"ib \", no change will be made. If it doesn't and this option is enabled, \"ib \" will be inserted at the beginning.");
+        ruArray.put(service_exe_disable,"Kill services.exe");
+        ruArray.put(service_exe_disable_tip,"When starting Wine, services.exe is running by default. Some games only run normally after this process is killed.\n\nArgument Insertion: add \" & wine taskkill /f /im services.exe\" at the end of the command.");
+        ruArray.put(conSet_otherArgv_info,"- Params inserted when launching, viewable in /sdcard/x86-stderr.txt.\n- Please read notes in \" ⓘ \" before enabling options.");
+        ruArray.put(conSet_otherArgv_title,"Additional Launching Arguments");
+        ruArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
 
 
         /*

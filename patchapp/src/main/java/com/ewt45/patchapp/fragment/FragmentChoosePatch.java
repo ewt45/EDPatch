@@ -36,6 +36,7 @@ import com.ewt45.patchapp.thread.Func;
 import com.ewt45.patchapp.thread.FuncCursor;
 import com.ewt45.patchapp.thread.FuncFAB;
 import com.ewt45.patchapp.thread.FuncMultiWine;
+import com.ewt45.patchapp.thread.FuncOtherArgv;
 import com.ewt45.patchapp.thread.FuncRenderer;
 import com.ewt45.patchapp.thread.FuncResl;
 import com.ewt45.patchapp.thread.FuncSInput;
@@ -91,6 +92,7 @@ public class FragmentChoosePatch extends Fragment {
         funcList.add(new FuncWithCheckBox(binding.checkShortcut,new FuncShortcut()));
         funcList.add(new FuncWithCheckBox(binding.checkMw,new FuncMultiWine()));
         funcList.add(new FuncWithCheckBox(binding.checkRenderer,new FuncRenderer()));
+        funcList.add(new FuncWithCheckBox(binding.checkOtherargv,new FuncOtherArgv()));
 
         return binding.getRoot();
     }
@@ -190,36 +192,9 @@ public class FragmentChoosePatch extends Fragment {
         File tmpOutDir = new File(PatchUtils.getPatchTmpDir(), "tmp");
         changeView(PatchUtils.getPatchTmpApk().exists() && tmpOutDir.exists() ? CHECK_ENABLE : CHECK_DISABLE);
 
-        binding.btnSelectApkInstalled.setOnClickListener(v -> {
-//            List<ApplicationInfo> apps = requireContext().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
-//            List<String> filterApps = new ArrayList<>();
-//            List<String> appNames = new ArrayList<>();
-//            for (ApplicationInfo info : apps) {
-//                if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-//                    //非系统应用
-//                    filterApps.add(info.sourceDir);
-//                    appNames.add(requireContext().getPackageManager().getApplicationLabel(info).toString());
-//                }
-//            }
-//            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-//                final List<String> mFilterApps = filterApps;
-//
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    Log.d(TAG, "onClick: dialog点击的项目为：" + which);
-//                    if (which >= 0) {
-//                        deployEDApk(new File(mFilterApps.get(which)));
-//                    }
-//                }
-//            };
-//            new AlertDialog.Builder(requireContext())
-//                    .setItems(appNames.toArray(new String[0]), listener)
-//                    .setNegativeButton("取消", null)
-//                    .create().show();
-            new SelectApkDialog()
-                    .setCallback(file -> binding.getRoot().post(() -> deployEDApk(file)))
-                    .show(getChildFragmentManager(), null);
-        });
+        binding.btnSelectApkInstalled.setOnClickListener(v -> new SelectApkDialog()
+                .setCallback(file -> binding.getRoot().post(() -> deployEDApk(file)))
+                .show(getChildFragmentManager(), null));
         binding.btnSelectApkFiles.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);

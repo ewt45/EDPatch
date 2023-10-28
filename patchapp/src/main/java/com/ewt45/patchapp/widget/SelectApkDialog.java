@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,22 +14,22 @@ import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.ewt45.patchapp.R;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Comparators;
 
 import java.io.File;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class SelectApkDialog extends DialogFragment {
 //    List<String> mFilterApps;
@@ -70,25 +71,15 @@ public class SelectApkDialog extends DialogFragment {
      */
     private void prepareApkList(){
         new Thread(()->{
-            List<ApplicationInfo> apps = requireContext().getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA);
+            PackageManager pm = requireContext().getPackageManager()    ;
+            List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
             for (ApplicationInfo info : apps) {
                 if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     //非系统应用
-                    mAppsInfo.add(new SelectAppInfo(requireContext().getPackageManager().getApplicationLabel(info).toString(),info.sourceDir));
+                    mAppsInfo.add(new SelectAppInfo(info.loadLabel(pm).toString(),info.sourceDir,info.loadIcon(pm)));
                 }
             }
-            Collections.sort(mAppsInfo);
-            //排一下序吧受不了了
-//            String[] apkLocations = mFilterApps.toArray(new String[0]);
-//            String[] appNames = mAppNames.toArray(new String[0]);
-//            Arrays.sort(appNames, new Comparator<String>() {
-//                private Collator comparator = Collator.getInstance();
-//                @Override
-//                public int compare(String o1, String o2) {
-//                    return 0;
-//                }
-//            });
-
+            Collections.sort(mAppsInfo); //排一下序吧受不了了
             changeViewOnUIThread();
         }).start();
     }
@@ -98,18 +89,39 @@ public class SelectApkDialog extends DialogFragment {
      */
     private void changeViewOnUIThread(){
         rootView.post(()->{
-            ArrayAdapter<SelectAppInfo> adapter = new ArrayAdapter<>
-                    (requireContext(), android.R.layout.simple_expandable_list_item_1, mAppsInfo);
-
-            ListView listView = rootView.findViewById(R.id.dialog_listview);
-            listView.setAdapter(adapter);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            ArrayAdapter<SelectAppInfo> adapter = new ArrayAdapter<>
+//                    (requireContext(), android.R.layout.simple_expandable_list_item_1, mAppsInfo);
+            ListAdapter listAdapter = new BaseAdapter() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Log.d(TAG, "onClick: dialog点击的项目为：" + mAppsInfo.get(position));
-                    mCallback.deployEDApk(new File(mAppsInfo.get(position).getSourceDir()));
-                    dismiss();
+                public int getCount() {
+                    return mAppsInfo.size();
                 }
+
+                @Override
+                public Object getItem(int position) {
+                    return mAppsInfo.get(position);
+                }
+
+                @Override
+                public long getItemId(int position) {
+                    return position;
+                }
+
+                @Override
+                public View getView(int position, View convertView, ViewGroup parent) {
+                    View itemView = (convertView!=null && convertView.getId()==R.id.app_name_view_root)
+                            ?convertView : LayoutInflater.from(parent.getContext()).inflate(R.layout.item_app_name,parent,false);
+                    ((ImageView)itemView.findViewById(R.id.app_icon)).setImageDrawable(mAppsInfo.get(position).icon);
+                    ((TextView)itemView.findViewById(R.id.app_name)).setText(mAppsInfo.get(position).name);
+                    return itemView;
+                }
+            };
+            ListView listView = rootView.findViewById(R.id.dialog_listview);
+            listView.setAdapter(listAdapter);
+            listView.setOnItemClickListener((parent, view, position, id) -> {
+                Log.d(TAG, "onClick: dialog点击的项目为：" + mAppsInfo.get(position));
+                mCallback.deployEDApk(new File(mAppsInfo.get(position).getSourceDir()));
+                dismiss();
             });
             //准备好之后显示listview
             listView.setVisibility(View.VISIBLE);
@@ -130,9 +142,11 @@ public class SelectApkDialog extends DialogFragment {
     private static class SelectAppInfo implements Comparable<SelectAppInfo>{
         String name;
         String sourceDir;
-        public SelectAppInfo(String name, String sourceDir){
+        Drawable icon;
+        public SelectAppInfo(String name, String sourceDir, Drawable drawable){
             this.name = name;
             this.sourceDir = sourceDir;
+            this.icon = drawable;
         }
 
         @NonNull
@@ -147,7 +161,7 @@ public class SelectApkDialog extends DialogFragment {
 
         @Override
         public int compareTo(SelectAppInfo o) {
-            return name.compareTo(o.name);
+            return name.toLowerCase(Locale.ROOT).compareTo(o.name.toLowerCase(Locale.ROOT));//忽略大小写，不然小写全在大写下面了
         }
     }
 }

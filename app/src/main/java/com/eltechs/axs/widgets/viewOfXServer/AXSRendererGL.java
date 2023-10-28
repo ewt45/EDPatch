@@ -29,6 +29,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL;
 import javax.microedition.khronos.opengles.GL10;
 
 /* loaded from: classes.dex */
@@ -81,10 +82,10 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
     @Override // android.opengl.GLSurfaceView.Renderer
     public synchronized void onSurfaceCreated(GL10 gl10, EGLConfig eGLConfig) {
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        GLES20.glEnable(2884);
-        GLES20.glEnable(2929);
-        GLES20.glEnable(3042);
-        GLES20.glBlendFunc(770, 771);
+        GLES20.glEnable(GLES20.GL_CULL_FACE);//2884
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);//2929
+        GLES20.glEnable(GLES20.GL_BLEND);//3042
+        GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);//770, 771
         this.created = true;
         recreateScene();
     }

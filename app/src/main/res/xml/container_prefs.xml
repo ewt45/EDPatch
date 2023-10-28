@@ -49,6 +49,26 @@
         android:summary="%s"
         android:title="语言环境" />
 
+
+<!--    <PreferenceCategory-->
+<!--        android:key="OTHER_SET"-->
+<!--        app:key="OTEHR_ST"-->
+<!--        app:allowDividerBelow="true"-->
+<!--        app:allowDividerAbove="true"-->
+
+<!--        app:initialExpandedChildrenCount="0"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:title="其他启动参数">-->
+<!--        <EditTextPreference-->
+
+<!--            android:title="cpu核心"/>-->
+<!--        <CheckBoxPreference-->
+<!--            android:title="自动运行 ib.exe"/>-->
+<!--        <CheckBoxPreference-->
+<!--            android:title="关闭 service.exe" />-->
+
+<!--    </PreferenceCategory>-->
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="HIDE_TASKBAR_SHORTCUT"

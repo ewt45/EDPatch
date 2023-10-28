@@ -13,13 +13,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+
 import com.eltechs.axs.AppConfig;
 import com.eltechs.axs.RateAppDialog;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.axs.applicationState.SelectedExecutableFileAware;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.helpers.UiThread;
 import com.eltechs.ed.ContainerPackage;
+import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.InstallRecipe;
 import com.eltechs.ed.R;
 import com.eltechs.ed.XDGLink;
@@ -58,7 +61,8 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
     private NavigationView mNavigationView;
 
 
-    @Override // com.eltechs.axs.activities.AxsActivity, android.support.v7.app.AppCompatActivity, android.support.v4.app.FragmentActivity, android.support.v4.app.SupportActivity, android.app.Activity
+    @Override
+    // com.eltechs.axs.activities.AxsActivity, android.support.v7.app.AppCompatActivity, android.support.v4.app.FragmentActivity, android.support.v4.app.SupportActivity, android.app.Activity
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.ed_main);
@@ -84,76 +88,11 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
         new FabMenu(this);
     }
 
-    @Override // com.eltechs.axs.activities.FrameworkActivity, com.eltechs.axs.activities.AxsActivity, android.support.v4.app.FragmentActivity, android.app.Activity
+    @Override
+    // com.eltechs.axs.activities.FrameworkActivity, com.eltechs.axs.activities.AxsActivity, android.support.v4.app.FragmentActivity, android.app.Activity
     public void onResume() {
         super.onResume();
         changeUIByCurFragment();
-    }
-
-    /* loaded from: classes.dex */
-    private class NavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
-
-        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
-        @SuppressLint("NonConstantResourceId")
-        @Override // android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
-        public boolean onNavigationItemSelected(MenuItem menuItem) {
-            Fragment fragment;
-            String str;
-            boolean z = false;
-            switch (menuItem.getItemId()) {
-                case R.id.ed_main_menu_desktop /* 2131296369 */:
-                    menuItem.setChecked(true);
-                    fragment = new ChooseXDGLinkFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(ChooseXDGLinkFragment.ARG_IS_START_MENU, false);
-                    fragment.setArguments(bundle);
-                    str = EDMainActivity.FRAGMENT_TAG_DESKTOP;
-                    break;
-                case R.id.ed_main_menu_help /* 2131296370 */:
-                    EDMainActivity.this.startActivity(EDHelpActivity.class);
-                    fragment = null;
-                    str = null;
-                    break;
-                case R.id.ed_main_menu_install_new /* 2131296371 */:
-                    menuItem.setChecked(true);
-                    fragment = new ChooseRecipeFragment();
-                    str = EDMainActivity.FRAGMENT_TAG_INSTALL_NEW;
-                    break;
-                case R.id.ed_main_menu_manage_containers /* 2131296372 */:
-                    menuItem.setChecked(true);
-                    fragment = new ManageContainersFragment();
-                    str = EDMainActivity.FRAGMENT_TAG_MANAGE_CONTAINERS;
-                    break;
-                case R.id.ed_main_menu_start_menu /* 2131296373 */:
-                    menuItem.setChecked(true);
-                    fragment = new ChooseXDGLinkFragment();
-                    Bundle bundle2 = new Bundle();
-                    bundle2.putBoolean(ChooseXDGLinkFragment.ARG_IS_START_MENU, true);
-                    fragment.setArguments(bundle2);
-                    str = EDMainActivity.FRAGMENT_TAG_START_MENU;
-                    break;
-                default:
-                    fragment = null;
-                    str = null;
-                    break;
-            }
-            if (fragment != null) {
-                FragmentManager supportFragmentManager = EDMainActivity.this.getSupportFragmentManager();
-                for (int i = 0; i < supportFragmentManager.getBackStackEntryCount(); i++) {
-                    supportFragmentManager.popBackStack();
-                }
-                FragmentTransaction beginTransaction = supportFragmentManager.beginTransaction();
-                beginTransaction.replace(R.id.ed_main_fragment_container, fragment, str);
-                beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                if (menuItem.getItemId() != R.id.ed_main_menu_desktop) {
-                    beginTransaction.addToBackStack(null);
-                }
-                beginTransaction.commit();
-                z = true;
-            }
-            mDrawerLayout.closeDrawers();
-            return z;
-        }
     }
 
     private void setHomeIsActionBack(boolean z) {
@@ -190,14 +129,6 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
                 return;
             default:
                 return;
-        }
-    }
-
-    /* loaded from: classes.dex */
-    private class BackStackChangedListener implements FragmentManager.OnBackStackChangedListener {
-        @Override // android.support.v4.app.FragmentManager.OnBackStackChangedListener
-        public void onBackStackChanged() {
-            EDMainActivity.this.changeUIByCurFragment();
         }
     }
 
@@ -293,5 +224,79 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
         beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         beginTransaction.addToBackStack(null);
         beginTransaction.commit();
+    }
+
+    /* loaded from: classes.dex */
+    private class NavigationItemSelectedListener implements NavigationView.OnNavigationItemSelectedListener {
+
+        /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
+        @SuppressLint("NonConstantResourceId")
+        @Override // android.support.design.widget.NavigationView.OnNavigationItemSelectedListener
+        public boolean onNavigationItemSelected(MenuItem menuItem) {
+            Fragment fragment;
+            String str;
+            boolean z = false;
+            switch (menuItem.getItemId()) {
+                case R.id.ed_main_menu_desktop /* 2131296369 */:
+                    menuItem.setChecked(true);
+                    fragment = new ChooseXDGLinkFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(ChooseXDGLinkFragment.ARG_IS_START_MENU, false);
+                    fragment.setArguments(bundle);
+                    str = EDMainActivity.FRAGMENT_TAG_DESKTOP;
+                    break;
+                case R.id.ed_main_menu_help /* 2131296370 */:
+                    EDMainActivity.this.startActivity(EDHelpActivity.class);
+                    fragment = null;
+                    str = null;
+                    break;
+                case R.id.ed_main_menu_install_new /* 2131296371 */:
+                    menuItem.setChecked(true);
+                    fragment = new ChooseRecipeFragment();
+                    str = EDMainActivity.FRAGMENT_TAG_INSTALL_NEW;
+                    break;
+                case R.id.ed_main_menu_manage_containers /* 2131296372 */:
+                    menuItem.setChecked(true);
+                    fragment = new ManageContainersFragment();
+                    str = EDMainActivity.FRAGMENT_TAG_MANAGE_CONTAINERS;
+                    break;
+                case R.id.ed_main_menu_start_menu /* 2131296373 */:
+                    menuItem.setChecked(true);
+                    fragment = new ChooseXDGLinkFragment();
+                    Bundle bundle2 = new Bundle();
+                    bundle2.putBoolean(ChooseXDGLinkFragment.ARG_IS_START_MENU, true);
+                    fragment.setArguments(bundle2);
+                    str = EDMainActivity.FRAGMENT_TAG_START_MENU;
+                    break;
+                default:
+                    fragment = null;
+                    str = null;
+                    break;
+            }
+            if (fragment != null) {
+                FragmentManager supportFragmentManager = EDMainActivity.this.getSupportFragmentManager();
+                for (int i = 0; i < supportFragmentManager.getBackStackEntryCount(); i++) {
+                    supportFragmentManager.popBackStack();
+                }
+                FragmentTransaction beginTransaction = supportFragmentManager.beginTransaction();
+                beginTransaction.replace(R.id.ed_main_fragment_container, fragment, str);
+                beginTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                if (menuItem.getItemId() != R.id.ed_main_menu_desktop) {
+                    beginTransaction.addToBackStack(null);
+                }
+                beginTransaction.commit();
+                z = true;
+            }
+            mDrawerLayout.closeDrawers();
+            return z;
+        }
+    }
+
+    /* loaded from: classes.dex */
+    private class BackStackChangedListener implements FragmentManager.OnBackStackChangedListener {
+        @Override // android.support.v4.app.FragmentManager.OnBackStackChangedListener
+        public void onBackStackChanged() {
+            EDMainActivity.this.changeUIByCurFragment();
+        }
     }
 }

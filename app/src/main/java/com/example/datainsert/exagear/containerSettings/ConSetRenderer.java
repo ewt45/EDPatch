@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
@@ -146,8 +145,9 @@ public class ConSetRenderer {
         }
     }
 
+
     public static void buildRendererDialog(ListPreference preference) {
-        ConSetRenderer.readRendererTxt();
+        readRendererTxt();
 
         CharSequence[] names = preference.getEntries();
         CharSequence[] keys = preference.getEntryValues();
@@ -189,7 +189,7 @@ public class ConSetRenderer {
 
             //预定义渲染的简介
             try {
-                ConSetRenderer.RenEnum renEnum = ConSetRenderer.RenEnum.valueOf(keys[i].toString());
+                RenEnum renEnum = RenEnum.valueOf(keys[i].toString());
                 stringBuilder.append(renEnum.info);
             } catch (Exception e) {
 //                continue; //找不到对应的enum就直接跳过了，下面应该没啥其他要做的了吧？

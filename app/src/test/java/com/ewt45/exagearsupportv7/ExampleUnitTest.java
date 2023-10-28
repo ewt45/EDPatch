@@ -36,6 +36,22 @@ import java.util.List;
  */
 public class ExampleUnitTest {
 
+    @Test
+    public void test_index_of_wine_cmd(){
+        System.out.println("找到的index="+setOtherArgv_findWineIndexInCmd("wine exe"));
+        System.out.println("找到的index="+setOtherArgv_findWineIndexInCmd("eval \"wine exe"));
+        System.out.println("找到的index="+setOtherArgv_findWineIndexInCmd("eval \" wine exe"));
+    }
+    private static int setOtherArgv_findWineIndexInCmd(String wineCmd){
+        int findIndex = -1;
+        if(wineCmd.startsWith("wine "))
+            findIndex = 0;
+        if(wineCmd.startsWith("eval \"wine "))
+            findIndex = 6;
+        if(findIndex == -1)
+            findIndex = wineCmd.indexOf(" wine ")+1;
+        return findIndex;
+    }
     /**
      * xsdl中。so文件名，需要按照assets中的txt重命名，然后才能正常使用pulseaudio
      * @throws IOException

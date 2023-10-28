@@ -27,6 +27,7 @@
         <item>@string/funcname_shortcut</item>
         <item>@string/funcname_mw</item>
         <item>@string/funcname_renderer</item>
+        <item>@string/funcname_otherargv</item>
     </string-array>
 
     <string-array name="func_description">
@@ -40,6 +41,7 @@
         <item>@string/fraghelp_body_shortcut</item>
         <item>@string/fraghelp_body_mw</item>
         <item>@string/fraghelp_body_renderer</item>
+        <item>@string/fraghelp_body_otherargv</item>
     </string-array>
 
 </resources>

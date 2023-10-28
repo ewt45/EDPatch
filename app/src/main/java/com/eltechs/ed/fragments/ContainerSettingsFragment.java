@@ -1,7 +1,6 @@
 package com.eltechs.ed.fragments;
 
 import static com.example.datainsert.exagear.RR.getS;
-import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.renderersMap;
 
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
@@ -30,6 +29,7 @@ import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.containerSettings.ConSetRenderer;
+import com.example.datainsert.exagear.containerSettings.ConSetOtherArgv;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,19 +37,23 @@ import java.util.List;
 
 public class ContainerSettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String ARG_CONT_ID = "CONT_ID";
-    /**
+    /*
      * 如果能找到对应类，就启动对应功能。edpatch添加功能时复制对应类即可。
      */
     public final static boolean enable_custom_resolution = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetResolution");
     public final static boolean enable_different_renderers = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetRenderer");
+    public final static boolean enable_other_arguments = QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetOtherArgv");
     private static final String TAG = "ContSettingsFragment";
+    /**
+     * 历史原因，请勿移动此变量。（会有更新fragment.smali 但不更新renderer.smali的情况
+     */
     public static String KEY_RENDERER = "RENDERER"; //偏好xml中渲染方式的KEY
-
 
     /**
      * 用于记录本次dialog期间选定的分辨率
      */
     private String curResolution;
+
 
     @Override // android.support.v7.preference.PreferenceFragmentCompat
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
@@ -61,41 +65,45 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         //新设置：渲染器
         if (enable_different_renderers) {
             ConSetRenderer.readRendererTxt();
-            buildRendererPref();
+            buildRendererPref(this);//buildRendererPref移到ConSetRenderer里了。应该没问题吧（不行，存在更新此fragment smali，但不更新consetrender smali的情况
+        }
+
+        //新设置：cpu核心
+        if (enable_other_arguments) {
+            ConSetOtherArgv.buildTasksetPref(this);
         }
     }
-
-    private void buildRendererPref() {
+    /**
+     * 历史原因，请勿移动此函数。（会有更新fragment.smali 但不更新renderer.smali的情况
+     */
+    public void buildRendererPref(ContainerSettingsFragment fragment) {
         //直接移除旧的吧
-        if (getPreferenceManager().findPreference(KEY_RENDERER) instanceof ListPreference) {
-            getPreferenceScreen().removePreference(getPreferenceManager().findPreference(KEY_RENDERER));
-        }
+        if (fragment.getPreferenceManager().findPreference(KEY_RENDERER) instanceof ListPreference)
+            fragment.getPreferenceScreen().removePreference(fragment.getPreferenceManager().findPreference(KEY_RENDERER));
 
         //如果空的就不加了
         ConSetRenderer.readRendererTxt();
-        if (renderersMap.size() == 0)
-            return;
+        if (ConSetRenderer.renderersMap.size() == 0) return;
 
         //新建preference时的context需要为 从已构建的preference获取的contextwrapper，否则样式会不同
-        ListPreference renderPref = new ListPreference(getPreferenceManager().getContext());
+        ListPreference renderPref = new ListPreference(fragment.getPreferenceManager().getContext());
         renderPref.setTitle(getS(RR.render_title));
         renderPref.setDialogTitle(getS(RR.render_title));
         renderPref.setKey(KEY_RENDERER);
         renderPref.setSummary("%s");
         renderPref.setOrder(3);
-//        Set<String> entryValueList = renderersMap.keySet();
 
         List<String> entriesList = new ArrayList<>(); //用户友好名称，内容为name
         List<String> entryValueList = new ArrayList<>(); //存储的值， 内容为key
-        for (String key : renderersMap.keySet()) {
-            entriesList.add(renderersMap.get(key).getString("name"));
+        for (String key : ConSetRenderer.renderersMap.keySet()) {
+            entriesList.add(ConSetRenderer.renderersMap.get(key).getString("name"));
             entryValueList.add(key);
         }
         renderPref.setEntries(entriesList.toArray(new String[0]));
         renderPref.setEntryValues(entryValueList.toArray(new String[0]));
         renderPref.setDefaultValue(entryValueList.get(0));
-        getPreferenceScreen().addPreference(renderPref);
-        if(renderPref.getValue()==null || !entryValueList.contains(renderPref.getValue())) //如果设置的key不在txt中，设置为默认渲染，
+        fragment.getPreferenceScreen().addPreference(renderPref);
+        if (renderPref.getValue() == null || !entryValueList.contains(renderPref.getValue())) //如果设置的key不在txt中，设置为默认渲染，
             renderPref.setValueIndex(0);
     }
 
@@ -139,13 +147,15 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
             buildResolutionDialog(preference);
         } else if (preference.getKey().equals(KEY_RENDERER) && enable_different_renderers) {
             ConSetRenderer.buildRendererDialog((ListPreference) preference);
+
+        } else if (enable_other_arguments && preference.getKey().equals(ConSetOtherArgv.KEY_OTHER_ARGV_STUB)) {
+            ConSetOtherArgv.buildDialog((EditTextPreference) preference);
         } else {
             super.onDisplayPreferenceDialog(preference);
             return;
         }
 
     }
-
 
     private void buildResolutionDialog(Preference preference) {
         //如果是分辨率选项，自定义一下
@@ -156,7 +166,6 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
 
         //用于记录本次dialog期间选定的分辨率（这个默认返回default不准确，应该是value的第一个值，有可能是Default）
         curResolution = preference.getSharedPreferences().getString("SCREEN_SIZE", strValues[0]);
-
 
         ScrollView dialogView = new ScrollView(requireContext());
         LinearLayout linearLayout = new LinearLayout(requireContext());
@@ -172,12 +181,7 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
         switchToCustom.setText(getS(RR.CstRsl_swtTxt));
         LinearLayout resolutionLinearLayout = new LinearLayout(requireContext());
         resolutionLinearLayout.setOrientation(LinearLayout.VERTICAL);
-//            LinearLayout rsSwitchLLayout = new LinearLayout(requireContext());
-//            rsSwitchLLayout.setOrientation(LinearLayout.VERTICAL);
-//            TextView textView = new TextView(requireContext());
-//            textView.setText("宽高用英文逗号分隔。示例：800,600");
-//            rsSwitchLLayout.addView(switchToCustom);
-//            rsSwitchLLayout.addView(textView);
+
         //输入文本
         LinearLayout rsEditLLayout = new LinearLayout(requireContext());
         EditText widthEText = new EditText(requireContext());
@@ -274,6 +278,9 @@ public class ContainerSettingsFragment extends PreferenceFragmentCompat implemen
     }
 
     private void updatePreference(Preference preference) {
+        if (preference == null)
+            return;
+
         if ((preference instanceof EditTextPreference)) {
             preference.setSummary(((EditTextPreference) preference).getText());
         } else if ("SCREEN_SIZE".equals(preference.getKey())) {

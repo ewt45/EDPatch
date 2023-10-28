@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.DocumentsContract;
 import android.support.design.widget.Snackbar;
 import android.support.v4.provider.DocumentFile;
@@ -34,9 +35,15 @@ import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.test.FileTreePrinter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 关于。关于右下齿轮按钮的介绍。
@@ -237,10 +244,12 @@ public class AboutFab extends BaseFragment {
             snackbar.show();
         }
 
+//        FileTreePrinter.test();
 
         //尝试重定向logcat到文件中：
         redirectLogcat();  
     }
+
 
     /**
      * 将logat输出到本地文本中。
