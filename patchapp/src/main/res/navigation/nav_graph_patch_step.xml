@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_patch_step"
+
+    app:startDestination="@id/fragmentPatchStep1">
+
+    <fragment
+        tools:layout="@layout/fragment_patch_step1"
+        android:id="@+id/fragmentPatchStep1"
+        android:name="com.ewt45.patchapp.fragment.FragmentPatchStep1"
+        android:label="FragmentPatchStep1" >
+        <action
+            android:id="@+id/action_patch_step1_to_step2"
+            app:destination="@id/fragmentPatchStep2"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/slide_out"
+            app:popEnterAnim="@anim/pop_back_in"
+            app:popExitAnim="@anim/pop_back_out" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_patch_step2"
+        android:id="@+id/fragmentPatchStep2"
+        android:name="com.ewt45.patchapp.fragment.FragmentPatchStep2"
+        android:label="FragmentPatchStep2" >
+        <action
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/slide_out"
+            app:popEnterAnim="@anim/pop_back_in"
+            app:popExitAnim="@anim/pop_back_out"
+            android:id="@+id/action_patch_step2_to_step3"
+            app:destination="@id/fragmentPatchStep3" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_patch_step3"
+        android:id="@+id/fragmentPatchStep3"
+        android:name="com.ewt45.patchapp.fragment.FragmentPatchStep3"
+        android:label="FragmentPatchStep3" />
+</navigation>

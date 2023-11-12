@@ -3,6 +3,7 @@ package com.example.datainsert.exagear;
 import android.util.SparseArray;
 
 import com.eltechs.axs.Globals;
+import com.eltechs.ed.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -685,14 +686,14 @@ public class RR {
         ruArray.put(DriveD2_devType,"Память телефона$Другое устройство памяти$Другое устройство памяти (Не обнаружено)");
         ruArray.put(DriveD2_parType,"Корневой каталог$Каталог файлов приложения");
         ruArray.put(DriveD2_errors," Необходимо дать приложению разрешение на хранение. $ Каталог не существует. $ Этот путь обозначает файл, а не каталог. $ Приложение не имеет разрешения на чтение содержимого этого каталога. $ Приложение не имеет разрешения на запись в этот каталог. $ Ошибка: ");
-        ruArray.put(taskset_info,"Using the large CPU cores (typically 4-7) usually increases efficiency and heat generation.\n\nSome newer cores use armv9 architecture, which doesn't support 32-bit apps and may result in problems if used.\n\nArgument Insertion: If the command already contains \"taskset \", no change will be made. If it doesn't and this option is enabled, \"taskset -c [cores]\" will be inserted in front of the \"wine \".");
-        ruArray.put(taskset_useCustom,"Set CPU cores");
-        ruArray.put(ib_autorun,"Autorun ib.exe");
-        ruArray.put(ib_autorun_tip,"Input Bridge requires ib.exe running to work. If this option is enabled, it will run ib.exe automatically after container started. Still if fails if ib.exe is not installed.\n\nArgument Insertion: If the command already contains \"ib \", no change will be made. If it doesn't and this option is enabled, \"ib \" will be inserted at the beginning.");
-        ruArray.put(service_exe_disable,"Kill services.exe");
-        ruArray.put(service_exe_disable_tip,"When starting Wine, services.exe is running by default. Some games only run normally after this process is killed.\n\nArgument Insertion: add \" & wine taskkill /f /im services.exe\" at the end of the command.");
-        ruArray.put(conSet_otherArgv_info,"- Params inserted when launching, viewable in /sdcard/x86-stderr.txt.\n- Please read notes in \" ⓘ \" before enabling options.");
-        ruArray.put(conSet_otherArgv_title,"Additional Launching Arguments");
+        ruArray.put(taskset_info,"Использование производительных ядер CPU (обычно 4-7) - повышает производительность и тепловыделение соответственно.\n\nНекоторые новые CPU используют архитектуру ARMv9, которая не поддерживает 32-битные приложения и может привести к проблемам при использовании.\n\nДобавление аргументов: Если вы используете ярлык который уже содержит \"taskset \", его использование будет иметь приоритет и данное изменение внесено не будет. Сама опция при включении, добавляет \"taskset -c [перечисление ядер]\"  перед словом \"wine \".");
+        ruArray.put(taskset_useCustom,"Выбор ядер CPU");
+        ruArray.put(ib_autorun,"Автозапуск ib.exe");
+        ruArray.put(ib_autorun_tip,"Для работы Imput Bridge требуется запуск ib.exe. Если эта опция включена, ib.exe будет запускаться автоматически во время запуска контейнера. Если ib.exe не установлен, возможно произойдет сбой.\n\nДобавление аргумента: Если вы используете ярлык который уже содержит команду \"ib \", его использование будет иметь приоритет и данное изменение внесено не будет. Сама опция при включении, добавляет в начале запись \"ib \".");
+        ruArray.put(service_exe_disable,"Отключение services.exe");
+        ruArray.put(service_exe_disable_tip,"При запуске Wine по умолчанию запускается файл services.exe. Некоторые игры нормально запускаются только после завершения этого процесса.\n\nДобавление аргумента: используется \" & wine taskkill /f /im services.exe\" в конце команды.");
+        ruArray.put(conSet_otherArgv_info,"- Включение данных параметров доступны для просмотра в /sdcard/x86-stderr.txt.\n- Прежде чем включать параметры, прочитайте примечания по нажатии \" ⓘ \".");
+        ruArray.put(conSet_otherArgv_title,"Дополнительные аргументы запуска");
         ruArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
 
 
@@ -740,6 +741,7 @@ public class RR {
          * 为对话框设置自定义视图的时候，手动设置边距
          */
         public static int dialogPaddingDp = 24;
+
     }
 
     public static class integer {

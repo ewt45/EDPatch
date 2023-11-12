@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/app_icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center_vertical"
  />
 
@@ -19,6 +19,6 @@
         android:layout_gravity="center_vertical"
         android:padding="5dp"
         android:text="com.apk.apk"
-        android:textSize="20sp" />
+        android:textSize="18sp" />
 
 </LinearLayout>

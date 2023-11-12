@@ -36,6 +36,14 @@ public class SignApk implements Action {
     @Override
     public Integer call() throws Exception {
         File inApkFile = new File(PatchUtils.getExaExtractDir(), "dist/tmp.apk");
+        File outApkFile = PatchUtils.getExaNewPatchedSignedApk(); //ApkSinger里面创建RandomAccessFile报错文件不存在，只好保证这里父目录和文件都是存在的了
+        if(!outApkFile.exists())
+            try {
+                outApkFile.createNewFile();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
         try (RandomAccessFile apkFile = new RandomAccessFile(inApkFile, "r")) {
             DataSource in = DataSources.asDataSource(apkFile);
             List<ApkSigner.SignerConfig> ecP256SignerConfig = Collections.singletonList(
@@ -47,7 +55,7 @@ public class SignApk implements Action {
                     .setV4SigningEnabled(false)
 //                    .setOtherSignersSignaturesPreserved(true)
                     .setInputApk(in)
-                    .setOutputApk(PatchUtils.getExaNewPatchedApk());
+                    .setOutputApk(outApkFile);
 
             apkSignerBuilder.build().sign();
             mAssetManager=null;

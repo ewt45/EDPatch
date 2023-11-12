@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
+
+    <Button
+        android:id="@+id/btn_back"
+        style="?borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btntxt_back_to_step1"
+        android:textAllCaps="false"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_install_new"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_done_text" />
+
+    <Button
+        android:id="@+id/btn_install_new"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/btntxt_installnew"
+        android:textAllCaps="false"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBaseline_toBaselineOf="@id/btn_back"
+        app:layout_constraintEnd_toStartOf="@id/spinner_btn"
+        app:layout_constraintStart_toEndOf="@+id/btn_back"
+
+        />
+
+
+    <ImageView
+        android:id="@+id/image_done"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_check_circle"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@id/tv_done_text"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintWidth_max="120dp"
+        app:layout_constraintWidth_percent="0.4" />
+
+    <TextView
+        android:id="@+id/tv_done_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/patchstep3_tv_finish"
+        app:layout_constraintBottom_toTopOf="@id/btn_back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_done"
+        app:layout_constraintWidth_max="300dp" />
+    <!--    android:background="@drawable/ic_drop_down"-->
+    <!--    style="?android:spinnerStyle"-->
+    <ImageView
+        android:id="@+id/spinner_btn"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/ic_drop_down"
+        android:minWidth="0dp"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_install_new"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_install_new"
+        app:layout_constraintTop_toTopOf="@+id/btn_install_new" />
+
+    <Button
+        android:id="@+id/btn_view_apk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btntxt_view_new_apk"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/btn_install_new"
+        app:layout_constraintTop_toBottomOf="@id/btn_install_new" />
+
+</android.support.constraint.ConstraintLayout>

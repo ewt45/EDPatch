@@ -8,6 +8,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
@@ -57,11 +60,26 @@ public class VirglOverlay extends BaseFragment {
      * edpatch无法修改xml，所以只能是在原本已经存在旧VIRGL overlay的情况下显示。检查：libvirgl-lib.so，com.mittorn.virgloverlay包
      */
     public static boolean isAlreadyExist(Context c) {
-        if (QH.isTesting())
-            return true;
-        String libDir = c.getApplicationInfo().nativeLibraryDir;
-        return new File(libDir, "libvirgl-lib.so").exists()
+        if(!QH.isTesting())
+            return false;
+        boolean hasService = false;
+        try {
+            PackageInfo pkgInfo  = c.getPackageManager().getPackageInfo(c.getPackageName(), PackageManager.GET_SERVICES);
+            if(pkgInfo==null || pkgInfo.services==null)
+                return false;
+            for(ServiceInfo serInfo:pkgInfo.services){
+                if ("com.mittorn.virgloverlay.process.p1".equals(serInfo.name)) {
+                    hasService = true;
+                    break;
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return hasService
+                && new File(c.getApplicationInfo().nativeLibraryDir, "libvirgl-lib.so").exists()
                 && QH.classExist("com.mittorn.virgloverlay.process.p1");
+
     }
 
     @Override

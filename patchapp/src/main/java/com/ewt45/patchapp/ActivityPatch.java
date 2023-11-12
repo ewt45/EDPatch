@@ -1,6 +1,8 @@
 package com.ewt45.patchapp;
 
-import android.content.SharedPreferences;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -10,27 +12,24 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.ewt45.patchapp.databinding.ActivityPtMainBinding;
-import com.ewt45.patchapp.unused.MyAdapter;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ActivityPatch extends AppCompatActivity {
+    private static final String TAG = "ActivityPatch";
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityPtMainBinding binding;
-    private List<String> mDatas = new ArrayList<String>();
-    private MyAdapter myAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPtMainBinding.inflate(getLayoutInflater());
+
 
         //设置强制竖屏？
 //        DisplayMetrics outMetrics = new DisplayMetrics();
@@ -47,22 +46,10 @@ public class ActivityPatch extends AppCompatActivity {
         //设置内部路径
         PatchUtils.setExternalFilesDir(getExternalFilesDir(null).getAbsolutePath());
 
-        //判断版本号是否相同，若不同则删除原patcher
-        SharedPreferences sp = getSharedPreferences("config", MODE_PRIVATE);
-        if (sp.getInt("versionCode", 0) != BuildConfig.VERSION_CODE
-                || PatchUtils.isPatcherApkChanged(this)) {         //patcher.apk 校验码不对 也重新解压
-            File patcher = PatchUtils.getLocalPatcherApk();
-            if (patcher.exists()) {
-                boolean b = patcher.delete();
-                Log.d("TAG", "onCreate: 发现更新的patcher.删除本地patcher.apk");
-            }
-        }
-
         //写入版本号
         getSharedPreferences("config", MODE_PRIVATE).edit().putInt("versionCode", BuildConfig.VERSION_CODE).apply();
 
         //通过检查patcher是否是最新的，如果不是就重新解压
-
 
         setContentView(binding.getRoot());
 
@@ -72,7 +59,26 @@ public class ActivityPatch extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        //include的话要再用一个binding 或者给include 设置id
+//        binding.appbarPatchStepMain
 
+    }
+
+    /**
+     * 非修改界面（帮助和设置）应该隐藏这个。onStart里调用吧
+     */
+    public void changePatchStepTitleAndFABVisibility(boolean hide) {
+        binding.appbarPatchStepMain.getRoot().setVisibility(hide?GONE:VISIBLE);
+        ((View) binding.fab).setVisibility(hide?GONE:VISIBLE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!MyApplication.data.isShowingLog)
+            super.onBackPressed();
+        else{
+//            Toast.makeText(this, "阻止fragment切换", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -91,10 +97,11 @@ public class ActivityPatch extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main).navigate(R.id.settingPreferences);
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main).navigate(R.id.action_fragmentPatchMain_to_settingPreferences);
             return true;
         } else if (id == R.id.action_help_step) {
-            Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main).navigate(R.id.fragmentHelp);
+            Navigation.findNavController(this, R.id.nav_host_fragment_content_pt_main).navigate(R.id.action_fragmentPatchMain_to_fragmentHelp);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

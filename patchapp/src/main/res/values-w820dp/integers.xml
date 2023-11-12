@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="patch_step_func_item_column">2</integer>
+</resources>

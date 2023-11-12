@@ -30,6 +30,12 @@ public class test extends AppCompatActivity {
     public test() {
 
     }
+
+    private void test_get_string_from_context_with_resid(){
+        int stringId = 0x7f09452;
+        String str = Globals.getAppContext().getString(stringId);
+
+    }
 //
 //    private void test1(int i1,float f1,float f2, float f3, float f4, float f5, int i2, float f6, boolean b){
 //       logthis(i1,f1,f2,f3,f4,f5,i2,f6,b);
@@ -38,6 +44,10 @@ public class test extends AppCompatActivity {
 //    private void logthis(int i1,float f1,float f2, float f3, float f4, float f5, int i2, float f6, boolean b){
 //        QH.logD("placeRectangle参数："+i1+","+f1+","+f2+","+f3+","+f4+","+f5+","+i2+","+f6+","+b);
 //    }
+
+    public void test_int_to_smali(){
+        int i= 0x424242;
+    }
 
     public void send_inputstream_instead_of_file(){
         TarZstdUtils.extract(this,new File(""));

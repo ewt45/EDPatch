@@ -1,63 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:id="@+id/parent_root"
+    android:id="@+id/constraintLayout"
     android:layout_height="match_parent">
-    <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <TextView
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/step_title"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="?actionBarSize"
+        android:padding="@dimen/appbar_padding"
+        android:text="步骤"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
 
-        android:layout_height="wrap_content">
+        />
+    <android.support.v4.widget.NestedScrollView
+        app:layout_constraintTop_toBottomOf="@id/step_title"
+        app:layout_constraintBottom_toTopOf="@id/btn_drag"
+        android:id="@+id/log_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="8dp">
 
-
-<!--        b1限制在button2的底部-->
-        <android.support.constraint.Barrier
-            android:id="@+id/barrier1"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="button2" />
+            android:padding="8dp"
+            android:orientation="vertical">
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider" />
+            <LinearLayout
+                android:layout_marginTop="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-<!--        b2限制在父布局的顶部-->
-        <android.support.constraint.Barrier
-            android:id="@+id/barrier2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="top"
-            app:constraint_referenced_ids="parent_root" />
+                <ImageView
 
-<!--        b3限制在b1 b2的底部-->
-        <android.support.constraint.Barrier
-            android:id="@+id/barrier3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="barrier1,barrier2" />
+                    android:id="@+id/log_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_log" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button1" />
+                <TextView
+                    android:id="@+id/log_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center_vertical"
+                    android:text="输出日志"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="800dp"
-            android:text="BUTTON2"
-            app:layout_constraintTop_toBottomOf="@+id/button" />
+            <TextView
+                android:id="@+id/log_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="111\n\n\n\n\n\n\n\n\
+                n\n\n\n\\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\
+                \n\n\n\n\\n\n\n\\n\n\n\n\n\\n\n\n\\n\n\n\n\n\
+                n\n\n\n\n\n\\nn\n" />
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/button3"
-            android:text="button3"
-            app:layout_constraintTop_toBottomOf="@id/barrier2"
-            android:layout_width="wrap_content"
-            android:layout_height="900dp"/>
-    </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-</ScrollView>
+    <android.support.design.button.MaterialButton
+        android:backgroundTint="@color/black"
+        app:cornerRadius="30dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@id/step_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/btn_drag"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_max="250dp"
+        android:layout_width="0dp"
+        android:layout_height="16dp" />
+
+    <android.support.design.button.MaterialButton
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="@id/log_scroll"
+        android:text="btn1"
+        app:cornerRadius="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn2"
+        android:id="@+id/btn1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:text="btn2"
+        app:cornerRadius="0dp"
+        app:layout_constraintEnd_toEndOf="@id/log_scroll"
+        app:layout_constraintStart_toEndOf="@id/btn1"
+        app:layout_constraintTop_toTopOf="@id/btn1"
+        android:id="@+id/btn2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</android.support.constraint.ConstraintLayout>

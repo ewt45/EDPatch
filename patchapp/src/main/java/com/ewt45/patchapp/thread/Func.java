@@ -17,5 +17,17 @@ public interface Func extends Action {
      * @return
      */
      public int getLatestVersion();
-//    public int getVersion();
+
+    /**
+     * 主要用于FuncFab返回显示版本号，因为有多个所以需要格式化一下
+     */
+     default int getLatestVersionFormatted(){
+         return getLatestVersion();
+     }
+    /**
+     * 主要用于FuncFab返回显示版本号，因为有多个所以需要格式化一下
+     */
+     default int getInstalledVersionFormatted(){
+         return getInstalledVersion();
+     }
 }

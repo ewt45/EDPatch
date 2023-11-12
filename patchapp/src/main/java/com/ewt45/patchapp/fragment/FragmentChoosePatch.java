@@ -2,7 +2,6 @@ package com.ewt45.patchapp.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,18 +11,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.ewt45.patchapp.ActionPool;
 import com.ewt45.patchapp.MyApplication;
@@ -47,12 +38,9 @@ import com.ewt45.patchapp.thread.SignalDone;
 import com.ewt45.patchapp.widget.SelectApkDialog;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -106,8 +94,6 @@ public class FragmentChoosePatch extends Fragment {
         snackCheckGuide.setAction(android.R.string.yes, v -> snackCheckGuide.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
         snackCheckGuide.show();
 
-        //设置外部文件绝对路径
-        PatchUtils.setExternalFilesDir(requireContext().getExternalFilesDir(null).getAbsolutePath());
         //初始化textSwitcher
 //        binding.textSwitcher.setFactory(() -> new TextView(requireContext()));
 //        binding.textSwitcher.setInAnimation(requireContext(), android.R.anim.slide_in_left);
@@ -209,22 +195,7 @@ public class FragmentChoosePatch extends Fragment {
             snackWaiting.setAction(android.R.string.yes, snackbutton -> snackWaiting.dismiss()).setActionTextColor(getResources().getColor(R.color.purple_200));
             snackWaiting.show();
             //解包自己的代码的apk（最好优化一下，仅当必要的时候才解包）
-            try {
-                //将自己的apk拷贝出来
-                File patcherApk = PatchUtils.getLocalPatcherApk();
-                //先发现已经有就跳过解包吧。之后单独抽出方法，加个判断好更新
-                if (!patcherApk.exists()) {
-                    InputStream is = requireContext().getAssets().open("patcher/release/patcher.apk");
-                    FileOutputStream fos = new FileOutputStream(patcherApk);
-                    IOUtils.copy(is, fos);
-                    fos.close();
-                    is.close();
-                    mActionPool.submit(new DecodeApk(DecodeApk.PATCHER));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            mActionPool.submit(new DecodeApk(DecodeApk.PATCHER));
 
             Map<Func, Integer> addingFuncList = new HashMap<>();
             boolean patchNew = false;
@@ -253,8 +224,7 @@ public class FragmentChoosePatch extends Fragment {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            File apk = new File(PatchUtils.getPatchTmpDir().getAbsolutePath() + "/tmp/dist/tmp_sign.apk");
-            Uri uri = FileProvider.getUriForFile(requireContext(), "com.ewt45.patchapp.fileprovider", apk);
+            Uri uri = FileProvider.getUriForFile(requireContext(), "com.ewt45.patchapp.fileprovider", PatchUtils.getExaNewPatchedSignedApk());
             intent.setDataAndType(uri, "application/vnd.android.package-archive");
             startActivity(intent);
         });
@@ -352,7 +322,7 @@ public class FragmentChoosePatch extends Fragment {
             }
 
             binding.btnStartPatch.setEnabled(true);
-            binding.btnInstallNew.setEnabled(PatchUtils.getExaNewPatchedApk().exists()); //如果还没生成过apk 不应enable
+            binding.btnInstallNew.setEnabled(PatchUtils.getExaNewPatchedSignedApk().exists()); //如果还没生成过apk 不应enable
             binding.progressbar.setVisibility(View.GONE);
             binding.btnSelectApkInstalled.setEnabled(true);
             binding.btnSelectApkFiles.setEnabled(true);

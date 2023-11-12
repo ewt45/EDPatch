@@ -1,37 +1,49 @@
 package com.ewt45.patchapp.fragment;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.ewt45.patchapp.ActivityPatch;
 import com.ewt45.patchapp.BuildConfig;
 import com.ewt45.patchapp.MyApplication;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FragmentSettings extends PreferenceFragmentCompat {
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        for (int i = 0; i < menu.size(); i++) {
+            menu.getItem(i).setVisible(false);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //设置 数据存到的文件名
         getPreferenceManager().setSharedPreferencesName(MyApplication.PREFERENCE);
+        setHasOptionsMenu(true); //隐藏右上角菜单。必须先设置为true，待会onCreateOptionsMenu才会被调用，在那里给每个menuitem设置隐藏。
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((ActivityPatch) requireActivity()).changePatchStepTitleAndFABVisibility(true);
     }
 
     //如果想自定义点击一个preference的操作：
@@ -46,11 +58,11 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         delPatcherPref.setOnPreferenceClickListener(p -> {
             File patcher = PatchUtils.getLocalPatcherApk();
             String msg;
-            if(patcher.exists()){
-                boolean b=patcher.delete();
-                msg = b?"patcher.apk删除成功":"patcher.apk删除失败";
-            }else
-                msg="patcher.apk不存在";
+            if (patcher.exists()) {
+                boolean b = patcher.delete();
+                msg = b ? "patcher.apk删除成功" : "patcher.apk删除失败";
+            } else
+                msg = "patcher.apk不存在";
 //            Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show();
             return true;
         });
@@ -62,7 +74,7 @@ public class FragmentSettings extends PreferenceFragmentCompat {
 
         //设置第三方项目依赖
         Preference creditPref = findPreference("credits");
-        creditPref.setOnPreferenceClickListener(p->{
+        creditPref.setOnPreferenceClickListener(p -> {
             ListView listView = new ListView(requireContext());
             String[] creditsName = getResources().getStringArray(R.array.credits_name);
             String[] creditsLink = getResources().getStringArray(R.array.credits_link);
@@ -84,15 +96,12 @@ public class FragmentSettings extends PreferenceFragmentCompat {
         });
 
         //更新地址
-        findPreference("update").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ewt45/EDPatch/releases"));
-                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-                    startActivity(intent);
-                }
-                return true;
+        findPreference("update").setOnPreferenceClickListener(preference -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ewt45/EDPatch/releases"));
+            if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
+                startActivity(intent);
             }
+            return true;
         });
     }
 
@@ -101,6 +110,5 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     public void onDisplayPreferenceDialog(Preference preference) {
         super.onDisplayPreferenceDialog(preference);
     }
-
 
 }

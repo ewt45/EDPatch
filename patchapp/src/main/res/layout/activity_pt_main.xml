@@ -2,14 +2,17 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ActivityPatch">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.ExagearSupportV7包.AppBarOverlay">
+        android:theme="@style/Theme.ExagearSupportV7包.AppBarOverlay"
+        app:layout_behavior=".widget.AppbarSwipeBehavior">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -18,17 +21,28 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/Theme.ExagearSupportV7包.PopupOverlay" />
 
+        <include
+            android:id="@+id/appbar_patch_step_main"
+            layout="@layout/appbar_patch_step_main_2" />
+
     </android.support.design.widget.AppBarLayout>
+
 
     <include layout="@layout/content_pt_main" />
 
-<!--    <android.support.design.widget.FloatingActionButton-->
-<!--        android:id="@+id/fab"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_marginEnd="@dimen/fab_margin"-->
-<!--        android:layout_marginBottom="16dp"-->
-<!--        app:srcCompat="@android:drawable/ic_dialog_email" />-->
+    <com.ewt45.patchapp.widget.FAB
+
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:contentDescription="fab"
+        android:tint="@color/white"
+        app:layout_anchor="@id/app_bar"
+
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@drawable/ic_arrow_forward" />
+
 
 </android.support.design.widget.CoordinatorLayout>

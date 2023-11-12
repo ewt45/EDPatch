@@ -10,7 +10,7 @@ public class FuncSelObb implements Func {
 
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funcselobb;
+        return R.string.funcname_selobb;
     }
     private static final String TAG = "FuncSelObb";
 
@@ -53,7 +53,7 @@ public class FuncSelObb implements Func {
                 "/com/example/datainsert/exagear/obb",
                 "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
-        return R.string.actmsg_funcselobb;
+        return R.string.funcname_selobb;
     }
 
     private void firstInstall() throws Exception {

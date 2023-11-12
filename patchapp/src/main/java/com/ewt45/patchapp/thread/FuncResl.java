@@ -74,11 +74,11 @@ public class FuncResl implements Func {
 //        });
 
 
-        return R.string.actmsg_funcresl;
+        return R.string.funcname_prefresl;
     }
 
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funcresl;
+        return R.string.funcname_prefresl;
     }
 }

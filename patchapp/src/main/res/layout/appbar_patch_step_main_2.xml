@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <TextView
+        android:id="@+id/step_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:minHeight="?actionBarSize"
+        android:paddingHorizontal="@dimen/appbar_padding"
+        android:paddingTop="@dimen/appbar_padding"
+        android:text="@string/patchstep1_title"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_max="2dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toTopOf="@id/log_title"
+        app:layout_constraintTop_toBottomOf="@id/step_title" />
+
+    <TextView
+        android:id="@+id/log_title"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_log"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:text="@string/tv_logtitle"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+
+        app:layout_constraintTop_toBottomOf="@id/step_title"
+        app:layout_constraintBottom_toTopOf="@id/btn_drag"
+
+        />
+
+    <ImageButton
+        android:id="@+id/btn_close_log"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="16dp"
+        android:background="@drawable/ic_close"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/log_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/log_title" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:visibility="gone"
+        android:id="@+id/log_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@id/btn_drag"
+        app:layout_constraintTop_toBottomOf="@id/log_title"
+
+        >
+
+        <TextView
+            android:id="@+id/log_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="111\n\n\n\n\n\n\n\n\
+                n\n\n\n\\n\n\n\n\n\n\n\n\\n\n\n\n\n\n\n\n\n\
+                \n\n\n\n\\n\n\n\\n\n\n\n\n\\n\n\n\\n\n\n\n\n\
+                n\n\n\n\n\n\\nn\n" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <ImageView
+        android:id="@+id/btn_drag"
+        android:layout_width="0dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/drag_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/step_title"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintWidth_max="300dp"
+        app:layout_constraintWidth_percent="0.6" />
+</android.support.constraint.ConstraintLayout>

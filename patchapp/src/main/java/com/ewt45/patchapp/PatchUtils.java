@@ -9,14 +9,11 @@ import android.util.Log;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -78,11 +75,16 @@ public class PatchUtils {
     public static File getExaExtractDir(){ return new File(getPatchTmpDir(),"tmp"); }
 
     /**
-     * 获取添加功能后的已签名的exa apk。位于/patchtmp/tmp/dist/tmp_sign.apk
+     * 获取添加功能后的已签名的exa apk。位于/patchtmp/tmp/dist/signed/tmp_sign.apk
      * @return file对象。该文件不一定存在
      */
-    public static File getExaNewPatchedApk(){
-        return  new File(getExaExtractDir(),"dist/tmp_sign.apk");
+    public static File getExaNewPatchedSignedApk(){
+        File file = new File(getExaExtractDir(),"dist/signed/tmp_sign.apk");
+        if(!file.getParentFile().exists()){
+            boolean b = file.getParentFile().mkdirs();
+            Log.d(TAG, "getExaNewPatchedSignedApk: tmp_sign.apk父目录是否创建成功："+b);
+        }
+        return  file;
     }
 
     public static void copyToExternalFiles(Context c, Uri uri) throws Exception {
@@ -122,7 +124,7 @@ public class PatchUtils {
 //            PatchUtils.setPackageName(pkgSmali.findSmali(null, "EDMainActivity").getmCls());
 //            pkgSmali.close();
             //MyApplication.instance.getApplicationContext()
-            PackageInfo info = MyApplication.instance.getApplicationContext().getPackageManager().getPackageArchiveInfo(getPatchTmpApk().getAbsolutePath(), PackageManager.GET_ACTIVITIES);
+            PackageInfo info = MyApplication.i.getApplicationContext().getPackageManager().getPackageArchiveInfo(getPatchTmpApk().getAbsolutePath(), PackageManager.GET_ACTIVITIES);
             if (info != null) {
                 packageName = info.packageName.replace('.', '/');
             }
@@ -165,6 +167,8 @@ public class PatchUtils {
      * @return 若本地存在已解压的patcher且与assets中的校验码不同，返回true。否则返回false
      */
     public static boolean isPatcherApkChanged(Context context) {
+        if(!getLocalPatcherApk().exists())
+            return true;
         try {
             //计算压缩包的sha256，与文本的值对比
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -180,7 +184,7 @@ public class PatchUtils {
         } catch (NoSuchAlgorithmException | IOException e) {
             Log.w(TAG, "isPatcherApkChanged: " + e.getMessage());
         }
-        return false;
+        return true;
     }
 
 }

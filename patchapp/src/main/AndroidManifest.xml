@@ -2,7 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <!--        android:name=".MyApplication"-->
+
+    <!--
+    如果您的应用在搭载 Android 9 或更低版本的设备上使用，或者您的应用暂时停用分区存储，您必须请求 READ_EXTERNAL_STORAGE 权限才能访问任何媒体文件。
+    如果要修改媒体文件，您还必须请求 WRITE_EXTERNAL_STORAGE 权限。
+    在搭载 Android 10 或更高版本的设备上，您无需拥有存储相关权限即可访问和修改您的应用拥有的媒体文件
+    -->
+
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
 
     <application
         android:name=".MyApplication"
@@ -11,7 +23,14 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ExagearSupportV7包">
+        android:theme="@style/Theme.ExagearSupportV7包.NoActionBar">
+        <activity
+            android:name=".test.NewTestActivity"
+            android:exported="true"
+            android:label="@string/title_activity_new_test"
+            android:theme="@style/Theme.ExagearSupportV7包.NoActionBar">
+
+        </activity>
 
         <service
             android:name=".unused.MyService"
@@ -25,7 +44,6 @@
             android:theme="@style/Theme.ExagearSupportV7包.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
@@ -36,7 +54,7 @@
 
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.ewt45.patchapp.fileprovider"
+            android:authorities="@string/provider_ato"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

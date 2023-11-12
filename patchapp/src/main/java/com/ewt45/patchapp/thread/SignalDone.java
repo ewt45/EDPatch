@@ -7,6 +7,9 @@ public class SignalDone implements Action {
 
     @Override
     public Integer call() throws Exception {
+//        if(true)
+//            throw new RuntimeException("测试异常");
+
         return R.string.actmsg_signaldone;
     }
 

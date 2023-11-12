@@ -6,27 +6,19 @@
     <string name="actmsg_finish">…завершено</string>
     <string name="actmsg_buildapk">сборка apk</string>
     <string name="actmsg_decodeapk">декодинг apk</string>
-    <string name="actmsg_funccursor">добавление функции: отображения курсора</string>
     <string name="funcname_cursorimg">Отображать курсор</string>
-    <string name="actmsg_funcfab">добавление функции: кнопки настроек</string>
-    <string name="actmsg_funcresl">добавление функции: выбора разрешений экрана</string>
     <string name="funcname_fab">Кнопка настроек \n - Выбор локации диска D\n - Кастомное управление \n - PulseAudio (XSDL)\n -Xegw</string>
     <string name="funcname_prefresl">Настройки контейнера - Кастомное разрешение</string>
     <string name="funcname_softinput">Исправление работы клавиатуры на android 11+</string>
     <string name="btntxt_startpatch">запуск исправлений</string>
-    <string name="btntxt_installnew">установить исправленный apk</string>
     <string name="tv_patchingprogress">исправление…</string>
-    <string name="tv_logtitle">лог:</string>
-    <string name="actmsg_signapk">подпись apk (файл расположен по пути /storage/emulated/0/Android/data/com.ewt45.patchapp/patchtmp/tmp/dist/apk_sign.apk))</string>
+    <string name="tv_logtitle">лог</string>
+    <string name="actmsg_signapk">подпись apk</string>
     <string name="actmsg_signaldone">---====все задачи====---</string>
     <string name="n1_exagear_apk_n2_n3_apk">Инструкция: \n1.Выберите apk exagear и дождитесь завершения декодирования.\n2.Выберите необходимые функции, нажмите кнопку исправления и дождитесь завершения сборки.\n3.Нажмите кнопку "Установить", чтобы установить исправленный apk.\nПримечание:\n1. Не гарантируется, что исправление будет успешным.\n2.После исправления подпись Apk будет другой. При необходимости подпишите апк самостоятельно.</string>
     <string name="app_info">выбран apk：%1$s</string>
-    <string name="actmsg_funcsinput">добавление функции: Исправление работы клавиатуры на Android 11+</string>
     <string name="actmsg_fail">…неудача</string>
-    <string name="tv_patchstep1">1. Выбор apk</string>
-    <string name="btntxt_selectapkinstalled">установленный apks</string>
-    <string name="btntxt_selectapkfiles">локальный файл apk</string>
-    <string name="actmsg_funcselobb">добавление функции: выбора файла obb</string>
+    <string name="patchstep1_title">1/3. Выбор apk</string>
     <string name="funcname_selobb">Выбор файла obb</string>
     <string name="funcname_fab_drived">Выбор локации диска D</string>
     <string name="fraghelp_title2_steps">Действия</string>
@@ -53,8 +45,7 @@
     <string name="settings_delpatcherapksummary">Обычно не используется</string>
     <string name="tips_backup">Исправленный apk нельзя восстановить, создайте копию!</string>
     <string name="tips_check_guide">Ознакомьтесь с Гайдом в Основном меню</string>
-    <string name="tv_patchstep2">2. Выбор добавляемых функций</string>
-    <string name="tv_patchstep3">3. Действия</string>
+    <string name="patchstep2_title">2/3. Выбор добавляемых функций</string>
     <string name="fragment_patch_label">Основное меню</string>
     <string name="settings_credits">Использование сторонних проектов</string>
     <string name="settings_update">Обновить</string>
@@ -67,12 +58,12 @@
     <string name="settings_usedefaultkeysummary">Если данный флаг установлен, нет необходимости удалять установленный apk или переподписывать apk вручную. Но он может быть распознан как вирус.</string>
     <string name="funcname_shortcut">Добавить ярлыки .exe на рабочий стол Android</string>
     <string name="fraghelp_body_shortcut">Нажмите и удерживайте значок приложения, выберите ярлык исполняемого файла и нажмите, чтобы запустить его.\nКак добавить ярлык программы: тап по меню необходимого ярлыка файла на вкладке \"Рабочий стол\" и выбрать \"Добавить как внешний ярлык\".\nПримечание. Можно добавить не более четырех ярлыков. Перед запуском с ярлыка убедитесь, что приложение не работает в фоновом режиме. После удаления ярлыка exe (файл .desktop) внешний ярлык будет автоматически удален при следующем запуске приложения. Для этой функции требуется Android 7 и выше.</string>
-    <string name="actmsg_funcshortcut">добавление функции: добавить ярлыки .exe на рабочий стол android</string>
-    <string name="actmsg_funcmw">добавление функции: MultiWine v2</string>
     <string name="fraghelp_body_mw">Добавляется значок загрузки необходимой версии wine в левом верхнем углу страницы \"создание контейнеров\", тапните на вкладку \"добавление/удаление wine\".\n- Установка wine: Вы можете редактировать загруженные или предустановленные версии wine. После выбора опции Установить (Извлечь) выбранная версия wine будет отображаться как \'Активная\', теперь её можно выбрать при создании нового контейнера. Используйте опцию Удалить (удалить папку с wine), чтобы уменьшить объем занятой внутренней памяти вашего девайса. Файлы wine хранятся в папке Z:/opt/WineCollection.\n- Загрузка файлов wine: загрузка всех видов wine из интернета. Доступные источники: WineHQ (официальная сборка, перечислены только сборки ubuntu18) и Kron4ek (уменьшенный размер, промежуточные версии wine не включены). Загруженные версии wine появляются на странице \'Установленные\'.\nКак добавить предустановленные версии wine в кэши:\n`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : имя папки необходимого wine, оно отображается при создании контейнеров, и должно быть уникальным.\n- `$WineFolder`: он должен содержать двоичный файл `./bin/wine`.\n- так же в `$TagFolder` должен быть `.tar.xz` архивный файл, из которого будет извлечена `$WineFolder`.</string>
     <string name="funcname_mw">MultiWine v2</string>
     <string name="funcname_renderer">Настройки контейнера - Выбор рендера</string>
     <string name="funcname_fab_pulse">PulseAudio (XSDL)</string>
     <string name="fraghelp_body_renderer">- Раньше Multiwine v1 поддерживал по умолчанию использование разных рендеров для каждого контейнера в v2 этого больше нет. Если вы хотите продолжать использовать разные рендеры для каждого контейнера в MultiWine v2 вам нужно исправить ее вручную.\n - Установите разные LD_LIBRARY_PATH для разных рендеров. libGL.so.1 будет загружаться с выбранного пути с более высоким приоритетом. Вы можете редактировать пути самостоятельно в файле Z:/opt/renderers.txt.\n - Некоторые параметры рендера имеют дополнительные опции при загрузке:\n     - Не работает рендер Turnip: Перенаправьте VK_ICD_FILENAMES в несуществующий файл, этот параметр на случай, если Turnip рендеры не будут работать.\n     - Встроенный VirGl: запуск libvirgl_test_server.so в новом java-процессе. Работает только в apk  с поддержкой xegw. Больше нет необходимости в Mcat и /opt/start.sh.\nЛог при этом выводится в Android/data/packageName/logs/virglLog.txt.\n     - VirtIO-GPU: запускается через Mcat. До Xegw Mcat использовался для запуска среды proot для этого рендера, но в xegw он переписан для запуска /opt/start.sh и не запускает proot автоматически.</string>
     <string name="fraghelp_body_pulse">PulseAudio используется для воспроизведения звука, уменьшения проблемы связанных со звуком. Эта функция использует сервер PulseAudio, извлеченный из apk Xserver XSDL. Что требуется поддержка 64-битной версии Андроид на вашем девайсе.</string>
+    <string name="funcname_otherargv">Настройки контейнера - Дополнительные аргументы</string>
+    <string name="fraghelp_body_otherargv">- Включение данных параметров доступны для просмотра в /sdcard/x86-stderr.txt.\n- Выбор ядер CPU, Автозапуск ib.exe, Отключение services.exe</string>
 </resources>

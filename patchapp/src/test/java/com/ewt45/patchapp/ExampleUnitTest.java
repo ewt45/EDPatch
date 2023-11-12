@@ -24,6 +24,24 @@ import java.util.List;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
+    @Test
+    public void test_is_last_row(){
+        System.out.println("2 2 0 true "+isLastRow(2,2,0));
+        System.out.println("2 2 1 true "+isLastRow(2,2,1));
+        System.out.println("1 2 0 true "+isLastRow(1,2,0));
+        System.out.println("4 2 2 true "+isLastRow(4,2,2));
+        System.out.println("4 2 3 true "+isLastRow(4,2,3));
+
+        System.out.println("4 1 3 true "+isLastRow(4,1,3));
+        System.out.println("4 1 2 false "+isLastRow(4,1,2));
+        System.out.println("5 1 2 false "+isLastRow(5,1,2));
+    }
+
+    private boolean isLastRow(int itemCount, int spanCount, int itemPosition){
+        return itemPosition >= itemCount - Math.max(itemCount % spanCount,spanCount);//两列的话，pos=0和1都是在第一行。 一共有5个或者6个，pos=4，5在最后一行
+    }
+
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);

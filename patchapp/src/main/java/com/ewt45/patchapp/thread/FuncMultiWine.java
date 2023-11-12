@@ -13,7 +13,7 @@ public class FuncMultiWine implements Func{
     private static final String TAG ="FuncMultiWine";
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funcmw;
+        return R.string.funcname_mw;
     }
 
     @Override
@@ -62,6 +62,6 @@ public class FuncMultiWine implements Func{
                 "/com/example/datainsert/exagear/QH.smali",
         });
 
-        return R.string.actmsg_funcmw;
+        return R.string.funcname_mw;
     }
 }

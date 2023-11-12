@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <!-- 更改您的音频设置 -->
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-<!--    android:name="com.example.datainsert.exagear.application.MyApplication"-->
+    <!--    android:name="com.example.datainsert.exagear.application.MyApplication"-->
 
     <application
         android:allowBackup="true"
@@ -69,45 +69,52 @@
         <activity
             android:name="com.eltechs.axs.activities.FatalErrorActivity"
             android:theme="@style/ThemeDefaultDialogNoTitle" />
-        <activity android:name="com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity"
+        <activity
+            android:name="com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
 
-        <service android:name="com.eltechs.axs.environmentService.AXSEnvironmentService"
+        <service
+            android:name="com.eltechs.axs.environmentService.AXSEnvironmentService"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </service>
 
+        <service
+            android:name="com.mittorn.virgloverlay.process.p1"
+            android:exported="true"
+            android:process=".p1"
+            tools:ignore="MissingClass" />
 
-                <provider
-                    android:name="android.support.v4.content.FileProvider"
-                    android:authorities="${applicationId}.provider"
-                    android:exported="false"
-                    android:grantUriPermissions="true">
-                    <meta-data
-                        android:name="android.support.FILE_PROVIDER_PATHS"
-                        android:resource="@xml/provider_paths" />
-                </provider>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
-<!--        <provider-->
-<!--            android:name="bin.mt.file.content.MTDataFilesProvider"-->
-<!--            android:permission="android.permission.MANAGE_DOCUMENTS"-->
-<!--            android:exported="true"-->
-<!--            android:authorities="MTDataFilesProvider"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <intent-filter>-->
-<!--                <action-->
-<!--                    android:name="android.content.action.DOCUMENTS_PROVIDER" />-->
-<!--            </intent-filter>-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/file_paths" />-->
-<!--        </provider>-->
+        <!--        <provider-->
+        <!--            android:name="bin.mt.file.content.MTDataFilesProvider"-->
+        <!--            android:permission="android.permission.MANAGE_DOCUMENTS"-->
+        <!--            android:exported="true"-->
+        <!--            android:authorities="MTDataFilesProvider"-->
+        <!--            android:grantUriPermissions="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action-->
+        <!--                    android:name="android.content.action.DOCUMENTS_PROVIDER" />-->
+        <!--            </intent-filter>-->
+        <!--            <meta-data-->
+        <!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+        <!--                android:resource="@xml/file_paths" />-->
+        <!--        </provider>-->
     </application>
 
 </manifest>

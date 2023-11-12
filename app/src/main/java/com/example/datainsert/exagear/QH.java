@@ -2,13 +2,19 @@ package com.example.datainsert.exagear;
 
 import static android.content.pm.ApplicationInfo.FLAG_TEST_ONLY;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
@@ -18,6 +24,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -30,6 +37,7 @@ import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * 不要随意修改已有方法的定义，否则会与旧功能不兼容。但是可以修改其内容
@@ -269,11 +277,11 @@ public class QH {
         Context c = view.getContext();
         TextView btnInfo = new TextView(c);
 
-        btnInfo.setText("  ⓘ  ");
+        btnInfo.setText("ⓘ");
         btnInfo.getPaint().setFakeBoldText(true);
         btnInfo.setOnClickListener(clickListener);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-        layoutParams.setMarginStart(px(c, 20));
+        layoutParams.setMarginStart(px(c, 16));
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.HORIZONTAL);
         linearRoot.addView(view);
@@ -284,6 +292,31 @@ public class QH {
         return linearRoot;
     }
 
+    public static Object getFieldReflectInst(Class<?> clz, Object clzInst, String fieldName, boolean isHide) {
+        Object fieldInst = null;
+        try {
+            Field field = clz.getDeclaredField(fieldName);
+            if (isHide)
+                field.setAccessible(true);
+            fieldInst = field.get(clzInst);
+            if (isHide)
+                field.setAccessible(false);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+        return fieldInst;
+    }
+
+
+    public static void setButtonBorderless(Button button){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            button.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
+            RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(0x44444444), null, button.getBackground());
+            button.setBackground(rippleDrawable);
+            button.setMinWidth(0);
+            button.setMinimumWidth(0);
+        }
+    }
 
 
     //    /**

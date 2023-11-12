@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:tint="?attr/colorControlNormal"
+    android:shape="rectangle">
+    <size android:height="20dp"
+        android:width="150dp"/>
+    <corners android:radius="30dp"/>
+    <solid android:color="#60FFFFFF"/>
+
+</shape>
+<!--<vector xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:width="200dp"-->
+<!--    android:height="16dp"-->
+<!--    android:viewportWidth="650"-->
+<!--    android:viewportHeight="300"-->
+<!--    android:tint="#B4FFFFFF"-->
+<!--    android:autoMirrored="true">-->
+<!--    <path-->
+<!--        android:fillColor="@android:color/white"-->
+<!--        android:pathData="-->
+<!--        M 100 150 Q 100 100 150 100 L 500 100 Q 550 100 550 150 Q 550 200 500 200 L 150 200 Q 100 200 100 150  "/>-->
+<!--</vector>-->

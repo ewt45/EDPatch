@@ -42,7 +42,7 @@ public class FuncCursorV2 implements Func {
                 .deleteMethod(".method public getCursor()Lcom/eltechs/axs/xserver/Cursor;")
                 .addMethod(PatcherFile.getSmaliMethod("/com/eltechs/axs/xserver/WindowAttributes.smali", ".method public getCursor()Lcom/eltechs/axs/xserver/Cursor;"))
                 .close();
-        return R.string.actmsg_funccursor;
+        return R.string.funcname_cursorimg;
 
     }
 
@@ -53,6 +53,6 @@ public class FuncCursorV2 implements Func {
 
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funccursor;
+        return R.string.funcname_cursorimg;
     }
 }

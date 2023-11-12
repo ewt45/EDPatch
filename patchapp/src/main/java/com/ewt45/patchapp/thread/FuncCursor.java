@@ -71,7 +71,7 @@ public class FuncCursor implements Func {
         PatcherFile.copy(TYPE_ASSETS, new String[]{"/mouse.png"});
 
 
-        return R.string.actmsg_funccursor;
+        return R.string.funcname_cursorimg;
 
     }
 
@@ -96,6 +96,6 @@ public class FuncCursor implements Func {
 
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funccursor;
+        return R.string.funcname_cursorimg;
     }
 }

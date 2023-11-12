@@ -20,14 +20,14 @@
     .registers 1
 
     .prologue
-    .line 24
+    .line 25
     invoke-static {}, Lcom/example/datainsert/exagear/FAB/dialogfragment/DriveD;->getDriveDDir()Ljava/io/File;
 
     move-result-object v0
 
     sput-object v0, Lcom/example/test;->mUserAreaDir:Ljava/io/File;
 
-    .line 25
+    .line 26
     const/4 v0, 0x0
 
     sput-boolean v0, Lcom/example/test;->staticNotFinal:Z
@@ -39,10 +39,10 @@
     .registers 1
 
     .prologue
-    .line 29
+    .line 30
     invoke-direct {p0}, Landroid/support/v7/app/AppCompatActivity;-><init>()V
 
-    .line 31
+    .line 32
     return-void
 .end method
 
@@ -53,7 +53,7 @@
     .prologue
     const/4 v4, 0x0
 
-    .line 48
+    .line 62
     invoke-virtual {p0}, Ljava/lang/Object;->getClass()Ljava/lang/Class;
 
     move-result-object v5
@@ -69,7 +69,7 @@
 
     aget-object v0, v5, v4
 
-    .line 50
+    .line 64
     .local v0, "clz":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
     const-class v7, Landroid/os/AsyncTask;
 
@@ -83,7 +83,7 @@
 
     if-eqz v7, :cond_4b
 
-    .line 52
+    .line 66
     const/4 v7, 0x2
 
     :try_start_1b
@@ -107,13 +107,13 @@
 
     move-result-object v1
 
-    .line 53
+    .line 67
     .local v1, "constructor":Ljava/lang/reflect/Constructor;, "Ljava/lang/reflect/Constructor<Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;>;"
     const/4 v7, 0x1
 
     invoke-virtual {v1, v7}, Ljava/lang/reflect/Constructor;->setAccessible(Z)V
 
-    .line 54
+    .line 68
     const/4 v7, 0x2
 
     new-array v7, v7, [Ljava/lang/Object;
@@ -138,7 +138,7 @@
 
     check-cast v3, Landroid/os/AsyncTask;
 
-    .line 55
+    .line 69
     .local v3, "task":Landroid/os/AsyncTask;, "Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;"
     const/4 v7, 0x0
 
@@ -151,7 +151,7 @@
     .catch Ljava/lang/IllegalAccessException; {:try_start_1b .. :try_end_4b} :catch_54
     .catch Ljava/lang/InstantiationException; {:try_start_1b .. :try_end_4b} :catch_4e
 
-    .line 48
+    .line 62
     .end local v1    # "constructor":Ljava/lang/reflect/Constructor;, "Ljava/lang/reflect/Constructor<Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;>;"
     .end local v3    # "task":Landroid/os/AsyncTask;, "Landroid/os/AsyncTask<Lcom/eltechs/ed/guestContainers/GuestContainer;Ljava/lang/Void;Ljava/lang/Void;>;"
     :cond_4b
@@ -160,24 +160,24 @@
 
     goto :goto_a
 
-    .line 56
+    .line 70
     :catch_4e
     move-exception v2
 
-    .line 58
+    .line 72
     .local v2, "e":Ljava/lang/ReflectiveOperationException;
     :goto_4f
     invoke-virtual {v2}, Ljava/lang/ReflectiveOperationException;->printStackTrace()V
 
     goto :goto_4b
 
-    .line 62
+    .line 76
     .end local v0    # "clz":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
     .end local v2    # "e":Ljava/lang/ReflectiveOperationException;
     :cond_53
     return-void
 
-    .line 56
+    .line 70
     .restart local v0    # "clz":Ljava/lang/Class;, "Ljava/lang/Class<*>;"
     :catch_54
     move-exception v2
@@ -200,7 +200,7 @@
     .param p1, "a"    # F
 
     .prologue
-    .line 66
+    .line 80
     new-instance v2, Landroid/support/v7/widget/Toolbar;
 
     invoke-static {}, Lcom/eltechs/axs/Globals;->getAppContext()Landroid/content/Context;
@@ -209,16 +209,16 @@
 
     invoke-direct {v2, v3}, Landroid/support/v7/widget/Toolbar;-><init>(Landroid/content/Context;)V
 
-    .line 67
+    .line 81
     .local v2, "toolbar":Landroid/support/v7/widget/Toolbar;
     const v3, 0x7f080093
 
     invoke-virtual {v2, v3}, Landroid/support/v7/widget/Toolbar;->setBackgroundResource(I)V
 
-    .line 68
+    .line 82
     const-class v1, Lcom/example/test;
 
-    .line 70
+    .line 84
     .local v1, "s":Ljava/lang/Class;, "Ljava/lang/Class<Lcom/example/test;>;"
     const/4 v3, 0x1
 
@@ -254,14 +254,14 @@
     .catch Ljava/lang/IllegalAccessException; {:try_start_12 .. :try_end_2b} :catch_3a
     .catch Ljava/lang/InstantiationException; {:try_start_12 .. :try_end_2b} :catch_41
 
-    .line 80
+    .line 94
     return-void
 
-    .line 71
+    .line 85
     :catch_2c
     move-exception v0
 
-    .line 72
+    .line 86
     .local v0, "e":Ljava/lang/NoSuchMethodException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -269,12 +269,12 @@
 
     throw v3
 
-    .line 73
+    .line 87
     .end local v0    # "e":Ljava/lang/NoSuchMethodException;
     :catch_33
     move-exception v0
 
-    .line 74
+    .line 88
     .local v0, "e":Ljava/lang/reflect/InvocationTargetException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -282,12 +282,12 @@
 
     throw v3
 
-    .line 75
+    .line 89
     .end local v0    # "e":Ljava/lang/reflect/InvocationTargetException;
     :catch_3a
     move-exception v0
 
-    .line 76
+    .line 90
     .local v0, "e":Ljava/lang/IllegalAccessException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -295,12 +295,12 @@
 
     throw v3
 
-    .line 77
+    .line 91
     .end local v0    # "e":Ljava/lang/IllegalAccessException;
     :catch_41
     move-exception v0
 
-    .line 78
+    .line 92
     .local v0, "e":Ljava/lang/InstantiationException;
     new-instance v3, Ljava/lang/RuntimeException;
 
@@ -314,7 +314,7 @@
     .param p1, "i"    # I
 
     .prologue
-    .line 85
+    .line 99
     :goto_0
     :try_start_0
     new-instance v0, Ljava/io/File;
@@ -323,31 +323,31 @@
 
     invoke-direct {v0, v1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
 
-    .line 86
+    .line 100
     .local v0, "file":Ljava/io/File;
     invoke-virtual {v0}, Ljava/io/File;->createNewFile()Z
 
-    .line 88
+    .line 102
     add-int/lit8 p1, p1, -0x1
 
-    .line 89
+    .line 103
     if-nez p1, :cond_16
 
-    .line 90
+    .line 104
     new-instance v1, Ljava/lang/RuntimeException;
 
     invoke-direct {v1}, Ljava/lang/RuntimeException;-><init>()V
 
     throw v1
 
-    .line 98
+    .line 112
     .end local v0    # "file":Ljava/io/File;
     :catch_14
     move-exception v1
 
     goto :goto_0
 
-    .line 91
+    .line 105
     .restart local v0    # "file":Ljava/io/File;
     :cond_16
     iget-object v2, p0, Lcom/example/test;->i2:Ljava/lang/Object;
@@ -356,10 +356,10 @@
     :try_end_19
     .catch Ljava/io/IOException; {:try_start_0 .. :try_end_19} :catch_14
 
-    .line 93
+    .line 107
     add-int/lit8 p1, p1, -0x2
 
-    .line 97
+    .line 111
     :try_start_1b
     monitor-exit v2
 
@@ -378,6 +378,26 @@
     .catch Ljava/io/IOException; {:try_start_1f .. :try_end_20} :catch_14
 .end method
 
+.method private test_get_string_from_context_with_resid()V
+    .registers 4
+
+    .prologue
+    .line 35
+    const v1, 0x7f09452
+
+    invoke-static {}, Lcom/eltechs/axs/Globals;->getAppContext()Landroid/content/Context;
+
+    move-result-object v2
+
+    invoke-virtual {v2, v1}, Landroid/content/Context;->getString(I)Ljava/lang/String;
+
+    move-result-object v0
+
+    .line 38
+    .local v0, "str":Ljava/lang/String;
+    return-void
+.end method
+
 .method public static winlatorObb(Landroid/content/Context;Ljava/util/concurrent/atomic/AtomicReference;)I
     .registers 4
     .param p0, "context"    # Landroid/content/Context;
@@ -393,7 +413,7 @@
     .end annotation
 
     .prologue
-    .line 42
+    .line 56
     .local p1, "result":Ljava/util/concurrent/atomic/AtomicReference;, "Ljava/util/concurrent/atomic/AtomicReference<Ljava/io/File;>;"
     new-instance v0, Ljava/io/File;
 
@@ -403,8 +423,39 @@
 
     invoke-virtual {p1, v0}, Ljava/util/concurrent/atomic/AtomicReference;->set(Ljava/lang/Object;)V
 
-    .line 43
+    .line 57
     const/4 v0, 0x1
 
     return v0
+.end method
+
+
+# virtual methods
+.method public send_inputstream_instead_of_file()V
+    .registers 3
+
+    .prologue
+    .line 53
+    new-instance v0, Ljava/io/File;
+
+    const-string v1, ""
+
+    invoke-direct {v0, v1}, Ljava/io/File;-><init>(Ljava/lang/String;)V
+
+    invoke-static {p0, v0}, Lcom/winlator/core/TarZstdUtils;->extract(Landroid/content/Context;Ljava/io/File;)Z
+
+    .line 54
+    return-void
+.end method
+
+.method public test_int_to_smali()V
+    .registers 2
+
+    .prologue
+    .line 49
+    const v0, 0x424242
+
+    .line 50
+    .local v0, "i":I
+    return-void
 .end method

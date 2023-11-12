@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.circularreveal.cardview.CircularRevealCardView
+        android:foreground="?selectableItemBackground"
+        app:cardUseCompatPadding="true"
+        android:id="@+id/card_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/patchstep2_tv_statistic"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.design.circularreveal.cardview.CircularRevealCardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/func_recycler"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_info"
+        app:layout_constraintVertical_bias="0"
+        app:spanCount="@integer/patch_step_func_item_column"
+        tools:listitem="@layout/item_func_select" />
+
+    <!--    如果textview的下面没有和回收视图的上面链接起来形成chain，那么在textview上设置marginBottom是不生效的。不过用padding可以-->
+    <!--    <android.support.v7.widget.CardView-->
+    <!--        android:id="@+id/card_func"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_margin="8dp"-->
+    <!--        app:layout_constrainedHeight="true"-->
+    <!--        app:layout_constraintVertical_bias="0"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/card_info">-->
+
+    <!--        <android.support.v7.widget.RecyclerView-->
+    <!--            -->
+    <!--            android:id="@+id/func_recycler"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:paddingHorizontal="16dp"-->
+    <!--            app:layoutManager="android.support.v7.widget.GridLayoutManager"-->
+    <!--            app:spanCount="@integer/patch_step_func_item_column"-->
+    <!--            tools:listitem="@layout/item_func_select" />-->
+    <!--    </android.support.v7.widget.CardView>-->
+
+
+</android.support.constraint.ConstraintLayout>

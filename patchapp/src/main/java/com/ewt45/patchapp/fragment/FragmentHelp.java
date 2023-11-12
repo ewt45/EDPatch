@@ -1,43 +1,49 @@
 package com.ewt45.patchapp.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.ewt45.patchapp.AndroidUtils;
+import com.ewt45.patchapp.ActivityPatch;
 import com.ewt45.patchapp.R;
 
-import java.io.IOException;
-
-import pl.droidsonroids.gif.GifDrawable;
-import pl.droidsonroids.gif.GifImageButton;
 import pl.droidsonroids.gif.GifImageView;
 
 public class FragmentHelp extends Fragment {
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        for(int i=0; i<menu.size(); i++){
+            menu.getItem(i).setVisible(false);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true); //隐藏右上角菜单。必须先设置为true，待会onCreateOptionsMenu才会被调用，在那里给每个menuitem设置隐藏。
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.func_recycler);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-//        layoutManager.setOrientation(HORIZONTAL);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        if (requireActivity().getWindowManager().getDefaultDisplay().getWidth() > AndroidUtils.toPx(requireContext(), 800)) {
-            GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, LinearLayoutManager.VERTICAL, false);
-            recyclerView.setLayoutManager(layoutManager);
-        }
+//        if (requireActivity().getWindowManager().getDefaultDisplay().getWidth() > AndroidUtils.toPx(requireContext(), 800)) {
+//            GridLayoutManager layoutManager = new GridLayoutManager(requireContext(), 2, LinearLayoutManager.VERTICAL, false);
+//            recyclerView.setLayoutManager(layoutManager);
+//        }
 
 
         recyclerView.setAdapter(new FuncdescpAdapter(
@@ -58,6 +64,12 @@ public class FragmentHelp extends Fragment {
                 }
         ));
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ((ActivityPatch)requireActivity()).changePatchStepTitleAndFABVisibility(true);
     }
 
 

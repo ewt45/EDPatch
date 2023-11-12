@@ -8,39 +8,52 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
         <TextView
+            app:layout_constraintBottom_toTopOf="@id/description"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/title"
+            android:text="功能名"
             style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp" />
 
         <TextView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintBottom_toTopOf="@id/gif_image"
+            android:text="功能介绍"
             android:id="@+id/description"
             style="@style/TextAppearance.MaterialComponents.Body2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:lineSpacingMultiplier="1.2" />
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+<!--        貌似这个宽高是按原图尺寸来的，不会按比例缩放，所以即使设置了最大高度，扁的图片上下还是空出来一块
+啊原来设置android:adjustViewBounds="true" 就没有空白了
+另外约束布局的Height_max要和Height_default="wrap" 一起用不然始终是0
+-->
+        <pl.droidsonroids.gif.GifImageView
             android:layout_marginTop="8dp"
-            android:padding="-8dp">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/gif_image"
+            android:src="@drawable/fab"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintHeight_max="300dp"
+            android:adjustViewBounds="true"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
 
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/gif_image"
-                app:layout_constraintHeight_max="300dp"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_width="match_parent"
-                android:layout_height="0dp" />
-        </android.support.constraint.ConstraintLayout>
-
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

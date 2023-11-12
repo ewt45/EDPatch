@@ -7,7 +7,7 @@ import com.ewt45.patchapp.patching.SmaliFile;
 public class FuncShortcut implements Func {
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funcshortcut;
+        return R.string.funcname_shortcut;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class FuncShortcut implements Func {
                 "/com/example/datainsert/exagear/RR.smali",
                 "/com/example/datainsert/exagear/QH.smali",
         });
-        return R.string.actmsg_funcshortcut;
+        return R.string.funcname_shortcut;
 
     }
 

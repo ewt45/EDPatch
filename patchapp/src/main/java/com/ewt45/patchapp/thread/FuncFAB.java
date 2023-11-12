@@ -35,6 +35,28 @@ public class FuncFAB implements Func {
     private static final String TAG = "FuncFAB";
 
     @Override
+    public int getInstalledVersionFormatted() {
+        int version = getInstalledVersion();
+        int result = 0;
+        while(version>0){
+            result = result*10+ (version & 0x0000000f);
+            version = version >>4;
+        }
+        return result;
+    }
+
+    @Override
+    public int getLatestVersionFormatted() {
+        int version = getLatestVersion();
+        int result = 0;
+        while(version>0){
+            result = result*10+ (version & 0x0000000f);
+            version = version >>4;
+        }
+        return result;
+    }
+
+    @Override
     public Integer call() throws Exception {
         Sub1DriveD sub1DriveD = new Sub1DriveD();
         Sub2Control sub2Control = new Sub2Control();
@@ -82,7 +104,7 @@ public class FuncFAB implements Func {
         sub3Pulseaudio.updateSelfPackage();
         sub4Xegw.updateSelfPackage();
 
-        return R.string.actmsg_funcfab;
+        return R.string.funcname_fab;
     }
 
     /**
@@ -187,7 +209,7 @@ public class FuncFAB implements Func {
 
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funcfab;
+        return R.string.funcname_fab;
     }
 
 

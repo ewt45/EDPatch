@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<paths>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
 <!--    <external-path name="external_files" path="."/>-->
-    <external-files-path name="patchtmp" path="patchtmp/"/>
+    <external-files-path
+        name="patchtmp" path="patchtmp/"/>
 
 </paths>

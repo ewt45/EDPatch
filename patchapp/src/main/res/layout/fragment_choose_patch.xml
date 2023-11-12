@@ -39,7 +39,7 @@
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_patchstep1" />
+            android:text="@string/patchstep1_title" />
         <LinearLayout
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
@@ -65,7 +65,7 @@
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_patchstep2" />
+            android:text="@string/patchstep2_title" />
         <LinearLayout
             android:layout_marginTop="8dp"
             android:orientation="vertical"
@@ -133,7 +133,7 @@
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tv_patchstep3" />
+            android:text="@string/patchstep3_titile" />
         <LinearLayout
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"

@@ -8,7 +8,7 @@ public class FuncSInput implements Func{
     private static final String TAG = "FuncSInput";
     @Override
     public int getStartMessage() {
-        return R.string.actmsg_funcsinput;
+        return R.string.funcname_softinput;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class FuncSInput implements Func{
             firstInstall();
         }
         PatcherFile.copy(PatcherFile.TYPE_SMALI,new String[]{"/com/example/datainsert/exagear/input"});
-        return R.string.actmsg_funcsinput;
+        return R.string.funcname_softinput;
     }
 
     private void firstInstall() throws Exception {
