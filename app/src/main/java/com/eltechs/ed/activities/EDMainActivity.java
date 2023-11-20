@@ -37,6 +37,7 @@ import com.eltechs.ed.guestContainers.GuestContainer;
 import com.eltechs.ed.startupActions.StartGuest;
 import com.eltechs.ed.startupActions.WDesktop;
 import com.example.datainsert.exagear.FAB.FabMenu;
+import com.example.datainsert.exagear.virgloverlay.OverlayBuildUI;
 
 import java.io.File;
 import java.util.List;
@@ -85,6 +86,7 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
 
 //            UiThread.postDelayed(1250L, () -> RateAppDialog.checkCondAndShow(EDMainActivity.this));
         }
+        new OverlayBuildUI(this);
         new FabMenu(this);
     }
 

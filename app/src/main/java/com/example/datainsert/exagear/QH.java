@@ -6,6 +6,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.widget.LinearLayout.HORIZONTAL;
 
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
 
 import android.content.Context;
@@ -22,6 +23,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -39,6 +41,9 @@ import android.widget.TextView;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.axs.applicationState.ExagearImageAware;
+
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -209,7 +214,7 @@ public class QH {
 
         LinearLayout linearLayout = new LinearLayout(a);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        int padding = RR.dimen.dialogPadding();
+        int padding = dialogPadding();
         linearLayout.setPadding(padding, padding, padding, padding);
         linearLayout.addView(textView);
         linearLayout.addView(checkBox, checkParams);
@@ -447,14 +452,22 @@ public class QH {
     public static NestedScrollView wrapAsDialogScrollView(View view) {
         Context c = view.getContext();
         NestedScrollView scrollView = new NestedScrollView(c);
-        int dialogPadding = RR.dimen.dialogPadding();
-        scrollView.setPadding(dialogPadding, 0, dialogPadding, 0);
+        scrollView.setPadding(dialogPadding(), 0, dialogPadding(), 0);
         scrollView.addView(view);
-
+        //阻止edittext获取焦点弹出输入法 / 回收视图获取焦点自动滚动到回收视图的位置
         scrollView.setFocusable(true);
         scrollView.setFocusableInTouchMode(true);
         scrollView.requestFocus();
         return scrollView;
+    }
+
+    /**
+     * 将一个textview设置为单行，末尾为... 点击后展开全部文字
+     */
+    public static void setTextViewExpandable(TextView tv) {
+        tv.setSingleLine(true);
+        tv.setEllipsize(TextUtils.TruncateAt.END);
+        tv.setOnClickListener(v -> tv.setSingleLine(tv.getMaxLines() != 1));
     }
 
     public interface SimpleTextWatcher extends TextWatcher {
@@ -489,6 +502,20 @@ public class QH {
                 boolean b = logDir.mkdirs();
             }
             return logDir;
+        }
+
+        /**
+         * 第三方功能，要持久存储的，全部放到/opt/edpatch文件夹中。
+         * @return
+         */
+        public static File edPatchDir(){
+            File dir =  new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/edpatch");
+            if(dir.isDirectory())
+                FileUtils.deleteQuietly(dir);
+            if(!dir.exists()){
+                boolean b = dir.mkdirs();
+            }
+            return dir;
         }
     }
 

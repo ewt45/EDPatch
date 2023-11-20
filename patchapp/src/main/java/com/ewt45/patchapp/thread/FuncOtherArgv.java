@@ -26,6 +26,12 @@ public class FuncOtherArgv implements Func {
         return SmaliFile.findVersionInClass("com.example.datainsert.exagear.containerSettings.ConSetOtherArgv");
     }
 
+    /**
+     * 1: 初版。
+     * 点击后显示参数库，显示全部可用的参数列表。被勾选的参数会在当前容器被启用。
+     * 第一个参数固定显示cpu核心选择。
+     * 参数分为单参数和参数组。若多个单参数包含相同的名称（以---分割）则合并为参数组。参数组中最多只能有一个被勾选。
+     */
     @Override
     public int getLatestVersion() {
         return 1;

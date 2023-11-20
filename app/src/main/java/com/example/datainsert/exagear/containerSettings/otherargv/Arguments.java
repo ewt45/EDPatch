@@ -27,10 +27,11 @@ import java.util.List;
  */
 public class Arguments {
     /**
-     * 全部参数库。存在/opt/contArgs.txt。可以用allFromFile 和allToFile读取或保存
+     * 全部参数库。存在edpatch/contArgs.txt。可以用allFromFile 和allToFile读取或保存
      */
     public final static List<Argument> all = new ArrayList<>();
-    private final static File mPoolFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/contArgs.txt");
+    private final static File mPoolFile = new File(QH.Files.edPatchDir(), "contArgs.txt");
+
     private static String DEFAULT_POOL = "" +
             "e cmd front " + getS(RR.othArg_ib_autorun) + " ib\n" +
             "#d cmd earlier wine之前执行脚本 simple.sh\n" +
@@ -71,7 +72,7 @@ public class Arguments {
     }
 
     /**
-     * 从/opt/contArgs.txt读取函数库全部参数，存入all。若txt不存在，则会生成一个。
+     * 从edpatch/contArgs.txt读取函数库全部参数，存入all。若txt不存在，则会生成一个。
      * 然后从/home/xdroid_n/contArgs.txt中读取当前容器启用的参数，标记all中的isChecked
      */
     public static void allFromPoolFile(int contId) {
@@ -214,7 +215,7 @@ public class Arguments {
 
     /**
      * all中第一项必定为cpu核心数设置，这个写入容器设置的pref。
-     * 其余全部参数存入/opt/contArgs.txt。
+     * 其余全部参数存入edpatch/contArgs.txt。
      * 然后把勾选的参数存入容器的参数txt
      */
     public static void allToPoolFile(int contId) {

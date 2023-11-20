@@ -41,6 +41,7 @@ import com.example.datainsert.exagear.controls.axs.GestureStateMachine.State2FSc
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.State2FToZoomMove;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.StateClickRel;
 import com.example.datainsert.exagear.controls.axs.GestureStateMachine.StateMesOneFSpd;
+import com.example.datainsert.exagear.controls.axs.GestureStateMachine.v2.StateMoveToFingerPosition;
 import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
 import com.example.datainsert.exagear.controls.menus.ShowKeyboardA11;
 
@@ -129,7 +130,7 @@ public class GestureMachineMix {
                             new PressAndReleaseMouseClickAdapter(gestureContext.getPointerReporter(), 3, mouseActionSleepMs),
                             pointerContext));
 
-            //1指长按拖拽
+            //1指长按左键拖拽
             GestureState1FingerMoveToMouseDragAndDrop gsDrag = new GestureState1FingerMoveToMouseDragAndDrop(
                     gestureContext,
                     new SimpleDragAndDropAdapter(
@@ -138,6 +139,10 @@ public class GestureMachineMix {
                             () -> gestureContext.getPointerReporter().click(3, 50)
                     ),
                     pointerContext, false, 0.0f);
+
+            //1指长按后第二指按下，右键拖拽
+            StateMoveToFingerPosition beforeRightDrag = new StateMoveToFingerPosition(gestureContext,0);
+            State2FDragNDrop gsRightDrag = new State2FDragNDrop.SimpleBuilder().create(gestureContext,pointerContext,true,false);
 
             //二指缩放
             GestureStateWaitFingersNumberChangeWithTimeout gsListen2ndF = new GestureStateWaitFingersNumberChangeWithTimeout(gestureContext, maxTapTimeMs);
@@ -159,6 +164,8 @@ public class GestureMachineMix {
                     gs1Scroll,
                     gsRightClick,
                     gsDrag,
+                    beforeRightDrag,
+                    gsRightDrag,
                     gsListen2ndF,
                     gs2FToZoom,
                     gs1FToZoomMove,
@@ -176,9 +183,12 @@ public class GestureMachineMix {
             fSM.addTransition(gs1FMesSpd, GestureState1FingerMeasureSpeed.FINGER_STANDING, gs1FMesSpd2);
             //1指长按后松手=右键
             fSM.addTransition(gs1FMesSpd2, GestureState1FingerMeasureSpeed.FINGER_TAPPED, gsRightClick);
-            //1指长按后移动=拖拽
+            //1指长按后移动=左键拖拽
             fSM.addTransition(gs1FMesSpd2, GestureState1FingerMeasureSpeed.FINGER_WALKED, gsDrag);
             fSM.addTransition(gs1FMesSpd2, GestureState1FingerMeasureSpeed.FINGER_FLASHED, gsDrag);
+            //1指长按后第2指按下=右键拖拽
+            fSM.addTransition(gs1FMesSpd2,GestureState1FingerMeasureSpeed.FINGER_TOUCHED,beforeRightDrag);
+            fSM.addTransition(beforeRightDrag, StateMoveToFingerPosition.COMPLETED,gsRightDrag);
 
             //第二个手指按下后, 短时间内手指个数变化情况
             fSM.addTransition(gs1FMesSpd, GestureState1FingerMeasureSpeed.FINGER_TOUCHED, gsListen2ndF);
@@ -228,7 +238,7 @@ public class GestureMachineMix {
             //第二根手指按下，测速（限时0.25秒）
             StateMesOneFSpd gsMesSpd2ndF = new StateMesOneFSpd(
                     gestureContext, fingerToLongTimeMs, maxMove, maxMove, maxMove, 1);
-            //第二个手指松开 = 鼠标右键点击
+//            第二个手指松开 = 鼠标右键点击
             StateClickRel gsRightClick = new StateClickRel.SimpleBuilder().create(gestureContext, 3, mouseActionSleepMs, pointerContext);
             //第二个手指移动 = 二指鼠标滚动
             State2FScrollSyncRel gs2FScroll = new State2FScrollSyncRel.SimpleBuilder().create(gestureContext, viewOfXServer, scrollPeriodMs);
@@ -236,7 +246,7 @@ public class GestureMachineMix {
             StateMesOneFSpd gsMesSpd2ndFLgPrs = new StateMesOneFSpd(
                     gestureContext, 1000000, maxMove, maxMove, maxMove, 1);
             //2指长按拖拽
-            State2FDragNDrop gs2FDragAndDrop = new State2FDragNDrop.SimpleBuilder().create(gestureContext,pointerContext,true);
+            State2FDragNDrop gs2FDragAndDrop = new State2FDragNDrop.SimpleBuilder().create(gestureContext,pointerContext,true,true);
 
             //第三根手指按下 测时
             GestureStateWaitFingersNumberChangeWithTimeout gsWait3rdFToZoom =

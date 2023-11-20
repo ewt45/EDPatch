@@ -53,9 +53,9 @@ public class ConSetOtherArgv {
 
     /**
      * 1: 初版。
-     * 添加cpu核心选项：是否启用核心设置，以及8个核心的选择。
-     * 启动 ib
-     * 禁用 service.exe
+     * 点击后显示参数库，显示全部可用的参数列表。被勾选的参数会在当前容器被启用。
+     * 第一个参数固定显示cpu核心选择。
+     * 参数分为单参数和参数组。若多个单参数包含相同的名称（以---分割）则合并为参数组。参数组中最多只能有一个被勾选。
      */
     private static final int VERSION_FOR_EDPATCH = 1;
     private static final String TAG = "ConSetOtherArgv";
@@ -152,7 +152,7 @@ public class ConSetOtherArgv {
                 .setTitle(preference.getDialogTitle())
                 .setView(QH.wrapAsDialogScrollView(linearRoot))//QH.wrapAsDialogScrollView(linearRoot)
                 .setCancelable(false)
-                .setNegativeButton(android.R.string.no, null)
+                .setNegativeButton(android.R.string.cancel, null)
                 //编辑参数完成时，将新的参数库的全部参数写入文件，将勾选的参数写入当前容器参数文件。
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> Arguments.allToPoolFile(contId))
                 .show();

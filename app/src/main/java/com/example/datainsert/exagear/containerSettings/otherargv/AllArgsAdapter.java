@@ -118,9 +118,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
         }
 
         holder.tv.setText(argument.getAlias());
-        holder.tv.setSingleLine(true);
-        holder.tv.setEllipsize(TextUtils.TruncateAt.END);
-        holder.tv.setOnClickListener(v -> holder.tv.setSingleLine(holder.tv.getMaxLines() != 1));
+        QH.setTextViewExpandable(holder.tv);
 //        holder.subTv.setVisibility(isTypeMulti ? VISIBLE : GONE);
         holder.subTv.setVisibility(GONE);
         if (isTypeMulti && argument.isChecked()) {
@@ -191,7 +189,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
                             notifyItemChanged(adapterPos);
                         }
                     })
-                    .setNegativeButton(android.R.string.no, null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .create().show();
             return true;
         });
@@ -273,7 +271,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
 
         new AlertDialog.Builder(c)
                 .setView(QH.wrapAsDialogScrollView(linearAddRoot))
-                .setNegativeButton(android.R.string.no, null)
+                .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     //点击确定时，生成新的Argument，放入mData列表，然后通知Adapter变化
                     String argContent = editArg.getText().toString();

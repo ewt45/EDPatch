@@ -3,7 +3,8 @@ package com.example.datainsert.exagear.FAB.dialogfragment;
 import static android.widget.LinearLayout.SHOW_DIVIDER_BEGINNING;
 import static android.widget.LinearLayout.SHOW_DIVIDER_MIDDLE;
 
-import android.Manifest;
+import static com.example.datainsert.exagear.RR.getSArr;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +14,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
@@ -25,17 +25,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.eltechs.axs.Globals;
-import com.eltechs.axs.helpers.AndroidHelpers;
-import com.eltechs.ed.R;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,28 +60,32 @@ public class VirglOverlay extends BaseFragment {
      * edpatch无法修改xml，所以只能是在原本已经存在旧VIRGL overlay的情况下显示。检查：libvirgl-lib.so，com.mittorn.virgloverlay包
      */
     public static boolean isAlreadyExist(Context c) {
-        if(!QH.isTesting())
+//        if(!QH.isTesting())
+//            return false;
+
+        if(QH.isTesting())
+            return true;
+
+        if(!new File(c.getApplicationInfo().nativeLibraryDir, "libvirgl-lib.so").exists()
+        ||!QH.classExist("com.mittorn.virgloverlay.process.p1") )
             return false;
-        boolean hasService = false;
+
         try {
             PackageInfo pkgInfo  = c.getPackageManager().getPackageInfo(c.getPackageName(), PackageManager.GET_SERVICES);
             if(pkgInfo==null || pkgInfo.services==null)
                 return false;
-            for(ServiceInfo serInfo:pkgInfo.services){
-                if ("com.mittorn.virgloverlay.process.p1".equals(serInfo.name)) {
-                    hasService = true;
-                    break;
-                }
-            }
+
+            for(ServiceInfo serInfo:pkgInfo.services)
+                if ("com.mittorn.virgloverlay.process.p1".equals(serInfo.name))
+                   return true;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        return hasService
-                && new File(c.getApplicationInfo().nativeLibraryDir, "libvirgl-lib.so").exists()
-                && QH.classExist("com.mittorn.virgloverlay.process.p1");
+        return false;
 
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected ViewGroup buildUI() {
         Context a = requireContext();
@@ -98,9 +102,6 @@ public class VirglOverlay extends BaseFragment {
         RadioButton overlay_centered = new RadioButton(a);
         RadioButton overlay_hide = new RadioButton(a);
 
-        Button clearButton = new Button(a);
-        Button startButton = new Button(a);
-
         //overlay布局的最外层
         LinearLayout root = new LinearLayout(a);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -113,27 +114,29 @@ public class VirglOverlay extends BaseFragment {
         topMarginParams.setMargins(0, topMargin, 0, topMargin);
 
         //多选项
-        protocol_version_box.setText("使用vtest协议2（需要Mesa 19.1.0 v3及以上）");
-        use_gles.setText("使用GL ES 3.x而不是OpenGL");
-        use_threads.setText("使用多线程egl访问");
-        dxtn_decompress_box.setText("DXTn（S3纹理压缩）解压（一些游戏需要）");
-        restart_box.setText("自动重启服务");
+        String[] checkStrs = getSArr(RR.fabVO_checkTitles);
+        protocol_version_box.setText(checkStrs[0]);
+        use_gles.setText(checkStrs[1]);
+        use_threads.setText(checkStrs[2]);
+        dxtn_decompress_box.setText(checkStrs[3]);
+        restart_box.setText(checkStrs[4]);
 
         LinearLayout checkBoxRoot = new LinearLayout(a);
         checkBoxRoot.setOrientation(LinearLayout.VERTICAL);
         addSomeViews(checkBoxRoot, null, protocol_version_box, use_gles, use_threads, dxtn_decompress_box, restart_box);
 
         //单选组（覆盖位置）
+        String[] radioStrs = getSArr(RR.fabVO_radioTitles);
         radioGroup.setOrientation(RadioGroup.HORIZONTAL);
-        overlay_topleft.setText("左上方");
-        overlay_centered.setText("居中");
-        overlay_hide.setText("隐藏*");
+        overlay_topleft.setText(radioStrs[1]);
+        overlay_centered.setText(radioStrs[2]);
+        overlay_hide.setText(radioStrs[3]);
         addSomeViews(radioGroup, null, overlay_topleft, overlay_centered, overlay_hide);
 
         TextView overlayPosTextView = new TextView(a);
-        overlayPosTextView.setText("覆盖位置：");
+        overlayPosTextView.setText(radioStrs[0]);
         TextView overlayExplainTextView = new TextView(a);
-        overlayExplainTextView.setText("* 与VTEST_WIN=1一起使用以在X11窗口中绘制，而不是悬浮窗覆盖");
+        overlayExplainTextView.setText(radioStrs[4]);
 
         LinearLayout overlayRoot = new LinearLayout(a);
         overlayRoot.setOrientation(LinearLayout.VERTICAL);
@@ -146,8 +149,23 @@ public class VirglOverlay extends BaseFragment {
         addSomeViews(socketPathRootView, null, socketPathText, socket_path);
 
         //按钮
-        clearButton.setText("清除服务");
-        startButton.setText("开始服务");
+        String[] btnStrs = getSArr(RR.fabVO_btnTitles);
+        Button clearButton = new Button(a);
+        Button startButton = new Button(a);
+        clearButton.setText(btnStrs[0]);
+        clearButton.setAllCaps(false);
+        startButton.setText(btnStrs[1]);
+        startButton.setAllCaps(false);
+
+        //如果没有悬浮窗权限，则只显示一个按钮跳转到设置界面。否则显示正常选项
+        Button btnRequestOverlay = new Button(a);
+        btnRequestOverlay.setText(btnStrs[2]);
+        btnRequestOverlay.setAllCaps(false);
+        btnRequestOverlay.setOnClickListener(v -> {
+            dismiss();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                a.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + a.getPackageName())));
+        });
 
         LinearLayout buttonRoot = new LinearLayout(a);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -157,8 +175,10 @@ public class VirglOverlay extends BaseFragment {
 
         //其他说明
         TextView thanksText = new TextView(a);
-        thanksText.setText("Original APK with native library by mittorn: https://github.com/mittorn/virglrenderer-android; https://github.com/mittorn/virglrenderer\n\nRebuild APk v0.0.9 (mod) by alexvorxx\nThe following code was used in this version:\nvirglrenderer-0.10.0: https://github.com/freedesktop/virglrenderer\nlibepoxy-1.5.10: https://github.com/anholt/libepoxy\ngl4es-1.1.4: https://github.com/ptitSeb/gl4es\nSpecial thanks to mittorn for help and advices. Thanks to gabreek for the useful option: https://github.com/gabreek/Virgl-Overlay-Rebuild_mod");
-//        thanksText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 7);
+        thanksText.setText("Original APK with native library by mittorn: https://github.com/mittorn/virglrenderer-android; https://github.com/mittorn/virglrenderer\n\nRebuild APk v0.0.9 (mod) by alexvorxx\nThe following code was used in this version:\nvirglrenderer-0.10.0: https://github.com/freedesktop/virglrenderer\nlibepoxy-1.5.10: https://github.com/anholt/libepoxy\ngl4es-1.1.4: https://github.com/ptitSeb/gl4es\n\nSpecial thanks to mittorn for help and advices.\n\nThanks to gabreek for the useful option\nhttps://github.com/gabreek/Virgl-Overlay-Rebuild_mod");
+        thanksText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
+        thanksText.setTextIsSelectable(true);
+//        QH.setTextViewExpandable(thanksText);
 
         //添加到根布局
         addSomeViews(root, topMarginParams, checkBoxRoot, overlayRoot, socketPathRootView, buttonRoot, thanksText);
@@ -181,6 +201,7 @@ public class VirglOverlay extends BaseFragment {
 
         });
         startButton.setOnClickListener(v -> {
+            boolean successful = true;
             try {
                 overlay_position_var = overlay_topleft.isChecked() ? 0 : (overlay_centered.isChecked() ? 1 : (overlay_hide.isChecked() ? 2 : 0));
                 restart_var = restart_box.isChecked() ? 1 : 0;
@@ -191,7 +212,7 @@ public class VirglOverlay extends BaseFragment {
                 }
 
                 int flags = (use_gles.isChecked() ? FL_GLES : 0) | (use_threads.isChecked() ? FL_MULTITHREAD : 0);
-                try (FileWriter fileWriter = new FileWriter(a.getFilesDir().getPath() + "/settings2");) {
+                try (FileWriter fileWriter = new FileWriter(a.getFilesDir().getPath() + "/settings");) {
                     fileWriter.write(String.format(Locale.ROOT, "%d %s", flags, socket_path.getText().toString()));
                 }
 
@@ -202,7 +223,11 @@ public class VirglOverlay extends BaseFragment {
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.d(T, "Service p1 failed!");
+                successful=false;
             }
+            dismiss();
+            String[] resultStrs = getSArr(RR.fabVO_startResults);
+            Toast.makeText(v.getContext(), successful?resultStrs[0]:resultStrs[1],Toast.LENGTH_LONG).show();//服务启动成功。 启动失败
         });
 
         //原activity的onCreate
@@ -235,14 +260,6 @@ public class VirglOverlay extends BaseFragment {
         overlay_centered.setChecked(this.overlay_position_var == 1);
         overlay_hide.setChecked(overlay_position_var == 2);
 
-        //如果没有悬浮窗权限，则只显示一个按钮跳转到设置界面。否则显示正常选项
-        Button btnRequestOverlay = new Button(a);
-        btnRequestOverlay.setText("开启悬浮窗权限");
-        btnRequestOverlay.setOnClickListener(v -> {
-            dismiss();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                a.startActivity(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + a.getPackageName())));
-        });
         LinearLayout linearRootWrapper = new LinearLayout(a);
         linearRootWrapper.setOrientation(LinearLayout.VERTICAL);
         linearRootWrapper.addView(btnRequestOverlay, new ViewGroup.LayoutParams(-2, -2));
@@ -251,14 +268,6 @@ public class VirglOverlay extends BaseFragment {
         boolean lackOverlay = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(a);
         btnRequestOverlay.setVisibility(lackOverlay ? View.VISIBLE : View.GONE);
         root.setVisibility(lackOverlay ? View.GONE : View.VISIBLE);
-
-        //禁止第一次显示就弹出输入法。副作用是要点两次才能显示输入法
-        socket_path.setFocusable(false);
-        socket_path.setOnClickListener(v -> {
-            socket_path.setFocusableInTouchMode(true);
-            socket_path.requestFocus();
-            socket_path.setOnClickListener(null);
-        });
 
         return linearRootWrapper;
     }
@@ -293,7 +302,17 @@ public class VirglOverlay extends BaseFragment {
 
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-
+        //删除旧OverlayBuildUI插入的视图
+        try {
+            LinearLayout frame =  activity.findViewById(RR.id.ed_main_content_frame());
+            FrameLayout container = activity.findViewById(RR.id.ed_main_fragment_container());
+            if(frame==null || container==null)
+                return;
+            if(frame.indexOfChild(container)==2)
+                frame.removeViewAt(1);
+        }catch (Throwable throwable){
+            throwable.printStackTrace();
+        }
     }
 
     @Override

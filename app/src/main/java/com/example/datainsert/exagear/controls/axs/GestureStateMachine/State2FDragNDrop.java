@@ -10,6 +10,7 @@ import com.eltechs.axs.GuestAppActionAdapters.PressAndHoldMouseClickAdapter;
 import com.eltechs.axs.GuestAppActionAdapters.SimpleDragAndDropAdapter;
 import com.eltechs.axs.TouchEventAdapter;
 import com.eltechs.axs.finiteStateMachine.FSMEvent;
+import com.eltechs.axs.xserver.Pointer;
 import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.OffsetMouseAdapter;
 import com.example.datainsert.exagear.controls.axs.GuestAppActionAdapters.RelativeMouseMoveCstmSpdAdapter;
 
@@ -110,16 +111,18 @@ public class State2FDragNDrop extends AbstractGestureFSMState implements TouchEv
 
 
     public static class SimpleBuilder{
-        public State2FDragNDrop create(GestureContext gestureContext, PointerContext pointerContext, boolean reportFingerNumChange){
+        public State2FDragNDrop create(GestureContext gestureContext, PointerContext pointerContext, boolean reportFingerNumChange,boolean isLeft){
+            int pressBtn = isLeft?Pointer.BUTTON_LEFT:Pointer.BUTTON_RIGHT;
+            int cancelBtn = isLeft?Pointer.BUTTON_RIGHT:Pointer.BUTTON_LEFT;
             return new State2FDragNDrop(
                     gestureContext,
                     new SimpleDragAndDropAdapter(
                             new RelativeMouseMoveCstmSpdAdapter(
                                     new OffsetMouseAdapter(gestureContext),
                                     gestureContext.getViewFacade(), gestureContext.getHostView()),
-                            new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 1),
+                            new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), pressBtn),
 //                            ()->{}
-                            () -> gestureContext.getPointerReporter().click(3, 50)//用于取消移动的按键，默认是左键拖拽 所以取消是右键
+                            () -> gestureContext.getPointerReporter().click(cancelBtn, 50)//用于取消移动的按键，默认是左键拖拽 所以取消是右键
                     ),
                     pointerContext,
                     reportFingerNumChange,

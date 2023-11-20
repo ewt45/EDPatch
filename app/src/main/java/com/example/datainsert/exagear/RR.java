@@ -182,6 +182,10 @@ public class RR {
     public static int othArg_edit_typeInfo = 167;
     public static int othArg_preview_titles = 168;
     public static int othArg_info_more = 169;
+    public static int fabVO_checkTitles = 170;
+    public static int fabVO_radioTitles = 171;
+    public static int fabVO_btnTitles = 172;
+    public static int fabVO_startResults = 173;
 
 
     public static String locale = refreshLocale();
@@ -350,7 +354,7 @@ public class RR {
         zhArray.put(conSet_otherArgv_title, "额外启动参数");
         zhArray.put(conSet_otherArgv_prefValue, "额外命令/环境变量");
         zhArray.put(othArg_info, "本页面为全部可用的参数，被勾选的参数会在当前容器中启用。$了解更多...");
-        zhArray.put(othArg_info_more, "启动容器时，勾选的额外参数会被插入到运行wine的执行命令中，插入后的完整命令可在/sdcard/x86-stderr.txt中查看。\n\n若插入参数前，原命令已包含这个参数，则可能插入失败。实际结果可以点击\"预览\"按钮输入测试命令或启动容器后在txt中查看。\n\n全部可用参数存在z:/opt/contArgs.txt中，每个容器启用的参数存在z:/home/xdroid_n/contArgs.txt中。但由于对存储格式有严格要求，不建议直接修改txt。");
+        zhArray.put(othArg_info_more, "启动容器时，勾选的额外参数会被插入到运行wine的执行命令中，插入后的完整命令可在/sdcard/x86-stderr.txt中查看。\n\n若插入参数前，原命令已包含这个参数，则可能插入失败。实际结果可以点击\"预览\"按钮输入测试命令或启动容器后在txt中查看。\n\n全部可用参数存在z:/opt/edpatch/contArgs.txt中，每个容器启用的参数存在z:/home/xdroid_n/contArgs.txt中。但由于对存储格式有严格要求，不建议直接修改txt。");
         zhArray.put(othArg_taskset_useCustom, "手动指定CPU核心");
         zhArray.put(othArg_ib_autorun, "自动运行ib.exe(使用InputBridge时省去手动运行ib.exe)");
         zhArray.put(othArg_serviceExeDisable, "禁用services.exe(某些游戏需要禁用它才能正常运行)");
@@ -363,6 +367,10 @@ public class RR {
         zhArray.put(othArg_edit_typeChoices, "环境变量$命令 - 原命令开头$命令 - 原命令执行前$命令 - 原命令执行后");
         zhArray.put(othArg_edit_typeInfo, "环境变量: 作为本次执行命令的环境变量，原命令开头若包含相同名称的环境变量，则会覆盖该参数的值。\n\n命令：若选择 在原命令执行前/后，则此参数的命令与原命令间用一个 & 连接。");
         zhArray.put(othArg_preview_titles, "原命令示例$插入参数后");
+        zhArray.put(fabVO_checkTitles,"使用vtest协议2（需要Mesa 19.1.0 v3及以上）$使用GL ES 3.x而不是OpenGL$使用多线程egl访问$DXTn (S3TC) 解压（一些游戏需要）$自动重启服务");
+        zhArray.put(fabVO_radioTitles,"覆盖位置:$左上方$居中$隐藏*$* 与VTEST_WIN=1一起使用以在X11窗口中绘制，而不是悬浮窗覆盖");
+        zhArray.put(fabVO_btnTitles,"清除服务$开始服务$开启悬浮窗权限");
+        zhArray.put(fabVO_startResults,"服务启动成功，现在你可以启动容器并尝试运行游戏了。$服务启动失败。");
         /*
 
 
@@ -535,7 +543,7 @@ public class RR {
         enArray.put(conSet_otherArgv_title, "Extra Launching Arguments");
         enArray.put(conSet_otherArgv_prefValue, "Extra cmd/env");
         enArray.put(othArg_info, "All available params are listed here. Selected items will be applied to the current container.$Learn more...");
-        enArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
+        enArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
         enArray.put(othArg_taskset_useCustom, "Set CPU cores");
         enArray.put(othArg_ib_autorun, "Autorun_ib.exe");
         enArray.put(othArg_serviceExeDisable, "Kill_services.exe");
@@ -548,6 +556,10 @@ public class RR {
         enArray.put(othArg_edit_typeChoices, "Environment Variable$Cmd - in the front of original Cmd$Cmd - before original Cmd executed$Cmd - after original Cmd executed");
         enArray.put(othArg_edit_typeInfo, "Enviroment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
         enArray.put(othArg_preview_titles, "Original CMD$CMD with params");
+        enArray.put(fabVO_checkTitles,"Use vtest protocol 2 (new Mesa libGL needed)$Use GL ES 3.x instead of OpenGL$Use multi-thread egl access$DXTn (S3TC) decompress (needed for some games)$Auto restart services");
+        enArray.put(fabVO_radioTitles,"Overlay position:$Top-left$Centered$invisible *$* Used with VTEST_WIN=1 to draw in X11 window instead of overlay");
+        enArray.put(fabVO_btnTitles,"Clean Services$Start Services$Allow Drawing Overlay");
+        enArray.put(fabVO_startResults,"Services start successfully. Now you can try to start the container and run games.$Services start failed.");
 
         /*
 
@@ -719,7 +731,7 @@ public class RR {
         ruArray.put(conSet_otherArgv_title, "Extra Launching Arguments");
         ruArray.put(conSet_otherArgv_prefValue, "Extra cmd/env");
         ruArray.put(othArg_info, "All available params are listed here. Selected items will be applied to the current container.$Learn more...");
-        ruArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
+        ruArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
         ruArray.put(othArg_taskset_useCustom, "Set CPU cores");
         ruArray.put(othArg_ib_autorun, "Autorun_ib.exe");
         ruArray.put(othArg_serviceExeDisable, "Kill_services.exe");
@@ -732,7 +744,10 @@ public class RR {
         ruArray.put(othArg_edit_typeChoices, "Environment Variable$Cmd - in the front of original Cmd$Cmd - before original Cmd executed$Cmd - after original Cmd executed");
         ruArray.put(othArg_edit_typeInfo, "Enviroment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
         ruArray.put(othArg_preview_titles, "Original CMD$CMD with params");
-
+        ruArray.put(fabVO_checkTitles,"Use vtest protocol 2 (new Mesa libGL needed)$Use GL ES 3.x instead of OpenGL$Use multi-thread egl access$DXTn (S3TC) decompress (needed for some games)$Auto restart services");
+        ruArray.put(fabVO_radioTitles,"Overlay position:$Top-left$Centered$invisible *$* Used with VTEST_WIN=1 to draw in X11 window instead of overlay");
+        ruArray.put(fabVO_btnTitles,"Clean Services$Start Services$Allow Drawing Overlay");
+        ruArray.put(fabVO_startResults,"Services start successfully. Now you can try to start the container and run games.$Services start failed.");
         /*
 
 
@@ -809,14 +824,14 @@ public class RR {
         }
 
         /**
-         * 48dp
+         * 48dp对应的px值
          */
         public static int minCheckSize() {
             return QH.px(Globals.getAppContext(), 48);
         }
 
         /**
-         * 24dp
+         * 24dp对应的px值
          */
         public static int dialogPadding() {
             return QH.px(Globals.getAppContext(), 24);
@@ -835,6 +850,15 @@ public class RR {
 
         public static int ic_more_vert_24dp() {
             return rslvID(R.drawable.ic_more_vert_24dp, 0x7f0800a9);
+        }
+    }
+
+    public static class id{
+        public static int ed_main_content_frame(){
+            return rslvID(R.id.ed_main_content_frame,0x7f09006e);
+        }
+        public static int ed_main_fragment_container(){
+            return rslvID(R.id.ed_main_fragment_container,0x7f090070);
         }
     }
 

@@ -35,12 +35,44 @@ public class FuncFAB implements Func {
     private static final String TAG = "FuncFAB";
 
     @Override
+    public int getLatestVersion() {
+    /*
+    由多个版本号构成，每个占4位
+
+    自定义d盘的版本号，如果这个为0说明整个fabmenu没有
+    1：初版（旧版没写入版本号）
+    2：初次安装后会自动创建Exagear文件夹
+    3: 支持多盘符，多设备识别，外部设备可选根目录
+
+    自定义按键的版本号
+    2: 修改了第一人称视角的移动逻辑。修复长按按钮 透明度消失问题
+    3: 修复了左右布局编辑一列按键时，重新选择按键之后会导致按键顺序被打乱的问题
+
+    pulseaudio
+    2：保留 deamon.conf
+
+    xegw
+    1: 为xegw2.0准备的更多选项， -legacy-drawing 和关闭电池优化
+
+    virgl overlay
+    1: 原先是固定在主视图顶端，现在尝试收纳到fab中
+     */
+        return
+                0x3 //自定义d盘的版本号
+                        | 0x3 << 4 //自定义按键的版本号
+                        | 0x2 << 8 //pulseaudio
+                        | 0x1 << 12 //Xegw
+                        | 0x1 << 16 //VirglOverlay
+                ;
+    }
+
+    @Override
     public int getInstalledVersionFormatted() {
         int version = getInstalledVersion();
         int result = 0;
-        while(version>0){
-            result = result*10+ (version & 0x0000000f);
-            version = version >>4;
+        while (version > 0) {
+            result = result * 10 + (version & 0x0000000f);
+            version = version >> 4;
         }
         return result;
     }
@@ -49,9 +81,9 @@ public class FuncFAB implements Func {
     public int getLatestVersionFormatted() {
         int version = getLatestVersion();
         int result = 0;
-        while(version>0){
-            result = result*10+ (version & 0x0000000f);
-            version = version >>4;
+        while (version > 0) {
+            result = result * 10 + (version & 0x0000000f);
+            version = version >> 4;
         }
         return result;
     }
@@ -139,8 +171,6 @@ public class FuncFAB implements Func {
 
     /**
      * //获取的版本是自身版本+全部子功能的版本
-     *
-     * @return
      */
     @Override
     public int getInstalledVersion() {
@@ -181,31 +211,6 @@ public class FuncFAB implements Func {
         return patched;
     }
 
-    @Override
-    public int getLatestVersion() {
-    /*
-    由多个版本号构成，每个占4位
-
-    自定义d盘的版本号，如果这个为0说明整个fabmenu没有
-    1：初版（旧版没写入版本号）
-    2：初次安装后会自动创建Exagear文件夹
-    3: 支持多盘符，多设备识别，外部设备可选根目录
-
-    自定义按键的版本号
-    2: 修改了第一人称视角的移动逻辑。修复长按按钮 透明度消失问题
-    3: 修复了左右布局编辑一列按键时，重新选择按键之后会导致按键顺序被打乱的问题
-
-    pulseaudio
-    2：保留 deamon.conf
-     */
-        return
-                0x3 //自定义d盘的版本号
-                        | 0x3 << 4 //自定义按键的版本号
-                        | 0x2 << 8 //pulseaudio
-                        | 0x1 << 12 //Xegw
-        ;
-
-    }
 
     @Override
     public int getStartMessage() {
@@ -270,6 +275,7 @@ public class FuncFAB implements Func {
 
     public static class Sub2Control {
         private static final String TAG = "Sub2Control";
+
         public void firstInstall() throws Exception {
 
         }
@@ -287,11 +293,11 @@ public class FuncFAB implements Func {
             });
             //糟了，现在xegw也需要改Pointer.smali，所以只能检测一下非xegw才复制这个
             if (!new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXegw.so").exists()
-            && ! new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXlorie.so").exists()){
+                    && !new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXlorie.so").exists()) {
                 Log.d(TAG, "updateSelfPackage: x11 server为ex原始的，可以复制Pointer.smali");
                 PatcherFile.copy(TYPE_SMALI, new String[]{
                         "/com/eltechs/axs/xserver/Pointer.smali"});//控制鼠标是否允许移出屏幕
-            }else{
+            } else {
                 Log.d(TAG, "updateSelfPackage: x11 server 为Xegw，跳过复制Pointer.smali");
             }
 
@@ -318,11 +324,12 @@ public class FuncFAB implements Func {
     /**
      * 1: 可选-legacy-drawing选项
      */
-    public static class Sub4Xegw{
-        public void firstInstall(){
+    public static class Sub4Xegw {
+        public void firstInstall() {
 
         }
-        public void updateSelfPackage(){
+
+        public void updateSelfPackage() {
 
         }
     }

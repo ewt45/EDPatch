@@ -46,12 +46,19 @@ public class FabMenu {
 
     pulseaudio
     2：保留 deamon.conf
+
+    xegw
+    1: 为xegw2.0准备的更多选项， -legacy-drawing 和关闭电池优化
+
+    virgl overlay
+    1: 原先是固定在主视图顶端，现在尝试收纳到fab中
      */
     private static final int VERSION_FOR_EDPATCH =
             0x3 //自定义d盘的版本号
                     | 0x3 << 4 //自定义按键的版本号
                     | 0x2 << 8 //pulseaudio
                     | 0x1 << 12 //Xegw
+                    | 0x1 << 16 //VirglOverlay
             ;
 
 
@@ -66,7 +73,7 @@ public class FabMenu {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(fabSize, fabSize);//AndroidHelpers.dpToPx(60),AndroidHelpers.dpToPx(60)
         params.gravity = Gravity.TOP | Gravity.RIGHT;
         params.rightMargin = fabMargin;
-        fab.setTranslationY(-(fabSize+fabMargin));//不知道为啥margin那里说应该是正数，那用translation吧
+        fab.setTranslationY(-(fabSize + fabMargin));//不知道为啥margin那里说应该是正数，那用translation吧
         fab.setElevation(100); //感觉高度舍不设置都无所谓
         fab.setCustomSize(fabSize); //要用这个设置一遍否则图片不居中
         //设置图标
@@ -94,7 +101,7 @@ public class FabMenu {
         fragmentClsArray.add(PulseAudio.class);
         if (QH.classExist("com.termux.x11.CmdEntryPoint"))
             fragmentClsArray.add(Xegw2.class); //仅当xegw 2.0存在时才显示该选项
-        if(VirglOverlay.isAlreadyExist(a))
+        if (VirglOverlay.isAlreadyExist(a))
             fragmentClsArray.add(VirglOverlay.class);
         fragmentClsArray.add(AboutFab.class);
         //先调用一次初次启动需要执行的操作
@@ -146,7 +153,7 @@ public class FabMenu {
 
 
     public static View getMainFrameView(AppCompatActivity a) {
-        return a.findViewById(QH.rslvID(R.id.ed_main_content_frame, 0x7f09006e));
+        return a.findViewById(RR.id.ed_main_content_frame());
     }
 
 }
