@@ -90,12 +90,12 @@ public class UBTLaunchConfiguration implements Serializable {
     }
 
     public void setGuestEnvironmentVariables(String[] strArr) {
-        this.guestEnvironmentVariables = new ArrayList(strArr.length);
+        this.guestEnvironmentVariables = new ArrayList<>(strArr.length);
         Collections.addAll(this.guestEnvironmentVariables, strArr);
     }
 
     public void setGuestEnvironmentVariables(List<String> list) {
-        this.guestEnvironmentVariables = new ArrayList(list);
+        this.guestEnvironmentVariables = new ArrayList<>(list);
     }
 
     public void addEnvironmentVariable(String str, String str2) {

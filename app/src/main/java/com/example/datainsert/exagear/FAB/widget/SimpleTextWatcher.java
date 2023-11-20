@@ -6,7 +6,9 @@ import android.text.TextWatcher;
 
 /**
  * edittext的监听，只需重写afterTextChanged
+ * @deprecated 请使用QH.SimpleTextWatcher
  */
+@Deprecated
 public interface SimpleTextWatcher extends TextWatcher {
 
     @Override

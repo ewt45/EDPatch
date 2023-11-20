@@ -1,16 +1,17 @@
 package com.example.datainsert.exagear.action;
 
 
-import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_DISABLE_SERVICE;
-import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_RUN_IB;
 import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_TASKSET;
-import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_DISABLE_SERVICE_DEFAULT;
-import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_RUN_IB_DEFAULT;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirGL_built_in;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.RenEnum.VirtIO_GPU;
 import static com.example.datainsert.exagear.containerSettings.ConSetRenderer.renderersMap;
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
 import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_TASKSET_DEFAULT;
+import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.POS_EARLIER;
+import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.POS_FRONT;
+import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.POS_LATER;
+import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.TYPE_CMD;
+import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.TYPE_ENV;
 import static com.example.datainsert.exagear.mutiWine.MutiWine.KEY_WINE_INSTALL_PATH;
 
 import android.content.Context;
@@ -30,11 +31,15 @@ import com.eltechs.axs.configuration.startup.actions.AbstractStartupAction;
 import com.eltechs.axs.helpers.SafeFileHelpers;
 import com.eltechs.axs.helpers.StringHelpers;
 import com.eltechs.ed.fragments.ContainerSettingsFragment;
+import com.eltechs.ed.guestContainers.GuestContainerConfig;
 import com.eltechs.ed.guestContainers.GuestContainersManager;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
 import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.containerSettings.ConSetOtherArgv;
 import com.example.datainsert.exagear.containerSettings.ConSetRenderer;
+import com.example.datainsert.exagear.containerSettings.otherargv.Argument;
+import com.example.datainsert.exagear.containerSettings.otherargv.Arguments;
 
 import org.apache.commons.io.FileUtils;
 
@@ -67,7 +72,6 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
     }
 
 
-
     @Override
     public void execute() {
         new Thread(() -> {
@@ -84,8 +88,7 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
 
             }
 
-            SharedPreferences sp = getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + contId, Context.MODE_PRIVATE);
-
+            SharedPreferences sp = QH.getContPref(contId);
             //添加多个盘符
             if (QH.classExist("com.example.datainsert.exagear.FAB.dialogfragment.drived.DrivePathChecker")) {
                 addDrives(sp, ubtConfig, contId, xdroidFile);
@@ -111,8 +114,8 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
             //设置处理器核心
             try {
                 if (QH.classExist("com.example.datainsert.exagear.containerSettings.ConSetOtherArgv"))
-                    setOtherArgv(sp, ubtConfig, contId, xdroidFile);
-            }catch (Throwable throwable){
+                    setOtherArgv(ubtConfig, contId, xdroidFile);
+            } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
 
@@ -147,10 +150,7 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
     /**
      * 设置cpu核心，ib.exe service.exe等
      */
-    private void setOtherArgv(SharedPreferences sp, UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
-        String currCores = sp.getString(KEY_TASKSET, VAL_TASKSET_DEFAULT);
-        boolean useIB = sp.getBoolean(KEY_RUN_IB,VAL_RUN_IB_DEFAULT);
-        boolean disableServ = sp.getBoolean(KEY_DISABLE_SERVICE,VAL_DISABLE_SERVICE_DEFAULT);
+    private void setOtherArgv(UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
 
         //一般来说，执行命令为：xxx.sh  eval "带wine的命令行"。
         // ubtConfig.getGuestArguments() 获取的列表第一个是脚本，第二个是带wine的命令行。
@@ -160,62 +160,18 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
         if (argvList == null || argvList.size() == 0)
             return;
         String wineCmd = argvList.get(argvList.size() - 1).trim(); //后面都修改这个带wine的执行命令。最后再把这个放入ubtConfig中
-        if(wineCmd.length()==0)
+        if (wineCmd.length() == 0)
             return;
 
-        //设置cpu核心
-        int wineIndex = setOtherArgv_findTargetIndexInCmd(wineCmd,"wine");
-        if (!wineCmd.contains("taskset ") && !"".equals(currCores) && wineIndex!=-1){
-            //将字符串插入命令行中
-            String taskSetStr = "taskset -c " + currCores + " ";
-            wineCmd = wineCmd.substring(0, wineIndex) + taskSetStr + wineCmd.substring(wineIndex);
-        }
+        //插入参数
+        Arguments.allFromPoolFile((int) contId);
+        wineCmd = ConSetOtherArgv.insertArgsToWineCmd(wineCmd,ubtConfig.getGuestEnvironmentVariables(), (int) contId);
+
         //添加实时输入
-        if(QH.isTesting()){
-            //sleep 10s && eval "echo 能否获取wine进程？$(ps)"
-            wineCmd = wineCmd.substring(0,wineCmd.length()-1)+" & /opt/greadlines.sh\"";//taskset -apc 4-7 $(pidof wine)
+        if (QH.isTesting()) {
+            wineCmd = wineCmd.substring(0, wineCmd.length() - 1) + " & /opt/greadlines.sh\"";//taskset -apc 4-7 $(pidof wine)
             //设置一下cwd（不知道为啥变到d盘去了）
-            ubtConfig.setGuestExecutablePath(ubtConfig.getFsRoot());
-        }
-
-        //设置ib自启 (仅当执行命令没包含ib且该选项开启时才添加）
-        int ibIndex = setOtherArgv_findTargetIndexInCmd(wineCmd, "ib");
-        if (useIB && ibIndex == -1) {
-            int insertIndex = wineCmd.startsWith("eval \"") ? 6 : 0;
-            wineCmd = wineCmd.substring(0, insertIndex) + "ib " + wineCmd.substring(insertIndex);
-        }
-
-        // WINEDLLOVERRIDES="services.exe,winedevice.exe=d"
-        //设置禁用services.exe （如果执行命令中存在该环境变量，则删除并整合到ubt的env列表中
-        if (disableServ) {
-            int insertIndex = wineCmd.startsWith("eval \"") ? wineCmd.length()-1 : wineCmd.length();
-            wineCmd = wineCmd.substring(0,insertIndex)+" & wine taskkill /f /im services.exe"+wineCmd.substring(insertIndex);
-//            List<String> envList = ubtConfig.getGuestEnvironmentVariables();
-//            String oldDll = "";
-//            //从ubt的环境变量中定位是否已经有该变量。
-//            for (int i = 0; i < envList.size(); i++){
-//                if (envList.get(i).startsWith("WINEDLLOVERRIDES=")) {
-//                    String[] split = envList.remove(i).split("=", 2);
-//                    if (split.length == 2 && split[1].length() > 2)
-//                        oldDll = split[1].substring(1, split[1].length() - 1);
-//                    break;
-//                }
-//            }
-//            //从执行命令中定位是否已经有该变量
-//            int dllIndex = wineCmd.indexOf("WINEDLLOVERRIDES=");
-//            int dllEnd = dllIndex == -1 ? -1 : wineCmd.indexOf(" ", dllIndex + "WINEDLLOVERRIDES=".length());//从等号完后找第一个空格。截取两端之间的内容
-//            if (dllEnd != -1) {
-//                String tmp = wineCmd.substring(dllIndex + "WINEDLLOVERRIDES=".length(), dllEnd);
-//                if (tmp.length() > 2)
-//                    oldDll = oldDll + (oldDll.length() > 0 ? ";" : "") + tmp.substring(1, tmp.length() - 1);
-//                wineCmd = wineCmd.substring(0, dllIndex) + wineCmd.substring(dllEnd);//删除执行命令中的环境变量
-//            }
-//            //加入禁用service的字符串 （顺序还有要求？？services放最后，explorer放windevice前）（那么每个单独的一个=d 会不会有变化？）
-//            //explorer.exe,winedevice.exe,plugplay.exe,rpcss.exe，svchost.exe,services.exe
-//            oldDll = oldDll + (oldDll.length() > 0 ? ";" : "")
-//                    + "svchost.exe,services.exe=d";
-////            + "explorer.exe=d;winedevice.exe=d;svchost.exe=d;services.exe=d";
-//            envList.add(String.format("WINEDLLOVERRIDES=\"%s\"",oldDll));
+//            ubtConfig.setGuestExecutablePath(ubtConfig.getFsRoot());
         }
 
         //把修改后的wine执行命令放入列表中
@@ -225,26 +181,6 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
         ubtConfig.setGuestArguments(newArgvList.toArray(new String[0]));
     }
 
-
-    /**
-     * 在执行命令中找到目标字符串的起始位置.
-     * 规则（以wine为例）：
-     * 1. 开头就是  wine+空格。返回0
-     * 2. 开头就是 eval[空格]"wine[空格] 返回6
-     * 3. 否则寻找 空格+wine+空格，返回找到的位置（如果不是-1，则+1 跳过开头的空格）
-     * @param target  目标字符串 前后不要带空格
-     * @param wineCmd 执行命令
-     * @return wine的起始位置，或-1
-     */
-    private static int setOtherArgv_findTargetIndexInCmd(String wineCmd, String target) {
-        target = target.trim();
-        int findIndex = -1;
-        if (wineCmd.startsWith(target + " ")) return 0;
-        if (wineCmd.startsWith("eval \""+target+" ")) return 6;
-        findIndex = wineCmd.indexOf(" "+target+" ");
-        if (findIndex != -1) findIndex++;
-        return findIndex;
-    }
     private void addDrives(SharedPreferences sp, UBTLaunchConfiguration ubtConfig, long contId, File xdroidFile) {
         try {
             //如果是第一次创建的也许没有dosdevices这个文件夹？考虑一下好了

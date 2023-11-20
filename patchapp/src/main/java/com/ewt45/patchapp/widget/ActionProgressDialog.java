@@ -33,7 +33,7 @@ public class ActionProgressDialog extends ProgressDialog implements ActionPool.D
         super(context);
 
         mCallback = callback;
-        mText = new SpannableStringBuilder("正在执行操作，请勿切换界面，以免出现问题。");
+        mText = new SpannableStringBuilder(context.getString(R.string.tips_waiting));
 //        mText.setSpan(new ForegroundColorSpan(Color.BLACK), 0, mText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         MyApplication.data.logText.append("\n\n").append(mText.toString());
         setMessage(mText);

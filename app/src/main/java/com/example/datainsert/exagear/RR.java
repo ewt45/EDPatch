@@ -1,5 +1,11 @@
 package com.example.datainsert.exagear;
 
+import static com.example.datainsert.exagear.QH.rslvID;
+
+import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
 
 import com.eltechs.axs.Globals;
@@ -160,16 +166,22 @@ public class RR {
     public static int DriveD2_parType = 146;
     public static int DriveD2_title = 147;
     public static int DriveD2_errors = 148;
-    public static int taskset_info = 150;
-    public static int taskset_getCpuErr = 151;
-    public static int taskset_useCustom = 152;
-    public static int ib_autorun = 153;
-    public static int ib_autorun_tip = 154;
-    public static int service_exe_disable = 155;
-    public static int service_exe_disable_tip = 156;
-    public static int conSet_otherArgv_info = 157;
-    public static int conSet_otherArgv_title = 158;
-    public static int conSet_otherArgv_hint = 159;
+    public static int global_edit = 149;
+    public static int global_del = 150;
+    public static int global_add = 151;
+    public static int othArg_taskset_useCustom = 153;
+    public static int othArg_ib_autorun = 154;
+    public static int othArg_serviceExeDisable = 155;
+    public static int conSet_otherArgv_title = 156;
+    public static int conSet_otherArgv_prefValue = 157;
+    public static int othArg_preview = 162;
+    public static int othArg_info = 163;
+    public static int othArg_edit_delConfirm = 164;
+    public static int othArg_edit_attrTitles = 165;
+    public static int othArg_edit_typeChoices = 166;
+    public static int othArg_edit_typeInfo = 167;
+    public static int othArg_preview_titles = 168;
+    public static int othArg_info_more = 169;
 
 
     public static String locale = refreshLocale();
@@ -333,16 +345,24 @@ public class RR {
         zhArray.put(DriveD2_devType, "手机存储$其他外部存储设备$其他外部存储设备(无)");
         zhArray.put(DriveD2_parType, "根目录$应用专属目录");
         zhArray.put(DriveD2_errors, "请先授予app存储权限 $ 该文件夹不存在 $ 该路径指向的是文件而不是文件夹 $ 没有对该文件夹的读取权限 $ 没有对该文件夹的写入权限 $ 读取该路径时出现错误: ");
-        zhArray.put(taskset_info,"通常情况下，使用CPU大核心 (一般为4-7) 后运行效率提高，发热增加。\n\n新处理器的部分核心使用armv9架构，已不兼容32位应用，使用这些核心可能导致异常。\n\n参数插入逻辑：若执行命令已包含\"taskset \"，则不作任何修改；若不包含且此选项开启，则在执行命令中\"wine \"的位置前插入\"taskset -c [核心序号]\"。");
-        zhArray.put(taskset_getCpuErr,"错误：无法识别CPU核心个数");
-        zhArray.put(taskset_useCustom,"手动指定CPU核心");
-        zhArray.put(ib_autorun,"自动运行 ib.exe");
-        zhArray.put(ib_autorun_tip,"在启动容器后若想使用Input Bridge，需要运行ib.exe。勾选此选项，会在启动容器后自动运行ib.exe，若未安装ib.exe则无效。\n\n参数插入逻辑：若执行命令已包含\"ib \"，则不作任何修改；若不包含且此选项开启，则在命令开头处插入\"ib \"。");
-        zhArray.put(service_exe_disable,"禁用 services.exe");
-        zhArray.put(service_exe_disable_tip,"启动Wine后，后台默认会启动一个services.exe。某些游戏必须结束此进程才能正常运行。\n\n参数插入逻辑：在执行命令结尾添加\" & wine taskkill /f /im services.exe\"。");
-        zhArray.put(conSet_otherArgv_info,"- 额外参数会被插入到启动容器的执行命令中，可在/sdcard/x86-stderr.txt中查看。若出现问题请关闭选项。\n- 强烈建议在开启选项前，点击\" ⓘ \"查看说明。");
-        zhArray.put(conSet_otherArgv_title,"额外启动参数");
-        zhArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
+
+
+        zhArray.put(conSet_otherArgv_title, "额外启动参数");
+        zhArray.put(conSet_otherArgv_prefValue, "额外命令/环境变量");
+        zhArray.put(othArg_info, "本页面为全部可用的参数，被勾选的参数会在当前容器中启用。$了解更多...");
+        zhArray.put(othArg_info_more, "启动容器时，勾选的额外参数会被插入到运行wine的执行命令中，插入后的完整命令可在/sdcard/x86-stderr.txt中查看。\n\n若插入参数前，原命令已包含这个参数，则可能插入失败。实际结果可以点击\"预览\"按钮输入测试命令或启动容器后在txt中查看。\n\n全部可用参数存在z:/opt/contArgs.txt中，每个容器启用的参数存在z:/home/xdroid_n/contArgs.txt中。但由于对存储格式有严格要求，不建议直接修改txt。");
+        zhArray.put(othArg_taskset_useCustom, "手动指定CPU核心");
+        zhArray.put(othArg_ib_autorun, "自动运行ib.exe(使用InputBridge时省去手动运行ib.exe)");
+        zhArray.put(othArg_serviceExeDisable, "禁用services.exe(某些游戏需要禁用它才能正常运行)");
+        zhArray.put(othArg_preview, "预览");
+        zhArray.put(global_add, "添加");
+        zhArray.put(global_edit, "编辑");
+        zhArray.put(global_del, "删除");
+        zhArray.put(othArg_edit_delConfirm, "确定要删除该参数吗？\n此操作会对全部容器生效。若您想仅修改当前容器，点击勾选框取消勾选即可。\n\n");
+        zhArray.put(othArg_edit_attrTitles, "参数别名$参数内容$参数类型$新建的容器默认勾选该参数");
+        zhArray.put(othArg_edit_typeChoices, "环境变量$命令 - 原命令开头$命令 - 原命令执行前$命令 - 原命令执行后");
+        zhArray.put(othArg_edit_typeInfo, "环境变量: 作为本次执行命令的环境变量，原命令开头若包含相同名称的环境变量，则会覆盖该参数的值。\n\n命令：若选择 在原命令执行前/后，则此参数的命令与原命令间用一个 & 连接。");
+        zhArray.put(othArg_preview_titles, "原命令示例$插入参数后");
         /*
 
 
@@ -503,22 +523,31 @@ public class RR {
         enArray.put(xegw_legacyDraw_tip, "If black screen with an arrow cursor are displayed after starting the container, checking this option will solve the problem, but rendering may be slower.");
         enArray.put(xegw_notification, "Xegw xserver. Keep the notification to prevent disorder after switching app to background.");
         enArray.put(xegw_btyOpt, "Disable battery optimization $After container starts, it shows a status bar notification for Xegw, so that Xegw process will not be killed when switching to the background and only a black screen is left when switching back.\n\nIf the problem is not solved, try to turn off the battery optimization of this app in Settings (through this button). If problem is still not solved, try to enable autostart of the app in Settings (this interface varies from ROM to ROM, so you need to find it yourself).");
-        enArray.put(DriveD2_title,"Change Locations of Drives");
-        enArray.put(DriveD2_info,"Set an android directory as this drive.");
-        enArray.put(DriveD2_newDrive,"New Drive");
-        enArray.put(DriveD2_delDrive,"Delete this Drive");
-        enArray.put(DriveD2_devType,"Phone's Storage$Other Storage Device$Other Storage Device (None)");
-        enArray.put(DriveD2_parType,"Root Dir$App-specific Files Dir");
-        enArray.put(DriveD2_errors,"Please allow the app's storage permission. $ The directory doesn't exist. $ The path denotes a file rather than a directory. $ App has no permission of reading contents of this directory. $ App has no permission of writing contents into this directory. $ Error: ");
-        enArray.put(taskset_info,"Using the large CPU cores (typically 4-7) usually increases efficiency and heat generation.\n\nSome newer cores use armv9 architecture, which doesn't support 32-bit apps and may result in problems if used.\n\nArgument Insertion: If the command already contains \"taskset \", no change will be made. If it doesn't and this option is enabled, \"taskset -c [cores]\" will be inserted in front of the \"wine \".");
-        enArray.put(taskset_useCustom,"Set CPU cores");
-        enArray.put(ib_autorun,"Autorun ib.exe");
-        enArray.put(ib_autorun_tip,"Input Bridge requires ib.exe running to work. If this option is enabled, it will run ib.exe automatically after container started. Still if fails if ib.exe is not installed.\n\nArgument Insertion: If the command already contains \"ib \", no change will be made. If it doesn't and this option is enabled, \"ib \" will be inserted at the beginning.");
-        enArray.put(service_exe_disable,"Kill services.exe");
-        enArray.put(service_exe_disable_tip,"When starting Wine, services.exe is running by default. Some games only run normally after this process is killed.\n\nArgument Insertion: add \" & wine taskkill /f /im services.exe\" at the end of the command.");
-        enArray.put(conSet_otherArgv_info,"- Params inserted when launching, viewable in /sdcard/x86-stderr.txt.\n- Please read notes in \" ⓘ \" before enabling options.");
-        enArray.put(conSet_otherArgv_title,"Additional Launching Arguments");
-        enArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
+        enArray.put(DriveD2_title, "Change Locations of Drives");
+        enArray.put(DriveD2_info, "Set an android directory as this drive.");
+        enArray.put(DriveD2_newDrive, "New Drive");
+        enArray.put(DriveD2_delDrive, "Delete this Drive");
+        enArray.put(DriveD2_devType, "Phone's Storage$Other Storage Device$Other Storage Device (None)");
+        enArray.put(DriveD2_parType, "Root Dir$App-specific Files Dir");
+        enArray.put(DriveD2_errors, "Please allow the app's storage permission. $ The directory doesn't exist. $ The path denotes a file rather than a directory. $ App has no permission of reading contents of this directory. $ App has no permission of writing contents into this directory. $ Error: ");
+
+
+        enArray.put(conSet_otherArgv_title, "Extra Launching Arguments");
+        enArray.put(conSet_otherArgv_prefValue, "Extra cmd/env");
+        enArray.put(othArg_info, "All available params are listed here. Selected items will be applied to the current container.$Learn more...");
+        enArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
+        enArray.put(othArg_taskset_useCustom, "Set CPU cores");
+        enArray.put(othArg_ib_autorun, "Autorun_ib.exe");
+        enArray.put(othArg_serviceExeDisable, "Kill_services.exe");
+        enArray.put(othArg_preview, "Preview");
+        enArray.put(global_add, "Add");
+        enArray.put(global_edit, "Edit");
+        enArray.put(global_del, "Delete");
+        enArray.put(othArg_edit_delConfirm, "Are you sure to delete this param?\nThis action will take effect on all containers. If you want to disable it only in the current container, please unselect it from the checkbox.\n\n");
+        enArray.put(othArg_edit_attrTitles, "Alias$Arg$Type$Enable by default for new containers");
+        enArray.put(othArg_edit_typeChoices, "Environment Variable$Cmd - in the front of original Cmd$Cmd - before original Cmd executed$Cmd - after original Cmd executed");
+        enArray.put(othArg_edit_typeInfo, "Enviroment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
+        enArray.put(othArg_preview_titles, "Original CMD$CMD with params");
 
         /*
 
@@ -679,23 +708,30 @@ public class RR {
         ruArray.put(xegw_legacyDraw_tip, "Если после запуска контейнера отображается только чёрный экран со стрелкой-курсором, включение этого параметра решит проблему, но рендеринг может замедлиться.");
         ruArray.put(xegw_notification, "Xegw xserver.  Не отключаете данное уведомление, чтобы предотвратить сбои после переключения ExaGear в фоновый режим.");
         ruArray.put(xegw_btyOpt, "Отключить оптимизацию батареи$После запуска контейнера в строке состояния отображается уведомление для Xegw, поэтому процесс Xegw не будет завершаться при переключении в фоновый режим, при отключении будет отображаться только чёрный экран.\n\nЕсли это не решает проблему чёрного экрана при переходе в фоновый режим попробуйте отключить оптимизацию батареи для ExaGear в Настройках (с помощью этой кнопки). Если проблема все еще не решена, попробуйте включить автозапуск приложения ExaGear в Настройках, этот интерфейс расположатся в разных местах в зависимости от прошивки поэтому вам нужно найти это самим.");
-        ruArray.put(DriveD2_title,"Изменить расположение дисков");
-        ruArray.put(DriveD2_info,"Установите каталог Android в качестве выбранного диска.");
-        ruArray.put(DriveD2_newDrive,"Создать новый Диск");
-        ruArray.put(DriveD2_delDrive,"Удалить этот Диск");
-        ruArray.put(DriveD2_devType,"Память телефона$Другое устройство памяти$Другое устройство памяти (Не обнаружено)");
-        ruArray.put(DriveD2_parType,"Корневой каталог$Каталог файлов приложения");
-        ruArray.put(DriveD2_errors," Необходимо дать приложению разрешение на хранение. $ Каталог не существует. $ Этот путь обозначает файл, а не каталог. $ Приложение не имеет разрешения на чтение содержимого этого каталога. $ Приложение не имеет разрешения на запись в этот каталог. $ Ошибка: ");
-        ruArray.put(taskset_info,"Использование производительных ядер CPU (обычно 4-7) - повышает производительность и тепловыделение соответственно.\n\nНекоторые новые CPU используют архитектуру ARMv9, которая не поддерживает 32-битные приложения и может привести к проблемам при использовании.\n\nДобавление аргументов: Если вы используете ярлык который уже содержит \"taskset \", его использование будет иметь приоритет и данное изменение внесено не будет. Сама опция при включении, добавляет \"taskset -c [перечисление ядер]\"  перед словом \"wine \".");
-        ruArray.put(taskset_useCustom,"Выбор ядер CPU");
-        ruArray.put(ib_autorun,"Автозапуск ib.exe");
-        ruArray.put(ib_autorun_tip,"Для работы Imput Bridge требуется запуск ib.exe. Если эта опция включена, ib.exe будет запускаться автоматически во время запуска контейнера. Если ib.exe не установлен, возможно произойдет сбой.\n\nДобавление аргумента: Если вы используете ярлык который уже содержит команду \"ib \", его использование будет иметь приоритет и данное изменение внесено не будет. Сама опция при включении, добавляет в начале запись \"ib \".");
-        ruArray.put(service_exe_disable,"Отключение services.exe");
-        ruArray.put(service_exe_disable_tip,"При запуске Wine по умолчанию запускается файл services.exe. Некоторые игры нормально запускаются только после завершения этого процесса.\n\nДобавление аргумента: используется \" & wine taskkill /f /im services.exe\" в конце команды.");
-        ruArray.put(conSet_otherArgv_info,"- Включение данных параметров доступны для просмотра в /sdcard/x86-stderr.txt.\n- Прежде чем включать параметры, прочитайте примечания по нажатии \" ⓘ \".");
-        ruArray.put(conSet_otherArgv_title,"Дополнительные аргументы запуска");
-        ruArray.put(conSet_otherArgv_hint,"taskset, ib.exe, services.exe ...");
+        ruArray.put(DriveD2_title, "Изменить расположение дисков");
+        ruArray.put(DriveD2_info, "Установите каталог Android в качестве выбранного диска.");
+        ruArray.put(DriveD2_newDrive, "Создать новый Диск");
+        ruArray.put(DriveD2_delDrive, "Удалить этот Диск");
+        ruArray.put(DriveD2_devType, "Память телефона$Другое устройство памяти$Другое устройство памяти (Не обнаружено)");
+        ruArray.put(DriveD2_parType, "Корневой каталог$Каталог файлов приложения");
+        ruArray.put(DriveD2_errors, " Необходимо дать приложению разрешение на хранение. $ Каталог не существует. $ Этот путь обозначает файл, а не каталог. $ Приложение не имеет разрешения на чтение содержимого этого каталога. $ Приложение не имеет разрешения на запись в этот каталог. $ Ошибка: ");
 
+        ruArray.put(conSet_otherArgv_title, "Extra Launching Arguments");
+        ruArray.put(conSet_otherArgv_prefValue, "Extra cmd/env");
+        ruArray.put(othArg_info, "All available params are listed here. Selected items will be applied to the current container.$Learn more...");
+        ruArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
+        ruArray.put(othArg_taskset_useCustom, "Set CPU cores");
+        ruArray.put(othArg_ib_autorun, "Autorun_ib.exe");
+        ruArray.put(othArg_serviceExeDisable, "Kill_services.exe");
+        ruArray.put(othArg_preview, "Preview");
+        ruArray.put(global_add, "Add");
+        ruArray.put(global_edit, "Edit");
+        ruArray.put(global_del, "Delete");
+        ruArray.put(othArg_edit_delConfirm, "Are you sure to delete this param?\nThis action will take effect on all containers. If you want to disable it only in the current container, please unselect it from the checkbox.\n\n");
+        ruArray.put(othArg_edit_attrTitles, "Alias$Arg$Type$Enable by default for new containers");
+        ruArray.put(othArg_edit_typeChoices, "Environment Variable$Cmd - in the front of original Cmd$Cmd - before original Cmd executed$Cmd - after original Cmd executed");
+        ruArray.put(othArg_edit_typeInfo, "Enviroment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
+        ruArray.put(othArg_preview_titles, "Original CMD$CMD with params");
 
         /*
 
@@ -740,12 +776,66 @@ public class RR {
         /**
          * 为对话框设置自定义视图的时候，手动设置边距
          */
+        @Deprecated
         public static int dialogPaddingDp = 24;
+
+        public static int textColorPrimary(Context c) {
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary});
+            int color = array.getColor(0, Color.BLACK);
+            array.recycle();
+            return color;
+        }
+
+        public static int colorPrimary(Context c) {
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.colorPrimary});
+            int color = array.getColor(0, 0xff2196F3);
+            array.recycle();
+            return color;
+        }
+
+        public static Drawable selectableItemBackground(Context c) {
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
+            Drawable d = array.getDrawable(0);
+            array.recycle();
+            return d;
+        }
+
+    }
+
+    public static class dimen {
+
+        public static int margin8Dp() {
+            return QH.px(Globals.getAppContext(), 8);
+        }
+
+        /**
+         * 48dp
+         */
+        public static int minCheckSize() {
+            return QH.px(Globals.getAppContext(), 48);
+        }
+
+        /**
+         * 24dp
+         */
+        public static int dialogPadding() {
+            return QH.px(Globals.getAppContext(), 24);
+        }
 
     }
 
     public static class integer {
-        public static int viewpadding = 8;
+
+    }
+
+    public static class drawable {
+        public static int ic_add_24dp() {
+            return rslvID(R.drawable.ic_add_24dp, 0x7f08009b);
+        }
+
+        public static int ic_more_vert_24dp() {
+            return rslvID(R.drawable.ic_more_vert_24dp, 0x7f0800a9);
+        }
     }
 
 

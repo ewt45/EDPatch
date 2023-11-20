@@ -41,6 +41,7 @@ public class FuncOtherArgv implements Func {
         PatcherFile.copy(TYPE_SMALI, new String[]{
                 "/com/eltechs/ed/fragments/ContainerSettingsFragment.smali",
                 "/com/example/datainsert/exagear/containerSettings/ConSetOtherArgv.smali", //复制标识类
+                "/com/example/datainsert/exagear/containerSettings/otherargv",
                 "/com/example/datainsert/exagear/QH.smali",
                 "/com/example/datainsert/exagear/RR.smali"});
 

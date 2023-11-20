@@ -113,7 +113,6 @@ public class ActionPool {
 //            TimerTask task = new TimerTask() {
 //                @Override
 //                public void run() {
-//                    //TODO: 定时做某件事情
 //                    if (future.isDone() || future.isCancelled()) {
 //                        try {
 //                            String message = future.get();

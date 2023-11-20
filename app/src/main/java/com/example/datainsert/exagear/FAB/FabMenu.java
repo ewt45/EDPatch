@@ -59,15 +59,16 @@ public class FabMenu {
     public FabMenu(AppCompatActivity a) {
         //重启activity时刷新locale
         RR.locale = RR.refreshLocale();
-
         FloatingActionButton fab = new FloatingActionButton(a);
         //不知道为什么，下面设置了customSize，这里如果是wrap content 宽高都变成0
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(AndroidHelpers.dpToPx(60), AndroidHelpers.dpToPx(60));//AndroidHelpers.dpToPx(60),AndroidHelpers.dpToPx(60)
+        int fabSize = AndroidHelpers.dpToPx(60);
+        int fabMargin = AndroidHelpers.dpToPx(40);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(fabSize, fabSize);//AndroidHelpers.dpToPx(60),AndroidHelpers.dpToPx(60)
         params.gravity = Gravity.TOP | Gravity.RIGHT;
-        params.rightMargin = AndroidHelpers.dpToPx(40);
-        fab.setTranslationY(-AndroidHelpers.dpToPx(100));//不知道为啥margin那里说应该是正数，那用translation吧
+        params.rightMargin = fabMargin;
+        fab.setTranslationY(-(fabSize+fabMargin));//不知道为啥margin那里说应该是正数，那用translation吧
         fab.setElevation(100); //感觉高度舍不设置都无所谓
-        fab.setCustomSize(AndroidHelpers.dpToPx(60)); //要用这个设置一遍否则图片不居中
+        fab.setCustomSize(fabSize); //要用这个设置一遍否则图片不居中
         //设置图标
         try {
             Drawable iconDrawable = a.getDrawable(QH.rslvID(R.drawable.ic_settings_24dp, 0x7f0800aa));

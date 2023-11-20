@@ -5,19 +5,13 @@ import static com.example.datainsert.exagear.RR.getS;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.DocumentsContract;
 import android.support.design.widget.Snackbar;
-import android.support.v4.provider.DocumentFile;
 import android.support.v7.app.AppCompatActivity;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.text.Html;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -28,22 +22,12 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.eltechs.axs.Globals;
-import com.eltechs.axs.TouchEventAdapter;
-import com.eltechs.axs.activities.AxsActivity;
-import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.example.datainsert.exagear.FAB.FabMenu;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.test.FileTreePrinter;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 关于。关于右下齿轮按钮的介绍。
@@ -130,6 +114,7 @@ public class AboutFab extends BaseFragment {
         }
 
         linearLayout.addView(linearFun);
+
         return linearLayout;
 
 //        ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity().registerActivityResultHandler((i, i2, intent) -> {

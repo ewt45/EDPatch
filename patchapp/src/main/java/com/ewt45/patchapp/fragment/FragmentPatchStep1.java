@@ -12,12 +12,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.ewt45.patchapp.AndroidUtils;
 import com.ewt45.patchapp.MyApplication;
@@ -37,6 +39,10 @@ public class FragmentPatchStep1 extends BaseFragmentPatchStep {
     private static final int REQUEST_PICK_APK_FILE = 2;
     private static final String TAG = "FragmentPatchStep1";
     FragmentPatchStep1Binding binding;
+    /**
+     * 首次执行，在刚进入时，若检测到已解包apk，不跳转step2。若是选择了apk之后解压成功，则自动跳转
+     */
+    private boolean isFirstEnter=true;
 
     @Nullable
     @Override
@@ -109,6 +115,9 @@ public class FragmentPatchStep1 extends BaseFragmentPatchStep {
                 builder.append(infoName).setSpan(new RelativeSizeSpan(1.5f), 0, infoName.length(), SPAN_EXCLUSIVE_EXCLUSIVE);
                 builder.append('\n').append(infoPkgName).append('\n').append(infoVersion);
                 binding.appInfo.setText(builder);
+                
+                //要不解压完直接跳转？
+//                getFAB().performClick();
             } else {
                 getFAB().hide();
                 binding.appIcon.setImageResource(R.drawable.ic_apk_document);

@@ -1,25 +1,29 @@
 package com.example.datainsert.exagear;
 
 import static android.content.pm.ApplicationInfo.FLAG_TEST_ONLY;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static android.widget.LinearLayout.HORIZONTAL;
 
-import static com.example.datainsert.exagear.RR.getS;
+import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
+import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.text.TextWatcher;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -205,7 +209,7 @@ public class QH {
 
         LinearLayout linearLayout = new LinearLayout(a);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        int padding = QH.px(a, RR.attr.dialogPaddingDp);
+        int padding = RR.dimen.dialogPadding();
         linearLayout.setPadding(padding, padding, padding, padding);
         linearLayout.addView(textView);
         linearLayout.addView(checkBox, checkParams);
@@ -258,38 +262,51 @@ public class QH {
             layoutParams.setMarginStart(px(c, 20));
             linearRoot.addView(btnInfo, layoutParams);
 
-            if(view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
+            if (view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
                 view.setOnClickListener(clickListener);
         }
 
         return linearRoot;
     }
 
+
     /**
      * 在视图右侧添加一个"  ⓘ  "，可点击弹出dialog显示说明。并将两者用线性布局包裹。
      */
-    public static LinearLayout addInfoTrail(View view,String info){
-        View.OnClickListener clickListener = v -> new android.app.AlertDialog.Builder(v.getContext())
-                .setMessage(info)
-                .setPositiveButton(android.R.string.yes, null)
-                .create().show();
-
+    public static LinearLayout addInfoTrail(View view, String info) {
         Context c = view.getContext();
-        TextView btnInfo = new TextView(c);
-
-        btnInfo.setText("ⓘ");
-        btnInfo.getPaint().setFakeBoldText(true);
-        btnInfo.setOnClickListener(clickListener);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-        layoutParams.setMarginStart(px(c, 16));
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.HORIZONTAL);
         linearRoot.addView(view);
-        linearRoot.addView(btnInfo, layoutParams);
+        linearRoot.addView(getInfoIconView(c, info));
 
-        if(view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
-            view.setOnClickListener(clickListener);
+        if (view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
+            view.setOnClickListener(getInfoShowClickListener(info));
         return linearRoot;
+    }
+
+    /**
+     * 生成一个点击事件，用于点击 ⓘ 后显示说明dialog
+     */
+    private static View.OnClickListener getInfoShowClickListener(String info){
+        return v -> new android.app.AlertDialog.Builder(v.getContext())
+                .setMessage(info)
+                .setPositiveButton(android.R.string.yes, null)
+                .create().show();
+    }
+
+    /**
+     * 生成纯 ⓘ textview（带点击事件和marginStart）
+     */
+    public static TextView getInfoIconView(Context c, String info) {
+        TextView btnInfo = new TextView(c);
+        btnInfo.setText("ⓘ");
+        btnInfo.getPaint().setFakeBoldText(true);
+        btnInfo.setOnClickListener( getInfoShowClickListener(info));
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
+        layoutParams.setMarginStart(px(c, 16));
+        btnInfo.setLayoutParams(layoutParams);
+        return btnInfo;
     }
 
     public static Object getFieldReflectInst(Class<?> clz, Object clzInst, String fieldName, boolean isHide) {
@@ -307,17 +324,152 @@ public class QH {
         return fieldInst;
     }
 
+    /**
+     * 获取容器设置对应的pref
+     * @return
+     */
+    public static SharedPreferences getContPref(long contId){
+        return Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + contId, Context.MODE_PRIVATE);
+    }
 
-    public static void setButtonBorderless(Button button){
+    /**
+     * 设置按钮为无边框样式。需要sdk>=24才能。（设置textAppearance）
+     */
+    public static void setButtonBorderless(Button button) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             button.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
             RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(0x44444444), null, button.getBackground());
             button.setBackground(rippleDrawable);
             button.setMinWidth(0);
             button.setMinimumWidth(0);
+            button.setMinHeight(0);
+            button.setMinimumHeight(0);
         }
     }
 
+    /**
+     * onCreateDialog时构建界面。无需创建最外层scrollview和最外层view的padding
+     */
+    public static TextView getTextViewWithText(Context c, String s) {
+        TextView tv = new TextView(c);
+        tv.setText(s);
+        tv.setLineSpacing(0, 1.5f);
+        tv.setPadding(0, margin8Dp(), 0, 0);
+        return tv;
+    }
+
+    /**
+     * 生成一个线性布局，带一个标题和跟在后面的多个视图，水平排列
+     * 如果要设置后面的视图的layoutparams的宽高，可以在传入之前setlayoutparams设置一次
+     *
+     * @param s        标题，可以没有
+     * @param view     视图
+     * @param vertical 是否垂排列
+     * @return 线性布局
+     */
+    public static LinearLayout getOneLineWithTitle(Context c, @Nullable String s, @Nullable View view, boolean vertical) {
+        LinearLayout linearLayout = new LinearLayout(c);
+        linearLayout.setOrientation(vertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
+        if (s != null && !s.equals("")) {
+            TextView textView = getTextViewWithText(c, s);
+            textView.setTextColor(RR.attr.textColorPrimary(c));
+            textView.setPadding(0, 0, 0, 0);
+            //加粗一下吧
+            textView.getPaint().setFakeBoldText(true);
+//        textView.setTypeface(Typeface.DEFAULT_BOLD);
+            textView.invalidate();
+            linearLayout.addView(textView);
+        }
+        if (view != null) {
+            LinearLayout.LayoutParams params = view.getLayoutParams() != null
+                    ? new LinearLayout.LayoutParams(view.getLayoutParams())
+                    : new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+            if (linearLayout.getChildCount() > 0)
+                params.setMarginStart(margin8Dp());
+            if (vertical)
+                params.topMargin = margin8Dp();
+            linearLayout.addView(view, params);
+        }
+        linearLayout.setPadding(0, margin8Dp(), 0, 0);
+        return linearLayout;
+    }
+
+    /**
+     * 返回一个用作标题的textview，深色，加粗
+     */
+    public static TextView getTitleTextView(Context c, String title) {
+        TextView textView = new TextView(c);
+        textView.setText(title);
+        textView.setTextColor(RR.attr.textColorPrimary(c));
+        textView.getPaint().setFakeBoldText(true);
+        textView.invalidate();
+        return textView;
+    }
+
+    /**
+     * 返回一个视图，包含一个下拉按钮（textview）和一个标题。点击后可展开一个视图
+     * 例如：
+     * LinearLayout linearPart1Title = QH.getExpandableTitleView(c, wrapperTitles[0], linearPart1Expand)
+     * linearRoot.addView(addInfoTrail(linearPart1Title,getS(RR.othArg_taskset_info)));
+     * linearRoot.addView(linearPart1Expand);
+     * @param expandableView 可被展开的视图，默认被隐藏
+     */
+    public static LinearLayout getExpandableTitleView(Context c, String title, View expandableView) {
+        TextView tvIcon = new TextView(c);
+        tvIcon.setText("▼");
+        tvIcon.setPadding(0, 0, margin8Dp(), 0);
+
+        TextView tvTitle = getTitleTextView(c, title);
+        tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
+        View.OnClickListener clickListener = v -> {
+            boolean isCurrExpanded = tvIcon.getRotationX() != 0;
+            tvIcon.animate().rotationX(isCurrExpanded ? 0 : 180).setDuration(300).start();
+            TransitionManager.beginDelayedTransition((ViewGroup) expandableView.getParent());
+            expandableView.setVisibility(isCurrExpanded ? View.GONE : View.VISIBLE);
+        };
+
+        tvIcon.setOnClickListener(clickListener);
+        tvTitle.setOnClickListener(clickListener);
+        expandableView.setVisibility(View.GONE);
+
+        LinearLayout linearTitle = new LinearLayout(c);
+        linearTitle.setOrientation(HORIZONTAL);
+        linearTitle.addView(tvIcon);
+        linearTitle.addView(tvTitle);
+        return linearTitle;
+    }
+
+    /**
+     * dialog的自定义视图，最外部加一层Nested滚动视图，并且添加padding<br/>
+     * 滚动视图会获取焦点，以阻止edittext自动弹出输入法，和解决自动滚动到回收视图的位置而非第一个视图位置的问题
+     */
+    public static NestedScrollView wrapAsDialogScrollView(View view) {
+        Context c = view.getContext();
+        NestedScrollView scrollView = new NestedScrollView(c);
+        int dialogPadding = RR.dimen.dialogPadding();
+        scrollView.setPadding(dialogPadding, 0, dialogPadding, 0);
+        scrollView.addView(view);
+
+        scrollView.setFocusable(true);
+        scrollView.setFocusableInTouchMode(true);
+        scrollView.requestFocus();
+        return scrollView;
+    }
+
+    public interface SimpleTextWatcher extends TextWatcher {
+
+        @Override
+        default void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        default void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+    }
 
     //    /**
 //     * d8 （android gradle plugin 8.1.0) 优化会把不同类的api判断整合到一个类中，导致复制时无法判断应该复制哪些。试试用这种方法回避
@@ -339,6 +491,5 @@ public class QH {
             return logDir;
         }
     }
-
 
 }
