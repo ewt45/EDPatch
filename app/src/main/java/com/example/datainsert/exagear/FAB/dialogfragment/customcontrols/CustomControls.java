@@ -31,6 +31,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColRecyclerView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.SubNormalPagerAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.WrapContentViewPager;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 import com.example.datainsert.exagear.controls.model.FormatHelper;
@@ -50,6 +51,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     private final BtnColRecyclerView[] mSidebarKeyRecyclerView = new BtnColRecyclerView[2];
     ViewGroup[] mPages;
     FalloutInterfaceOverlay2 mUiOverlay;
+    private static final File dir = new File(QH.Files.edPatchDir(),"custom_controls");
     //    private File mSerFile2;
     private KeyCodes2 mKeyCodes2;//用于新建dialog的时候，初始化侧栏按键列表
 //    private File mSerFile3;
@@ -202,6 +204,11 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
     private void addTransferCallback(SubView4Other subView4Other) {
         subView4Other.setCallback(new SubView4Other.TransferCallback() {
             @Override
+            public void dismiss() {
+                CustomControls.this.dismiss();
+            }
+
+            @Override
             public void exportData() {
                 String data = FormatHelper.dataExport(mKeyCodes2, mKeyCodes3);
                 ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -265,9 +272,17 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         });
     }
 
+    public static File dataDir(){
+        if(!dir.exists())
+            dir.mkdirs();
+
+        return dir;
+    }
+
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-
+//        //TODO 初始化前先为多配置做好准备。以后这个函数可能需要更改
+//        SubView4Other.prepareForProfilesV2();
     }
 
     @Override

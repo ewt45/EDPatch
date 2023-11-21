@@ -3,6 +3,10 @@ package com.example.datainsert.exagear.controls.model;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import com.eltechs.axs.Globals;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
+import com.example.datainsert.exagear.QH;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -22,7 +26,8 @@ public class KeyCodes2 implements Serializable {
     public static final String KeyStoreFileNameNew = "custom_control2.txt";  //"custom_control2.ser";
 
     private static final long serialVersionUID = -4696658597434288880L;
-
+    public static final File oldKeyStoreFile = new File(Globals.getAppContext().getExternalFilesDir(null),KeyStoreFileNameNew);
+    public static final File keyStoreFile = new File(CustomControls.dataDir(),KeyStoreFileNameNew);
 
     private List<OneCol> mLeftSide = new ArrayList<>();
     private List<OneCol> mRightSide = new ArrayList<>();
@@ -49,11 +54,10 @@ public class KeyCodes2 implements Serializable {
 
     /**
      * 从本地读取按键。若没有文件或读取失败，返回一个空的KeyCodes2
-     * @param c
-     * @return
      */
     public static @NonNull KeyCodes2 read(Context c){
-        File file = new File(c.getExternalFilesDir(null),KeyStoreFileNameNew);
+
+        File file = oldKeyStoreFile;
 
         KeyCodes2 keyCodes2  = new KeyCodes2();
         if(!file.exists())
@@ -73,7 +77,7 @@ public class KeyCodes2 implements Serializable {
 
      */
     public static void  write(KeyCodes2 keyCodes2,Context c){
-        File file = new File(c.getExternalFilesDir(null),KeyStoreFileNameNew);
+        File file = oldKeyStoreFile;
         if(file.exists()){
             boolean b=file.delete();
         }
