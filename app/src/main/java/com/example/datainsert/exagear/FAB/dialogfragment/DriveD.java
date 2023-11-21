@@ -31,7 +31,6 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.drived.DrivePathChecker;
 import com.example.datainsert.exagear.FAB.dialogfragment.drived.SimpleTabSelectListener;
 import com.example.datainsert.exagear.FAB.widget.MyTextInputEditText;
-import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -119,7 +118,7 @@ public class DriveD extends BaseFragment {
      * 设置tvInput的文本改变的监听器。内容：更新路径到list，让pathchecker检查路径可用性
      */
     private void setTextChangeListener(MyTextInputEditText tvInput, TabLayout tabLayout, boolean isPar) {
-        tvInput.addTextChangedListener((SimpleTextWatcher) s -> {
+        tvInput.addTextChangedListener((QH.SimpleTextWatcher) s -> {
             int pos = tabLayout.getSelectedTabPosition();
             String[] splits = drivesList.get(pos).split(" ");
             drivesList.set(pos, String.format("%s %s %s", splits[0], isPar ? s.toString() : splits[1], isPar ? splits[2] : s.toString()));

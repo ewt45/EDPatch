@@ -203,14 +203,14 @@ public class QH {
 
         TextView textView = new TextView(a);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        textView.setLineSpacing(0, 1.5f);
+        textView.setLineSpacing(0, 1.2f);
         textView.setText(tips);
 
         CheckBox checkBox = new CheckBox(a);
         checkBox.setText(RR.getS(RR.shortcut_DontShowUp));
         checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> QH.getPreference().edit().putBoolean(PREF_KEY_SHOULD_SHOW_TIP, !isChecked).apply());
         LinearLayout.LayoutParams checkParams = new LinearLayout.LayoutParams(-2, -2);
-        checkParams.topMargin = 20;
+        checkParams.topMargin = margin8Dp() * 2;
 
         LinearLayout linearLayout = new LinearLayout(a);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -218,10 +218,7 @@ public class QH {
         linearLayout.setPadding(padding, padding, padding, padding);
         linearLayout.addView(textView);
         linearLayout.addView(checkBox, checkParams);
-        ScrollView scrollView = new ScrollView(a);
-        scrollView.addView(linearLayout);
-        new AlertDialog.Builder(a).setView(scrollView).setPositiveButton(android.R.string.yes, null).create().show();
-
+        new AlertDialog.Builder(a).setView(QH.wrapAsDialogScrollView(linearLayout)).setPositiveButton(android.R.string.yes, null).show();
     }
 
     /**
@@ -251,29 +248,14 @@ public class QH {
             ((CompoundButton) view).setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(prefKey, isChecked).apply());
         }
 
-        View.OnClickListener clickListener = v -> new android.app.AlertDialog.Builder(v.getContext())
-                .setMessage(info)
-                .setPositiveButton(android.R.string.yes, null)
-                .create().show();
-
-
         if (info != null) {
-            TextView btnInfo = new TextView(c);
-
-            btnInfo.setText("  ⓘ  ");
-            btnInfo.getPaint().setFakeBoldText(true);
-            btnInfo.setOnClickListener(clickListener);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
-            layoutParams.setMarginStart(px(c, 20));
-            linearRoot.addView(btnInfo, layoutParams);
+            linearRoot.addView(getInfoIconView(c, info));
 
             if (view.getClass().equals(TextView.class))  //如果是纯textview，点击事件也设置到它身上
-                view.setOnClickListener(clickListener);
+                view.setOnClickListener(getInfoShowClickListener(info));
         }
-
         return linearRoot;
     }
-
 
     /**
      * 在视图右侧添加一个"  ⓘ  "，可点击弹出dialog显示说明。并将两者用线性布局包裹。
@@ -291,27 +273,24 @@ public class QH {
     }
 
     /**
-     * 生成一个点击事件，用于点击 ⓘ 后显示说明dialog
-     */
-    private static View.OnClickListener getInfoShowClickListener(String info){
-        return v -> new android.app.AlertDialog.Builder(v.getContext())
-                .setMessage(info)
-                .setPositiveButton(android.R.string.yes, null)
-                .create().show();
-    }
-
-    /**
      * 生成纯 ⓘ textview（带点击事件和marginStart）
      */
     public static TextView getInfoIconView(Context c, String info) {
         TextView btnInfo = new TextView(c);
         btnInfo.setText("ⓘ");
         btnInfo.getPaint().setFakeBoldText(true);
-        btnInfo.setOnClickListener( getInfoShowClickListener(info));
+        btnInfo.setOnClickListener(getInfoShowClickListener(info));
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(-2, -2);
         layoutParams.setMarginStart(px(c, 16));
         btnInfo.setLayoutParams(layoutParams);
         return btnInfo;
+    }
+
+    /**
+     * 生成一个点击事件，用于点击 ⓘ 后显示说明dialog
+     */
+    private static View.OnClickListener getInfoShowClickListener(String info) {
+        return v -> new AlertDialog.Builder(v.getContext()).setMessage(info).setPositiveButton(android.R.string.yes, null).show();
     }
 
     public static Object getFieldReflectInst(Class<?> clz, Object clzInst, String fieldName, boolean isHide) {
@@ -331,9 +310,8 @@ public class QH {
 
     /**
      * 获取容器设置对应的pref
-     * @return
      */
-    public static SharedPreferences getContPref(long contId){
+    public static SharedPreferences getContPref(long contId) {
         return Globals.getAppContext().getSharedPreferences(CONTAINER_CONFIG_FILE_KEY_PREFIX + contId, Context.MODE_PRIVATE);
     }
 
@@ -343,48 +321,34 @@ public class QH {
     public static void setButtonBorderless(Button button) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             button.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
-            RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(0x44444444), null, button.getBackground());
-            button.setBackground(rippleDrawable);
+//            RippleDrawable rippleDrawable = new RippleDrawable(ColorStateList.valueOf(0x44444444), null, button.getBackground());
+//            button.setBackground(rippleDrawable);
+            button.setBackground(RR.attr.selectableItemBackground(button.getContext()));
+            int padding = margin8Dp();
+            button.setPadding(padding, padding, padding, padding);
             button.setMinWidth(0);
             button.setMinimumWidth(0);
             button.setMinHeight(0);
             button.setMinimumHeight(0);
         }
-    }
 
-    /**
-     * onCreateDialog时构建界面。无需创建最外层scrollview和最外层view的padding
-     */
-    public static TextView getTextViewWithText(Context c, String s) {
-        TextView tv = new TextView(c);
-        tv.setText(s);
-        tv.setLineSpacing(0, 1.5f);
-        tv.setPadding(0, margin8Dp(), 0, 0);
-        return tv;
     }
 
     /**
      * 生成一个线性布局，带一个标题和跟在后面的多个视图，水平排列
      * 如果要设置后面的视图的layoutparams的宽高，可以在传入之前setlayoutparams设置一次
      *
-     * @param s        标题，可以没有
+     * @param title    标题，可以没有
      * @param view     视图
      * @param vertical 是否垂排列
      * @return 线性布局
      */
-    public static LinearLayout getOneLineWithTitle(Context c, @Nullable String s, @Nullable View view, boolean vertical) {
+    public static LinearLayout getOneLineWithTitle(Context c, @Nullable String title, @Nullable View view, boolean vertical) {
         LinearLayout linearLayout = new LinearLayout(c);
         linearLayout.setOrientation(vertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
-        if (s != null && !s.equals("")) {
-            TextView textView = getTextViewWithText(c, s);
-            textView.setTextColor(RR.attr.textColorPrimary(c));
-            textView.setPadding(0, 0, 0, 0);
-            //加粗一下吧
-            textView.getPaint().setFakeBoldText(true);
-//        textView.setTypeface(Typeface.DEFAULT_BOLD);
-            textView.invalidate();
-            linearLayout.addView(textView);
-        }
+        if (title != null && !title.equals(""))
+            linearLayout.addView(getTitleTextView(c, title));
+
         if (view != null) {
             LinearLayout.LayoutParams params = view.getLayoutParams() != null
                     ? new LinearLayout.LayoutParams(view.getLayoutParams())
@@ -406,7 +370,9 @@ public class QH {
         TextView textView = new TextView(c);
         textView.setText(title);
         textView.setTextColor(RR.attr.textColorPrimary(c));
+        //加粗一下吧
         textView.getPaint().setFakeBoldText(true);
+//        textView.setTypeface(Typeface.DEFAULT_BOLD);
         textView.invalidate();
         return textView;
     }
@@ -417,6 +383,7 @@ public class QH {
      * LinearLayout linearPart1Title = QH.getExpandableTitleView(c, wrapperTitles[0], linearPart1Expand)
      * linearRoot.addView(addInfoTrail(linearPart1Title,getS(RR.othArg_taskset_info)));
      * linearRoot.addView(linearPart1Expand);
+     *
      * @param expandableView 可被展开的视图，默认被隐藏
      */
     public static LinearLayout getExpandableTitleView(Context c, String title, View expandableView) {
@@ -446,6 +413,15 @@ public class QH {
     }
 
     /**
+     * 将一个textview设置为单行，末尾为... 点击后展开全部文字
+     */
+    public static void setTextViewExpandable(TextView tv) {
+        tv.setSingleLine(true);
+        tv.setEllipsize(TextUtils.TruncateAt.END);
+        tv.setOnClickListener(v -> tv.setSingleLine(tv.getMaxLines() != 1));
+    }
+
+    /**
      * dialog的自定义视图，最外部加一层Nested滚动视图，并且添加padding<br/>
      * 滚动视图会获取焦点，以阻止edittext自动弹出输入法，和解决自动滚动到回收视图的位置而非第一个视图位置的问题
      */
@@ -461,14 +437,6 @@ public class QH {
         return scrollView;
     }
 
-    /**
-     * 将一个textview设置为单行，末尾为... 点击后展开全部文字
-     */
-    public static void setTextViewExpandable(TextView tv) {
-        tv.setSingleLine(true);
-        tv.setEllipsize(TextUtils.TruncateAt.END);
-        tv.setOnClickListener(v -> tv.setSingleLine(tv.getMaxLines() != 1));
-    }
 
     public interface SimpleTextWatcher extends TextWatcher {
 
@@ -506,13 +474,12 @@ public class QH {
 
         /**
          * 第三方功能，要持久存储的，全部放到/opt/edpatch文件夹中。
-         * @return
          */
-        public static File edPatchDir(){
-            File dir =  new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/edpatch");
-            if(dir.isDirectory())
+        public static File edPatchDir() {
+            File dir = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/edpatch");
+            if (!dir.isDirectory())
                 FileUtils.deleteQuietly(dir);
-            if(!dir.exists()){
+            if (!dir.exists()) {
                 boolean b = dir.mkdirs();
             }
             return dir;

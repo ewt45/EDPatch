@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.shortcut;
 
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
+
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -106,8 +108,7 @@ public class MoreShortcut {
 
 
             //                ShortcutManagerCompat.pushDynamicShortcut(context, shortcut);
-            if (QH.isTesting() || QH.getPreference().getBoolean(SHOULD_SHOW_TIP, true))
-                showDialogHint();
+            QH.showTipDialogWithDisable(((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity(),RR.getS(RR.shortcut_TipAfterAdd),SHOULD_SHOW_TIP);
 
             return true;
         });
@@ -209,29 +210,5 @@ public class MoreShortcut {
             }
         }
         shortcutManager.setDynamicShortcuts(list);
-    }
-
-    private static void showDialogHint() {
-        AppCompatActivity a = ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity();
-        TextView textView = new TextView(a);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        textView.setLineSpacing(0, 1.5f);
-        textView.setText(RR.getS(RR.shortcut_TipAfterAdd));
-
-        CheckBox checkBox = new CheckBox(a);
-        checkBox.setText(RR.getS(RR.shortcut_DontShowUp));
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> QH.getPreference().edit().putBoolean(SHOULD_SHOW_TIP, !isChecked).apply());
-        LinearLayout.LayoutParams checkParams = new LinearLayout.LayoutParams(-2, -2);
-        checkParams.topMargin = 20;
-
-        LinearLayout linearLayout = new LinearLayout(a);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        int padding = QH.px(a, RR.attr.dialogPaddingDp);
-        linearLayout.setPadding(padding, padding, padding, padding);
-        linearLayout.addView(textView);
-        linearLayout.addView(checkBox, checkParams);
-        ScrollView scrollView = new ScrollView(a);
-        scrollView.addView(linearLayout);
-        new AlertDialog.Builder(a).setView(scrollView).setPositiveButton(android.R.string.yes, null).create().show();
     }
 }

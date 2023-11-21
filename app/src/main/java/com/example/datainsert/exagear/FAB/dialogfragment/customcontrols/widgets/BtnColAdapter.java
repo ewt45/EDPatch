@@ -3,6 +3,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets
 import static android.view.Display.DEFAULT_DISPLAY;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getTextViewWithText;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView.codes;
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
@@ -115,7 +116,7 @@ public class BtnColAdapter extends ListAdapter<OneCol, BtnColAdapter.ViewHolder>
         //一旦进入按键编辑界面，selfCol传递给KeyAdapter，保证key submit的时候会同步更新这个selfCol
         OneCol selfCol = (OneCol) viewHolder.getmBtn().getTag();
         LinearLayout linearRoot = new LinearLayout(c);
-        linearRoot.setPadding(QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp), QH.px(c, RR.attr.dialogPaddingDp));
+        linearRoot.setPadding(dialogPadding(), dialogPadding(), dialogPadding(), dialogPadding());
         linearRoot.setOrientation(LinearLayout.VERTICAL);
 
         //如果横屏，回收视图改为横向

@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.helpers.ZipInstallerAssets;
-import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -218,7 +217,7 @@ public class PulseAudio extends BaseFragment {
         editPars.setMaxWidth(AndroidHelpers.dpToPx(400));
         editPars.setSingleLine(true);
         editPars.setText(getPreference().getString(PREF_KEY_PULSE_LAUNCH_PARAMS, DEFAULT_LAUNCH_PARAMS));
-        editPars.addTextChangedListener((SimpleTextWatcher) s -> getPreference().edit().putString(PREF_KEY_PULSE_LAUNCH_PARAMS, s.toString()).apply());
+        editPars.addTextChangedListener((QH.SimpleTextWatcher) s -> getPreference().edit().putString(PREF_KEY_PULSE_LAUNCH_PARAMS, s.toString()).apply());
 
         Button btnReset = new Button(c);
         btnReset.setText(getS(RR.cmCtrl_reset));
@@ -241,12 +240,7 @@ public class PulseAudio extends BaseFragment {
         String[] btnParamsStr = getS(RR.pa_btnParam).split("\\$");
         Button btnEditPars = new Button(c);
         btnEditPars.setText(btnParamsStr[0]);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            btnEditPars.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
-            QH.setRippleBackground(btnEditPars);
-            btnEditPars.setMinHeight(0);
-            btnEditPars.setMinimumHeight(0);
-        }
+        QH.setButtonBorderless(btnEditPars);
         btnEditPars.setOnClickListener(v -> {
             boolean shouldExit = linearEditLine.getVisibility() == View.VISIBLE;
             linearEditLine.setVisibility(shouldExit ? View.GONE : View.VISIBLE);

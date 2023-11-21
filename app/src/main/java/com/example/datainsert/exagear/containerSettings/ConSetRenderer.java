@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.containerSettings;
 
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -157,7 +159,7 @@ public class ConSetRenderer {
         LinearLayout linearLayout = new LinearLayout(c);
         dialogView.addView(linearLayout);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        int px = QH.px(c, RR.attr.dialogPaddingDp);
+        int px = dialogPadding();
         linearLayout.setPadding(px, px, px, px);
 
         RadioGroup radioGroup = new RadioGroup(c);

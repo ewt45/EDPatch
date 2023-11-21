@@ -57,6 +57,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <Button
+                    android:text="111aa啊啊啊啊\naaaaaa\naaa"
+                    android:paddingHorizontal="4dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <Button

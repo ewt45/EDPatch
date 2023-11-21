@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.FAB.widget.SimpleSeekBarChangeListener;
-import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.widget.UnmovableBtn;
@@ -103,7 +102,7 @@ public class SubView3Style extends LinearLayout {
         editInColor.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editInColor.setFilters(new InputFilter[]{new HexInputFilter(), new InputFilter.LengthFilter(6)});
         editInColor.setText(Integer.toHexString(getPreference().getInt(PREF_KEY_BTN_BG_COLOR, Color.WHITE)).substring(2));
-        editInColor.addTextChangedListener((SimpleTextWatcher)s -> {
+        editInColor.addTextChangedListener((QH.SimpleTextWatcher) s -> {
             String s1 = s.toString();
             while (s1.length() < 6)
                 s1 = s1.concat("f");
@@ -162,6 +161,7 @@ public class SubView3Style extends LinearLayout {
         linearCAOuter.addView(linearCAContent, linearCAContentparams);
         linearCAOuter.setPadding(0, 20, 0, 0);
         addView(linearCAOuter);
+//        addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s3_btnColor),linearCAContent,true));
 
 
         //侧栏背景颜色
@@ -170,7 +170,7 @@ public class SubView3Style extends LinearLayout {
         editSideColor.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         editSideColor.setFilters(new InputFilter[]{new HexInputFilter(), new InputFilter.LengthFilter(6)});
         editSideColor.setText(Integer.toHexString(getPreference().getInt(PREF_KEY_SIDEBAR_COLOR, Color.BLACK)).substring(2));
-        editSideColor.addTextChangedListener((SimpleTextWatcher)s -> {
+        editSideColor.addTextChangedListener((QH.SimpleTextWatcher) s -> {
             String s1 = s.toString();
             while (s1.length() < 6)
                 s1 = s1.concat("f");

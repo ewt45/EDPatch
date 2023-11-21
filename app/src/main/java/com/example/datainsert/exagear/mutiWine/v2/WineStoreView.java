@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.mutiWine.v2;
 
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.mutiWine.v2.DownloadParser.PARSER_KRON4EK;
 import static com.example.datainsert.exagear.mutiWine.v2.DownloadParser.PARSER_PREF_KEY;
@@ -41,8 +42,6 @@ public class WineStoreView extends LinearLayout {
     public WineStoreView(Context context) {
         super(context);
         setOrientation(VERTICAL);
-        int padding = QH.px(context, RR.attr.dialogPaddingDp);
-//        setPadding(padding, padding, padding, padding);
         initUI(context);
     }
 

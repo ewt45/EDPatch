@@ -67,8 +67,11 @@ public abstract class BaseFragment extends DialogFragment implements DialogInter
      * @param view     视图
      * @param vertical 是否垂排列
      * @return 线性布局
+     * @deprecated 请使用QH的同名函数
      */
+    @Deprecated
     public static LinearLayout getOneLineWithTitle(Context c, @Nullable String s, @Nullable View view, boolean vertical) {
+//        return QH.getOneLineWithTitle(c,s,view,vertical);
         LinearLayout linearLayout = new LinearLayout(c);
         linearLayout.setOrientation(vertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
         if (s != null && !s.equals("")) {
@@ -115,7 +118,7 @@ public abstract class BaseFragment extends DialogFragment implements DialogInter
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
             textView.setLineSpacing(0,1.5f);
             textView.setText(tooltip);
-            int padding = QH.px(v.getContext(), RR.attr.dialogPaddingDp);
+            int padding = RR.dimen.dialogPadding();
             textView.setPadding(padding,padding,padding,padding);
             ScrollView scrollView = new ScrollView(v.getContext());
             scrollView.addView(textView);

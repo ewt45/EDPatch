@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
@@ -18,7 +19,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.example.datainsert.exagear.FAB.widget.SimpleTextWatcher;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.model.OneKey;
@@ -34,7 +34,7 @@ public class BtnPropertiesView extends LinearLayout {
         super(context);
         mOneKey = oneKey;
 
-        int padding = QH.px(getContext(), RR.attr.dialogPaddingDp);
+        int padding = dialogPadding();
         setPadding(padding,0,padding,0);
         inflateUI();
     }
@@ -53,7 +53,7 @@ public class BtnPropertiesView extends LinearLayout {
         editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setText(mOneKey.getName());
         editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
-        editText.addTextChangedListener((SimpleTextWatcher)s -> mOneKey.setName(s.toString()));
+        editText.addTextChangedListener((QH.SimpleTextWatcher) s -> mOneKey.setName(s.toString()));
         LinearLayout renameLinear = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
         addView(renameLinear);
 
