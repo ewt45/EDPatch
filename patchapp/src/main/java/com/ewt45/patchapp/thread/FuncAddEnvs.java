@@ -38,7 +38,8 @@ public class FuncAddEnvs implements Callable<Void> {
 
         //复制自己的类
         PatcherFile.copy(PatcherFile.TYPE_SMALI, new String[]{
-                "/com/example/datainsert/exagear/action",
+                "/com/example/datainsert/exagear/action/addenv",
+                "/com/example/datainsert/exagear/action/AddEnvironmentVariables.smali",
                 "/com/example/datainsert/exagear/RR.smali",
                 "/com/example/datainsert/exagear/QH.smali",
         });

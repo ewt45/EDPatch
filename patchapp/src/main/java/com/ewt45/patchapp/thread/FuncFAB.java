@@ -318,6 +318,10 @@ public class FuncFAB implements Func {
             //用到的xsdl的so库
             PatcherFile.copy(PatcherFile.TYPE_ASSETS, new String[]{"/pulseaudio-xsdl.zip"});
 
+//            PatcherFile.copy(TYPE_SMALI, new String[]{
+//                    "/com/example/datainsert/exagear/action/AddPopupMenuItems.smali",
+//            "/com/eltechs/axs/widgets/popupMenu/AXSPopupMenu.smali"});
+
         }
     }
 

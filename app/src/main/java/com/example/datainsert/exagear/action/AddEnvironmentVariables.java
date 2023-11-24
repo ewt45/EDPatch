@@ -165,7 +165,7 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
 
         //插入参数
         Arguments.allFromPoolFile((int) contId);
-        wineCmd = ConSetOtherArgv.insertArgsToWineCmd(wineCmd,ubtConfig.getGuestEnvironmentVariables(), (int) contId);
+        wineCmd = ConSetOtherArgv.insertArgsToWineCmd(wineCmd, ubtConfig.getGuestEnvironmentVariables(), (int) contId);
 
         //添加实时输入
         if (QH.isTesting()) {
@@ -223,7 +223,7 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
     }
 
     private void startPulseAudio(UBTLaunchConfiguration ubtConfig) {
-        PulseAudio.installAndRun();
+        PulseAudio.installAndRun(PulseAudio.shouldStartByPref());
         ubtConfig.addEnvironmentVariable("PULSE_SERVER", "tcp:127.0.0.1:4713");
     }
 

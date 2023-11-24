@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.FAB.dialogfragment;
 
+import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
@@ -38,8 +39,9 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class PulseAudio extends BaseFragment {
-    private final static File logFile = new File(Globals.getAppContext().getExternalFilesDir(""), "logs/palog.txt");
-    private final static File paWorkDir = new File(Globals.getAppContext().getFilesDir(), "pulseaudio-xsdl");
+    private final static File paWorkDir = new File(QH.Files.edPatchDir(), "pulseaudio-xsdl");
+    private final static File logFile = new File(paWorkDir, "logs/palog.txt");
+
     /**
      * 是否在启动容器时启动pulse。默认为PREF_VAL_PULSE_AUTORUN(true)
      */
@@ -60,13 +62,14 @@ public class PulseAudio extends BaseFragment {
     private static final String TAG = "PulseAudio";
 
 
-    public static void installAndRun() {
-        //启动pulseaudio （貌似多次启动会导致失效，要么就启动一次，要么就先停止再启动）
+    /**
+     * 启动pulseaudio （貌似多次启动会导致失效，要么就启动一次，要么就先停止再启动）
+     * @param isStart 停止还是运行
+     */
+    public static void installAndRun(boolean isStart) {
         //解压要求paDir不存在
         if (paWorkDir.exists() && (!paWorkDir.isDirectory() || paWorkDir.list().length == 0) && !paWorkDir.delete())
             return;
-
-        //解压必要文件
         ZipInstallerAssets.installIfNecessary(Globals.getAppContext(), new ZipInstallerAssets.InstallCallback() {
             @Override
             public void installationFailed(String str) {
@@ -76,9 +79,7 @@ public class PulseAudio extends BaseFragment {
 
             @Override
             public void installationFinished(String str) {
-                //设置pulseaudio路径并启动pulseaudio （即使不勾选启用，也要先调用这个执行停止，否则停不下来了）
-//                setEnv(paDir.getAbsolutePath());
-                killAndStartPulseaudio();
+                killAndStartPulseaudio(isStart);//设置pulseaudio路径并启动pulseaudio （即使不勾选启用，也要先调用这个执行停止，否则停不下来了）
             }
 
         }, paWorkDir, "pulseaudio-xsdl.zip");
@@ -87,8 +88,9 @@ public class PulseAudio extends BaseFragment {
     /**
      * 确保so文件存在，新建java进程 停止pulse。
      * 若勾选启用，则运行pulseaudio
+     * @param isStart 停止还是运行
      */
-    private static void killAndStartPulseaudio() {
+    private static void killAndStartPulseaudio(boolean isStart) {
         Log.d(TAG, "startPulseaudio: 停止pulseaudio");
 
         try {
@@ -128,9 +130,8 @@ public class PulseAudio extends BaseFragment {
                 }
 
             //如果设置不开启pulse，直接返回
-            if (!getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN))
+            if (!isStart)
                 return;
-
 
 //            builder.command(
 //                    "./pulseaudio",
@@ -156,14 +157,6 @@ public class PulseAudio extends BaseFragment {
                 builder.redirectOutput(ProcessBuilder.Redirect.appendTo(logFile));
             }
             builder.start();
-
-
-//            Runtime.getRuntime().exec(
-//                    dir + "/pulseaudio --disable-shm -n -F " + dir + "/pulseaudio.conf --dl-search-path="+dir+" --daemonize=false --use-pid-file=false --log-target=stderr --log-level=debug",
-//                    new String[]{"HOME=" + dir, "TMPDIR=" + dir, "LD_LIBRARY_PATH=" + dir},
-//                    paDir
-//            );
-
         } catch (IOException | InterruptedException e) {
             try (PrintWriter printWriter = new PrintWriter(logFile);) {
                 e.printStackTrace(printWriter);
@@ -180,13 +173,34 @@ public class PulseAudio extends BaseFragment {
         Context c = requireContext();
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams paddingParams = new LinearLayout.LayoutParams(-2, -2);
-        paddingParams.topMargin = AndroidHelpers.dpToPx(20);
+        LinearLayout.LayoutParams paddingParams = new LinearLayout.LayoutParams(-1, -2);
+        paddingParams.topMargin = margin8Dp();
 
         //顶端简介
         TextView tvShortInfo = new TextView(c);
         tvShortInfo.setText(getS(RR.pa_explain));
         linearRoot.addView(tvShortInfo, paddingParams);
+
+        //立即停止和开始
+//        Button btnRunNow = new Button(c);
+//        btnRunNow.setText("Run Now");
+//        btnRunNow.setOnClickListener(v->{
+//            installAndRun(true);
+//            dismiss();
+//        });
+//        Button btnStopNow = new Button(c);
+//        btnStopNow.setText("stop now");
+//        btnStopNow.setOnClickListener(v->{
+//            installAndRun(false);
+//            dismiss();
+//        });
+//        LinearLayout linearRunOrStop = new LinearLayout(c);
+//        linearRunOrStop.setOrientation(LinearLayout.HORIZONTAL);
+//        LinearLayout.LayoutParams weightParams = new LinearLayout.LayoutParams(0,-2);
+//        weightParams.weight=1;
+//        linearRunOrStop.addView(btnRunNow,weightParams);
+//        linearRunOrStop.addView(btnStopNow,weightParams);
+//        linearRoot.addView(linearRunOrStop,paddingParams);
 
         //是否启动pulse服务
         String[] checkRunStr = getS(RR.pa_checkRun).split("\\$");
@@ -259,13 +273,6 @@ public class PulseAudio extends BaseFragment {
         String trShTxt1 = trShStrs[1];
         String trShTxt2 = trShStrs[2];
 
-        //Audio Seleted driver: pulseaudio Test Sound
-//                "检查PulseAudio服务是否正常工作：启动容器后打开winecfg，在音效栏中，“选中的驱动”显示winepulse.drv，点击“测试音频”按钮能听到声音。" +
-//                        "\n\n若测试结果不正确，请检查以下几点：" +
-//                        "\n1. elf正常运行：勾选输出日志，且日志中无报错，" +
-//                        "\n2. 环境变量导出：PULSE_SERVER=tcp:127.0.0.1:4713正常会被自动导出。也可用Exaterm或Putty手动确认。" +
-//                        "\n3. 注册表项：打开regedit，[HKEY_CURENT_USER\\Software\\Wine\\Drivers] 不存在Audio项，若存在则其值应该有 pulse 。"
-
         TextView tvTbSt = new TextView(c);
         tvTbSt.setLineSpacing(0, 1.2f);
         tvTbSt.setTextIsSelectable(true);
@@ -315,6 +322,13 @@ public class PulseAudio extends BaseFragment {
         params.setMarginStart(AndroidHelpers.dpToPx(16));
         textView.setLayoutParams(params);
         return textView;
+    }
+
+    /**
+     * 是否应该启动pulseaudio。从pref读取
+     */
+    public static boolean shouldStartByPref(){
+        return QH.getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN);
     }
 
     @Override

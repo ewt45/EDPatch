@@ -35,7 +35,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
@@ -293,15 +292,13 @@ public class QH {
         return v -> new AlertDialog.Builder(v.getContext()).setMessage(info).setPositiveButton(android.R.string.yes, null).show();
     }
 
-    public static Object getFieldReflectInst(Class<?> clz, Object clzInst, String fieldName, boolean isHide) {
+    public static Object reflectPrivateMember(Class<?> clz, Object clzInst, String fieldName) {
         Object fieldInst = null;
         try {
             Field field = clz.getDeclaredField(fieldName);
-            if (isHide)
-                field.setAccessible(true);
+            field.setAccessible(true);
             fieldInst = field.get(clzInst);
-            if (isHide)
-                field.setAccessible(false);
+            field.setAccessible(false);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

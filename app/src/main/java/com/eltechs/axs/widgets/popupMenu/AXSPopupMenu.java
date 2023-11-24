@@ -9,6 +9,8 @@ import com.eltechs.axs.helpers.AndroidFeatureTests;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.actions.Action;
 import com.eltechs.axs.widgets.actions.ActionGroup;
+import com.example.datainsert.exagear.action.AddPopupMenuItems;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +22,7 @@ public class AXSPopupMenu {
 
     /* JADX INFO: Access modifiers changed from: private */
     /* loaded from: classes.dex */
-    public interface MenuItemWrapper {
+    private interface MenuItemWrapper {
         void addItemsToMenu(Menu menu, int i);
     }
 
@@ -82,6 +84,10 @@ public class AXSPopupMenu {
             menuItemWrapper.addItemsToMenu(menu, i);
             i++;
         }
+
+        //大部分操作模式（除了自定义）都用的是这个类来显示弹窗菜单。那么在每次显示前都添加一个选项好了
+//        AddPopupMenuItems.addBeforeShow(this);
+
         this.impl.show();
     }
 

@@ -1,5 +1,75 @@
 [TOC]
 
+# xserver左侧抽屉栏添加额外内容
+进入容器后，按手机返回键，可显示左侧抽屉栏。在里面添加一些额外功能。
+1. 下载smali压缩包并添加。
+## ~~pulseaudio~~,旋转屏幕
+1. 编辑smali。com.winlator.XServerDisplayActivity类，onCreate方法, 搜索字符串 setupUI 定位，在下一行添加。用于在侧栏显示更多选项。
+     ```
+      invoke-static {p0}, Lcom/example/datainsert/winlator/all/XserverNavMenuControl;->addItems(Lcom/winlator/XServerDisplayActivity;)V
+    ```
+~~2. 向apk/assets中添加pulseaudio-xsdl.tar.zst 链接: https://pan.baidu.com/s/17BKYH4OzsPSysewXlyxDAQ?pwd=c94e 提取码: c94e~~
+## 光标样式
+1. 编辑smali。com.winlator.XServerDisplayActivity类，showInputControlsDialog方法末尾，ContentDialog.show()之前，添加一行。用于修改光标样式。
+   ```
+   #添加这一行
+   invoke-static {p0, v0}, Lcom/example/datainsert/winlator/all/XserverNavMenuControl;->addInputControlsItems(Lcom/winlator/XServerDisplayActivity;Lcom/winlator/widget/ContentDialog;)V
+
+   invoke-virtual {v0}, Lcom/winlator/widget/ContentDialog;->show()V
+   ```
+2. WindowAttributes类，getCursor方法，整个替换
+   ```
+   .method public getCursor()Lcom/winlator/xserver/Cursor;
+     .registers 2
+
+     .line 104
+     sget-boolean v0, Lcom/example/datainsert/winlator/all/XserverNavMenuControl;->isGameStyleCursor:Z
+
+     if-nez v0, :cond_7
+
+     .line 105
+     iget-object v0, p0, Lcom/winlator/xserver/WindowAttributes;->cursor:Lcom/winlator/xserver/Cursor;
+
+     return-object v0
+
+     .line 108
+     :cond_7
+     iget-object v0, p0, Lcom/winlator/xserver/WindowAttributes;->cursor:Lcom/winlator/xserver/Cursor;
+
+     if-nez v0, :cond_20
+
+     iget-object v0, p0, Lcom/winlator/xserver/WindowAttributes;->window:Lcom/winlator/xserver/Window;
+
+     invoke-virtual {v0}, Lcom/winlator/xserver/Window;->getParent()Lcom/winlator/xserver/Window;
+
+     move-result-object v0
+
+     if-eqz v0, :cond_20
+
+     .line 109
+     iget-object v0, p0, Lcom/winlator/xserver/WindowAttributes;->window:Lcom/winlator/xserver/Window;
+
+     invoke-virtual {v0}, Lcom/winlator/xserver/Window;->getParent()Lcom/winlator/xserver/Window;
+
+     move-result-object v0
+
+     iget-object v0, v0, Lcom/winlator/xserver/Window;->attributes:Lcom/winlator/xserver/WindowAttributes;
+
+     invoke-virtual {v0}, Lcom/winlator/xserver/WindowAttributes;->getCursor()Lcom/winlator/xserver/Cursor;
+
+     move-result-object v0
+
+     return-object v0
+
+     .line 110
+     :cond_20
+     iget-object v0, p0, Lcom/winlator/xserver/WindowAttributes;->cursor:Lcom/winlator/xserver/Cursor;
+
+     return-object v0
+   .end method
+   ```
+
+
 # 自定义wine修复
 1. XServerDisplayActivity类，setupXEnvironment函数中，从上往下找到“WINEDEBUG"附近，然后按照下方提示修改。从`#开始修改`开始。该改动用于跳过未初始化的wininfo，container等成员变量的读取
 ```smali
