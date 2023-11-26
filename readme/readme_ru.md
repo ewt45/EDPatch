@@ -38,7 +38,7 @@
 - Добавить ярлыки .exe на рабочий стол Android
 - MultiWine v2
 - Настройки контейнера - Выбор рендера
-- Настройки контейнера - Дополнительные аргументы
+- [Настройки контейнера - Дополнительные аргументы](https://ewt45.github.io/blogs/2023/winter/exagearOtherArgv/)
 
 ## Third-party project dependencies
 - [apktool](https://ibotpeaches.github.io/Apktool/)

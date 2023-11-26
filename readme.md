@@ -43,7 +43,7 @@
 - [exe快捷方式直接启动](https://www.bilibili.com/video/BV1QM4y1v7RG/)
 - [多版本wine共存 v2](https://www.bilibili.com/video/BV1bk4y1K7jR/)
 - 容器设置 - 渲染方式
-- 容器设置 - 额外启动参数
+- [容器设置 - 额外启动参数](https://ewt45.github.io/blogs/2023/winter/exagearOtherArgv/)
 
 ## 第三方依赖
 

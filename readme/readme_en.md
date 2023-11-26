@@ -39,7 +39,7 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 - Launch exe Shortcut Directly
 - MultiWine v2
 - Container Settings - Renderer
-- Container Settings - Extra Launching Arguments
+- [Container Settings - Extra Launching Arguments](https://ewt45.github.io/blogs/2023/winter/exagearOtherArgv/)
 
 ## Third-party project dependencies
 
