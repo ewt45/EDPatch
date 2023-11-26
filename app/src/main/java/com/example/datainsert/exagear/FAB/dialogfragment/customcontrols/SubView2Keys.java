@@ -1,6 +1,5 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.getS;
@@ -22,6 +21,7 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.AvailableKeysView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets.BtnColRecyclerView;
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controls.model.JoyParams;
 import com.example.datainsert.exagear.controls.model.KeyCodes2;
@@ -89,27 +89,27 @@ public class SubView2Keys extends LinearLayout {
         radioKeyPos.addView(rdBtnSideBar);
         radioKeyPos.addView(rdBtnFreePos);
         radioKeyPos.setOnCheckedChangeListener((group, checkedId) -> {
-            int position = checkedId == rdBtnSideBarID?0:1;
+            int position = checkedId == rdBtnSideBarID ? 0 : 1;
             getPreference().edit().putBoolean(PREF_KEY_CUSTOM_BTN_POS, position == 1).apply();
             mTwoWaysKeyGroups[position].setVisibility(VISIBLE);
             mTwoWaysKeyGroups[(position + 1) % 2].setVisibility(GONE);
         });
-        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_layoutMode), radioKeyPos, true);
+        LinearLayout oneLineSpinKeyPos = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s2_layoutMode), radioKeyPos, true);
         setDialogTooltip(oneLineSpinKeyPos.getChildAt(0), getS(RR.cmCtrl_s2_layoutModeTip));
         addView(oneLineSpinKeyPos);
 
         //左侧栏按键和右侧栏按键
         LinearLayout linearSideColOuter = new LinearLayout(c);
         linearSideColOuter.setOrientation(VERTICAL);
-        LinearLayout linearLeftSide = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_LSideTitle), getAddSideBarGroup(c, true), true);
+        LinearLayout linearLeftSide = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s2_LSideTitle), getAddSideBarGroup(c, true), true);
         setDialogTooltip(linearLeftSide.getChildAt(0), getS(RR.cmCtrl_s2_sideTitleTip));
         linearSideColOuter.addView(linearLeftSide);
-        LinearLayout linearRightSide = getOneLineWithTitle(c, getS(RR.cmCtrl_s2_RSideTitle), getAddSideBarGroup(c, false), true);
+        LinearLayout linearRightSide = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s2_RSideTitle), getAddSideBarGroup(c, false), true);
         setDialogTooltip(linearRightSide.getChildAt(0), getS(RR.cmCtrl_s2_sideTitleTip));
         linearSideColOuter.addView(linearRightSide);
 
         mTwoWaysKeyGroups[0] = linearSideColOuter;
-        addView(linearSideColOuter);
+        addView(linearSideColOuter, QH.LPLinear.one().top().to());
 
         //按钮与容器画面重叠（思路有问题，这个废弃）
 //        getPreference().getBoolean(PREF_KEY_BTN_ON_WIDGET, false);
@@ -120,7 +120,7 @@ public class SubView2Keys extends LinearLayout {
         csPosKeyBtn.setText(getS(RR.cmCtrl_s2_selectBtn));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             csPosKeyBtn.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
-            csPosKeyBtn.setBackground(new RippleDrawable(ColorStateList.valueOf(0x44444444),null,csPosKeyBtn.getBackground()));
+            csPosKeyBtn.setBackground(new RippleDrawable(ColorStateList.valueOf(0x44444444), null, csPosKeyBtn.getBackground()));
         }
         csPosKeyBtn.setOnClickListener(v -> {
             boolean[] condition = new boolean[mKeyCodes3.getKeyList().size()];
@@ -153,12 +153,11 @@ public class SubView2Keys extends LinearLayout {
 
 
         //getS(RR.cmCtrl_s2_FreePosTitle)
-        mTwoWaysKeyGroups[1] = getOneLineWithTitle(c, null, csPosKeyBtn, true);
+        mTwoWaysKeyGroups[1] = QH.getOneLineWithTitle(c, null, csPosKeyBtn, true);
         addView(mTwoWaysKeyGroups[1]);
 
         //设置按键布局方式 两种方式显示一个，另一个隐藏
         radioKeyPos.check(getPreference().getBoolean(PREF_KEY_CUSTOM_BTN_POS, false) ? rdBtnFreePosID : rdBtnSideBarID);
-
 
 
     }
@@ -230,7 +229,7 @@ public class SubView2Keys extends LinearLayout {
     /**
      * radiobutton 选中哪个布局模式 . 0是左右侧栏  1是自由布局
      */
-    public void checkLayoutMode(int index){
+    public void checkLayoutMode(int index) {
 
     }
 }

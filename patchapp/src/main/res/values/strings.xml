@@ -7,21 +7,21 @@
     <string name="actmsg_finish">…finish</string>
     <string name="actmsg_buildapk">build apk</string>
     <string name="actmsg_decodeapk">decode apk</string>
-    <string name="funcname_cursorimg">show cursor</string>
-    <string name="funcname_fab">float action button\n - Custom location of drive D\n - Custom Control\n - PulseAudio (XSDL)\n - Xegw</string>
-    <string name="funcname_prefresl">container settings - custom resolution</string>
-    <string name="funcname_softinput">android 11+ soft-input no-crashing</string>
+    <string name="funcname_cursorimg">Show Cursor</string>
+    <string name="funcname_fab">Float Action Button\n - Custom location of drive D\n - Custom Control\n - PulseAudio (XSDL)\n - Xegw</string>
+    <string name="funcname_prefresl">Container Settings - Custom Resolution</string>
+    <string name="funcname_softinput">Android 11+ Soft-input No-crashing</string>
     <string name="btntxt_startpatch">start patch</string>
     <string name="btntxt_installnew">Install</string>
     <string name="tv_patchingprogress">patching…</string>
     <string name="tv_logtitle">Log</string>
-    <string name="actmsg_signapk">"sign apk "</string>
+    <string name="actmsg_signapk">"sign apk"</string>
     <string name="actmsg_signaldone">---====all tasks====---</string>
     <string name="n1_exagear_apk_n2_n3_apk">usage: \n1. Select exagear\'s apk and wait for decoding to complete.\n2. Check the functions, click patch button and wait for building to complete.\n3. Click install button to install the patched apk.\nnotice:\n1. It is not guaranteed that patching will be successful.\n2. Apk\'s signature will be different after patching.Resign it on your own if necessary.</string>
     <string name="app_info">selected apk：%1$s</string>
     <string name="actmsg_fail">…failed</string>
     <string name="patchstep1_title">1/3. Select apk</string>
-    <string name="funcname_selobb">select obb manually</string>
+    <string name="funcname_selobb">Select Obb Manually</string>
     <string name="funcname_fab_drived">Custom location of drive D</string>
     <string name="fraghelp_title2_steps">Steps</string>
     <string name="fraghelp_body_step_1">Select exagear apk from installed apks list or local files. Wait until decoded session completes.</string>
@@ -62,117 +62,30 @@
     <string name="funcname_fab_cstmCtrl">Custom Control</string>
     <string name="fraghelp_body_brief">After adding some small functions to exagear (3.0.2) (mainly through modifying dex), I found it is too troublesome to manually change smali after all. \nEven if  a tutorial telling the modified location and codes is provided, it is not suitable for most people who have no experience of apk modification.\nSo I\'m wondering if I can make an application. The user only needs to click a button and wait for the automatic modification to complete, then install the new apk. \nThat\'s why this application was born. Due to my limited knowledge, 100% modification success or compatibility with all versions of exagear is not guaranteed.</string>
     <string name="fraghelp_body_cstmCtrl">Most of the options have descriptions that show up when long pressing. Select \"default\" of Control in container\'s properties. After entering the container, three-finger click to edit.\nMouse: Toggle visibility of mouse cursor. Switch gesture modes (default mode and touchpad mode) . Set mouse move speed.\nButtons: Customize buttons ( keys, text and position) . Switch layout mode (sidebar and free position) . Mouse button keys and joystick style buttons are available. \nStyle: Customize button color, transparency, size, sidebar background color.</string>
-    <string name="funcname_shortcut">launch exe shortcut directly</string>
+    <string name="funcname_shortcut">Launch exe Shortcut Directly</string>
     <string name="fraghelp_body_shortcut">Long press the app icon, select an exe shortcut, and click to run it.\nHow to add an app shortcut: Click the menu of an exe shortcut on the \"Desktop\" page, and select \"Add as app shortcut\".\nNote: A maximum of four shortcuts can be added. Before launching from shortcut, ensure that the app is not running at background. After deleting the exe shortcut ( .desktop file), the app shortcut will be automatically deleted the next time launching the app . This feature requires Android 7 and above.</string>
     <string name="fraghelp_body_mw">Added a download icon on the left-top of  \"containers manager\" page, click to enter the \"add/remove wines\" page.\n- Local: Edit the downloaded or bundled Wines. After Clicking Install (extract) option, it will be displayed as \'active\', which can be selected when creating a new container. Use Uninstall (delete extracted folder) option to reduce local storage. Wines are stored at z:/opt/WineCollection.\n- Downloadable: Download all kinds of Wines from the Internet. Available sources are WineHQ(Official build, only ubuntu18-builds are listed) and Kron4ek(shrinked size, staging versions are not included). Downloaded Wines appear at \'Local\' page. \n\nhow to add bundled Wines into caches:\n`/opt/WineCollection/custom/$TagFolder/$WineFolder/bin/wine`\n- `$TagFolder` : the folder\'s name represents this wine\'s name. it shows when creating containers, should be unique.\n- `$WineFolder` : it should contains the `./bin/wine` binary file.\n- also in `$TagFolder` there should be a `.tar.xz` archive file, from which `$WineFolder` will be extracted.</string>
     <string name="funcname_mw">MultiWine v2</string>
-    <string name="funcname_renderer">container settings - renderer options</string>
+    <string name="funcname_renderer">Container Settings - Renderer Options</string>
     <string name="funcname_fab_pulse">PulseAudio (XSDL)</string>
     <string name="fraghelp_body_pulse">PulseAudio is used to play audio, reducing sound problems. This function uses PulseAudio server extracted from Xserver XSDL. It requires 64-bit support on your device.</string>
     <string name="fraghelp_body_renderer">- Multiwine v1 used to be combined with this function internally, but v2 no more. If v2 is patched, you have to patch this manually if you want to continue to use it.\n- Set diffrent LD_LIBRARY_PATH for different renderers. libGL.so.1 will be loaded from this path with higher priority. You can edit paths in z:/opt/renderers.txt.\n- Some renderer options have additional operations:\n    - None turnip renderers: Redirect VK_ICD_FILENAMES to a non-exist file, in case these renderers won\'t work.\n    - virgl built-in: Launch libvirgl_test_server.so in a new java process. Only works in xegw apk. No need of Mcat or /opt/start.sh. Log is outputed at Android/data/packageName/logs/virglLog.txt.\n    - virtio-gpu: start Mcat. Before Xegw, mcat is used to start proot environment for this renderer, but in xegw it is rewriten to launch /opt/start.sh and won\'t launch proot automatically.</string>
-    <string name="funcname_otherargv">container settings - Additional  Arguments</string>
-    <string name="fraghelp_body_otherargv">- Params inserted when launching, viewable in /sdcard/x86-stderr.txt.\n- Set CPU cores, Autorun ib.exe, Kill services.exe.</string>
-    <string name="large_text" translatable="false">
-        "Material is the metaphor.\n\n"
-
-        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
-        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
-        "technologically advanced and open to imagination and magic.\n"
-        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
-        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
-        "flexibility of the material creates new affordances that supercede those in the physical "
-        "world, without breaking the rules of physics.\n"
-        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
-        "interact, and exist in space and in relation to each other. Realistic lighting shows "
-        "seams, divides space, and indicates moving parts.\n\n"
-
-        "Bold, graphic, intentional.\n\n"
-
-        "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
-        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
-        "imagery, large scale typography, and intentional white space create a bold and graphic "
-        "interface that immerse the user in the experience.\n"
-        "An emphasis on user actions makes core functionality immediately apparent and provides "
-        "waypoints for the user.\n\n"
-
-        "Motion provides meaning.\n\n"
-
-        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
-        "All action takes place in a single environment. Objects are presented to the user without "
-        "breaking the continuity of experience even as they transform and reorganize.\n"
-        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
-        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
-
-        "3D world.\n\n"
-
-        "The material environment is a 3D space, which means all objects have x, y, and z "
-        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
-        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
-        "position along the z-axis and has a standard 1dp thickness.\n"
-        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
-        "emulated by manipulating the y-axis.\n\n"
-
-        "Light and shadow.\n\n"
-
-        "Within the material environment, virtual lights illuminate the scene. Key lights create "
-        "directional shadows, while ambient light creates soft shadows from all angles.\n"
-        "Shadows in the material environment are cast by these two light sources. In Android "
-        "development, shadows occur when light sources are blocked by sheets of material at "
-        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
-        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
-
-        "Resting elevation.\n\n"
-
-        "All material objects, regardless of size, have a resting elevation, or default elevation "
-        "that does not change. If an object changes elevation, it should return to its resting "
-        "elevation as soon as possible.\n\n"
-
-        "Component elevations.\n\n"
-
-        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
-        "does not vary from 6dp in one app to 16dp in another app).\n"
-        "Components may have different resting elevations across platforms, depending on the depth "
-        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
-
-        "Responsive elevation and dynamic elevation offsets.\n\n"
-
-        "Some component types have responsive elevation, meaning they change elevation in response "
-        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
-        "changes are consistently implemented using dynamic elevation offsets.\n"
-        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
-        "to the component’s resting state. They ensure that elevation changes are consistent "
-        "across actions and component types. For example, all components that lift on press have "
-        "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
-        "elevation.\n\n"
-
-        "Avoiding elevation interference.\n\n"
-
-        "Components with responsive elevations may encounter other components as they move between "
-        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
-        "through other material, components avoid interfering with one another any number of ways, "
-        "whether on a per component basis or using the entire app layout.\n"
-        "On a component level, components can move or be removed before they cause interference. "
-        "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
-        "On the layout level, design your app layout to minimize opportunities for interference. "
-        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
-        "when a user tries to pick up one of cards.\n\n"
-    </string>
+    <string name="funcname_otherargv">Container Settings - Additional  Arguments</string>
+    <string name="fraghelp_body_otherargv">- These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n- If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container.\n- All available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.\n- Argument type is either ENV or CMD.\n    - Environment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n    - Cmd: If it\'s before/after the original cmd, this cmd and the original cmd are connected with one \'&amp;\'.</string>
     <string name="title_activity_new_test" translatable="false">NewTestActivity</string>
     <string name="tab_text_1" translatable="false">Tab 1</string>
+    <string name="provider_ato" translatable="false">com.ewt45.patchapp.fileprovider</string>
     <string name="tab_text_2" translatable="false">Tab 2</string>
     <string name="tips_action_failed">Some actions failed. Please check Log for details.</string>
-    <string name="provider_ato" translatable="false">com.ewt45.patchapp.fileprovider</string>
     <string name="btntxt_back_to_step1">Back</string>
     <string name="btntxt_view_new_apk">Open</string>
     <string name="patchstep1_tv_noapkfound">No apk selected. Please find a Exagear apk you want to modify from the installed apk list or local files.</string>
     <string name="patchstep2_tv_statistic">Installed: %d/%d\nNewly selected: %d/%d</string>
     <string name="patchstep2_recy_item">installed: %d | latest: %d</string>
     <string name="patchstep3_tv_finish">Actions done. You can install the patched apk, or return to the front.</string>
-    <string name="patchstep3_chooser_title">View with...</string>
+    <string name="patchstep3_chooser_title">View with…</string>
     <string name="btntxt_selectapkfiles">Files</string>
     <string name="btntxt_selectapkinstalled">App list</string>
+    <string name="patchstep1_tv_newapkselected">The selected apk is decoded successfully. Now you can click the \"→\" button to  proceed to the next step. Or reselect an apk.</string>
+    <string name="btntxt_reselect">Reselect</string>
 </resources>

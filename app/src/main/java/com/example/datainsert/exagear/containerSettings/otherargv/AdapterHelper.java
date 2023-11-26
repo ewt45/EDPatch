@@ -5,6 +5,7 @@ import static com.example.datainsert.exagear.RR.dimen.minCheckSize;
 import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.KEY_TASKSET;
 import static com.example.datainsert.exagear.containerSettings.ConSetOtherArgv.VAL_TASKSET_DEFAULT;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -88,6 +89,7 @@ class AdapterHelper {
         linearRoot.addView(linearPart1);
         linearRoot.addView(linearPart2);
         linearRoot.setLayoutParams(new ViewGroup.LayoutParams(-1, -2));
+        linearRoot.setLayoutTransition(new LayoutTransition());
         return linearRoot;
     }
 

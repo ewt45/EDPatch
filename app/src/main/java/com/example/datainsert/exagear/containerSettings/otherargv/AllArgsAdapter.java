@@ -57,10 +57,6 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
         mData = Arguments.all;
     }
 
-    public List<Argument> getALlData() {
-        return mData;
-    }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
@@ -95,10 +91,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
                     mData.get(holder.getAdapterPosition()).setArg("");
 
                 //显示或隐藏核心数
-                TransitionManager.beginDelayedTransition(holder.root);
-                ViewGroup.LayoutParams params = holder.linearPart2.getLayoutParams();
-                params.height = isChecked ? -2 : 0;
-                holder.linearPart2.setLayoutParams(params);
+                holder.linearPart2.setVisibility(isChecked ? VISIBLE : GONE);
             }
         });
         if (!isTypeMulti)
@@ -109,11 +102,9 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
             holder.ck.setButtonDrawable(null);
             holder.ck.setOnClickListener(v -> {
                 boolean isFolded = holder.ck.getRotation() == 0;
-                TransitionManager.beginDelayedTransition(holder.root);
                 holder.ck.animate().rotation(isFolded ? 90 : 0).setDuration(300).start();
-                ViewGroup.LayoutParams params = holder.linearPart2.getLayoutParams();
-                params.height = isFolded ? -2 : 0;
-                holder.linearPart2.setLayoutParams(params);
+                TransitionManager.beginDelayedTransition((ViewGroup) holder.linearPart2.getParent());
+                holder.linearPart2.setVisibility(isFolded ? VISIBLE : GONE);
             });
         }
 
@@ -160,8 +151,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
         }
 
         //只有cpu核心且勾选了它的时候才显示第二布局，否则均隐藏（初次构建布局就没必要加动画了吧）
-        holder.linearPart2.getLayoutParams().height = (isTypeCPU && holder.ck.isChecked()) ? -2 : 0;
-        holder.linearPart2.setLayoutParams(holder.linearPart2.getLayoutParams());
+        holder.linearPart2.setVisibility((isTypeCPU && holder.ck.isChecked()) ? VISIBLE : GONE);
     }
 
     /**
@@ -172,13 +162,14 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
     private void buildItemActionMenu(ViewHolder holder, View v, int subInd) {
         PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
         popupMenu.getMenu().add(getS(RR.global_edit)).setOnMenuItemClickListener(item -> {  //编辑
-            buildEditArgDialog(v.getContext(), holder.getAdapterPosition(), subInd);
+            buildEditArgDialog(v.getContext(), holder.getAdapterPosition(), subInd, getS(RR.global_edit));
             return true;
         });
         popupMenu.getMenu().add(getS(RR.global_del)).setOnMenuItemClickListener(item -> {  //删除
             int adapterPos = holder.getAdapterPosition();
             Argument argument = subInd == -1 ? mData.get(adapterPos) : mData.get(adapterPos).getGroup().get(subInd);
             new AlertDialog.Builder(v.getContext())
+                    .setTitle(getS(RR.global_del))
                     .setMessage(getS(RR.othArg_edit_delConfirm) + argument.getArg())
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                         if (subInd == -1) {
@@ -201,7 +192,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
      * 显示一个dialog，用于编辑一个参数的必要信息。可能为新建（oriPos=-1），也可能为修改现有（oriPos=其在mData中的位置）。
      * subInd不为-1，说明是参数组中的某个参数，否则表明这是个单参数
      */
-    public void buildEditArgDialog(Context c, int oriPos, int subInd) {
+    public void buildEditArgDialog(Context c, int oriPos, int subInd, String dialogTitle) {
         boolean isNew = oriPos == -1;
         Argument currArg;
         if (isNew) currArg = null;
@@ -270,6 +261,7 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
         linearAddRoot.addView(checkEnable, marginTopParams);
 
         new AlertDialog.Builder(c)
+                .setTitle(dialogTitle)
                 .setView(QH.wrapAsDialogScrollView(linearAddRoot))
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -283,6 +275,12 @@ public class AllArgsAdapter extends RecyclerView.Adapter<AllArgsAdapter.ViewHold
 
                     Argument newArg = Arguments.inflateArgument(currArg, checkEnable.isChecked() ? "e" : "d", typeNPos[0], typeNPos[1], editAlias.getText().toString(), argContent.trim());
                     if (!isNew) {
+                        //TODO 即使是编辑现有，也可能从单参数变为参数组或参数组变单参数。这里缺少判断
+                        // 要不就全部读取完参数库列表后，再统一调用一次函数，将参数合并成组。这样这里直接插入列表，然后重新合并一遍.
+                        // （函数考虑：单参数合并组成参数组，单参数加入已有参数组，已有参数组的子参数个数只剩一个退化为单参数，已有参数组的子参数有变化应移出该参数组）
+                        // 遍历两遍。第一遍遍历，检查已有参数组，其子参数是否还应留在此组，该参数组是否可以变成单参数。 、
+                        // 第二遍遍历，检查单参数是否可以加入到已有组或和其他单参数组成参数组
+                        // 但是怎么获取插入位置？
                         notifyItemChanged(oriPos);//Arguments.inflateArgument会直接修改现有arg对象，不需要移除再添加了
                         return;
                     }

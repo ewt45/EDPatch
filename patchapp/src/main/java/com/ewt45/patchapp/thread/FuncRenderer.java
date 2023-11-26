@@ -19,7 +19,7 @@ public class FuncRenderer implements Func {
 
     @Override
     public int getLatestVersion() {
-        return 4;
+        return 5;
     }
 
     @Override

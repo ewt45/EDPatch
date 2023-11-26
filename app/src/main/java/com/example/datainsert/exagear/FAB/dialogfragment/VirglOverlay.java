@@ -60,9 +60,6 @@ public class VirglOverlay extends BaseFragment {
      * edpatch无法修改xml，所以只能是在原本已经存在旧VIRGL overlay的情况下显示。检查：libvirgl-lib.so，com.mittorn.virgloverlay包
      */
     public static boolean isAlreadyExist(Context c) {
-//        if(!QH.isTesting())
-//            return false;
-
         if(QH.isTesting())
             return true;
 
@@ -82,7 +79,6 @@ public class VirglOverlay extends BaseFragment {
             e.printStackTrace();
         }
         return false;
-
     }
 
     @SuppressLint("SetTextI18n")

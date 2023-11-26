@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ConSetRenderer {
-    public static final String DEFAULT_RENDERER_TXT_CONTENT = "" +
+    public static String DEFAULT_RENDERER_TXT_CONTENT = "" +
             "# 每个key代表一种渲染方式，该值不能随意修改。name代表环境设置中此选项显示的名称。env代表选择该选项后，启动容器时设置环境变量。其中LD_LIBRARY_PATH路径可以存放libGl.so.1等文件。删去某个key及其对应name,env行后，该渲染方式不会显示在选项中。" +
             "\n# Each 'key' represents a renderer, its value shouldn't be changed. 'name' represents the name of this renderer option in container settings. 'env' is the env variables added when launching container. LD_LIBRARY_PATH is the path where libs like libGL.so.1 are placed. Delete 'key', 'name', 'env' lines and its corresponding renderer will not be added to options in container settings." +
 
@@ -69,15 +69,16 @@ public class ConSetRenderer {
             "\n  env:VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/freedreno_icd.i686.json" +
             "\n  env:GALLIUM_DRIVER=zink" +
             "\n  env:MESA_VK_WSI_DEBUG=sw";
+    public static final File configFile = new File(QH.Files.edPatchDir(), "renderers.txt");
     /**
      * 1: 初次添加
      * 2: 路径和名称存在/opt/renderers.txt中。点击选项下方有文字提示修改了哪些内容
      * 3: renderers.txt 中，改为存储环境变量，以便用户可以自定义 （icd，为dxvk的tz指定不同的libvulkan_freedreno.so）
      * 4: 支持未知渲染（没有在enum中定义的）
+     * 5: txt存储路径改为/opt/edpatch/renderers.txt
      */
-    private static final int VERSION_FOR_EDPATCH = 4;
+    private static final int VERSION_FOR_EDPATCH = 5;
     private static final String TAG = "ConSetRenderer";
-
     /**
      * 从/opt/renderers.txt读取并存储到map.
      * <p>
@@ -87,7 +88,6 @@ public class ConSetRenderer {
      * 存入pref中的数值为key，所以要求key不要随便修改
      */
     public static Map<String, Bundle> renderersMap = new LinkedHashMap<>();//要求有序，否则顺序会乱
-
 //    static {
 //        ConSetRenderer.readRendererTxt();
 //    }
@@ -101,20 +101,23 @@ public class ConSetRenderer {
      * key是key，value是name和path的bundle
      */
     public static void readRendererTxt() {
-        File configFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/renderers.txt");
-
 
         renderersMap.clear();
         try {
+            //迁移txt位置
+            File oldFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/renderers.txt");
+            if (oldFile.exists())
+                FileUtils.moveFile(oldFile, configFile);
+
             //若没有该文件，自己创建一个并写入默认内容
             if (!configFile.exists()) {
                 FileUtils.writeLines(configFile, "UTF-8", Arrays.asList(DEFAULT_RENDERER_TXT_CONTENT.split("\n")));
             }
 
             List<String> lines = new ArrayList<>();
-            for(String s: FileUtils.readLines(configFile)){
+            for (String s : FileUtils.readLines(configFile)) {
                 String trim = s.trim();
-                if( !(trim.startsWith("#") || trim.length() ==0))
+                if (!(trim.startsWith("#") || trim.length() == 0))
                     lines.add(trim);
             }
 
@@ -174,7 +177,7 @@ public class ConSetRenderer {
 
             //如果该值在txt中未记录，就不显示介绍。如果在txt中记录但不属于enum中已定义的，可以显示环境变量
             Bundle rendBundle = renderersMap.get(keys[i].toString());
-            if(rendBundle == null)
+            if (rendBundle == null)
                 continue;
 
             LinearLayout linearInfo = new LinearLayout(c);
@@ -185,7 +188,7 @@ public class ConSetRenderer {
 
             StringBuilder stringBuilder = new StringBuilder();
             ArrayList<String> envList = rendBundle.getStringArrayList("env");
-            assert envList!=null;
+            assert envList != null;
             for (String s : envList)
                 stringBuilder.append(s).append('\n');
 
@@ -199,7 +202,7 @@ public class ConSetRenderer {
 
             //每一项太长了，先默认缩成一行，点击展开
             for (String oneStr : stringBuilder.toString().split("\n")) {
-                if(oneStr.equals(""))
+                if (oneStr.equals(""))
                     continue;
                 TextView tvInfo = new TextView(c);
                 tvInfo.setTextIsSelectable(true);

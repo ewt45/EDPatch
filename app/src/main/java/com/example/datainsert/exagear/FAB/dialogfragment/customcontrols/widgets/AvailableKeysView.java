@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets
 
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -181,7 +180,7 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             linearSetJoyNumParams.gravity= Gravity.CENTER;
             joyBtnFrame.addView(linearSetJoyNum,linearSetJoyNumParams);
 
-            rootLinear.addView(getOneLineWithTitle(getContext(),RR.getS(RR.cmCtrl_allKeysJoyTitle),joyBtnFrame,true));
+            rootLinear.addView(QH.getOneLineWithTitle(getContext(),RR.getS(RR.cmCtrl_allKeysJoyTitle),joyBtnFrame,true),QH.LPLinear.one().left().to());
         }
 
     }
@@ -213,7 +212,7 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             line3.getChildAt(i).setLayoutParams(line3.getChildAt(i).getLayoutParams());
         }
         mouseLinear.addView(line3);
-        rootLinear.addView(getOneLineWithTitle(getContext(),RR.getS(RR.cmCtrl_allKeysMouseTitle),mouseLinear,true));
+        rootLinear.addView(QH.getOneLineWithTitle(getContext(),RR.getS(RR.cmCtrl_allKeysMouseTitle),mouseLinear,true),QH.LPLinear.one().left().to());
 //        rootLinear.addView(BaseFragment.getOneLineWithTitle(getContext(),"鼠标",));
     }
 

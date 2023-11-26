@@ -21,7 +21,7 @@
 ### Внимание
 1. Этот apk является экспериментальным, и успешное добавление функции не гарантируется.
 2. После нажатия кнопки Запуск исправлений, пожалуйста, не нажимайте другие кнопки и не сворачивайте приложение, иначе могут возникнуть проблемы.
-3. Исправленный apk находится в /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. Вы можете проверить это вручную с помощью любого файлового менеджера.
+3. Исправленный apk находится в /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/signed/tmp_sign.apk. Вы можете проверить это вручную с помощью любого файлового менеджера.
 4. Если опция "Использовать подпись по умолчанию" в настройках не отмечена, после исправления вам необходимо сначала удалить существующие apk, если используют то же имя пакета или тот же sharedUserId (оверлей ExaGear и VirGL). Если вам нужен внеший оверлей VirGL, подпишите их с той же подписью вручную.
 
 ## функций
@@ -29,6 +29,7 @@
   - Выбор локации диска D
   - Кастомное управление
   - PulseAudio (XSDL)
+  - Virgl Overlay (only enabled for apk with old VO view(OverlayBuildUI) added)
   - Xegw
 - [Отображать курсор](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
 - [Настройки контейнера - Кастомное разрешение](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
@@ -37,6 +38,7 @@
 - Добавить ярлыки .exe на рабочий стол Android
 - MultiWine v2
 - Настройки контейнера - Выбор рендера
+- Настройки контейнера - Дополнительные аргументы
 
 ## Third-party project dependencies
 - [apktool](https://ibotpeaches.github.io/Apktool/)
@@ -51,6 +53,31 @@
 
 
 ## Change Log
+
+
+### v1.0.0
+- **EDPatch brand new UI**
+  - The three steps are divided into separate screens, tap FAB in the upper right corner to go to the next step, and press the phone's back button to return to the previous step.
+  - The log interface can be displayed by scrolling down from the title position.
+  - Use RecyclerView to display function list, add split line, items will be in two columns on wide screen, tap an item to see function introduction, functions now support displaying function version number.
+  - When selecting apk from Installed Apps, results sorting ignores upper/lower case and displays app icon.
+  - Guide - function introduction layout scrolls more smoothly.
+- **Old functions updated**:
+  1. **FAB - PulseAudio**: work directory and log directory changed to z:/opt/edpatch/pulseaudio-xsdl
+  2. **Container Settings** - Renderer: txt location changed to /opt/edpatch/renderers.txt
+  3. **Custom Controls**:
+     - Absolute position click: 1st finger long press, 2nd finger press = mouse right button long press
+     - Relative position click: 2nd finger = right click now can be triggered more easily.
+- **New functions available**:
+  1. **FAB - Virgl Overlay**: this feature is only enabled for apk with old VO view(OverlayBuildUI) added. It will remove the old view inserted at the top of content view. 
+  2. **Настройки контейнера - Дополнительные аргументы**
+     - Эти аргументы будут добавлены в основную команду запуска контейнера.  Полную команду можно найти в файле по пути /sdcard/x86-stderr.txt.
+     - Если аргумент уже включен в исходную команду, добавление аргумента может быть неудачным.  Фактический результат можно просмотреть, нажав кнопку "Предварительный просмотр", используйте её чтобы ввести тестовую команду аргумента, или для просмотра аргумента в текстовом формате. 
+     - Все объявленные аргументы хранятся в Z:/opt/edpatch/contArgs.txt, а параметры, включенные для каждого контейнера, хранятся в Z:/home/xdroid_n/contArgs.txt.  Однако напрямую изменять txt не рекомендуется из-за строгих требований к формату хранения.
+     - Тип аргумента - ENV или CMD.
+       - Переменная среды: используется для выполняемой команды. Если исходный cmd содержит окружение с тем же именем, эти параметры будут переопределены.
+       - Cmd: Если он находится до или после исходного cmd, этот cmd и исходный cmd соединяются одним знаком '&'.
+
 
 ### v0.1.1
 - Old functions updated:

@@ -1,6 +1,5 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.widgets;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.getS;
 
@@ -54,26 +53,21 @@ public class BtnPropertiesView extends LinearLayout {
         editText.setText(mOneKey.getName());
         editText.setLayoutParams(new ViewGroup.LayoutParams(QH.px(c, 100), -2));
         editText.addTextChangedListener((QH.SimpleTextWatcher) s -> mOneKey.setName(s.toString()));
-        LinearLayout renameLinear = getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
+        LinearLayout renameLinear = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_BtnEditReName), editText, false);
         addView(renameLinear);
 
         //组合键
         Button selectKeyBtn = new Button(c);
         selectKeyBtn.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
         selectKeyBtn.setText(getS(RR.cmCtrl_s2_selectBtn));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            selectKeyBtn.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
-            selectKeyBtn.setBackground(new RippleDrawable(ColorStateList.valueOf(0x44444444),null,selectKeyBtn.getBackground()));
-        }
+        QH.setButtonBorderless(selectKeyBtn);
         selectKeyBtn.setOnClickListener(v -> {
-
             boolean[] condition = new boolean[AvailableKeysView.codes.length];
             //预选中自身全部组合键
             for(int subKeycode:mOneKey.getSubCodes())
                 for(int i=0; i<condition.length;i++)
                     if(AvailableKeysView.codes[i]==subKeycode)
                         condition[i]=true;
-
 
             AvailableKeysView allKeysView = new AvailableKeysView(getContext(), condition, -1);
             allKeysView.showMouseBtn();
@@ -86,14 +80,14 @@ public class BtnPropertiesView extends LinearLayout {
             });
         });
 
-        addView(getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditComb), selectKeyBtn,false));
+        addView(QH.getOneLineWithTitle(c,getS(RR.cmCtrl_BtnEditComb), selectKeyBtn,false));
 
         //点击一次 = 保持按下
         CheckBox checkTrigger = new CheckBox(c);
         checkTrigger.setText(getS(RR.cmCtrl_BtnEditTrigger));
         checkTrigger.setChecked(mOneKey.isTrigger());
         checkTrigger.setOnCheckedChangeListener((buttonView, isChecked) -> mOneKey.setTrigger(isChecked));
-        addView(checkTrigger);
+        addView(checkTrigger,QH.LPLinear.one().top().to());
     }
 
     /**

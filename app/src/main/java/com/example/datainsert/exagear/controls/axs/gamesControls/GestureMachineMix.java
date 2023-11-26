@@ -296,8 +296,9 @@ public class GestureMachineMix {
             //2. 第二个手指按下监听动作，监听第三个手指. 相对移动从子分支开始都只需要写REL的吧
             fSM.addTransition(gsMesSpd1stF, StateMesOneFSpd.FINGER_TOUCHED, gsMesSpd2ndF);
             fSM.addTransition(gs1FMouseMove, State1FMouseMove.NEW_FINGER_TOUCHED, gsMesSpd2ndF);
-            //2.1 第二个手指松开 二指点击事件 = 鼠标右键点击
+            //2.1 第一/二个手指松开 二指点击事件 = 鼠标右键点击
             fSM.addTransition(gsMesSpd2ndF,StateMesOneFSpd.FINGER_TAPPED,gsRightClick);
+            fSM.addTransition(gsMesSpd2ndF,StateMesOneFSpd.FINGER_WALKED_AND_GONE,gsRightClick);
             //2.2 第二个手指移动 = 鼠标滚轮
             fSM.addTransition(gsMesSpd2ndF,StateMesOneFSpd.FINGER_WALKED,gs2FScroll);
             fSM.addTransition(gsMesSpd2ndF,StateMesOneFSpd.FINGER_FLASHED,gs2FScroll);

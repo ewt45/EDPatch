@@ -207,6 +207,11 @@ public class Arguments {
             }
 
             @Override
+            public String getAlias() {
+                return super.getAlias();
+            }
+
+            @Override
             public boolean isChecked() {
                 return getArg().length() > 0;
             }

@@ -6,12 +6,12 @@
     android:layout_height="match_parent">
 
     <Button
-        app:layout_constrainedWidth="true"
         android:id="@+id/btn_select_apk_installed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btntxt_selectapkinstalled"
         android:textAllCaps="false"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
 
         app:layout_constraintEnd_toStartOf="@id/btn_select_apk_files"
@@ -21,13 +21,13 @@
         app:layout_constraintVertical_bias="0" />
 
     <Button
-        app:layout_constrainedWidth="true"
         android:id="@+id/btn_select_apk_files"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="@string/btntxt_selectapkfiles"
         android:textAllCaps="false"
-        android:layout_marginStart="8dp"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/btn_select_apk_installed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_select_apk_installed"
@@ -54,20 +54,55 @@
         android:id="@+id/app_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintVertical_bias="1"
-        app:layout_constrainedHeight="true"
         android:layout_marginEnd="16dp"
         android:gravity="bottom"
         android:lineSpacingMultiplier="1.2"
-        app:layout_constraintWidth_max="250dp"
         android:text="@string/patchstep1_tv_noapkfound"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="@+id/app_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/app_icon"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintWidth_max="250dp"
         app:layout_constraintWidth_percent="0.5" />
 
+    <TextView
+        android:id="@+id/text_new_select_done"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="@string/patchstep1_tv_newapkselected"
+        android:textColor="?android:textColorPrimary"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_icon"
+        app:layout_constraintWidth_max="350dp" />
 
+    <Button
+        android:textAllCaps="false"
+        android:id="@+id/btn_reselect"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btntxt_reselect"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/app_info"
+        app:layout_constraintTop_toBottomOf="@id/text_new_select_done" />
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/divider3"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@id/app_icon"
+        app:layout_constraintBottom_toTopOf="@id/text_new_select_done"/>
     <!--    <android.support.v7.widget.CardView-->
     <!--        app:cardCornerRadius="8dp"-->
     <!--        app:layout_constraintHeight_percent="0.5"-->

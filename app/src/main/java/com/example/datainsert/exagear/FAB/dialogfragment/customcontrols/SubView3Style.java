@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getTextViewWithText;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
@@ -70,26 +69,26 @@ public class SubView3Style extends LinearLayout {
         btnSample.setText(getS(RR.cmCtrl_s3_sampleBtn));
         LinearLayout.LayoutParams btnSampleParams = new LinearLayout.LayoutParams(getPreference().getInt(PREF_KEY_BTN_WIDTH, -2), getPreference().getInt(PREF_KEY_BTN_HEIGHT, -2));
         btnSampleParams.gravity = Gravity.CENTER;
-        addView(btnSample,btnSampleParams);
+        addView(btnSample, btnSampleParams);
 
         //按钮宽高
         SeekBar seekBarWidth = new SeekBar(c);
         seekBarWidth.setMax(200);
         int width = getPreference().getInt(PREF_KEY_BTN_WIDTH, -2);
-        seekBarWidth.setProgress(width == -2 ? 0 : QH.dp(c,width));
+        seekBarWidth.setProgress(width == -2 ? 0 : QH.dp(c, width));
         seekBarWidth.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> setBtnLayout(btnSample, true, progress)));
 
         SeekBar seekBarHeight = new SeekBar(c);
         seekBarHeight.setMax(200);
         int height = getPreference().getInt(PREF_KEY_BTN_HEIGHT, -2);
-        seekBarHeight.setProgress(height == -2 ? 0 : QH.dp(c,height));
+        seekBarHeight.setProgress(height == -2 ? 0 : QH.dp(c, height));
         seekBarHeight.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> setBtnLayout(btnSample, false, progress)));
 
         LinearLayout linearWHSeek = new LinearLayout(c);
         linearWHSeek.addView(seekBarWidth, generateLayoutParams(eqWidthParams));
         linearWHSeek.addView(seekBarHeight, generateLayoutParams(eqWidthParams));
 
-        LinearLayout oneLineWHSeek = getOneLineWithTitle(c, getS(RR.cmCtrl_s3_btnSize), linearWHSeek, true);
+        LinearLayout oneLineWHSeek = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s3_btnSize), linearWHSeek, true);
         setDialogTooltip(oneLineWHSeek.getChildAt(0), getS(RR.cmCtrl_s3_btnSizeTip));
         addView(oneLineWHSeek);
 
@@ -145,24 +144,9 @@ public class SubView3Style extends LinearLayout {
         LinearLayout linearCAContent = new LinearLayout(c);
         linearCAContent.addView(editInColor, generateLayoutParams(eqWidthParams));
         linearCAContent.addView(seekAlpha, generateLayoutParams(eqWidthParams));
-
-//        LinearLayout linearCAOuter = getOneLineWithTitle(c,"按钮颜色&透明度",linearCAContent,true  );
-//        setDialogTooltip(linearCAOuter.getChildAt(0),"按钮颜色为6位的十六进制颜色，如：FAFAFA。\n透明度为0-255，当透明度设置到0时，按钮背景完全透明，文字保留1/3的透明度。");
-
-        LinearLayout linearCAOuter = new LinearLayout(c);
-        linearCAOuter.setOrientation(LinearLayout.VERTICAL);
-        TextView tvTitleCA = getTextViewWithText(c, getS(RR.cmCtrl_s3_btnColor));
-        tvTitleCA.getPaint().setFakeBoldText(true);
-        tvTitleCA.invalidate();
-        setDialogTooltip(tvTitleCA, getS(RR.cmCtrl_s3_btnColorTip));
-        linearCAOuter.addView(tvTitleCA);
-        LinearLayout.LayoutParams linearCAContentparams = new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-        linearCAContentparams.setMarginStart(20);
-        linearCAOuter.addView(linearCAContent, linearCAContentparams);
-        linearCAOuter.setPadding(0, 20, 0, 0);
-        addView(linearCAOuter);
-//        addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s3_btnColor),linearCAContent,true));
-
+        LinearLayout linearCAOuter = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s3_btnColor), linearCAContent, true);
+        setDialogTooltip(linearCAOuter.getChildAt(0), getS(RR.cmCtrl_s3_btnColorTip));
+        addView(linearCAOuter, QH.LPLinear.one().top().to());
 
         //侧栏背景颜色
         EditText editSideColor = new EditText(c);
@@ -187,38 +171,30 @@ public class SubView3Style extends LinearLayout {
         SeekBar seekTxtSize = new SeekBar(c);
         //10sp~30sp 默认14sp . progress在0~20
         seekTxtSize.setMax(20);
-        seekTxtSize.setProgress(getPreference().getInt(PREF_KEY_BTN__TXT_SIZE,4));
+        seekTxtSize.setProgress(getPreference().getInt(PREF_KEY_BTN__TXT_SIZE, 4));
         seekTxtSize.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> {
-            btnSample.setTextSize(TypedValue.COMPLEX_UNIT_SP,progress+10);
-            getPreference().edit().putInt(PREF_KEY_BTN__TXT_SIZE,progress).apply();
+            btnSample.setTextSize(TypedValue.COMPLEX_UNIT_SP, progress + 10);
+            getPreference().edit().putInt(PREF_KEY_BTN__TXT_SIZE, progress).apply();
         }));
 
-//        addView(linearTxtSize);
-        //二者标题
-        LinearLayout linearShapeNTSizeTitle = new LinearLayout(c);
-        LinearLayout tvShapeTitle = getOneLineWithTitle(c,getS(RR.cmCtrl_s3_sideColor),null,false);
-        setDialogTooltip(tvShapeTitle,getS(RR.cmCtrl_s3_sideColorTip));
-        linearShapeNTSizeTitle.addView(tvShapeTitle,generateLayoutParams(eqWidthParams));
-        linearShapeNTSizeTitle.addView(getOneLineWithTitle(c,getS(RR.cmCtrl_s3_txtSize),null,false),generateLayoutParams(eqWidthParams));
-        addView(linearShapeNTSizeTitle);
-        //二者内容
-        LinearLayout linearShapeNTSize = new LinearLayout(c);
-        linearShapeNTSize.addView(editSideColor,generateLayoutParams(eqWidthParams));
-        linearShapeNTSize.addView(seekTxtSize,generateLayoutParams(eqWidthParams));
-        LayoutParams linearShapeNTSizeParams = new LayoutParams(-1,-2);
-        linearShapeNTSizeParams.setMarginStart(20);
-        addView(linearShapeNTSize,linearShapeNTSizeParams);
-
+        LinearLayout linearSideColColor = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s3_sideColor), editSideColor, true);
+        LinearLayout linearTextSize = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s3_txtSize), seekTxtSize, true);
+        setDialogTooltip(linearSideColColor.getChildAt(0), getS(RR.cmCtrl_s3_sideColorTip));
+        LinearLayout linearSideColorAndTxtSizeOuter = new LinearLayout(c);
+        linearSideColorAndTxtSizeOuter.setOrientation(HORIZONTAL);
+        linearSideColorAndTxtSizeOuter.addView(linearSideColColor, QH.LPLinear.one(0, -2).weight().gravity(Gravity.TOP).to());
+        linearSideColorAndTxtSizeOuter.addView(linearTextSize, QH.LPLinear.one(0, -2).weight().gravity(Gravity.TOP).to());
+        addView(linearSideColorAndTxtSizeOuter, QH.LPLinear.one().top().to());
 
         //按钮形状（方形、圆形）
         CheckBox checkShapeRound = new CheckBox(c);
         checkShapeRound.setText(getS(RR.cmCtrl_s3_btnRoundShape));
-        boolean initIsRound = getPreference().getBoolean(PREF_KEY_BTN_ROUND_SHAPE,false);
+        boolean initIsRound = getPreference().getBoolean(PREF_KEY_BTN_ROUND_SHAPE, false);
         checkShapeRound.setChecked(initIsRound);
-        checkShapeRound.setOnCheckedChangeListener((buttonView, isChecked) -> setBtnShape(btnSample,isChecked));
-        LayoutParams shapeRoundParams = new LayoutParams(-2,-2);
+        checkShapeRound.setOnCheckedChangeListener((buttonView, isChecked) -> setBtnShape(btnSample, isChecked));
+        LayoutParams shapeRoundParams = new LayoutParams(-2, -2);
         shapeRoundParams.topMargin = 20;
-        addView(checkShapeRound,shapeRoundParams);
+        addView(checkShapeRound, shapeRoundParams);
     }
 
 
@@ -243,18 +219,18 @@ public class SubView3Style extends LinearLayout {
      * 设置按钮形状为方形或圆形,并将数据写入sp
      * 设置形状后drawable会改变。所以只能每次设置时新建一个drawable设置到按钮背景上了。
      */
-    private void setBtnShape(Button btnSample, boolean isRound){
-        getPreference().edit().putBoolean(PREF_KEY_BTN_ROUND_SHAPE,isRound).apply();
+    private void setBtnShape(Button btnSample, boolean isRound) {
+        getPreference().edit().putBoolean(PREF_KEY_BTN_ROUND_SHAPE, isRound).apply();
 //        RippleDrawable->InsetDrawable->GradientDrawable 但设置完一次之后insetDrawable就没了？？
 //        貌似调用了mutate()很多属性都合并了，之前的透明度丢失问题也出现了。
 //        那就没法多次修改现有drawable了，
         try {
 
             GradientDrawable gradientDrawable = new GradientDrawable();
-            gradientDrawable.setCornerRadius(QH.px(getContext(),4));
-            gradientDrawable.setShape(isRound?GradientDrawable.OVAL:GradientDrawable.RECTANGLE);
+            gradientDrawable.setCornerRadius(QH.px(getContext(), 4));
+            gradientDrawable.setShape(isRound ? GradientDrawable.OVAL : GradientDrawable.RECTANGLE);
             gradientDrawable.setColor(ColorStateList.valueOf(getPreference().getInt(PREF_KEY_BTN_BG_COLOR, Color.WHITE)));
-            InsetDrawable insetDrawable = new InsetDrawable(gradientDrawable,QH.px(getContext(),4));
+            InsetDrawable insetDrawable = new InsetDrawable(gradientDrawable, QH.px(getContext(), 4));
             RippleDrawable rippleDrawable = new RippleDrawable(
                     ColorStateList.valueOf(getPreference().getInt(PREF_KEY_BTN_TXT_COLOR, Color.BLACK) & 0x50ffffff),
                     insetDrawable,
@@ -274,7 +250,7 @@ public class SubView3Style extends LinearLayout {
 //            gradientDrawable = (GradientDrawable) ((InsetDrawable)rippleDrawable.getDrawable(0)).getDrawable();
 //            assert gradientDrawable != null;
 //            gradientDrawable.setShape(isRound?GradientDrawable.OVAL:GradientDrawable.RECTANGLE);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "setBtnShape: 无法获取按钮的GradientDrawable，无法设置形状", e);
         }
 

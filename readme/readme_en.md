@@ -21,7 +21,7 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 ### Attention
 1. This apk is an experimental project, and it is not guaranteed that the function will be added successfully
 2. After clicking"start patch" button, please don't click or move to other view, otherwise problems may occur.
-3. The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/tmp_sign.apk. You can check it manually with third-party file manager app. 
+3. The patched apk is located in  /storage/emulated/0/Android/data/com.ewt45.patchapp/files/patchtmp/tmp/dist/signed/tmp_sign.apk. You can check it manually with third-party file manager app. 
 4. If  the option " use default signature" in Settings is unchecked, after patching you need to uninstall the existing apks which use the same package name or sharedUserId (nornally the exagear and virgl overlay) first. If you need virgl overlay, please resign them with the same signature manually.
 
 
@@ -30,14 +30,16 @@ So I'm wondering if I can make an application. The user only needs to click a bu
   - Custom location of drive D
   - Custom Control
   - PulseAudio (XSDL)
+  - Virgl Overlay (only enabled for apk with old VO view(OverlayBuildUI) added)
   - Xegw
-- [show cursor](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
-- [container settings - custom resolution](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
-- [android 11+ soft-input no-crashing](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
-- [select obb manually](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
-- launch exe shortcut directly
+- [Show cursor](https://ewt45.github.io/blogs/2022/winter/exagearDefaultCursor/)
+- [Container Settings - Custom Resolution](https://ewt45.github.io/blogs/2022/autumn/exagearCustomResl/)
+- [Android 11+ Soft-input No-crashing](https://ewt45.github.io/blogs/2022/autumn/exagearKeyboard/)
+- [Select Obb Manually](https://ewt45.github.io/blogs/2022/winter/exagearFindObb/)
+- Launch exe Shortcut Directly
 - MultiWine v2
-- container settings - renderer
+- Container Settings - Renderer
+- Container Settings - Extra Launching Arguments
 
 ## Third-party project dependencies
 
@@ -52,6 +54,30 @@ So I'm wondering if I can make an application. The user only needs to click a bu
 
 
 ## Change Log
+
+### v1.0.0
+- **EDPatch brand new UI**
+  - The three steps are divided into separate screens, tap FAB in the upper right corner to go to the next step, and press the phone's back button to return to the previous step.
+  - The log interface can be displayed by scrolling down from the title position.
+  - Use RecyclerView to display function list, add split line, items will be in two columns on wide screen, tap an item to see function introduction, functions now support displaying function version number.
+  - When selecting apk from Installed Apps, results sorting ignores upper/lower case and displays app icon.
+  - Guide - function introduction layout scrolls more smoothly.
+- **Old functions updated:**
+  1. **FAB - PulseAudio**: work directory and log directory changed to z:/opt/edpatch/pulseaudio-xsdl
+  2. **Container Settings - Renderer**: txt location changed to /opt/edpatch/renderers.txt
+  3. **Custom Controls**:
+     - Absolute position click: 1st finger long press, 2nd finger press = mouse right button long press
+     - Relative position click: 2nd finger = right click now can be triggered more easily.
+- **New functions available:**
+  1. **FAB - Virgl Overlay**: this feature is only enabled for apk with old VO view(OverlayBuildUI) added. It will remove the old view inserted at the top of content view.
+  2. **Container Settings - Extra Launching Arguments**
+     - These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.
+     - If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking "Preview" button to enter the test command or viewed in the txt after starting the container. 
+     - All available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.
+     - Argument type is either ENV or CMD.
+       - Environment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.
+       - Cmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.
+
 ### v0.1.1
 - Old functions updated:
 1. select obb manually

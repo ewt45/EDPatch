@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.controls.widget;
 
 import static android.graphics.Paint.Style.FILL;
 import static android.graphics.Paint.Style.STROKE;
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.getS;
@@ -351,8 +350,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         linearRoot.addView(check4Direct);
 
         //编辑位置状态下点击，设置四个方向的按键
-        LinearLayout linearCustomOuter;//用于控制自定义按键显隐的布局
-        LinearLayout linearCustomKeys = new LinearLayout(c);
+        LinearLayout linearCustomKeys = new LinearLayout(c); //用于控制自定义按键显隐的布局
         linearCustomKeys.setOrientation(LinearLayout.VERTICAL);
         int btnSize = QH.px(c, 50);
         LinearLayout linearLine1 = new LinearLayout(c);
@@ -368,7 +366,6 @@ public class JoyStickBtn extends BaseMoveBtn {
         linearLine3.addView(get1SetKeyBtn(false, -1), new ViewGroup.LayoutParams(btnSize, btnSize));
         linearLine3.addView(get1SetKeyBtn(true, 1), new ViewGroup.LayoutParams(btnSize, btnSize));
         linearCustomKeys.addView(linearLine3, new ViewGroup.LayoutParams(-2, -2));
-        linearCustomOuter = getOneLineWithTitle(c, null, linearCustomKeys, true);
 
         //选择预设按键，或者自定义
         Spinner spinKeys = new Spinner(c,Spinner.MODE_DIALOG);
@@ -379,7 +376,7 @@ public class JoyStickBtn extends BaseMoveBtn {
         spinKeys.setAdapter(spinKeyPosAdapter);
         spinKeys.setOnItemSelectedListener(new SimpleItemSelectedListener((parent, view, position, id) -> {
             mParams.setPresetKey(spinValues[position]);
-            linearCustomOuter.setVisibility(mParams.getPresetKey().equals(CUSTOM) ? VISIBLE : GONE);
+            linearCustomKeys.setVisibility(mParams.getPresetKey().equals(CUSTOM) ? VISIBLE : GONE);
         }));
         //设置当前选中
         for (int i = 0; i < spinValues.length; i++) {
@@ -387,11 +384,11 @@ public class JoyStickBtn extends BaseMoveBtn {
                 spinKeys.setSelection(i);
         }
         spinKeys.setLayoutParams(new ViewGroup.LayoutParams(-2, -2));
-        LinearLayout oneLineSpinKeyPos = getOneLineWithTitle(c, getS(RR.cmCtrl_JoyEditKeys), spinKeys, false);
+        LinearLayout oneLineSpinKeyPos = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_JoyEditKeys), spinKeys, false);
 //        setDialogTooltip(oneLineSpinKeyPos.getChildAt(0),"");
         linearRoot.addView(oneLineSpinKeyPos);
 
-        linearRoot.addView(linearCustomOuter);
+        linearRoot.addView(linearCustomKeys);
 
         Log.d(TAG, "handleEditingClick: 显示对话框");
         new AlertDialog.Builder(getContext())

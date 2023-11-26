@@ -2,6 +2,7 @@ package com.ewt45.patchapp.thread;
 
 import com.ewt45.patchapp.R;
 
+@Deprecated
 public class SignalDone implements Action {
 //    public static int SIGNAL_DONE = 54321;
 

@@ -45,7 +45,8 @@ public class FabMenu {
     3: 修复了左右布局编辑一列按键时，重新选择按键之后会导致按键顺序被打乱的问题
 
     pulseaudio
-    2：保留 deamon.conf
+    2: 保留 deamon.conf
+    3: 将工作目录 以及 日志输出 移动到 z:/opt/edpatch/pulseaudio-xsdl
 
     xegw
     1: 为xegw2.0准备的更多选项， -legacy-drawing 和关闭电池优化
@@ -56,7 +57,7 @@ public class FabMenu {
     private static final int VERSION_FOR_EDPATCH =
             0x3 //自定义d盘的版本号
                     | 0x3 << 4 //自定义按键的版本号
-                    | 0x2 << 8 //pulseaudio
+                    | 0x3 << 8 //pulseaudio
                     | 0x1 << 12 //Xegw
                     | 0x1 << 16 //VirglOverlay
             ;

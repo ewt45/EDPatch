@@ -1,6 +1,5 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getOneLineWithTitle;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.getPreference;
 import static com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment.setDialogTooltip;
 import static com.example.datainsert.exagear.RR.cmCtrl_s1_msMoveViewport;
@@ -33,11 +32,12 @@ import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
 public class SubView1Mouse extends LinearLayout {
+    private static final String TAG = "SubView1Mouse";
     SeekBar seekPointerSpeed;
     Button btnResetSpeed;
     LinearLayout viewportOptions;
     CheckBox checkMsViewport;
-    private static final String TAG= "SubView1Mouse";
+
     public SubView1Mouse(Context c) {
         super(c);
         setOrientation(VERTICAL);
@@ -59,28 +59,28 @@ public class SubView1Mouse extends LinearLayout {
         //鼠标灵敏度 0.2~3.0, 设置值从0到280
         seekPointerSpeed = new SeekBar(c);
         seekPointerSpeed.setMax(280);
-        seekPointerSpeed.setProgress(getPreference().getInt(PREF_KEY_MOUSE_SENSITIVITY,80));
-        seekPointerSpeed.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_SENSITIVITY,progress).apply()));
+        seekPointerSpeed.setProgress(getPreference().getInt(PREF_KEY_MOUSE_SENSITIVITY, 80));
+        seekPointerSpeed.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_SENSITIVITY, progress).apply()));
         //重置灵敏度按钮
         btnResetSpeed = new Button(c);
         btnResetSpeed.setText(getS(RR.cmCtrl_reset));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             btnResetSpeed.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
-            btnResetSpeed.setBackground(new RippleDrawable(ColorStateList.valueOf(0x44444444),null,btnResetSpeed.getBackground()));
+            btnResetSpeed.setBackground(new RippleDrawable(ColorStateList.valueOf(0x44444444), null, btnResetSpeed.getBackground()));
         }
-        btnResetSpeed.setOnClickListener(v-> seekPointerSpeed.setProgress(80));
+        btnResetSpeed.setOnClickListener(v -> seekPointerSpeed.setProgress(80));
         LinearLayout linearSeekNBtn = new LinearLayout(c);
-        LayoutParams seekParams = new LayoutParams(0,-2,1);
-        seekParams.gravity= Gravity.CENTER_VERTICAL;
-        linearSeekNBtn.addView(seekPointerSpeed,seekParams);
-        LayoutParams btnResetParams = new LayoutParams(-2,-2);
-        btnResetParams.gravity= Gravity.CENTER_VERTICAL;
-        linearSeekNBtn.addView(btnResetSpeed,btnResetParams);
-        LinearLayout linearSpeed = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msSpd),linearSeekNBtn,true);
+        LayoutParams seekParams = new LayoutParams(0, -2, 1);
+        seekParams.gravity = Gravity.CENTER_VERTICAL;
+        linearSeekNBtn.addView(seekPointerSpeed, seekParams);
+        LayoutParams btnResetParams = new LayoutParams(-2, -2);
+        btnResetParams.gravity = Gravity.CENTER_VERTICAL;
+        linearSeekNBtn.addView(btnResetSpeed, btnResetParams);
+        LinearLayout linearSpeed = QH.getOneLineWithTitle(c, getS(RR.cmCtrl_s1_msSpd), linearSeekNBtn, true);
         //再手动设置一下顶部边距为0吧不然距离太远了
-        ((LayoutParams)linearSpeed.getChildAt(1).getLayoutParams()).topMargin = 0;
+        ((LayoutParams) linearSpeed.getChildAt(1).getLayoutParams()).topMargin = 0;
         linearSpeed.getChildAt(1).setLayoutParams(linearSpeed.getChildAt(1).getLayoutParams());
-        setDialogTooltip(linearSpeed.getChildAt(0),getS(RR.cmCtrl_s1_msSpdTip));
+        setDialogTooltip(linearSpeed.getChildAt(0), getS(RR.cmCtrl_s1_msSpdTip));
 
 
         //鼠标绝对位置或相对位置
@@ -95,7 +95,7 @@ public class SubView1Mouse extends LinearLayout {
         addView(linearSpeed);
 
         //允许鼠标移出屏幕（视角转动模式） 用户手动调节速度吧
-          //
+        //
 //        seekViewport = new SeekBar(c);
 //        seekViewport.setMax(60);
 //        seekViewport.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,0));
@@ -103,29 +103,27 @@ public class SubView1Mouse extends LinearLayout {
         //类型为鼠标移动时显示选项 对应发送时间间隔。
         SeekBar repeatIntervalSeek = new SeekBar(c);
         repeatIntervalSeek.setMax(100);//5-105
-        repeatIntervalSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL,progress).apply()));
-        repeatIntervalSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL,20)+5);
+        repeatIntervalSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL, progress).apply()));
+        repeatIntervalSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_VIEWPORT_INTERVAL, 20) + 5);
         //类型为鼠标移动时显示选项 每次移动距离
         SeekBar mouseMoveLenSeek = new SeekBar(c);
         mouseMoveLenSeek.setMax(60); //1-61
-        mouseMoveLenSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,progress).apply()));
-        mouseMoveLenSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE,20));
+        mouseMoveLenSeek.setOnSeekBarChangeListener(new SimpleSeekBarChangeListener((seekBar, progress, fromUser) -> getPreference().edit().putInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE, progress).apply()));
+        mouseMoveLenSeek.setProgress(getPreference().getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE, 20));
 
         String[] viewportStrs = getS(RR.cmCtrl_s1_msMoveViewport).split("\\$");
         viewportOptions = new LinearLayout(c);
         viewportOptions.setOrientation(LinearLayout.HORIZONTAL);
-        viewportOptions.addView(getOneLineWithTitle(c,viewportStrs[1],repeatIntervalSeek,true),seekParams);
-        viewportOptions.addView(getOneLineWithTitle(c,viewportStrs[2],mouseMoveLenSeek,true),seekParams);
-        viewportOptions.getChildAt(0).setPadding(0,0,0,0);
-        viewportOptions.getChildAt(1).setPadding(0,0,0,0);
+        viewportOptions.addView(QH.getOneLineWithTitle(c, viewportStrs[1], repeatIntervalSeek, true), seekParams);
+        viewportOptions.addView(QH.getOneLineWithTitle(c, viewportStrs[2], mouseMoveLenSeek, true), seekParams);
 
         checkMsViewport = new CheckBox(c);
         checkMsViewport.setText(viewportStrs[0]);
         checkMsViewport.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            getPreference().edit().putBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,isChecked).apply();
+            getPreference().edit().putBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE, isChecked).apply();
             clickedMoveViewport(isChecked);
         });
-        checkMsViewport.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE,false));
+        checkMsViewport.setChecked(getPreference().getBoolean(PREF_KEY_MOUSE_VIEWPORT_ENABLE, false));
 
 //        LinearLayout linearSeekViewport = getOneLineWithTitle(c,getS(RR.cmCtrl_s1_msOffScr),seekViewport,true);
 //        setDialogTooltip(checkMsViewport, getS(RR.cmCtrl_s1_msOffScrTip));
@@ -149,7 +147,7 @@ public class SubView1Mouse extends LinearLayout {
     }
 
 
-    private void clickedCheckMoveRel(boolean isChecked){
+    private void clickedCheckMoveRel(boolean isChecked) {
         getPreference().edit().putBoolean(PREF_KEY_MOUSE_MOVE_RELATIVE, isChecked).apply();
 
         seekPointerSpeed.setEnabled(isChecked);
@@ -160,8 +158,8 @@ public class SubView1Mouse extends LinearLayout {
         clickedMoveViewport(isChecked && checkMsViewport.isChecked());
     }
 
-    private void clickedMoveViewport(boolean isChecked){
-        viewportOptions.setVisibility(isChecked?VISIBLE:GONE);
+    private void clickedMoveViewport(boolean isChecked) {
+        viewportOptions.setVisibility(isChecked ? VISIBLE : GONE);
 //        ((ViewGroup)viewportOptions.getChildAt(0)).getChildAt(1).setEnabled(isChecked);
 //        ((ViewGroup)viewportOptions.getChildAt(1)).getChildAt(1).setEnabled(isChecked);
     }

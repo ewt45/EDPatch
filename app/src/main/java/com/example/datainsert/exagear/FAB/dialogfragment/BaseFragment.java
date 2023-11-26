@@ -69,33 +69,9 @@ public abstract class BaseFragment extends DialogFragment implements DialogInter
      * @return 线性布局
      * @deprecated 请使用QH的同名函数
      */
-    @Deprecated
     public static LinearLayout getOneLineWithTitle(Context c, @Nullable String s, @Nullable View view, boolean vertical) {
-//        return QH.getOneLineWithTitle(c,s,view,vertical);
-        LinearLayout linearLayout = new LinearLayout(c);
-        linearLayout.setOrientation(vertical ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
-        if (s != null && !s.equals("")) {
-            TextView textView = getTextViewWithText(c, s);
-            //加粗一下吧
-            textView.getPaint().setFakeBoldText(true);
-//        textView.setTypeface(Typeface.DEFAULT_BOLD);
-            textView.invalidate();
-            linearLayout.addView(textView);
-        }
-        if (view != null) {
-            LinearLayout.LayoutParams params = view.getLayoutParams() != null
-                    ? new LinearLayout.LayoutParams(view.getLayoutParams())
-                    : new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-            if (linearLayout.getChildCount() > 0)
-                params.setMarginStart(20);
-            if(vertical)
-                params.topMargin=20;
-            linearLayout.addView(view, params);
-        }
-        linearLayout.setPadding(0, 20, 0, 0);
-        return linearLayout;
+        return QH.getOneLineWithTitle(c, s, view, vertical);
     }
-
 
     /**
      * 获取设置相关的sharepreference 写入或读取。 写入：.edit().apply()

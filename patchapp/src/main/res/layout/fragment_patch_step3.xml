@@ -7,6 +7,7 @@
     android:animateLayoutChanges="true">
 
     <Button
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
         android:id="@+id/btn_back"
         style="?borderlessButtonStyle"
         android:layout_width="wrap_content"

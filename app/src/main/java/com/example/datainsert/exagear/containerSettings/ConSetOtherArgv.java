@@ -109,12 +109,14 @@ public class ConSetOtherArgv {
         Button btnAdd = new Button(c);
         btnAdd.setText(getS(RR.global_add));//编辑
         QH.setButtonBorderless(btnAdd);
-        btnAdd.setOnClickListener(v -> allArgsAdapter.buildEditArgDialog(v.getContext(), -1, -1));
+        btnAdd.setOnClickListener(v -> allArgsAdapter.buildEditArgDialog(v.getContext(), -1, -1,getS(RR.global_add)));
+        btnAdd.setAllCaps(false);
 
         Button btnPreview = new Button(c);
         btnPreview.setText(getS(RR.othArg_preview));//预览
         btnPreview.setOnClickListener(v -> buildPreviewDialog(c, contId));
         QH.setButtonBorderless(btnPreview);
+        btnPreview.setAllCaps(false);
 
         LinearLayout linearArgBtns = new LinearLayout(c);
         linearArgBtns.setOrientation(HORIZONTAL);
@@ -129,8 +131,8 @@ public class ConSetOtherArgv {
         infoBuilder.append(infoStrs[0]).append(" ").append(infoStrs[1]).setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
-                Log.d(TAG, "onClick: 点击tv");
-                new AlertDialog.Builder(widget.getContext()).setMessage(getS(RR.othArg_info_more)).show();
+                new AlertDialog.Builder(widget.getContext())
+                        .setMessage(getS(RR.othArg_info_more)+"\n\n"+getS((RR.othArg_edit_typeInfo))).show();
             }
         }, infoBuilder.length() - infoStrs[1].length(), infoBuilder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
@@ -189,6 +191,7 @@ public class ConSetOtherArgv {
         linearRoot.addView(QH.getOneLineWithTitle(c, titlesStr[1], textNewCmd, true), marginTopParams); //插入参数后
 
         new AlertDialog.Builder(c)
+                .setTitle(getS(RR.othArg_preview))
                 .setView(QH.wrapAsDialogScrollView(linearRoot))//QH.wrapAsDialogScrollView(linearRoot)
                 .setPositiveButton(android.R.string.ok, null)
                 .setCancelable(false)

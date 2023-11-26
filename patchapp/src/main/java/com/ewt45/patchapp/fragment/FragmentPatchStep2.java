@@ -25,7 +25,6 @@ import com.ewt45.patchapp.thread.BuildApk;
 import com.ewt45.patchapp.thread.DecodeApk;
 import com.ewt45.patchapp.thread.Func;
 import com.ewt45.patchapp.thread.SignApk;
-import com.ewt45.patchapp.thread.SignalDone;
 import com.ewt45.patchapp.widget.ActionProgressDialog;
 import com.ewt45.patchapp.widget.DividerGridItemDecoration;
 
@@ -81,7 +80,7 @@ public class FragmentPatchStep2 extends BaseFragmentPatchStep {
                 boolean useDefaultKey = AndroidUtils.getPrefs().getBoolean("use_default_signature", true);
                 torunList.add(new SignApk(requireContext().getAssets(), useDefaultKey));//签名
             }
-            torunList.add(new SignalDone());
+//            torunList.add(new SignalDone());
             Log.d(TAG, "setOnClickListener: 点击fab后，执行action：" + torunList);
 
             ActionProgressDialog.startActionsWithDialog(requireContext(), noError -> {

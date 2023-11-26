@@ -65,5 +65,19 @@
     <string name="fraghelp_body_renderer">- Раньше Multiwine v1 поддерживал по умолчанию использование разных рендеров для каждого контейнера в v2 этого больше нет. Если вы хотите продолжать использовать разные рендеры для каждого контейнера в MultiWine v2 вам нужно исправить ее вручную.\n - Установите разные LD_LIBRARY_PATH для разных рендеров. libGL.so.1 будет загружаться с выбранного пути с более высоким приоритетом. Вы можете редактировать пути самостоятельно в файле Z:/opt/renderers.txt.\n - Некоторые параметры рендера имеют дополнительные опции при загрузке:\n     - Не работает рендер Turnip: Перенаправьте VK_ICD_FILENAMES в несуществующий файл, этот параметр на случай, если Turnip рендеры не будут работать.\n     - Встроенный VirGl: запуск libvirgl_test_server.so в новом java-процессе. Работает только в apk  с поддержкой xegw. Больше нет необходимости в Mcat и /opt/start.sh.\nЛог при этом выводится в Android/data/packageName/logs/virglLog.txt.\n     - VirtIO-GPU: запускается через Mcat. До Xegw Mcat использовался для запуска среды proot для этого рендера, но в xegw он переписан для запуска /opt/start.sh и не запускает proot автоматически.</string>
     <string name="fraghelp_body_pulse">PulseAudio используется для воспроизведения звука, уменьшения проблемы связанных со звуком. Эта функция использует сервер PulseAudio, извлеченный из apk Xserver XSDL. Что требуется поддержка 64-битной версии Андроид на вашем девайсе.</string>
     <string name="funcname_otherargv">Настройки контейнера - Дополнительные аргументы</string>
-    <string name="fraghelp_body_otherargv">- Включение данных параметров доступны для просмотра в /sdcard/x86-stderr.txt.\n- Выбор ядер CPU, Автозапуск ib.exe, Отключение services.exe</string>
+    <string name="fraghelp_body_otherargv">- Эти аргументы будут добавлены в основную команду запуска контейнера.  Полную команду можно найти в файле по пути /sdcard/x86-stderr.txt.\n- Если аргумент уже включен в исходную команду, добавление аргумента может быть неудачным.  Фактический результат можно просмотреть, нажав кнопку \"Предварительный просмотр\", используйте её чтобы ввести тестовую команду аргумента, или для просмотра аргумента в текстовом формате.\n- Все объявленные аргументы хранятся в Z:/opt/edpatch/contArgs.txt, а параметры, включенные для каждого контейнера, хранятся в Z:/home/xdroid_n/contArgs.txt.  Однако напрямую изменять txt не рекомендуется из-за строгих требований к формату хранения.\n- Тип аргумента - ENV или CMD.\n    - Переменная среды: используется для выполняемой команды. Если исходный cmd содержит окружение с тем же именем, эти параметры будут переопределены.\n    - Cmd: Если он находится до или после исходного cmd, этот cmd и исходный cmd соединяются одним знаком \'&amp;\'.\n\n</string>
+    <string name="btntxt_installnew">Установка</string>
+    <string name="patchstep3_titile">3/3. Финиш</string>
+    <string name="tips_action_failed">Некоторые действия не увенчались успехом. Пожалуйста, проверьте лог.</string>
+    <string name="btntxt_back_to_step1">Назад</string>
+    <string name="btntxt_view_new_apk">Открыть</string>
+    <string name="patchstep1_tv_noapkfound">APK не выбран. Выберите APK-файл Exagear, который вы хотите изменить, в списке установленных APK или в локальных файлах.</string>
+    <string name="patchstep2_tv_statistic">Установка: %d/%d\nНедавно выбранный: %d/%d</string>
+    <string name="patchstep2_recy_item">установлен: %d | последний: %d</string>
+    <string name="patchstep3_tv_finish">Действия выполнены. Вы можете установить модифицированный apk или вернуться на главную страницу.</string>
+    <string name="patchstep3_chooser_title">Посмотреть с…</string>
+    <string name="btntxt_selectapkfiles">Файлы</string>
+    <string name="btntxt_selectapkinstalled">Список приложений</string>
+    <string name="patchstep1_tv_newapkselected">Выбранный APK успешно декодирован. Теперь вы можете нажать кнопку "→" чтобы перейти к следующему шагу. Или повторно выберите APK.</string>
+    <string name="btntxt_reselect">Повторно выбрать</string>
 </resources>

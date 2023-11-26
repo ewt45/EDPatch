@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btn_select_apk_installed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btntxt_selectapkinstalled"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toStartOf="@id/btn_select_apk_files"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_icon"
+        app:layout_constraintVertical_bias="0" />
+
+    <Button
+        android:id="@+id/btn_select_apk_files"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/btntxt_selectapkfiles"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="@id/btn_select_apk_installed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_select_apk_installed"
+        app:layout_constraintTop_toTopOf="@id/btn_select_apk_installed" />
+
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toTopOf="@id/text_new_select_done"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/app_info"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/ic_apk_document" />
+
+    <TextView
+        android:id="@+id/app_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:gravity="bottom"
+        android:lineSpacingMultiplier="1.2"
+        android:text="@string/patchstep1_tv_noapkfound"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="@+id/app_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/app_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_max="250dp"
+        app:layout_constraintWidth_percent="0.5" />
+
+    <TextView
+        android:id="@+id/text_new_select_done"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/patchstep1_tv_newapkselected"
+        android:textColor="?android:textColorPrimary"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_icon"
+        app:layout_constraintWidth_max="350dp" />
+
+    <Button
+        android:textAllCaps="false"
+        android:id="@+id/btn_reselect"
+        style="?android:borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/btntxt_reselect"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
+        app:layout_constraintEnd_toEndOf="@id/app_info"
+        app:layout_constraintTop_toBottomOf="@id/text_new_select_done" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="0dp"
+        app:layout_constraintStart_toStartOf="@id/text_new_select_done"
+        app:layout_constraintEnd_toEndOf="@id/text_new_select_done"
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintTop_toBottomOf="@id/app_icon"
+        app:layout_constraintBottom_toTopOf="@id/text_new_select_done"/>
+
+
+</android.support.constraint.ConstraintLayout>

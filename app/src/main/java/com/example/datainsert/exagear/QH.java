@@ -483,4 +483,69 @@ public class QH {
         }
     }
 
+    /**
+     * 常见的LinearLayout.LayoutParams构建
+     */
+    public static class LPLinear {
+         int w=-1;
+        int h=-2;
+        float weight=0;
+        int[] margins = {0,0,0,0};
+        int gravity=-111;
+
+        /**
+         * 宽为match，高为rap
+         */
+        public static LPLinear one(){
+            return new LPLinear();
+        }
+        public static LPLinear one(int w, int h){
+            LPLinear linear= new LPLinear();
+            linear.w=w;
+            linear.h=h;
+            return linear;
+        }
+        public LPLinear gravity(int pg){
+            gravity = pg;
+            return this;
+        }
+
+        public LPLinear weight(float pw){
+            weight=pw;
+            return this;
+        }
+
+        public LPLinear weight(){
+            weight=1;
+            return this;
+        }
+
+        /**
+         * 顶部margin设为8dp
+         */
+        public LPLinear top(){
+            margins[1] = margin8Dp();
+            return this;
+        }
+        public LPLinear top(int margin){
+            margins[1] = margin;
+            return this;
+        }
+        public LPLinear left(){
+            margins[0] = margin8Dp();
+            return this;
+        }
+        public LPLinear left(int margin){
+            margins[0] = margin;
+            return this;
+        }
+        public LinearLayout.LayoutParams to(){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w,h,weight);
+            params.weight = weight;
+            if(gravity!=-111)
+                params.gravity = gravity;
+            params.setMargins(margins[0],margins[1],margins[2],margins[3]);
+            return params;
+        }
+    }
 }

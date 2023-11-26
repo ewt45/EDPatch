@@ -1,20 +1,19 @@
 package com.example.datainsert.exagear.FAB.dialogfragment;
 
+import static android.animation.LayoutTransition.CHANGING;
 import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
 import static com.example.datainsert.exagear.RR.getS;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.graphics.Typeface;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +28,7 @@ import com.eltechs.axs.helpers.ZipInstallerAssets;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
+import org.apache.commons.compress.utils.CharsetNames;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -36,7 +36,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.StringTokenizer;
 
 public class PulseAudio extends BaseFragment {
     private final static File paWorkDir = new File(QH.Files.edPatchDir(), "pulseaudio-xsdl");
@@ -173,13 +172,13 @@ public class PulseAudio extends BaseFragment {
         Context c = requireContext();
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams paddingParams = new LinearLayout.LayoutParams(-1, -2);
-        paddingParams.topMargin = margin8Dp();
+        LinearLayout.LayoutParams topMarginParams = new LinearLayout.LayoutParams(-1, -2);
+        topMarginParams.topMargin = margin8Dp();
 
         //顶端简介
         TextView tvShortInfo = new TextView(c);
         tvShortInfo.setText(getS(RR.pa_explain));
-        linearRoot.addView(tvShortInfo, paddingParams);
+        linearRoot.addView(tvShortInfo, topMarginParams);
 
         //立即停止和开始
 //        Button btnRunNow = new Button(c);
@@ -200,13 +199,13 @@ public class PulseAudio extends BaseFragment {
 //        weightParams.weight=1;
 //        linearRunOrStop.addView(btnRunNow,weightParams);
 //        linearRunOrStop.addView(btnStopNow,weightParams);
-//        linearRoot.addView(linearRunOrStop,paddingParams);
+//        linearRoot.addView(linearRunOrStop,topMarginParams);
 
         //是否启动pulse服务
         String[] checkRunStr = getS(RR.pa_checkRun).split("\\$");
         CheckBox checkAutorun = new CheckBox(c);
         checkAutorun.setText(checkRunStr[0]);
-        linearRoot.addView(checkAutorun, paddingParams);
+        linearRoot.addView(checkAutorun, topMarginParams);
         linearRoot.addView(getDescriptionTextView(checkRunStr[1]));
 
         //输出日志（java的报错也放到这个文件里吧）
@@ -216,7 +215,7 @@ public class PulseAudio extends BaseFragment {
         checkEnableLog.setOnCheckedChangeListener((buttonView, isChecked) -> getPreference().edit().putBoolean(PREF_KEY_PULSE_ENABLE_LOG, isChecked).apply());
         checkEnableLog.setChecked(getPreference().getBoolean(PREF_KEY_PULSE_ENABLE_LOG, true));
         checkEnableLog.setEnabled(getPreference().getBoolean(PREF_KEY_PULSE_AUTORUN, PREF_DEF_VAL_PULSE_AUTORUN));
-        linearRoot.addView(checkEnableLog, paddingParams);
+        linearRoot.addView(checkEnableLog, topMarginParams);
         linearRoot.addView(getDescriptionTextView(String.format(checkLogStr[1], requireContext().getPackageName())));
 
         checkAutorun.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -260,9 +259,10 @@ public class PulseAudio extends BaseFragment {
             linearEditLine.setVisibility(shouldExit ? View.GONE : View.VISIBLE);
         });
         btnEditPars.setAllCaps(false);//禁止全大写
-        linearRoot.addView(btnEditPars, paddingParams);
+        linearRoot.addView(btnEditPars, QH.LPLinear.one(-2,-2).top().to());
         linearRoot.addView(linearEditLine, new LinearLayout.LayoutParams(-1, -2));
         linearRoot.addView(getDescriptionTextView(btnParamsStr[1]));
+        linearRoot.setLayoutTransition(new LayoutTransition());
 
 
         //强制重启
@@ -298,11 +298,12 @@ public class PulseAudio extends BaseFragment {
             linearTrShText.addView(tvTbStSub, trShTxtParams);
         }
 
-        LinearLayout linearTblShooting = getOneLineWithTitle(requireContext(), trShTitleStr, linearTrShText, true);//"故障排查 ⓘ"
+        LinearLayout linearTblShooting = QH.getOneLineWithTitle(requireContext(), trShTitleStr, linearTrShText, true);//"故障排查 ⓘ"
         linearTrShText.setVisibility(View.GONE);
         linearTblShooting.getChildAt(0).setOnClickListener(v -> linearTrShText.setVisibility(linearTrShText.getVisibility() == View.GONE ? View.VISIBLE : View.GONE));
 
-        linearRoot.addView(linearTblShooting, paddingParams);
+
+        linearRoot.addView(linearTblShooting, topMarginParams);
 
         return linearRoot;
     }
@@ -333,7 +334,15 @@ public class PulseAudio extends BaseFragment {
 
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-
+        //移除旧文件
+        File oldWorkDir = new File(activity.getFilesDir(),"pulseaudio-xsdl");
+        if(oldWorkDir.exists()) {
+            try {
+                FileUtils.moveDirectory(oldWorkDir,paWorkDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

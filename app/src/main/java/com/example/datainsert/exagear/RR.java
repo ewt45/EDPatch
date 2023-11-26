@@ -327,7 +327,7 @@ public class RR {
         zhArray.put(pa_title, "PulseAudio (XSDL)");
         zhArray.put(pa_explain, "PulseAudio用于播放音频，可以缓解一部分声音问题。本功能用到的PulseAudio服务端提取自Xserver XSDL，需要手机支持64位。");
         zhArray.put(pa_checkRun, "开启pulseaudio服务$在启动容器时一并启动PulseAudio服务");
-        zhArray.put(pa_checkLog, "输出日志$将日志保存到 Android/data/%s/files/logs/palog.txt");
+        zhArray.put(pa_checkLog, "输出日志$将日志保存到 z:/opt/edpatch/pulseaudio-xsdl/logs/palog.txt");
         zhArray.put(pa_btnParam, "修改启动参数$错误的参数会导致无法启动，请谨慎修改。不支持引号排除空格。");
         zhArray.put(pa_troubleShooting, "故障排查 ⓘ$" +
                 "检查PulseAudio服务是否正常工作：启动容器后左下角起点 - 运行 - 输入winecfg打开 - 音效，“选中的驱动”显示 winepulse.drv，点击“测试音频”按钮能听到声音。" +
@@ -349,8 +349,6 @@ public class RR {
         zhArray.put(DriveD2_devType, "手机存储$其他外部存储设备$其他外部存储设备(无)");
         zhArray.put(DriveD2_parType, "根目录$应用专属目录");
         zhArray.put(DriveD2_errors, "请先授予app存储权限 $ 该文件夹不存在 $ 该路径指向的是文件而不是文件夹 $ 没有对该文件夹的读取权限 $ 没有对该文件夹的写入权限 $ 读取该路径时出现错误: ");
-
-
         zhArray.put(conSet_otherArgv_title, "额外启动参数");
         zhArray.put(conSet_otherArgv_prefValue, "额外命令/环境变量");
         zhArray.put(othArg_info, "本页面为全部可用的参数，被勾选的参数会在当前容器中启用。$了解更多...");
@@ -365,7 +363,7 @@ public class RR {
         zhArray.put(othArg_edit_delConfirm, "确定要删除该参数吗？\n此操作会对全部容器生效。若您想仅修改当前容器，点击勾选框取消勾选即可。\n\n");
         zhArray.put(othArg_edit_attrTitles, "参数别名$参数内容$参数类型$新建的容器默认勾选该参数");
         zhArray.put(othArg_edit_typeChoices, "环境变量$命令 - 原命令开头$命令 - 原命令执行前$命令 - 原命令执行后");
-        zhArray.put(othArg_edit_typeInfo, "环境变量: 作为本次执行命令的环境变量，原命令开头若包含相同名称的环境变量，则会覆盖该参数的值。\n\n命令：若选择 在原命令执行前/后，则此参数的命令与原命令间用一个 & 连接。");
+        zhArray.put(othArg_edit_typeInfo, "参数类型分为两种：环境变量和命令。\n\n环境变量: 作为本次执行命令的环境变量，原命令开头若包含相同名称的环境变量，则会覆盖该参数的值。\n\n命令：若选择 在原命令执行前/后，则此参数的命令与原命令间用一个 '&' 连接。");
         zhArray.put(othArg_preview_titles, "原命令示例$插入参数后");
         zhArray.put(fabVO_checkTitles,"使用vtest协议2（需要Mesa 19.1.0 v3及以上）$使用GL ES 3.x而不是OpenGL$使用多线程egl访问$DXTn (S3TC) 解压（一些游戏需要）$自动重启服务");
         zhArray.put(fabVO_radioTitles,"覆盖位置:$左上方$居中$隐藏*$* 与VTEST_WIN=1一起使用以在X11窗口中绘制，而不是悬浮窗覆盖");
@@ -543,8 +541,8 @@ public class RR {
         enArray.put(conSet_otherArgv_title, "Extra Launching Arguments");
         enArray.put(conSet_otherArgv_prefValue, "Extra cmd/env");
         enArray.put(othArg_info, "All available params are listed here. Selected items will be applied to the current container.$Learn more...");
-        enArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
-        enArray.put(othArg_taskset_useCustom, "Set CPU cores");
+        enArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\nAll available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
+        enArray.put(othArg_taskset_useCustom, "Set_CPU_cores");
         enArray.put(othArg_ib_autorun, "Autorun_ib.exe");
         enArray.put(othArg_serviceExeDisable, "Kill_services.exe");
         enArray.put(othArg_preview, "Preview");
@@ -554,7 +552,7 @@ public class RR {
         enArray.put(othArg_edit_delConfirm, "Are you sure to delete this param?\nThis action will take effect on all containers. If you want to disable it only in the current container, please unselect it from the checkbox.\n\n");
         enArray.put(othArg_edit_attrTitles, "Alias$Arg$Type$Enable by default for new containers");
         enArray.put(othArg_edit_typeChoices, "Environment Variable$Cmd - in the front of original Cmd$Cmd - before original Cmd executed$Cmd - after original Cmd executed");
-        enArray.put(othArg_edit_typeInfo, "Enviroment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
+        enArray.put(othArg_edit_typeInfo, "Argument type is either ENV or CMD.\n\nEnvironment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
         enArray.put(othArg_preview_titles, "Original CMD$CMD with params");
         enArray.put(fabVO_checkTitles,"Use vtest protocol 2 (new Mesa libGL needed)$Use GL ES 3.x instead of OpenGL$Use multi-thread egl access$DXTn (S3TC) decompress (needed for some games)$Auto restart services");
         enArray.put(fabVO_radioTitles,"Overlay position:$Top-left$Centered$invisible *$* Used with VTEST_WIN=1 to draw in X11 window instead of overlay");
@@ -728,27 +726,26 @@ public class RR {
         ruArray.put(DriveD2_parType, "Корневой каталог$Каталог файлов приложения");
         ruArray.put(DriveD2_errors, " Необходимо дать приложению разрешение на хранение. $ Каталог не существует. $ Этот путь обозначает файл, а не каталог. $ Приложение не имеет разрешения на чтение содержимого этого каталога. $ Приложение не имеет разрешения на запись в этот каталог. $ Ошибка: ");
 
-        ruArray.put(conSet_otherArgv_title, "Extra Launching Arguments");
-        ruArray.put(conSet_otherArgv_prefValue, "Extra cmd/env");
-        ruArray.put(othArg_info, "All available params are listed here. Selected items will be applied to the current container.$Learn more...");
-        ruArray.put(othArg_info_more, "These params will be inserted into the original command when launching the container. Full command can be found at /sdcard/x86-stderr.txt.\n\nIf If the parameter is already included in the original command, the insertion may fail. The actual result can be viewed by clicking \"Preview\" button to enter the test command or viewed in the txt after starting the container. \n\n All available params are stored at z:/opt/edpatch/contArgs.txt, and the parameters enabled for each container are stored at z:/home/xdroid_n/contArgs.txt. However, it is not recommended to modify the txt directly due to strict requirements on the storage format.");
-        ruArray.put(othArg_taskset_useCustom, "Set CPU cores");
-        ruArray.put(othArg_ib_autorun, "Autorun_ib.exe");
-        ruArray.put(othArg_serviceExeDisable, "Kill_services.exe");
-        ruArray.put(othArg_preview, "Preview");
-        ruArray.put(global_add, "Add");
-        ruArray.put(global_edit, "Edit");
-        ruArray.put(global_del, "Delete");
-        ruArray.put(othArg_edit_delConfirm, "Are you sure to delete this param?\nThis action will take effect on all containers. If you want to disable it only in the current container, please unselect it from the checkbox.\n\n");
-        ruArray.put(othArg_edit_attrTitles, "Alias$Arg$Type$Enable by default for new containers");
-        ruArray.put(othArg_edit_typeChoices, "Environment Variable$Cmd - in the front of original Cmd$Cmd - before original Cmd executed$Cmd - after original Cmd executed");
-        ruArray.put(othArg_edit_typeInfo, "Enviroment Variable: Used for the command to be executed. If the original cmd contains a env with the same name, this params will be overridden.\n\nCmd: If it's before/after the original cmd, this cmd and the original cmd are connected with one '&'.");
-        ruArray.put(othArg_preview_titles, "Original CMD$CMD with params");
-        ruArray.put(fabVO_checkTitles,"Use vtest protocol 2 (new Mesa libGL needed)$Use GL ES 3.x instead of OpenGL$Use multi-thread egl access$DXTn (S3TC) decompress (needed for some games)$Auto restart services");
-        ruArray.put(fabVO_radioTitles,"Overlay position:$Top-left$Centered$invisible *$* Used with VTEST_WIN=1 to draw in X11 window instead of overlay");
-        ruArray.put(fabVO_btnTitles,"Clean Services$Start Services$Allow Drawing Overlay");
-        ruArray.put(fabVO_startResults,"Services start successfully. Now you can try to start the container and run games.$Services start failed.");
-        /*
+        ruArray.put(conSet_otherArgv_title, "Дополнительные Аргументы Запуска");
+        ruArray.put(conSet_otherArgv_prefValue, "Дополнительные cmd/env");
+        ruArray.put(othArg_info, "Здесь перечислены все доступные параметры. Выбранные аргументы будут применены к текущему контейнеру.$Подробнее...");
+        ruArray.put(othArg_info_more, "Эти аргументы будут добавлены в основную команду запуска контейнера.  Полную команду можно найти в файле по пути /sdcard/x86-stderr.txt.\n\nЕсли аргумент уже включен в исходную команду, добавление аргумента может быть неудачным.  Фактический результат можно просмотреть, нажав кнопку \"Предварительный просмотр\", используйте её чтобы ввести тестовую команду аргумента, или для просмотра аргумента в текстовом формате. \n\nВсе объявленные аргументы хранятся в Z:/opt/edpatch/contArgs.txt, а параметры, включенные для каждого контейнера, хранятся в Z:/home/xdroid_n/contArgs.txt.  Однако напрямую изменять txt не рекомендуется из-за строгих требований к формату хранения.");
+        ruArray.put(othArg_taskset_useCustom, "Выбор_ядер_CPU");
+        ruArray.put(othArg_ib_autorun, "Автозапуск_ib.exe");
+        ruArray.put(othArg_serviceExeDisable, "Отключить_services.exe");
+        ruArray.put(othArg_preview, "Предварительный просмотр");
+        ruArray.put(global_add, "Добавить");
+        ruArray.put(global_edit, "Редактировать");
+        ruArray.put(global_del, "Удалить");
+        ruArray.put(othArg_edit_delConfirm, "Вы уверены, что хотите удалить этот аргумент?\nЭто действие повлияет на все контейнеры. Если вы хотите отключить его только в текущем контейнере, просто снимите флажок.\n\n");
+        ruArray.put(othArg_edit_attrTitles, "Имя Аргумента$Аргумент$Тип$Включить по умолчанию для новых контейнеров");
+        ruArray.put(othArg_edit_typeChoices, "Переменная среды$Cmd - перед исходным Cmd$Cmd - до выполнения исходного Cmd$Cmd - после выполнения исходного Cmd");
+        ruArray.put(othArg_edit_typeInfo, "Тип аргумента - ENV или CMD.\n\nПеременная среды: используется для выполняемой команды. Если исходный cmd содержит окружение с тем же именем, эти параметры будут переопределены.\n\nCmd: Если он находится до или после исходного cmd, этот cmd и исходный cmd соединяются одним знаком '&'.");
+        ruArray.put(othArg_preview_titles, "Оригинальный CMD$CMD с параметрами CMD");
+        ruArray.put(fabVO_checkTitles,"Использовать протокол vtest 2 (требуется новая библиотека Mesa libGL)$Использовать GL ES 3.x вместо OpenGL$Использовать многопоточный доступ egl$Распаковка DXTn (S3TC) (необходима для некоторых игр)$Автоматический перезапуск сервисов");
+        ruArray.put(fabVO_radioTitles,"Позиция Оверлэя: $Левый  верхний  угол$Центр$Невидимая *$* Используется с VTEST_WIN=1 для рисования в окне X11 вместо наложения.");
+        ruArray.put(fabVO_btnTitles,"Очистить Сервисы$Запустить Сервисы$Разрешить наложение Оверлэя");
+        ruArray.put(fabVO_startResults,"Сервисы запускаются успешно. Теперь можно попробовать запустить контейнер, и запустить игры.$Не удалось запустить Сервисы.");        /*
 
 
 
