@@ -1,4 +1,12 @@
-![icon](/patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png)
+<div align="center">
+<img src="../patchapp/src/main/res/mipmap-xxhdpi/ic_launcher.png" />
+</div>
+
+<div style="display: flex;justify-content: center;align-items: center ; ">
+<img src="./1.jpg" width="30%"/>
+<img src="./2.jpg" width="30%"/>
+<img src="./3.jpg" width="30%"/>
+</div>
 
 🌐[中文](../readme.md)\
 🌐[English](./readme_en.md)\
