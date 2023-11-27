@@ -5,7 +5,7 @@ plugins {
 android {
     namespace 'com.eltechs.ed'
 
-    compileSdk 28
+    compileSdk 29
 
     defaultConfig {
         applicationId "com.eltechs.ed"

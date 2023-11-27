@@ -4,8 +4,8 @@ import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.text.InputType.TYPE_TEXT_VARIATION_NORMAL;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static android.widget.LinearLayout.VERTICAL;
-import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.RR.getSArr;
 import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.POS_EARLIER;
 import static com.example.datainsert.exagear.containerSettings.otherargv.Argument.POS_FRONT;
@@ -43,7 +43,6 @@ import com.example.datainsert.exagear.containerSettings.otherargv.Arguments;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**

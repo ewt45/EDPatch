@@ -1,11 +1,19 @@
 package com.example;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.AudioPlaybackCaptureConfiguration;
+import android.media.AudioPlaybackConfiguration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.eltechs.axs.Globals;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.ed.R;
 import com.eltechs.ed.fragments.ManageContainersFragment;
 import com.eltechs.ed.guestContainers.GuestContainer;
@@ -18,6 +26,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -29,6 +38,38 @@ public class test extends AppCompatActivity {
 
     public test() {
 
+    }
+
+    public static void test_call_audioset(){
+        test.setAllowAudioRecord();
+        test.viewNowPlayback();
+    }
+
+    @SuppressLint("WrongConstant")
+    public static void setAllowAudioRecord(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            AudioManager manager = Globals.getAppContext().getSystemService(AudioManager.class);
+            manager.setAllowedCapturePolicy(AudioAttributes.ALLOW_CAPTURE_BY_ALL);
+            //这个应该是此时正在播放的音频的设置？
+//            manager.getActivePlaybackConfigurations();
+        }
+    }
+
+    public static void viewNowPlayback(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            AudioManager manager = Globals.getAppContext().getSystemService(AudioManager.class);
+            //这个应该是此时正在播放的音频的设置？
+            List<AudioPlaybackConfiguration> list = manager.getActivePlaybackConfigurations();
+            StringBuilder builder = new StringBuilder();
+            for(AudioPlaybackConfiguration c:list){
+                AudioAttributes attr = c.getAudioAttributes();
+                builder.append("Usage: ").append(attr.getUsage()).append(", AllowedCapturePolicy").append(attr.getAllowedCapturePolicy()).append("\n");
+            }
+            if(list.size()==0)
+                builder.append("no active playback right now");
+            new AlertDialog.Builder(((ApplicationStateBase)Globals.getApplicationState()).getCurrentActivity())
+                    .setMessage(builder.toString()).show();
+        }
     }
 
     private void test_get_string_from_context_with_resid(){
