@@ -10,8 +10,8 @@ android {
         applicationId "com.ewt45.patchapp"
         minSdk 21
         targetSdk 27
-        versionCode 10
-        versionName '1.0.0'
+        versionCode 11
+        versionName '1.0.1'
         resourceConfigurations += ['en', 'zh', 'ru']
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
