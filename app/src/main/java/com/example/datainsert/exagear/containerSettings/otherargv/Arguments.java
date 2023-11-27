@@ -33,7 +33,7 @@ public class Arguments {
     private final static File mPoolFile = new File(QH.Files.edPatchDir(), "contArgs.txt");
 
     private static String DEFAULT_POOL = "" +
-            "e cmd front " + getS(RR.othArg_ib_autorun) + " ib\n" +
+            "d cmd front " + getS(RR.othArg_ib_autorun) + " ib\n" +
             "#d cmd earlier wine之前执行脚本 simple.sh\n" +
             "d cmd later " + getS(RR.othArg_serviceExeDisable) + " wine taskkill /f /im services.exe\n" +
             "d cmd later parallel_run_some_exe_test wine explorer /desktop=shell taskmgr\n" +
