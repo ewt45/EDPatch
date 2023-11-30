@@ -67,12 +67,6 @@ public class TouchScreenControlsInputWidget extends View {
                 } else if (i != 82 || keyEvent.getAction() != 1) {
                     if (i == 4 && TouchScreenControlsInputWidget.this.configuration.backKeyAction == SHOW_POPUP_MENU) {
                         if (keyEvent.getAction() == 1) {
-                            //仅供调试
-//                            if( QH.isTesting()){
-//                                XServerDisplayActivityInterfaceOverlay ui = ((XServerDisplayActivityConfigurationAware) Globals.getApplicationState()).getXServerDisplayActivityInterfaceOverlay();
-//                                ((FalloutInterfaceOverlay2)ui).getControlsFactory().getPopupMenu().getMenu().clear();
-//                                ((FalloutInterfaceOverlay2)ui).getControlsFactory().getPopupMenu().show();
-//                            }
                           getHost().showPopupMenu();
                         }
                         return true;

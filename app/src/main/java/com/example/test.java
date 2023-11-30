@@ -5,12 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
-import android.media.AudioPlaybackCaptureConfiguration;
 import android.media.AudioPlaybackConfiguration;
+import android.media.AudioRecordingConfiguration;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class test extends AppCompatActivity {
+public class test {
     private static final File mUserAreaDir = DriveD.getDriveDDir();
     private static boolean staticNotFinal = false;
     private final static boolean staticAndFinal  = true; //smali声明变量那一行就会赋值
@@ -40,9 +40,17 @@ public class test extends AppCompatActivity {
 
     }
 
+    public static void add_popupmenu(Menu menu){
+        menu.add("current playing audio").setOnMenuItemClickListener(item -> {
+            viewNowPlayback();
+           return true;
+        });
+    }
     public static void test_call_audioset(){
+        //1. AXSPopupMenu show show前添加这个
+        test.add_popupmenu(null);
+        //2. activity onCreate时调用这个
         test.setAllowAudioRecord();
-        test.viewNowPlayback();
     }
 
     @SuppressLint("WrongConstant")
@@ -56,17 +64,35 @@ public class test extends AppCompatActivity {
     }
 
     public static void viewNowPlayback(){
+        /*
+        Usage:
+            0 = USAGE_UNKNOWN
+            1 = USAGE_MEDIA
+        Allow:
+            1 = ALLOW_CAPTURE_BY_ALL
+            2 = ALLOW_CAPTURE_BY_SYSTEM
+            3 = ALLOW_CAPTURE_BY_NONE
+         */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             AudioManager manager = Globals.getAppContext().getSystemService(AudioManager.class);
             //这个应该是此时正在播放的音频的设置？
             List<AudioPlaybackConfiguration> list = manager.getActivePlaybackConfigurations();
             StringBuilder builder = new StringBuilder();
+            builder.append("ActivePlaybackConfigurations:\n");
             for(AudioPlaybackConfiguration c:list){
                 AudioAttributes attr = c.getAudioAttributes();
                 builder.append("Usage: ").append(attr.getUsage()).append(", AllowedCapturePolicy").append(attr.getAllowedCapturePolicy()).append("\n");
             }
             if(list.size()==0)
-                builder.append("no active playback right now");
+
+            builder.append("\nActiveRecordingConfigurations\n");
+            List<AudioRecordingConfiguration> list2 = manager.getActiveRecordingConfigurations();
+            for(AudioRecordingConfiguration  c:list2){
+                builder.append(c).append("\n");
+            }
+            if(list2.size()==0)
+                builder.append("none\n");
+
             new AlertDialog.Builder(((ApplicationStateBase)Globals.getApplicationState()).getCurrentActivity())
                     .setMessage(builder.toString()).show();
         }
@@ -91,7 +117,7 @@ public class test extends AppCompatActivity {
     }
 
     public void send_inputstream_instead_of_file(){
-        TarZstdUtils.extract(this,new File(""));
+//        TarZstdUtils.extract(this,new File(""));
     }
     public static int winlatorObb(Context context, AtomicReference<File> result){
         result.set(new File("/this/should/not/exist"));

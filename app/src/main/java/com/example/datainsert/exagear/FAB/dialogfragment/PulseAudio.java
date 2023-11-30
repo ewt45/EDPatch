@@ -336,7 +336,7 @@ public class PulseAudio extends BaseFragment {
     public void callWhenFirstStart(AppCompatActivity activity) {
         //移除旧文件
         File oldWorkDir = new File(activity.getFilesDir(),"pulseaudio-xsdl");
-        if(oldWorkDir.exists()) {
+        if(oldWorkDir.exists() && !paWorkDir.exists()) {
             try {
                 FileUtils.moveDirectory(oldWorkDir,paWorkDir);
             } catch (IOException e) {

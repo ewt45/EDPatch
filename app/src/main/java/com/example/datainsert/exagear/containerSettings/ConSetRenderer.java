@@ -106,7 +106,7 @@ public class ConSetRenderer {
         try {
             //迁移txt位置
             File oldFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath(), "opt/renderers.txt");
-            if (oldFile.exists())
+            if (oldFile.exists() && !configFile.exists())
                 FileUtils.moveFile(oldFile, configFile);
 
             //若没有该文件，自己创建一个并写入默认内容

@@ -40,4 +40,4 @@ google-services.json
 *.smali
 edapi（旧module，已删除）.zip
 app/src/main/cpp/libadrenotools/
-/patchapp/release
+/patchapp/release/
