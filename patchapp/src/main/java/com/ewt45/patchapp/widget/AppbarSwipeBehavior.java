@@ -46,7 +46,7 @@ public class AppbarSwipeBehavior extends CoordinatorLayout.Behavior<AppBarLayout
 
     @Override
     public boolean onInterceptTouchEvent(@NonNull CoordinatorLayout parent, @NonNull AppBarLayout child, MotionEvent ev) {
-        Log.d(TAG, "onInterceptTouchEvent: " + ev.getAction());
+//        Log.d(TAG, "onInterceptTouchEvent: " + ev.getAction());
 
         if(currState ==STATE_EXPANDING || currState == STATE_FOLDING)
             return false;

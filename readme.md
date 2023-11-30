@@ -63,6 +63,7 @@
 - [AndroidBinaryXml](https://github.com/senswrong/AndroidBinaryXml)
 - [Gson](https://github.com/google/gson)
 - [org.tukaani.xz](https://tukaani.org/xz/)
+- [OkHttp](https://square.github.io/okhttp/)
 
 ## 更新历史
 

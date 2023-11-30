@@ -6,7 +6,8 @@
         <item>android-gif-drawable</item>
         <item>apksig</item>
         <item>AndroidBinaryXml</item>
-
+        <item>OkHttp</item>
+        <item>Gson</item>
     </array>
     <array name="credits_link">
         <item>https://ibotpeaches.github.io/Apktool/</item>
@@ -14,6 +15,9 @@
         <item>https://github.com/koral--/android-gif-drawable</item>
         <item>https://android.googlesource.com/platform/tools/apksig</item>
         <item>https://github.com/senswrong/AndroidBinaryXml</item>
+        <item>https://square.github.io/okhttp/</item>
+        <item>https://github.com/google/gson</item>
+
     </array>
 
     <string-array name="func_name">

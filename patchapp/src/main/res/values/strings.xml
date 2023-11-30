@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">EDPatch</string>
     <!-- Strings used for fragments for navigation -->
 
@@ -20,7 +20,7 @@
     <string name="n1_exagear_apk_n2_n3_apk">usage: \n1. Select exagear\'s apk and wait for decoding to complete.\n2. Check the functions, click patch button and wait for building to complete.\n3. Click install button to install the patched apk.\nnotice:\n1. It is not guaranteed that patching will be successful.\n2. Apk\'s signature will be different after patching.Resign it on your own if necessary.</string>
     <string name="app_info">selected apk：%1$s</string>
     <string name="actmsg_fail">…failed</string>
-    <string name="patchstep1_title">1/3. Select apk</string>
+    <string name="patchstep1_title" tools:ignore="TypographyFractions">1/3. Select apk</string>
     <string name="funcname_selobb">Select Obb Manually</string>
     <string name="funcname_fab_drived">Custom location of drive D</string>
     <string name="fraghelp_title2_steps">Steps</string>
@@ -46,7 +46,7 @@
     <string name="settings_delpatcherapksummary">Generally not used</string>
     <string name="settings_version">version</string>
     <string name="settings_credits">Third-party project dependencies</string>
-    <string name="settings_update">Update</string>
+    <string name="settings_update">Check Update</string>
     <string name="settings_usedefaultkey">Use the default signature</string>
     <string name="settings_usedefaultkeysummary">If checked, No need to uninstall original one or resign the patched apk manually , but it may be recognized as virus.</string>
 
@@ -88,4 +88,12 @@
     <string name="btntxt_selectapkinstalled">App list</string>
     <string name="patchstep1_tv_newapkselected">The selected apk is decoded successfully. Now you can click the \"→\" button to  proceed to the next step. Or reselect an apk.</string>
     <string name="btntxt_reselect">Reselect</string>
+    <string name="btntxt_update">Update</string>
+    <string name="btntxt_open_link">Open Link</string>
+    <string name="tv_installing">Download completed. Installing...</string>
+    <string name="tv_please_open_manually">Internet connection failed. Please open the link manually.</string>
+    <string name="tv_downloading">Downloading, please don\'t switch to other interfaces. Progress can be checked at the notification bar.</string>
+    <string name="tv_version_compare_versions">Current version: %s\nLatest version: %s\n\n</string>
+    <string name="tv_version_compare_need_update">A newer version is available. Do you want to update now?</string>
+    <string name="tv_version_compare_is_latest">You\'ve installed the latest version.</string>
 </resources>

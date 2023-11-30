@@ -48,7 +48,6 @@
     <string name="patchstep2_title">2/3. Выбор добавляемых функций</string>
     <string name="fragment_patch_label">Основное меню</string>
     <string name="settings_credits">Использование сторонних проектов</string>
-    <string name="settings_update">Обновить</string>
     <string name="fraghelp_title2_brief">O проекте</string>
     <string name="fraghelp_body_brief">После добавления некоторых небольших функций в exagear (3.0.2) (в основном путем изменения dex) я обнаружил, что вручную изменять smali слишком проблематично.  Даже если предоставлено руководство с указанием измененного местоположения и кодов, оно не подходит для большинства людей, не имеющих опыта модификации apk.\nПоэтому мне интересно, могу ли я создать приложение.  Пользователю нужно только нажать кнопку и дождаться завершения автоматической модификации, а затем установить новый apk.  Так родилось это приложение.  Из-за моих ограниченных знаний 100% успех модификации или совместимость со всеми версиями exagear не гарантируется.</string>
     <string name="funcname_fab_cstmCtrl">Кастомное управление</string>
@@ -80,4 +79,5 @@
     <string name="btntxt_selectapkinstalled">Список приложений</string>
     <string name="patchstep1_tv_newapkselected">Выбранный APK успешно декодирован. Теперь вы можете нажать кнопку "→" чтобы перейти к следующему шагу. Или повторно выберите APK.</string>
     <string name="btntxt_reselect">Повторно выбрать</string>
+    <string name="btntxt_update">Обновить</string>
 </resources>

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 查看网络连接 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
@@ -8,8 +11,6 @@
     如果要修改媒体文件，您还必须请求 WRITE_EXTERNAL_STORAGE 权限。
     在搭载 Android 10 或更高版本的设备上，您无需拥有存储相关权限即可访问和修改您的应用拥有的媒体文件
     -->
-
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <uses-permission
@@ -17,6 +18,7 @@
         android:maxSdkVersion="29" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

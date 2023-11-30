@@ -8,11 +8,11 @@
         <!--        <item name="colorAccent">@color/teal_200</item>-->
 
 <!--        操作栏背景。this is the color applied to the action bar background.-->
-        <item name="colorPrimary">#5a6abf</item>
+        <item name="colorPrimary">@color/primary</item>
 <!--        状态栏和导航栏背景。this is the color applied to the status bar and navigation bar.-->
-        <item name="colorPrimaryDark">#23408e</item>
+        <item name="colorPrimaryDark">@color/primaryDark</item>
 <!--        控件背景。this is the color applied to framework controls.-->
-        <item name="colorAccent">#2d3f9e</item>
+        <item name="colorAccent">@color/accent</item>
         <item name="snackbarButtonStyle">@style/SnackbarButtonLight</item>
 
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Colored</item>
@@ -31,7 +31,7 @@
 <!--    snackbar的背景为黑色，按钮还是深色的话看不清了就-->
     <style name="SnackbarButtonLight" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="buttonStyle">?borderlessButtonStyle</item>
-        <item name="android:textColor">#9ea8d9</item>
+        <item name="android:textColor">@color/blue_light</item>
     </style>
 
 

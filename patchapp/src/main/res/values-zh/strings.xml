@@ -54,7 +54,7 @@
     <string name="patchstep3_titile">3/3. 完成</string>
     <string name="fragment_patch_label">主界面</string>
     <string name="settings_credits">第三方项目依赖</string>
-    <string name="settings_update">更新</string>
+    <string name="settings_update">检查更新</string>
     <string name="fraghelp_title2_brief">应用简介</string>
     <string name="fraghelp_body_brief">在为exagear(3.0.2)加了一些小功能之后（主要是通过修改dex实现），我发现手改smali终究还是太麻烦了。即使提供修改代码和位置的傻瓜式教程，也不适用于未接触过apk修改的大部分人群。\n所以我在想，能否做一个应用，用户只需点一个按钮，等待自动修改完成后安装新的apk即可。于是本应用便诞生了。由于能力有限，不保证适用于所有版本的exagear，也不保证100%修改成功。</string>
     <string name="tips_check_guide">修改apk前，请先查看右上角菜单中的“指南”。</string>
@@ -81,5 +81,13 @@
     <string name="patchstep3_chooser_title">可以使用以下应用查看</string>
     <string name="patchstep1_tv_newapkselected">当前所选的apk已解压成功，您可以点击右上方的 \"→\" 按钮进入下一步，或重新选择apk。</string>
     <string name="btntxt_reselect">重新选择</string>
+    <string name="btntxt_update">更新</string>
+    <string name="btntxt_open_link">打开链接</string>
+    <string name="tv_installing">下载完成，正在安装</string>
+    <string name="tv_please_open_manually">网络连接错误，请手动打开外部链接查看或下载。</string>
+    <string name="tv_downloading">正在下载，请勿切换界面。下载进度可在手机通知栏查看.</string>
+    <string name="tv_version_compare_versions">当前版本: %s\n最新版本: %s\n\n</string>
+    <string name="tv_version_compare_is_latest">当前已是最新版本。</string>
+    <string name="tv_version_compare_need_update">检测到新版本，是否更新？</string>
 
 </resources>

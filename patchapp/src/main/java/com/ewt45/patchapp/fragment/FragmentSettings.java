@@ -15,10 +15,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.ewt45.patchapp.ActivityPatch;
+import com.ewt45.patchapp.AndroidUtils;
 import com.ewt45.patchapp.BuildConfig;
 import com.ewt45.patchapp.MyApplication;
 import com.ewt45.patchapp.PatchUtils;
 import com.ewt45.patchapp.R;
+import com.ewt45.patchapp.widget.CheckUpdateDialog;
 
 import java.io.File;
 
@@ -79,28 +81,14 @@ public class FragmentSettings extends PreferenceFragmentCompat {
             String[] creditsName = getResources().getStringArray(R.array.credits_name);
             String[] creditsLink = getResources().getStringArray(R.array.credits_link);
             listView.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, creditsName));
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(creditsLink[position]));
-                    if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-                        startActivity(intent);
-                    }
-//                    Toast.makeText(requireContext(),creditsLink[position],Toast.LENGTH_SHORT).show();
-                }
-            });
-            new AlertDialog.Builder(requireContext())
-                    .setView(listView).create().show();
-
+            listView.setOnItemClickListener((parent, view, position, id) -> AndroidUtils.openLink(requireContext(),creditsLink[position]));
+            new AlertDialog.Builder(requireContext()).setView(listView).create().show();
             return true;
         });
 
         //更新地址
         findPreference("update").setOnPreferenceClickListener(preference -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/ewt45/EDPatch/releases"));
-            if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-                startActivity(intent);
-            }
+            new CheckUpdateDialog().show(requireActivity().getSupportFragmentManager(),null);
             return true;
         });
     }

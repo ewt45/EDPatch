@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ewt45.patchapp.AndroidUtils;
 import com.ewt45.patchapp.R;
 import com.ewt45.patchapp.databinding.FragmentPatchStep3Binding;
 
@@ -68,14 +69,8 @@ public class FragmentPatchStep3 extends BaseFragmentPatchStep {
 //                AndroidUtils.showSnack(requireActivity(), "保存失败");
             }
         });
-        binding.btnInstallNew.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            Uri uri = getUriForFile(requireContext(), "com.ewt45.patchapp.fileprovider", getExaNewPatchedSignedApk());
-            intent.setDataAndType(uri, "application/vnd.android.package-archive");
-            startActivity(intent);
-        });
+
+        binding.btnInstallNew.setOnClickListener(v -> AndroidUtils.installApk(requireContext(),getUriForFile(requireContext(), getString(R.string.provider_ato), getExaNewPatchedSignedApk())));
         return binding.getRoot();
     }
 
