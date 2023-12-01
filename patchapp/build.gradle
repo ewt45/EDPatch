@@ -12,14 +12,15 @@ android {
         //noinspection ExpiredTargetSdkVersion
         targetSdk 27
         versionCode 13
-        versionName '1.0.3'
+        versionName '1.1.0'
         resourceConfigurations += ['en', 'zh', 'ru']
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -33,13 +34,16 @@ android {
     lint {
         baseline = file("lint-baseline.xml")
     }
-}
-// 自定义打包名称
-android.applicationVariants.configureEach { variant ->
-    variant.outputs.configureEach {
-        outputFileName = "EDPatch-beta.apk"
+
+    // 自定义打包名称
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            outputFileName = "EDPatch-beta.apk"
+        }
     }
 }
+
+
 dependencies {
 
     //noinspection GradleCompatible

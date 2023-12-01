@@ -9,6 +9,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
@@ -45,7 +46,6 @@ public class FragmentPatchStep3 extends BaseFragmentPatchStep {
 //            FileUtils.copyFile(PatchUtils.getExaNewPatchedApk(),os);
 
             try {
-                
                 Uri uri = getUriForFile(requireContext(), getResources().getString(R.string.provider_ato), getExaNewPatchedSignedApk());
                 Intent shareIntent = new Intent(Intent.ACTION_SEND)
                         .putExtra(EXTRA_STREAM,uri )

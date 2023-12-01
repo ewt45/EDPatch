@@ -101,13 +101,10 @@ public class PatchUtils {
             throw new Exception("tmp.apk存在且无法删除");
         }
 
-        try {
-            InputStream is = c.getContentResolver().openInputStream(uri);
-            FileOutputStream fos = new FileOutputStream(copyFile);
+        try (InputStream is = c.getContentResolver().openInputStream(uri);
+             FileOutputStream fos = new FileOutputStream(copyFile);){
             IOUtils.copy(is, fos);
-            is.close();
-            fos.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -115,8 +112,6 @@ public class PatchUtils {
 
     /**
      * 返回ex包名 格式：“com/eltechs/ed"
-     *
-     * @return
      */
     public static String getPackageName() {
         if (packageName == null || packageName.equals("")) {
@@ -146,9 +141,6 @@ public class PatchUtils {
      * 不使用$PACKAGE_NAME了，自动检测com.eltechs.ed包名吧
      * <p/>
      * 会转换包含"com/eltechs/ed"的字符串和包含"com.eltechs.ed"的字符串
-     *
-     * @param origin
-     * @return
      */
     public static List<String> scanAndParsePkgName(String[] origin) {
         List<String> returnLists = new ArrayList<>();
