@@ -47,7 +47,7 @@ import java.util.Objects;
 
 public class DriveD extends BaseFragment {
     private static final String TAG = "DriveD";
-    private static final File drivesSavedFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath().getAbsolutePath(), "opt/drives.txt");
+    private static final File drivesSavedFile = new File(QH.Files.edPatchDir(), "drives.txt");
     //PREF_VAL_DST_NAME 没有自定义的时候，默认的文件夹名,可以改这个默认的路径
     public static String PREF_VAL_PAR_NAME = Environment.getExternalStorageDirectory().getAbsolutePath(), PREF_VAL_DST_NAME = "Exagear"; //值为string
     /**
@@ -56,6 +56,16 @@ public class DriveD extends BaseFragment {
     private List<String> drivesList = new ArrayList<>();
     private DrivePathChecker mPathChecker;
 
+    static {
+        File oldFile = new File(((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath().getAbsolutePath(), "opt/drives.txt");
+        if(oldFile.exists() && !drivesSavedFile.exists()){
+            try {
+                FileUtils.moveFile(oldFile,drivesSavedFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     /**
      * 在StartGuest中初始化d盘路径时调用，返回对应的file
      *

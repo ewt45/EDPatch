@@ -50,7 +50,7 @@ public class CheckUpdateDialog extends AppCompatDialogFragment {
      */
     private GithubReleaseData.Asset mAsset = null;
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @SuppressLint({"UnspecifiedRegisterReceiverFlag", "WrongConstant"})
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

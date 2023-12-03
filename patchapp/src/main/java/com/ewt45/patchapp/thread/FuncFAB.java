@@ -43,6 +43,7 @@ public class FuncFAB implements Func {
     1：初版（旧版没写入版本号）
     2：初次安装后会自动创建Exagear文件夹
     3: 支持多盘符，多设备识别，外部设备可选根目录
+    4: 将记录txt移到 z:/opt/edpatch/drives.txt
 
     自定义按键的版本号
     2: 修改了第一人称视角的移动逻辑。修复长按按钮 透明度消失问题

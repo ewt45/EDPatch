@@ -46,6 +46,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * 不要随意修改已有方法的定义，否则会与旧功能不兼容。但是可以修改其内容
@@ -292,6 +294,13 @@ public class QH {
         return v -> new AlertDialog.Builder(v.getContext()).setMessage(info).setPositiveButton(android.R.string.yes, null).show();
     }
 
+    /**
+     * 通过反射获取某个类的私有成员变量
+     * @param clz 类名
+     * @param clzInst 类的实例。static变量的话可为null
+     * @param fieldName 变量名
+     * @return 变量实例
+     */
     public static Object reflectPrivateMember(Class<?> clz, Object clzInst, String fieldName) {
         Object fieldInst = null;
         try {
@@ -303,6 +312,19 @@ public class QH {
             throwable.printStackTrace();
         }
         return fieldInst;
+    }
+
+    public static Object reflectPrivateMethod(Class<?> clz, String methodName, Class<?>[] clzs, Object inst, Object... params){
+        try {
+            Method method = clz.getDeclaredMethod(methodName, clzs);
+            method.setAccessible(true);
+            Object result = method.invoke(inst,params);
+            method.setAccessible(false);
+            return result;
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
