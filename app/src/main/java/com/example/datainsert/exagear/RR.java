@@ -790,7 +790,7 @@ public class RR {
          */
         @Deprecated
         public static int dialogPaddingDp = 24;
-
+//TODO 'TypedArray' used without 'try'-with-resources statement
         public static int textColorPrimary(Context c) {
             TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimary});
             int color = array.getColor(0, Color.BLACK);
