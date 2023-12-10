@@ -10,13 +10,15 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
+import org.ewt45.customcontrols.model.OneProfile;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TouchAreaView extends FrameLayout {
 
     //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
-    List<TouchArea> mTouchAreaList = new ArrayList<>();
+    OneProfile mProfile = new OneProfile();
     final int MAX_FINGERS = 10;
     private final Finger[] userFingers = new Finger[MAX_FINGERS];
     Mouse mMouse = new Mouse();
@@ -35,7 +37,7 @@ public class TouchAreaView extends FrameLayout {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        for(TouchArea touchArea: mTouchAreaList)
+        for(TouchArea touchArea: mProfile.getTouchAreaList())
             touchArea.onDraw(canvas);
     }
 
@@ -120,7 +122,6 @@ public class TouchAreaView extends FrameLayout {
         return super.onTouchEvent(motionEvent);
     }
 
-    /* JADX WARN: Can't fix incorrect switch cases order, some code will duplicate */
     private boolean handleTouchEvent(MotionEvent motionEvent) {
         int actionIndex = motionEvent.getActionIndex();
         int pointerId = motionEvent.getPointerId(actionIndex);
@@ -128,6 +129,7 @@ public class TouchAreaView extends FrameLayout {
         if (pointerId >= MAX_FINGERS) {
             return true;
         }
+
         int i = 0;
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
@@ -147,28 +149,37 @@ public class TouchAreaView extends FrameLayout {
 
                 //TODO 为什么这俩要遍历所有的finger呢，只处理那一个不行吗
             case MotionEvent.ACTION_MOVE:
-                while (i < MAX_FINGERS) {
-                    if (this.userFingers[i] != null) {
-                        int findPointerIndex = motionEvent.findPointerIndex(i);
-                        if (findPointerIndex >= 0) {
-                            this.userFingers[i].update(motionEvent.getX(findPointerIndex), motionEvent.getY(findPointerIndex));
-                            handleFingerMove(this.userFingers[i]);
-                        } else {
-                            handleFingerUp(this.userFingers[i]);
-                            this.userFingers[i] = null;
-                        }
-                    }
-                    i++;
+                if (this.userFingers[pointerId] != null) {
+                    this.userFingers[pointerId].update(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
+                    handleFingerMove(this.userFingers[pointerId]);
+                    break;
                 }
+//                while (i < MAX_FINGERS) {
+//                    if (this.userFingers[i] != null) {
+//                        int findPointerIndex = motionEvent.findPointerIndex(i);
+//                        if (findPointerIndex >= 0) {
+//                            this.userFingers[i].update(motionEvent.getX(findPointerIndex), motionEvent.getY(findPointerIndex));
+//                            handleFingerMove(this.userFingers[i]);
+//                        } else {
+//                            handleFingerUp(this.userFingers[i]);
+//                            this.userFingers[i] = null;
+//                        }
+//                    }
+//                    i++;
+//                }
                 break;
             case MotionEvent.ACTION_CANCEL:
-                while (i < MAX_FINGERS) {
-                    if (this.userFingers[i] != null) {
-                        handleFingerUp(this.userFingers[i]);
-                        this.userFingers[i] = null;
-                    }
-                    i++;
+                if (this.userFingers[i] != null) {
+                    handleFingerUp(this.userFingers[i]);
+                    this.userFingers[i] = null;
                 }
+//                while (i < MAX_FINGERS) {
+//                    if (this.userFingers[i] != null) {
+//                        handleFingerUp(this.userFingers[i]);
+//                        this.userFingers[i] = null;
+//                    }
+//                    i++;
+//                }
                 break;
         }
         return true;
@@ -179,7 +190,7 @@ public class TouchAreaView extends FrameLayout {
      */
     private void handleFingerMove(Finger userFinger) {
         int tmp =0;
-        for(TouchArea touchArea:mTouchAreaList){
+        for(TouchArea touchArea:mProfile.getTouchAreaList()){
             int handled = touchArea.handleFingerMove(userFinger);
             if(handled == TouchArea.HANDLED_KEEP)
                 return;
@@ -192,7 +203,7 @@ public class TouchAreaView extends FrameLayout {
      * 发现移出一个区域，则停止遍历
      */
     private void handleFingerUp(Finger userFinger) {
-        for(TouchArea touchArea:mTouchAreaList){
+        for(TouchArea touchArea:mProfile.getTouchAreaList()){
             if(TouchArea.HANDLED_REMOVE == touchArea.handleFingerUp(userFinger))
                 return;
         }
@@ -202,7 +213,7 @@ public class TouchAreaView extends FrameLayout {
      * 只要有一个区域接收了，就不再管其他区域
      */
     private void handleFingerDown(Finger userFinger) {
-        for(TouchArea touchArea:mTouchAreaList){
+        for(TouchArea touchArea:mProfile.getTouchAreaList()){
             if(TouchArea.HANDLED_ADD == touchArea.handleFingerDown(userFinger))
                 return;
         }

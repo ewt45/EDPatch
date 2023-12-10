@@ -39,6 +39,7 @@ public class InterfaceOverlayImpl implements InterfaceOverlay<FullscreenActivity
             menu.add("添加按键").setOnMenuItemClickListener(item -> {
                 //TODO 新建一个toucharea放左上角
                 showAddBtnDialog(a, viewOfXServer);
+                
                 return true;
             });
             menu.add("全局设置").setOnMenuItemClickListener(item -> {
