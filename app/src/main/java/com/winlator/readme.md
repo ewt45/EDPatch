@@ -1,4 +1,18 @@
 [TOC]
+# 手动选择OBB/内置OBB/从github下载原版OBB
+内置obb位置在apk/assets/obb文件夹内 任意名字
+## 3.2
+com.winlator.core.OBBImageInstaller.smali 中，搜索contentDialog定位，删去三行，添加一行
+```smali
+# 删去这三行
+new-instance v4, Lcom/winlator/core/OBBImageInstaller$$ExternalSyntheticLambda2;
+
+invoke-direct {v4, p0}, Lcom/winlator/core/OBBImageInstaller$$ExternalSyntheticLambda2;-><init>(Lcom/winlator/MainActivity;)V
+
+invoke-static {p0, v3, v4}, Lcom/winlator/contentdialog/ContentDialog;->confirm(Landroid/content/Context;ILjava/lang/Runnable;)V
+# 添加这一行
+invoke-static {p0}, Lcom/example/datainsert/winlator/all/OBBFinder;->extract_3_2(Lcom/winlator/MainActivity;)V
+```
 
 # xserver左侧抽屉栏添加额外内容
 进入容器后，按手机返回键，可显示左侧抽屉栏。在里面添加一些额外功能。
