@@ -41,7 +41,7 @@ public class AvailableKeysView extends ScrollView implements CompoundButton.OnCh
             "LShift", "\\", "Z", "X", "C", "V", "B", "N", "M", ",/<", "./>", "/(?)", "RShift", "*",    //14
             "LAlt", "Space", "CapsLock", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "NumLock", "ScrollLock", //15
             "KP7", "KP8", "KP9", "KP-",                     //4
-            "KP4", "KP5", "KKP6", "KP+",                    //4
+            "KP4", "KP5", "KP6", "KP+",                     //4
             "KP1", "KP2", "KP3", "KP0",                     //4
             "KP.",                                          //1
             "F11", "F12",                                   //2

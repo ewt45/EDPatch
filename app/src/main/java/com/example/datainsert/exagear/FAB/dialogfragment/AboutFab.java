@@ -221,7 +221,7 @@ public class AboutFab extends BaseFragment {
      */
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-        boolean disableShowInfo = !QH.isTesting() && getPreference().getBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, false);
+        boolean disableShowInfo = getPreference().getBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, false);
         if (!disableShowInfo) {
             getPreference().edit().putBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, true).apply();
             Snackbar snackbar = Snackbar.make(FabMenu.getMainFrameView(activity), getS(RR.firstLaunch_snack), Snackbar.LENGTH_INDEFINITE);

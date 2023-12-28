@@ -9,11 +9,9 @@ import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.ed.EDApplicationState;
 
-import org.ewt45.customcontrols.InterfaceOverlay;
-import org.ewt45.customcontrols.XserverView;
 
-public class ComplicatedInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay ,
-        InterfaceOverlay<XServerDisplayActivity,ViewOfXServer> {
+
+public class ComplicatedInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay {
     @Override
     public View attach(XServerDisplayActivity xServerDisplayActivity, ViewOfXServer viewOfXServer) {
         return new FrameLayout(xServerDisplayActivity);
