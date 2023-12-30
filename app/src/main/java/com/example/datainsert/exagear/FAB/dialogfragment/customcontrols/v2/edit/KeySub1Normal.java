@@ -4,6 +4,7 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -11,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
@@ -45,8 +47,11 @@ public class KeySub1Normal implements KeySubView<OneButton> {
         //按键码
         TextView tvKeycodes = getTextButton(c, "");
         tvKeycodes.setOnClickListener(v -> {
-            new AlertDialog.Builder(c).show();
+            new AlertDialog.Builder(c)
+                    .setView(new KeyOnBoardView(c))
+                    .show();
         });
+
 
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.VERTICAL);

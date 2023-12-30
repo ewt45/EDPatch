@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Const {
     public static int margin8 = RR.dimen.margin8Dp();
-    public static int minTouchSize = RR.dimen.minCheckSize();
+    public static int minTouchSize = margin8*4;
     public static int defaultBgColor = 0xffFFFAFA;
 
     @IntDef({NORMAL, STICK, DPAD})

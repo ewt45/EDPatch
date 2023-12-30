@@ -1,20 +1,1472 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <HorizontalScrollView
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ff5C5F63"
+    tools:ignore="HardcodedText,TooManyViews">
+
+    <CheckBox
+        android:id="@+id/key_esc"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Esc"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <CheckBox
+        android:id="@+id/key_f1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F1"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_esc"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F2"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f1"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F3"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f2"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F4"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f3"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F5"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f4"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F6"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f5"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F7"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f6"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F8"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f7"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F9"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f8"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F10"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f9"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F11"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f10"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_f12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F12"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f11"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
 
 
+    <CheckBox
+        android:id="@+id/key_grave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="~\n`"
+        android:textAlignment="center"
+        app:layout_constraintLeft_toLeftOf="@id/key_esc"
+        app:layout_constraintTop_toBottomOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="!\n1"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_grave"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="\@\n2"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_1"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="#\n3"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_2"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="$\n4"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_3"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="%\n5"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_4"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="^\n6"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_5"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="&amp;\n7"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_6"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="*\n8"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_7"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="(\n9"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_8"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text=")\n0"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_9"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="_\n-"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_0"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_equal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="+/n="
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_minus"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_backspace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="104dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="BackSpace"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_equal"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:width="76dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Tab"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_esc"
+        app:layout_constraintTop_toBottomOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_q"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Q"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_tab"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_w"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="W"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_q"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_e"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="E"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_w"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_r"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="R"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_e"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_t"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="T"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_r"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Y"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_t"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_u"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="U"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_y"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_i"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="I"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_u"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_o"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="O"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_i"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_p"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="P"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_o"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_open_bracket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="{\n["
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_p"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_close_bracket"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="}\n]"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_open_bracket"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_backslash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="76dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="|\n\"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_close_bracket"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_caps_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:width="92dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Caps Lock"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_esc"
+        app:layout_constraintTop_toBottomOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_a"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="A"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_caps_lock"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
 
 
+    <CheckBox
+        android:id="@+id/key_s"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="S"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_a"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
 
-        </android.support.constraint.ConstraintLayout>
-    </HorizontalScrollView>
+    <CheckBox
+        android:id="@+id/key_d"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="D"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_s"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
 
-</android.support.v4.widget.NestedScrollView>
+    <CheckBox
+        android:id="@+id/key_f"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="F"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_d"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_g"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="G"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_h"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="H"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_g"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_j"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="J"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_h"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_k"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="K"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_j"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="L"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_k"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_semicolon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text=":\n;"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_l"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_apostrophe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="&quot;\n'"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_semicolon"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="116dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Enter ⏎"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_apostrophe"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_left_shift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:width="120dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Shift"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_esc"
+        app:layout_constraintTop_toBottomOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Z"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_left_shift"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="X"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_z"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="C"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_x"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="V"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_c"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="B"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_v"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_n"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="N"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_b"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_m"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="M"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_n"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_comma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="&lt;\n,"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_m"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text=">\n."
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_comma"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_forward_slash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="\?\n\/"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_period"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_right_shift"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="144dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Shift"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_forward_slash"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_left_ctrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:width="64dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Ctrl"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_esc"
+        app:layout_constraintTop_toBottomOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_left_win"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="64dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Win"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_left_ctrl"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_left_alt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="64dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Alt"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_left_win"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_spacebar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="340dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Space"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_left_alt"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_right_alt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="60dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="AltGr"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_spacebar"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_right_win"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="64dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Win"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_right_alt"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="60dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Menu"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_right_win"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_right_ctrl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="60dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Ctrl"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_menu"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <!--    第二列-->
+
+    <CheckBox
+        android:id="@+id/key_print_screen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="PrtSc"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_f12"
+        app:layout_constraintTop_toTopOf="@id/key_esc" />
+
+    <CheckBox
+        android:id="@+id/key_scroll_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Scroll\nLock"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_print_screen"
+        app:layout_constraintTop_toTopOf="@id/key_print_screen" />
+
+    <CheckBox
+        android:id="@+id/key_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Pause"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_scroll_lock"
+        app:layout_constraintTop_toTopOf="@id/key_print_screen" />
+
+    <CheckBox
+        android:id="@+id/key_insert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Insert"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_print_screen"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Home"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_insert"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_page_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Page\nUp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_home"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Delete"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_print_screen"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+
+    <CheckBox
+        android:id="@+id/key_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="End"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_delete"
+        app:layout_constraintTop_toTopOf="@id/key_delete" />
+
+    <CheckBox
+        android:id="@+id/key_page_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Page\nDown"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_end"
+        app:layout_constraintTop_toTopOf="@id/key_delete" />
+
+    <CheckBox
+        android:id="@+id/key_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="↑"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_end"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="←"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_print_screen"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="↓"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_left"
+        app:layout_constraintTop_toTopOf="@id/key_left" />
+
+    <CheckBox
+        android:id="@+id/key_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="→"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_down"
+        app:layout_constraintTop_toTopOf="@id/key_left" />
+
+    <!--    第三列-->
+
+    <CheckBox
+        android:id="@+id/key_number_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Num\nLock"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_page_up"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_forward_slash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="/"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_number_lock"
+        app:layout_constraintTop_toTopOf="@id/key_number_lock" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_asterisk"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="*"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_forward_slash"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_minus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="-"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_asterisk"
+        app:layout_constraintTop_toTopOf="@id/key_grave" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="7"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_number_lock"
+        app:layout_constraintTop_toTopOf="@id/key_tab" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="8"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_7"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_7" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="9"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_8"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_7" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="4"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_number_lock"
+        app:layout_constraintTop_toTopOf="@id/key_caps_lock" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="5"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_4"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_4" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="6"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_5"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_4" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="1"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_number_lock"
+        app:layout_constraintTop_toTopOf="@id/key_left_shift" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="2"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_1"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_1" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="3"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_2"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_1" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:width="104dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="0"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@id/key_number_lock"
+        app:layout_constraintTop_toTopOf="@id/key_left_ctrl" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="48dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="."
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_0"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_0" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="104dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="+"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_9"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_7" />
+
+    <CheckBox
+        android:id="@+id/key_keypad_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:width="48dp"
+        android:height="104dp"
+        android:background="#C8C8C8"
+        android:button="@null"
+        android:text="Enter"
+        android:textAlignment="center"
+        app:layout_constraintStart_toEndOf="@id/key_keypad_3"
+        app:layout_constraintTop_toTopOf="@id/key_keypad_1" />
+
+</android.support.constraint.ConstraintLayout>

@@ -11,6 +11,9 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
@@ -27,6 +30,10 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaButton;
 import com.example.datainsert.exagear.QH;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 
 public class TestHelper {
     private static final String TAG = "TestHelper";
@@ -210,6 +217,22 @@ public class TestHelper {
 
         throw new RuntimeException("无法创建该类型的TouchArea" + reference);
 
+    }
+
+    /**
+     * 从apk/assets中读取一个编译后的安卓二进制xml，创建drawable
+     * <br/> 使用的函数是 a.getAssets().openXmlResourceParser("assets/cc/ic_apk_document.xml")
+     * @param c context
+     * @param name 字符串，只需传入相对路径，如“cc/ic_apk_document.xml” 即可
+     * @return drawable
+     */
+    public static Drawable getAssetsDrawable(Context c, String name) {
+        try (XmlResourceParser parser = c.getAssets().openXmlResourceParser("assets/"+name)){
+            return Drawable.createFromXml(c.getResources(),parser,c.getTheme());
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+            return new ColorDrawable(0xff000000);
+        }
     }
 
     public static interface SimpleSeekbarListener extends SeekBar.OnSeekBarChangeListener {

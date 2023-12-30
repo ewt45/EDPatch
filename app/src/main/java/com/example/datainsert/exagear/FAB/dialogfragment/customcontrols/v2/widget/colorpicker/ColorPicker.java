@@ -341,6 +341,7 @@ public class ColorPicker extends LinearLayout {
         protected GradientDrawable createGradientDrawable(int[] colors) {
             GradientDrawable drawableProgress = new GradientDrawable(LEFT_RIGHT, colors);
             drawableProgress.setCornerRadius(40);
+            drawableProgress.setDither(true);
 //        drawableProgress.setSize(QH.px(c,16),QH.px(c,16));
             return drawableProgress;
         }
