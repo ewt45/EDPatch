@@ -36,62 +36,20 @@ import java.util.List;
  */
 public class ExampleUnitTest {
 
-    /*
-开头
-中间行1
-中间行2
-中间行3
-结束
-忽略行1
-忽略行2
-开头
-中间行4
-中间行5
-中间行6
-结束
-忽略行1
-忽略行2
-     */
+
     @Test
-    public void deleteLine(){
-        String 开头行标识="开头";
-        String 结束行标识="结束";
-        String 文本="开头\n" +
-                "中间行1\n" +
-                "中间行2\n" +
-                "中间行3\n" +
-                "结束\n" +
-                "忽略行1\n" +
-                "忽略行2\n" +
-                "开头\n" +
-                "中间行4\n" +
-                "中间行5\n" +
-                "中间行6\n" +
-                "结束\n" +
-                "忽略行1\n" +
-                "忽略行2\n";
+    public void test_math_methods_angle(){
+        double angle = Math.atan2(1,2);//以pi为单位的
+        System.out.println(angle);
+    }
+    @Test
+    public void test_hex_color_string_to_int(){
+        int argb = 0xffffffff;
 
-        boolean startFind = false;
+        System.out.println(Integer.parseUnsignedInt("fffffafa",16));
+//        System.out.println(Integer.decode("0xffffffff"));
+        System.out.println((int)Long.parseLong("ffffffff",16));
 
-        StringBuilder builder = new StringBuilder();
-        for(String line:文本.split("\n")){
-            if(line.equals(开头行标识)){
-                startFind=true;
-                builder.append(line).append("\n");
-                continue;
-            }else if(line.equals(结束行标识)){
-                builder.append("\n").append(line).append("\n");
-                startFind=false;
-                continue;
-            }
-
-            builder.append(line);
-            if(!startFind)
-                builder.append("\n");
-
-        }
-//        System.out.println(Arrays.toString());
-        System.out.println(builder.toString());
     }
 
     @Test

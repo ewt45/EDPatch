@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
+
 import android.util.Log;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
@@ -17,7 +19,8 @@ public class EditMoveAdapter implements TouchAdapter {
     boolean isPressing=false;
     //记录的时候初始按下时，modelLeft-fingerX，因为每次更新model都是直接赋值没法相对增减，所以要记录初始model值。
     //每次更新时只需加上最新的fingerX即可得到最新的modelLeft
-    float firstX, firstY;
+    float firstFingerX, firstFingerY;
+    float firstModelX, firstModelY;
 
     public EditMoveAdapter(TouchAreaView view, TouchAreaModel model, OnFocusListener focusListener){
         mView=view;
@@ -31,8 +34,9 @@ public class EditMoveAdapter implements TouchAdapter {
 
     private void updatePosition(Finger finger){
 //        Log.d(TAG, "updatePosition: finger位移="+(int) (firstX+finger.getX())+" "+ (firstY+finger.getY()));
-        mModel.setLeft((int) (firstX+finger.getX()));
-        mModel.setTop((int) (firstY+finger.getY()));
+        ;
+        mModel.setLeft((int) firstModelX + minMul4(finger.getX()  - firstFingerX));
+        mModel.setTop((int) firstModelY + minMul4(finger.getY() - firstFingerY));
         mView.invalidate();
 //        TestHelper.logTouchAreaRect(mModel);
     }
@@ -50,9 +54,20 @@ public class EditMoveAdapter implements TouchAdapter {
             return;
 
         isPressing=true;
-        firstX = mModel.getLeft()-finger.getX();
-        firstY = mModel.getTop()-finger.getY();
+
+        firstModelX  = minMul4(mModel.getLeft());
+        firstModelY = minMul4(mModel.getTop());
+        firstFingerX = finger.getX();
+        firstFingerY = finger.getY();
+
         mFocusListener.onFocus(mModel);
+    }
+
+    private final int mUnit = dp8;
+
+
+    private int  minMul4(float a){
+        return Math.floorDiv((int) a, mUnit)* mUnit;
     }
 
     public interface OnFocusListener{

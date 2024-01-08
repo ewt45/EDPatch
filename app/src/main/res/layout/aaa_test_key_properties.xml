@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="tvType,tvMainColor,tvName,tvSize,tvKeycode,tvShape" />
+
+
+    <TextView
+        android:id="@+id/tvType"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="类型"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_max="96dp" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="名称"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvMainColor"
+        app:layout_constraintWidth_max="96dp" />
+
+    <TextView
+        android:id="@+id/tvSize"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="大小"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvName"
+        app:layout_constraintWidth_max="96dp" />
+
+    <TextView
+        android:id="@+id/tvKeycode"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="按键码"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSize"
+        app:layout_constraintWidth_max="96dp" />
+
+    <TextView
+        android:id="@+id/tvShape"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:text="形状"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvKeycode"
+        app:layout_constraintWidth_max="96dp" />
+
+    <TextView
+        android:id="@+id/tvMainColor"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableEnd="@drawable/aaa_swap"
+        android:gravity="center_vertical"
+        android:text="颜色"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvType"
+        app:layout_constraintWidth_max="96dp" />
+
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/tvMainColor"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="48dp"-->
+    <!--        android:layout_marginStart="8dp"-->
+    <!--        android:layout_marginTop="8dp"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/tvType"-->
+    <!--        app:layout_constraintWidth_max="96dp"-->
+    <!--        android:orientation="horizontal">-->
+    <!--        <TextView-->
+    <!--            android:maxWidth="80dp"-->
+    <!--            android:id="@+id/tv_test"-->
+    <!--            android:layout_gravity="center_vertical"-->
+    <!--            android:drawableEnd="bad"-->
+    <!--            android:text="颜色"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textSize="16sp"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"/>-->
+    <!--        <ImageView-->
+    <!--            android:layout_gravity="center"-->
+    <!--            android:background="#B4FFFFFF"-->
+    <!--            android:src="@drawable/aaa_swap"-->
+    <!--            android:layout_width="16dp"-->
+    <!--            android:layout_height="16dp"/>-->
+    <!--    </LinearLayout>-->
+
+
+    <RadioGroup
+        android:id="@+id/groupType"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/tvType"
+        app:layout_constraintHeight_max="48dp"
+        app:layout_constraintStart_toEndOf="@+id/barrier1"
+        app:layout_constraintTop_toTopOf="@id/tvType">
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="按钮" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="按钮" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="按钮" />
+
+
+    </RadioGroup>
+
+    <ImageView
+        android:id="@+id/imageMainColor"
+        android:layout_width="72dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="16dp"
+        android:src="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/tvMainColor"
+        app:layout_constraintHeight_max="48dp"
+        app:layout_constraintStart_toEndOf="@id/barrier1"
+        app:layout_constraintTop_toTopOf="@id/tvMainColor" />
+
+    <TextView
+        android:id="@+id/switchColorStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawableEnd="@drawable/aaa_swap"
+        android:drawablePadding="4dp"
+        android:text="填充"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/imageMainColor"
+        app:layout_constraintStart_toEndOf="@id/imageMainColor"
+        app:layout_constraintTop_toTopOf="@id/imageMainColor" />
+
+
+    <EditText
+        android:id="@+id/editName"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:hint="key"
+        android:inputType="text"
+        android:src="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/tvName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_max="48dp"
+        app:layout_constraintStart_toEndOf="@id/barrier1"
+        app:layout_constraintTop_toTopOf="@id/tvName" />
+
+    <SeekBar
+        android:id="@+id/seekSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@id/tvSize"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/barrier1"
+        app:layout_constraintTop_toTopOf="@id/tvSize" />
+
+    <TextView
+        android:id="@+id/btnKeycode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:drawablePadding="4dp"
+        android:text="None"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/tvKeycode"
+        app:layout_constraintStart_toEndOf="@id/barrier1"
+        app:layout_constraintTop_toTopOf="@id/tvKeycode" />
+
+    <TextView
+        android:id="@+id/switchShape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:drawableEnd="@drawable/aaa_swap"
+        android:drawablePadding="4dp"
+        android:text="矩形"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/tvShape"
+        app:layout_constraintStart_toEndOf="@id/barrier1"
+        app:layout_constraintTop_toTopOf="@id/tvShape" />
+</android.support.constraint.ConstraintLayout>

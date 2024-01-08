@@ -5,28 +5,23 @@ import static android.view.InputDevice.SOURCE_MOUSE;
 import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.ClickAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.EditConfigWindow;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 
 public class TouchAreaView extends FrameLayout {
 
-    //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
-    private final OneProfile mProfile = new OneProfile();
     final int MAX_FINGERS = 10;
+    //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
+    private final OneProfile mProfile;
     private final Finger[] userFingers = new Finger[MAX_FINGERS];
     Mouse mMouse = new Mouse();
 
@@ -44,12 +39,15 @@ public class TouchAreaView extends FrameLayout {
         setFocusableInTouchMode(true);
         installKeyListener();
 
+        mProfile = new OneProfile();
+        mProfile.addArea(this,new OneGestureArea(), model -> {});
+
     }
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
 
-        for(TouchArea touchArea: mProfile.getTouchAreaList())
+        for (TouchArea<?> touchArea : mProfile.getTouchAreaList())
             touchArea.onDraw(canvas);
         super.onDraw(canvas);
 
@@ -119,8 +117,8 @@ public class TouchAreaView extends FrameLayout {
         boolean isStylus = (motionEvent.getSource() & SOURCE_STYLUS) == SOURCE_STYLUS;
         boolean isMouse = (motionEvent.getSource() & SOURCE_MOUSE) == SOURCE_MOUSE;
         return isStylus || isMouse
-                ?this.mMouse.handleMouseEvent(motionEvent)
-                :super.onGenericMotionEvent(motionEvent);
+                ? this.mMouse.handleMouseEvent(motionEvent)
+                : super.onGenericMotionEvent(motionEvent);
     }
 
     @Override // android.view.View
@@ -132,8 +130,10 @@ public class TouchAreaView extends FrameLayout {
             return handleTouchEvent(motionEvent);
         if (isMouse)
             return this.mMouse.handleMouseEvent(motionEvent);
-        return super.onTouchEvent(motionEvent);
+        else
+            return super.onTouchEvent(motionEvent);
     }
+
 
     private boolean handleTouchEvent(MotionEvent motionEvent) {
         int actionIndex = motionEvent.getActionIndex();
@@ -195,6 +195,8 @@ public class TouchAreaView extends FrameLayout {
 //                }
                 break;
         }
+        // TODO 要不要invalidate传入相应那个area的范围，只修改某一个区域，能减少点消耗
+        invalidate();//按下时按钮背景会变化，移动时摇杆要移动，所以需要重绘
         return true;
     }
 
@@ -202,12 +204,12 @@ public class TouchAreaView extends FrameLayout {
      * 发现一个停留在同一个区域，或移出一个区域并进入另一个区域，则停止遍历
      */
     private void handleFingerMove(Finger userFinger) {
-        int tmp =0;
-        for(TouchArea touchArea:mProfile.getTouchAreaList()){
+        int tmp = 0;
+        for (TouchArea<?> touchArea : mProfile.getTouchAreaList()) {
             int handled = touchArea.handleFingerMove(userFinger);
-            if(handled == TouchArea.HANDLED_KEEP)
+            if (handled == TouchArea.HANDLED_KEEP)
                 return;
-            else if((tmp|handled) == (TouchArea.HANDLED_ADD | TouchArea.HANDLED_REMOVE))
+            else if ((tmp | handled) == (TouchArea.HANDLED_ADD | TouchArea.HANDLED_REMOVE))
                 return;
         }
     }
@@ -216,8 +218,8 @@ public class TouchAreaView extends FrameLayout {
      * 发现移出一个区域，则停止遍历
      */
     private void handleFingerUp(Finger userFinger) {
-        for(TouchArea touchArea:mProfile.getTouchAreaList()){
-            if(TouchArea.HANDLED_REMOVE == touchArea.handleFingerUp(userFinger))
+        for (TouchArea<?> touchArea : mProfile.getTouchAreaList()) {
+            if (TouchArea.HANDLED_REMOVE == touchArea.handleFingerUp(userFinger))
                 return;
         }
     }
@@ -226,8 +228,8 @@ public class TouchAreaView extends FrameLayout {
      * 只要有一个区域接收了，就不再管其他区域
      */
     private void handleFingerDown(Finger userFinger) {
-        for(TouchArea touchArea:mProfile.getTouchAreaList()){
-            if(TouchArea.HANDLED_ADD == touchArea.handleFingerDown(userFinger))
+        for (TouchArea<?> touchArea : mProfile.getTouchAreaList()) {
+            if (TouchArea.HANDLED_ADD == touchArea.handleFingerDown(userFinger))
                 return;
         }
     }
@@ -235,19 +237,19 @@ public class TouchAreaView extends FrameLayout {
     /**
      * 进入编辑模式
      */
-    public void startEdit(){
+    public void startEdit() {
         addView(new EditConfigWindow(this));
-        for(TouchArea touchArea:mProfile.getTouchAreaList()){
-            touchArea.mAdapter = new ClickAdapter(0.05f,()->{
-                Toast.makeText(getContext(),"点击",Toast.LENGTH_LONG).show();
-            });
-        }
+//        for (TouchArea<?> touchArea : mProfile.getTouchAreaList()) {
+//            touchArea.mAdapter = new ClickAdapter(0.05f, () -> {
+//                Toast.makeText(getContext(), "点击", Toast.LENGTH_LONG).show();
+//            });
+//        }
     }
 
     /**
      * 退出编辑模式
      */
-    public void exitEdit(){
+    public void exitEdit() {
 
     }
 

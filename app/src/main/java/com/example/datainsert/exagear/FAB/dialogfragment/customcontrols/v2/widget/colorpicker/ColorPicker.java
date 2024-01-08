@@ -4,7 +4,7 @@ import static android.graphics.Shader.TileMode.REPEAT;
 import static android.graphics.drawable.GradientDrawable.OVAL;
 import static android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT;
 import static android.view.Gravity.CENTER_VERTICAL;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.margin8;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -236,7 +236,7 @@ public class ColorPicker extends LinearLayout {
 //        linearResults.addView(QH.getOneLineWithTitle(c, "RGB", mEditHex, false), QH.LPLinear.one(0, -2).weight(2).gravity(CENTER_VERTICAL).left(margin8 * 2).to());
 
         LayoutParams seekParams = new LayoutParams(-1, -2);
-        seekParams.topMargin = margin8;
+        seekParams.topMargin = dp8;
 
         LinearLayout linearHSVA = new LinearLayout(c);
         linearHSVA.setOrientation(VERTICAL);
@@ -247,7 +247,7 @@ public class ColorPicker extends LinearLayout {
 
 //        addView(linearResults);
         addView(mImageResult, QH.LPLinear.one(QH.px(c, 32), QH.px(c, 64)).gravity(CENTER_VERTICAL).to());
-        addView(linearHSVA, QH.LPLinear.one(0, -2).weight().left(margin8 * 2).to());
+        addView(linearHSVA, QH.LPLinear.one(0, -2).weight().left(dp8 * 2).to());
 
         //初始化值
         float[] initHsv = new float[3];
@@ -262,6 +262,9 @@ public class ColorPicker extends LinearLayout {
         mSeekA.setProgress(((initColor & 0xff000000) >> 24) & 0x00ff);
     }
 
+    /**
+     * 需要注意给topDrawable设置一个宽高，否则会按照bitmap的宽高来，非常小
+     */
     public static LayerDrawable wrapAlphaAlertBg(Context c, GradientDrawable topDrawable) {
         Drawable bgAlertSingleDrawable = c.getDrawable(R.drawable.alpha_bg);
         assert bgAlertSingleDrawable != null;

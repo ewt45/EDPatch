@@ -31,7 +31,9 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
@@ -81,33 +83,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 //    }
 
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        XServerDisplayActivityConfigurationAware aware = Globals.getApplicationState();
-        if (aware != null)
-            mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
 
-        if (mUiOverlay != null) {
-            mKeyCodes2 = mUiOverlay.getControlsFactory().getKeyCodes2();
-            mKeyCodes3 = mUiOverlay.getControlsFactory().getKeyCodes3();
-        } else {
-            mKeyCodes2 = KeyCodes2.read(requireContext());
-            mKeyCodes3 = KeyCodes3.read(requireContext());
-        }
-
-        Context c = requireContext();
-        int frameRootId = View.generateViewId();
-        FrameLayout frameRoot = new FrameLayout(c);
-        frameRoot.setId(frameRootId);
-
-        TouchAreaView touchAreaView = new TouchAreaView(c);
-        touchAreaView.startEdit();
-        frameRoot.addView(touchAreaView);
-
-        return frameRoot;
-//        return QH.wrapAsDialogScrollView(buildUI());
-    }
 
     @NonNull
     @Override

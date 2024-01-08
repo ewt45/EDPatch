@@ -1,54 +1,66 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.margin8;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.minTouchSize;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper.getTextButton;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
+import android.transition.TransitionManager;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.EditMoveAdapter;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop0MainColor;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop0Name;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop0Size;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop0Type;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop1Key;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop1Shape;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop1Trigger;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop2Direction;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop2Key;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop3Key;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.GsonDeserializer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneStick;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.colorpicker.ColorPicker;
 import com.example.datainsert.exagear.QH;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * 显示用于修改按键属性的视图
  */
-public class KeyPropertiesView extends LinearLayout {
+public class KeyPropertiesView extends LinearLayout implements Prop.Host {
     private static final String TAG = "KeyPropertiesView";
-    private final EditConfigWindow mHost;
-    Binding mBinding = new Binding();
-    String[] mTypeNames = new String[]{"按钮", "摇杆", "十字键"};
-    //直接用mModel来表示当前选择的是哪一个类型就行了
-    int[] mTypeInts = new int[]{Const.BtnType.NORMAL, Const.BtnType.STICK, Const.BtnType.DPAD};
-    Class[] mTypeClasses = new Class[]{OneButton.class};
-    TouchAreaModel mModel = null;
-    List<KeySubView<? extends TouchAreaModel>> mSubViews = Arrays.asList(new KeySub1Normal());
 
-    public KeyPropertiesView(EditConfigWindow host) {
+//    private static final List<Class<? extends TouchAreaModel>> mTypeClasses =
+//            Arrays.asList(OneButton.class, OneStick.class, OneDpad.class);
+
+    final EditMain mHost;
+    TouchAreaModel mModel = null;
+    Prop[][] mProps;
+    LinearLayout[] mPanels = new LinearLayout[2];
+
+    public static EditMoveAdapter.OnFocusListener mStubListener ;
+
+    public KeyPropertiesView(EditMain host) {
         super(host.getContext());
         mHost = host;
         Context c = host.getContext();
@@ -59,172 +71,156 @@ public class KeyPropertiesView extends LinearLayout {
         //工具栏
         Button btnAddKey = new Button(c);
         btnAddKey.setText("添加");
-        btnAddKey.setOnClickListener(v -> onCreateNewTouchArea());
-        Button btnDelKey = new Button(c);
-        btnDelKey.setText("删除当前");
-        LinearLayout linearToolbar = new LinearLayout(c);
-        linearToolbar.setOrientation(HORIZONTAL);
-        linearToolbar.addView(btnAddKey);
-
-        //类型
-        HorizontalScrollView scrollGroupType = buildOptionsGroup(
-                mTypeNames,
-                mTypeInts,
-                (group, btn, intValue) -> {
-                    if (getButtonTypeFromModel(mModel) == intValue)
-                        return;
-
-                    //TODO 实时从按钮变为摇杆有点难。还是删了当前touchArea再新建一个吧
-                    //先备份一下旧model。然后生成新model，替换ui，填充数据。
-                    // 然后再看看这个model是否和toucharea已经关联起来了，如果连了的话就把toucharea删了重新建一个
-                    TouchAreaModel oldModel = mModel;
-
-                    KeySubView<? extends TouchAreaModel> keySubView = getKeySubView(intValue);
-                    mModel = keySubView.adaptModel(oldModel);
-
-                    List<TouchArea<?>> currList = mHost.mHost.getProfile().getTouchAreaList();
-                    for (int i = 0; i < currList.size(); i++) {
-                        TouchArea<?> area = currList.get(i);
-                        if (!area.getModel().equals(oldModel))
-                            continue;
-
-                        currList.remove(area);
-                        TouchArea<?> newArea = onCreateNewTouchArea();
-                        currList.add(i, newArea);
-                    }
-                });
-
-
-        //名称
-        EditText editName = new EditText(c);
-        editName.setSingleLine(true);
-        editName.addTextChangedListener((QH.SimpleTextWatcher) s -> {
-            mModel.name = s.toString();
+        btnAddKey.setOnClickListener(v -> {
+            TouchArea<?> area = mHost.mHost.getProfile().addArea(mHost.mHost, mModel, model -> onModelChanged(model));
+            mModel = area.getModel();
+            mModel.setLeft(0);
+            mModel.setTop(0);
             mHost.mHost.invalidate();
         });
 
+        Button btnDelKey = new Button(c);
+        btnDelKey.setText("删除当前");
 
-        //坐标
-        TextView tvCoordinate = getTextButton(c, "");
-        tvCoordinate.setText("编辑");
-        //TODO 改成dialog？ 添加宽高编辑
-        tvCoordinate.setOnClickListener(v -> {
-            EditText editPlaceX = new EditText(c);
-            editPlaceX.setSingleLine(true);
-            editPlaceX.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
+        Button btnTest = new Button(c);
+        btnTest.setText("测试序列化");
+        btnTest.setOnClickListener(v -> {
+            try {
+                Gson gson = new GsonBuilder()
+                        .registerTypeHierarchyAdapter(TouchAreaModel.class, new GsonDeserializer()).create();
 
-            EditText editPlaceY = new EditText(c);
-            editPlaceY.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
-            editPlaceY.setSingleLine(true);
-
-            LinearLayout linearPlace = new LinearLayout(c);
-            linearPlace.setOrientation(HORIZONTAL);
-            linearPlace.setPadding(margin8, margin8, margin8, margin8);
-            linearPlace.addView(editPlaceX, QH.LPLinear.one(0, -2).weight().to());
-            linearPlace.addView(editPlaceY, QH.LPLinear.one(0, -2).weight().left().to());
-
-            PopupWindow popupWindow = new PopupWindow(c);
-            Button btnConfirm = new Button(c);
-            btnConfirm.setText("确定");
-            btnConfirm.setOnClickListener(v2 -> {
-                String xStr = editPlaceX.getText().toString().trim();
-                String yStr = editPlaceY.getText().toString().trim();
-                mModel.setLeft(xStr.length() == 0 ? 0 : Integer.parseInt(xStr));
-                mModel.setTop(yStr.length() == 0 ? 0 : Integer.parseInt(yStr));
-                updateModel(mModel);
-                popupWindow.dismiss();
-            });
-            LinearLayout linearPopupRoot = new LinearLayout(c);
-            linearPopupRoot.setOrientation(HORIZONTAL);
-            linearPopupRoot.addView(linearPlace, QH.LPLinear.one(0, -2).weight().to());
-            linearPopupRoot.addView(btnConfirm, QH.LPLinear.one(-2, -2).to());
-            popupWindow.setContentView(linearPopupRoot);
-            popupWindow.setWidth(getWidth());
-            popupWindow.setHeight(WRAP_CONTENT);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(TestHelper.getBGColor(c)));
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setFocusable(true);
-            popupWindow.showAsDropDown((View) v.getParent());
+                String jsonStr = gson.toJson(mHost.mHost.getProfile());
+                Log.d(TAG, "转为json：" + jsonStr);
+                OneProfile oneProfile = gson.fromJson(jsonStr, OneProfile.class);
+                oneProfile.syncAreaList(mHost.mHost);
+                Log.d(TAG, "转为对象：" + oneProfile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
+        LinearLayout linearToolbar = new LinearLayout(c);
+        linearToolbar.setOrientation(HORIZONTAL);
+        linearToolbar.addView(btnAddKey);
+        linearToolbar.addView(btnDelKey);
+        linearToolbar.addView(btnTest);
 
-        //颜色
-        ImageView imageBgColor = new ImageView(c);
-        GradientDrawable colorDrawable = new GradientDrawable();
-        imageBgColor.setImageDrawable(ColorPicker.wrapAlphaAlertBg(c, colorDrawable));
-        imageBgColor.setMinimumHeight(minTouchSize);
-        imageBgColor.setOnClickListener(v -> {
-            LinearLayout linearColorRoot = new LinearLayout(c);
-            linearColorRoot.setOrientation(VERTICAL);
-            linearColorRoot.addView(new ColorPicker(c, mModel.mainColor, argb -> {
-                mModel.mainColor = argb;
-                colorDrawable.setColor(argb);
-                mHost.mHost.invalidate();
-            }));
-            new AlertDialog.Builder(c)
-                    .setView(TestHelper.wrapAsScrollView(linearColorRoot))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .setCancelable(false)
-                    .show();
-        });
 
-        //颜色样式
-        HorizontalScrollView scrollGroupColorStyle = buildOptionsGroup(
-                new String[]{"描边", "填充"},
-                new int[]{Const.BtnColorStyle.STROKE, Const.BtnColorStyle.FILL},
-                (group, btn, intValue) -> mModel.colorStyle = intValue);
+        //仅处理新model生成和更新对应的toucharea显示，调用onModelChanged在prop里调用
+        Prop0Type.OnTypeChangeListener typeChangeListener = (newType) -> {
+            //先备份一下旧model。然后生成新model，替换ui，填充数据。
+            // 然后再看看这个model是否和toucharea已经关联起来了，如果连了的话就把toucharea删了重新建一个
 
-        //每个model单独的属性
-        LinearLayout linearSubProps = new LinearLayout(c);
-        linearSubProps.setOrientation(VERTICAL);
+            TouchAreaModel newModelForField = getButtonModelFromType(newType, mModel);
+            List<TouchArea<?>> currList = mHost.mHost.getProfile().getTouchAreaList();
+            for (int i = 0; i < currList.size(); i++) {
+                //如果没进到这个条件，mmodel就不会改变。。。
+                if (currList.get(i).getModel().equals(mModel)) {
+                    mHost.mHost.getProfile().removeArea(i);
+                    TouchArea<?> newArea = mHost.mHost.getProfile().addArea(mHost.mHost, i, newModelForField, model -> onModelChanged(model));
+                    newModelForField = newArea.getModel();
+                    break;
+                }
+            }
+            onModelChanged(newModelForField); //如果是没关联touchArea，就用传进来的ref，否则用对应area的新建的model，设置到自身成员变量上
+        };
+
+
+        for (int i = 0; i < mPanels.length; i++) {
+            mPanels[i] = new LinearLayout(c);
+            mPanels[i].setOrientation(VERTICAL);
+            mPanels[i].setVerticalGravity(Gravity.CENTER_VERTICAL);
+        }
+
+        mProps = new Prop[][]{
+                {new Prop0Type(this, c, typeChangeListener), new Prop0MainColor(this, c), new Prop0Name(this, c), new Prop0Size(this, c)},
+                {new Prop1Key(this, c), new Prop1Shape(this, c), new Prop1Trigger(this, c)},
+                {new Prop2Key(this, c), new Prop2Direction(this, c)},
+                {new Prop3Key(this, c)}};
+
+        LayoutParams h48Params = new LayoutParams(-1, dp8 * 6);
+        h48Params.setMarginStart(dp8);
+        h48Params.topMargin = dp8;
+
+        for (Prop[] propGroup : mProps) {
+            boolean hide = propGroup != mProps[0] && propGroup != mProps[1];
+            for (Prop prop : propGroup) {
+                TextView title = QH.getTitleTextView(c, prop.getTitle());
+                title.setGravity(Gravity.CENTER_VERTICAL);
+
+                LinearLayout linear = new LinearLayout(c);
+                linear.setOrientation(VERTICAL);
+                linear.setVerticalGravity(Gravity.CENTER_VERTICAL);
+                linear.addView(prop.mMainView);
+
+                //没法在外层用滚动视图，否则seekbar之类的没法填满横向
+//                HorizontalScrollView scroll = new HorizontalScrollView(c);
+//                HorizontalScrollView.LayoutParams paramsLinear = new FrameLayout.LayoutParams(-2, -1);
+////                paramsLinear.gravity = Gravity.CENTER_VERTICAL; //setForegroundGravity行吗
+//                scroll.addView(linear, paramsLinear);
+
+                //如果副视图不为空，添加到linear中并设置切换按钮
+                if (prop.mAltView != null) {
+                    linear.addView(prop.mAltView);
+//                    btn.setText("⭾");  //草了这几个unicode显示不出来
+                    TestHelper.setTextViewSwapDrawable(title);
+                    title.setOnClickListener(v -> {
+                        boolean isMainShowing = prop.mMainView.getVisibility() == VISIBLE;
+                        prop.mMainView.setVisibility(isMainShowing ? GONE : VISIBLE);
+                        prop.mAltView.setVisibility(isMainShowing ? VISIBLE : GONE);
+                    });
+                    prop.mAltView.setVisibility(GONE);
+                }
+
+                mPanels[0].addView(title, h48Params);
+                mPanels[1].addView(linear, h48Params);
+            }
+        }
+
+        LinearLayout linearPanelsWrapper = new LinearLayout(c);
+        linearPanelsWrapper.setOrientation(HORIZONTAL);
+        linearPanelsWrapper.addView(mPanels[0]);
+        linearPanelsWrapper.addView(mPanels[1], QH.LPLinear.one().weight().to());
 
         addView(linearToolbar);
-        //TODO 改为gridview？让标题对齐？
-        addView(QH.getOneLineWithTitle(c, "类型", scrollGroupType, false));
-        addView(QH.getOneLineWithTitle(c, "颜色", imageBgColor, false));
-        addView(QH.getOneLineWithTitle(c, "颜色样式", scrollGroupColorStyle, false));
-        addView(QH.getOneLineWithTitle(c, "名称", editName, false));
-        addView(QH.getOneLineWithTitle(c, "坐标", tvCoordinate, false));
-        addView(linearSubProps);
-
-        mBinding.scrollGroupType = (RadioGroup) scrollGroupType.getChildAt(0);
-        mBinding.editName = editName;
-        mBinding.imageBgColor = colorDrawable;
-        mBinding.groupColorStyle = (RadioGroup) scrollGroupColorStyle.getChildAt(0);
-        mBinding.linearSubProps = linearSubProps;
+        addView(linearPanelsWrapper);
+        addView(LayoutInflater.from(getContext()).inflate(R.layout.aaa_test_relative, this, false));
 
         //初始的时候成员变量为null，然后传入一个实例，这样才会判断不等，调用inflate初次生成视图
-        updateModel(OneButton.newInstance(null));
+        onModelChanged(TouchAreaModel.newInstance(null, OneButton.class));
 
-    }
-
-    /**
-     * 用新数据填充视图内容。若model与成员变量model不同，则新model变为成员变量
-     */
-    public void updateModel(TouchAreaModel model) {
-        //TODO 要不每个类型都存一个成员变量。视图的话，先分出共有的属性，固定显示，然后再把每个类型特有的属性显示了
-        if (mModel != model) {
-            mModel = model;
-            mBinding.linearSubProps.removeAllViews();
-            mBinding.linearSubProps.addView(getKeySubView(model).inflate(this));
+        if(!QH.isTesting()){
+            throw new RuntimeException("请勿设置静态实例");
         }
-        //TODO 目前的设想流程是这样的：修改model->调用updateModel根据model刷新视图的内容；onDraw的时候会自动读取到最新的model内容所以不用手动刷新吧？
-//        int index = typeList.indexOf(oneButton.type);
-//        mBinding.scrollGroupStyle.setText(typeNameList.get(index));
-        ((RadioButton) mBinding.scrollGroupType.getChildAt(getButtonTypeFromModel(model))).setChecked(true);
+        mStubListener = model -> onModelChanged(model);
 
-        mBinding.editName.setText(mModel.name);
-        mBinding.imageBgColor.setColor(model.mainColor);
-        ((RadioButton) mBinding.groupColorStyle.getChildAt(mModel.colorStyle)).setChecked(true);
+//        /*
+//        每添加一个属性编辑，需要：
+//        1. 创建编辑控件
+//        2. grid添加一行
+//        3. 将编辑控件存入binding中
+//        4. updateModel中添加代码 根据model刷新内容
+//         */
+//        GridLayout gridLines = new GridLayout(c);
+//        gridLines.setUseDefaultMargins(true);
+//        gridLines.setOrientation(GridLayout.HORIZONTAL);
+//        gridLines.setColumnCount(3);
+//        gridLines.setClipChildren(false);
+//        addOneGridLine(gridLines, "类型", scrollGroupType, null);
+//        addView(gridLines);
 
-        getKeySubView(model).updateUI(model);
+
+//        addView(QH.getOneLineWithTitle(c, "类型", scrollGroupType, false));
+//        addView(QH.getOneLineWithTitle(c, "颜色", imageBgColor, false));
+//        addView(QH.getOneLineWithTitle(c, "颜色样式", scrollGroupColorStyle, false));
+//        addView(QH.getOneLineWithTitle(c, "名称", editName, false));
+//        addView(QH.getOneLineWithTitle(c, "坐标", tvCoordinate, false));
 
     }
 
     /**
      * 新建一个RadioGroup选项组。
      */
-    HorizontalScrollView buildOptionsGroup(String[] optionNames, int[] optionInts, OptionsSelectCallback callback) {
-        Context c = getContext();
+    public static HorizontalScrollView buildOptionsGroup(Context c, String[] optionNames, int[] optionInts, OptionsSelectCallback callback) {
         RadioGroup group = new RadioGroup(c);
         group.setOrientation(HORIZONTAL);
         for (int i = 0; i < optionInts.length; i++) {
@@ -233,10 +229,7 @@ public class KeyPropertiesView extends LinearLayout {
             RadioButton btn = new RadioButton(c);
             btn.setText(name);
             btn.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    callback.onSelect(group, buttonView, csInt);
-                    mHost.mHost.invalidate();
-                }
+                if (isChecked) callback.onSelect(group, buttonView, csInt);
             });
             group.addView(btn);
         }
@@ -248,19 +241,18 @@ public class KeyPropertiesView extends LinearLayout {
     /**
      * 根据Model类型，判断btnType
      */
-    private int getButtonTypeFromModel(TouchAreaModel model) {
-        if (model instanceof OneStick)
-            return Const.BtnType.STICK;
-        else if (model instanceof OneButton)
-            return Const.BtnType.NORMAL;
-        else throw new RuntimeException("无法识别的model类型");
+    //TODO 这样做并不是很安全，因为是拿int当下标用了，现在只有三个类型的按钮，正好对应int是0 1 2，以后要再加的话可能有问题
+    public static int getButtonTypeFromModel(TouchAreaModel model) {
+        int index = Const.modelTypeArray.indexOfValue(model.getClass());
+        if (index < 0)
+            throw new RuntimeException("无法识别的model类型");
+        return Const.modelTypeArray.keyAt(index);
     }
-
 
     /**
      * 根据当前编辑界面选择的选项，返回btnType
      */
-    private int getButtonTypeCurrentSelect(RadioGroup group) {
+    public static int getButtonTypeCurrentSelect(RadioGroup group) {
         for (int i = 0; i < group.getChildCount(); i++) {
             if (((RadioButton) group.getChildAt(i)).isChecked())
                 return i;
@@ -268,49 +260,108 @@ public class KeyPropertiesView extends LinearLayout {
         throw new RuntimeException("没有选项被勾选");
     }
 
-    /**
-     * 根据给定的class（或int？）返回对应的subview
-     */
-    private KeySubView getKeySubView(TouchAreaModel model) {
-        return mSubViews.get(touchModelToIntValue(model));
+    public static TouchAreaModel getButtonModelFromType(int type, TouchAreaModel reference) {
+        Class<? extends TouchAreaModel> clz = Const.modelTypeArray.get(type);
+        if (clz == null) throw new RuntimeException("无法识别的model类型: " + type);
+        return TouchAreaModel.newInstance(reference, clz);
     }
 
     /**
-     * 点击添加按钮时新建触摸区域。或者切换类型时删除原有并重新添加触摸区域
-     * <br/> 注意该函数会生成新的model实例并赋值到mModel上，因此调用后mModel对象会改变
+     * 用新数据填充视图内容。若model与成员变量model不同，则新model变为成员变量
      */
-    private TouchArea<?> onCreateNewTouchArea() {
-        //这里不能直接传model，而是应该新建一个model，放到自身并传到toucharea。因为如果新建了但不放到自身，那么toucharea创建之后，model没有和自身联系起来。如果不新建，那么多个area就会共用一个 model
-        TouchArea<?> area = TestHelper.newAreaEditable(mHost.mHost, mModel, model -> updateModel(model));
-        mModel = area.getModel();
-        updateModel(mModel); //新建后应该立刻调用一次，否则无法同步SubView里的model
-        mHost.mHost.getProfile().addTouchArea(area);
+    @Deprecated
+    public void updateModel(TouchAreaModel model) {
+        //TODO 要不每个类型都存一个成员变量。视图的话，先分出共有的属性，固定显示，然后再把每个类型特有的属性显示了
+//        if (mModel != model) {
+//            mModel = model;
+//            for (int i = mBinding.universalPropsCount; i < mBinding.gridLines.getChildCount(); i++)
+//                mBinding.gridLines.removeViewAt(i);
+//            getKeySubView(model).inflate(this, mBinding.gridLines);
+//        }
+        //TODO 目前的设想流程是这样的：修改model->调用updateModel根据model刷新视图的内容；
+        // onDraw的时候会自动读取到最新的model内容所以不用手动刷新吧？
+//        int index = typeList.indexOf(oneButton.type);
+//        mBinding.scrollGroupStyle.setText(typeNameList.get(index));
+//        ((RadioButton) mBinding.scrollGroupType.getChildAt(getButtonTypeFromModel(model))).setChecked(true);
+//        getKeySubView(model).updateUI(model);
+
+    }
+
+
+    private View buildFragmentReplacement(View defaultView, View altView, int switchBtnGravity, boolean showBackBtn) {
+        int containerId = View.generateViewId();
+        Context c = defaultView.getContext();
+
+        //默认视图
+        //切换键
+        Button btnSwitch = new Button(c);
+        btnSwitch.setText("⮀"); //⮂   ⮀   ⭾   各种箭头 https://www.compart.com/en/unicode/block/U+2B00
+        btnSwitch.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+
+
+        //备用视图
+        //返回键
+        Button btnBack = new Button(c);
+        btnBack.setText("←");
+        btnBack.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        QH.setRippleBackground(btnBack);
+
+        LinearLayout linearAlt = new LinearLayout(c);
+        linearAlt.setOrientation(VERTICAL);
+        linearAlt.addView(btnBack, QH.LPLinear.one(-2, -2).to());
+        linearAlt.addView(altView);
+
+
+        FrameLayout frameRoot = new FrameLayout(c);
+        frameRoot.setId(containerId);
+        frameRoot.addView(defaultView);
+        frameRoot.addView(linearAlt);
+
+        defaultView.setVisibility(VISIBLE);
+        altView.setVisibility(GONE);
+
+        return frameRoot;
+    }
+
+    @Override
+    public TouchAreaModel getModel() {
+        return this.mModel;
+    }
+
+    @Override
+    public EditConfigWindow getWindow() {
+        return mHost.mWindow;
+    }
+
+    @Override
+    public void onModelChanged(TouchAreaModel model) {
+        //切换按钮类型时（不一定，也可能是点击了另一个触摸区域时）
+        if (mModel != model) { //行行行我每次都刷新行了吧
+            mModel = model;
+            int type = getButtonTypeFromModel(model);
+            int line = mProps[0].length;
+            TransitionManager.beginDelayedTransition(mHost.mWindow);
+            for (int i = 1; i < mProps.length; i++)
+                for (Prop unused : mProps[i]) {
+                    mPanels[0].getChildAt(line).setVisibility(type == (i - 1) ? VISIBLE : GONE);
+                    mPanels[1].getChildAt(line).setVisibility(type == (i - 1) ? VISIBLE : GONE);
+                    line++;
+                }
+        }
+
+        for (Prop prop : mProps[0])
+            if (!prop.isChangingSource())
+                prop.updateUIFromModel(mModel);
+
+        for (Prop prop : mProps[getButtonTypeFromModel(mModel) + 1])
+            if (!prop.isChangingSource())
+                prop.updateUIFromModel(mModel);
+
         mHost.mHost.invalidate();
-        return area;
     }
 
-    private KeySubView<? extends TouchAreaModel> getKeySubView(int intValue) {
-        return mSubViews.get(intValue);
-    }
-
-    private int touchModelToIntValue(TouchAreaModel model) {
-        for (int i = 0; i < mTypeClasses.length; i++)
-            if (mTypeClasses[i].equals(model.getClass()))
-                return i;
-        throw new RuntimeException("无法识别model类型");
-    }
-
-    interface OptionsSelectCallback {
+    public interface OptionsSelectCallback {
         void onSelect(RadioGroup group, CompoundButton btn, int intValue);
     }
 
-    private static class Binding {
-        public LinearLayout linearSubProps;
-        RadioGroup scrollGroupType;
-        EditText editName;
-
-        GradientDrawable imageBgColor;
-
-        RadioGroup groupColorStyle;
-    }
 }

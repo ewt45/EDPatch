@@ -34,11 +34,12 @@ public abstract class TouchArea<T extends TouchAreaModel> {
      * 手指移出该区域
      */
     public static int HANDLED_REMOVE = 2<<2;
+    protected boolean mIsEditing =false;
 
 
 
-    private final List<Finger> activeFingers = new ArrayList<>();
-    private final List<Finger> immutableActiveFingers = Collections.unmodifiableList(this.activeFingers);
+    protected final List<Finger> activeFingers = new ArrayList<>();
+    protected final List<Finger> immutableActiveFingers = Collections.unmodifiableList(this.activeFingers);
     protected TouchAdapter mAdapter;
     private  TouchAdapter mRuntimeAdapter;
     protected TouchAreaView mHost;
@@ -59,6 +60,7 @@ public abstract class TouchArea<T extends TouchAreaModel> {
         if (isInside(finger)) {
             addFinger(finger);
 //            this.lastFingerAction.set(finger, FingerActionType.TOUCH);
+            mModel.setPressed(true);
             this.mAdapter.notifyTouched(finger, this.immutableActiveFingers);
             return HANDLED_ADD;
         }
@@ -104,6 +106,7 @@ public abstract class TouchArea<T extends TouchAreaModel> {
             removeFinger(finger);
 //            this.lastFingerAction.set(finger, FingerActionType.RELEASE);
             this.mAdapter.notifyReleased(finger, this.immutableActiveFingers);
+            mModel.setPressed(false);
             return HANDLED_REMOVE;
         }
         return HANDLED_NOT;
@@ -158,6 +161,14 @@ public abstract class TouchArea<T extends TouchAreaModel> {
     public void startEditMode(){
 
     };
+
+    public void setEditing(boolean isEditing){
+        this.mIsEditing = isEditing;
+    }
+
+    public boolean isEditing() {
+        return mIsEditing;
+    }
 
     protected View getEditView(){
         //TODO

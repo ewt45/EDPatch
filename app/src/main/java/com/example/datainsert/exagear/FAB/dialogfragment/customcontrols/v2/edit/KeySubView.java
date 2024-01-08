@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit;
 
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 
@@ -11,7 +12,7 @@ public interface KeySubView<T extends  TouchAreaModel> {
      * <br/> 若model与成员变量的model不等，则成员变量变为新model
      */
     void updateUI(T model);
-    ViewGroup inflate(KeyPropertiesView host);
+    void inflate(KeyPropertiesView host, GridLayout gridLayout);
 
     //TODO 每个Model都有各自的newInstance方法。这个方法和其类似。（是否是多余的？）
     /**
