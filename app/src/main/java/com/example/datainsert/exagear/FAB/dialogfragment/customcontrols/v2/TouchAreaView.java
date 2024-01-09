@@ -9,11 +9,10 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.ClickAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.EditConfigWindow;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 
@@ -33,24 +32,31 @@ public class TouchAreaView extends FrameLayout {
 //        this.configuration = touchScreenControlsInputConfiguration;
 
 //        setLayerType(LAYER_TYPE_HARDWARE,null);
-        setBackgroundResource(R.drawable.someimg);
+
         setWillNotDraw(false); //设置为false，否则onDraw不会被调用
         setFocusable(true);
         setFocusableInTouchMode(true);
         installKeyListener();
 
-        mProfile = new OneProfile();
-        mProfile.addArea(this,new OneGestureArea(), model -> {});
+        mProfile = ModelFileSaver.readCurrentProfile();
+        mProfile.syncAreaList(this);
+//        setBackground(new TouchAreaViewDrawable(mProfile));
+//        String activeName = "profile_test";
+//        ModelFileSaver.makeCurrent(activeName);
+//        if(ModelFileSaver.currentProfile.exists()){
+//            mProfile = ModelFileSaver.readCurrentProfile();
+//        }else{
+//            mProfile = new OneProfile(activeName);
+//            mProfile.addArea(this,new OneGestureArea(), model -> {});
+//        }
 
     }
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-
         for (TouchArea<?> touchArea : mProfile.getTouchAreaList())
             touchArea.onDraw(canvas);
         super.onDraw(canvas);
-
     }
 
     private void installKeyListener() {

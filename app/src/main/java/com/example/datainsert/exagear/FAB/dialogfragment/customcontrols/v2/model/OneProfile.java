@@ -1,6 +1,6 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model;
 
-import android.content.Context;
+import android.util.Log;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
@@ -22,9 +22,21 @@ public class OneProfile {
     private final List<TouchAreaModel> modelList;
     transient private final List<TouchArea<? extends TouchAreaModel>> touchAreaList;
     transient private final List<TouchArea<? extends TouchAreaModel>> umodifiableList;
+    //TODO 编辑名称的时候，需要同时修改本地文件的名称。另外还需要检查是否有重复，是否有特殊字符
+    public String name = "invalidName";
     private boolean isDebug = false;
 
-    public OneProfile() {
+    /**
+     * 给gson反序列化用的
+     */
+    protected OneProfile() {
+        modelList = new ArrayList<>();
+        touchAreaList = new ArrayList<>();
+        umodifiableList = Collections.unmodifiableList(touchAreaList);
+    }
+
+    public OneProfile(String name) {
+        this.name = name;
         modelList = new ArrayList<>();
         touchAreaList = new ArrayList<>();
         umodifiableList = Collections.unmodifiableList(touchAreaList);
@@ -33,13 +45,16 @@ public class OneProfile {
     /**
      * 用于反序列化之后，从model同步arealist
      */
-    public void syncAreaList(TouchAreaView host){
-        for(int i=0; i<modelList.size(); i++){
+    public void syncAreaList(TouchAreaView host) {
+        for (int i = 0; i < modelList.size(); i++) {
             TouchAreaModel model = modelList.remove(i);
-            if(KeyPropertiesView.mStubListener!=null)
-                addArea(host,i,model,KeyPropertiesView.mStubListener);
-            else
-                throw new RuntimeException("请实现adapter");
+            if (KeyPropertiesView.mStubListener != null)
+                addArea(host, i, model, KeyPropertiesView.mStubListener);
+            else {
+                addArea(host, i, model, model1 -> KeyPropertiesView.mStubListener.onFocus(model1));
+                Log.e("OneProfile", "syncAreaList:请实现adapter ");
+            }
+//                throw new RuntimeException("请实现adapter");
         }
     }
 

@@ -2,8 +2,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.mode
 
 public class OneDpad extends OneStick{
     OneDpad(){
-        super();
-        modelType = TYPE_DPAD;
+        super(TYPE_DPAD);
         direction = WAY_8;
     }
 }

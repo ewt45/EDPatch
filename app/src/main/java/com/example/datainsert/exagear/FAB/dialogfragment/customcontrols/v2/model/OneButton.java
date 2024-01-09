@@ -11,8 +11,7 @@ public class OneButton extends TouchAreaModel {
     public boolean isTrigger = false;
     private int triggerFlag=0;
     OneButton() {
-        super();
-        modelType = TYPE_BUTTON;
+        super(TYPE_BUTTON);
         mMinAreaSize = Const.minBtnAreaSize;
         width = mMinAreaSize;
         height = mMinAreaSize;

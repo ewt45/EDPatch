@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.mode
 
 public class OneGestureArea extends TouchAreaModel{
     public OneGestureArea(){
-        super();
-        modelType = TYPE_GESTURE;
+        super(TYPE_GESTURE);
     }
 }

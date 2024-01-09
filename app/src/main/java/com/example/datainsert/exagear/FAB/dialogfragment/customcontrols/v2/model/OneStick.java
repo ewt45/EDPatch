@@ -21,11 +21,13 @@ public class OneStick extends TouchAreaModel {
      * 宽高相等的大小
      */
     protected int size;
+    OneStick(){
+        this(TYPE_STICK);
+    }
 
     //keycodes 分别为上下左右
-    OneStick() {
-        super();
-        modelType = TYPE_STICK;
+    OneStick(int type) {
+        super(type);
         mMinAreaSize = minStickAreaSize;
         width = mMinAreaSize;
         height = mMinAreaSize;

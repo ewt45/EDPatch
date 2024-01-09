@@ -4,7 +4,6 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import android.content.Context;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,13 +33,11 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop2Direction;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop2Key;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop3Key;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.GsonDeserializer;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.QH;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
@@ -83,20 +80,12 @@ public class KeyPropertiesView extends LinearLayout implements Prop.Host {
         btnDelKey.setText("删除当前");
 
         Button btnTest = new Button(c);
-        btnTest.setText("测试序列化");
+        btnTest.setText("测试保存");
         btnTest.setOnClickListener(v -> {
-            try {
-                Gson gson = new GsonBuilder()
-                        .registerTypeHierarchyAdapter(TouchAreaModel.class, new GsonDeserializer()).create();
+            ModelFileSaver.saveProfile(mHost.mHost.getProfile());
+//            OneProfile oneProfile = ModelFileSaver.readProfile(mHost.mHost.getProfile().name);
+//            oneProfile.syncAreaList(mHost.mHost);
 
-                String jsonStr = gson.toJson(mHost.mHost.getProfile());
-                Log.d(TAG, "转为json：" + jsonStr);
-                OneProfile oneProfile = gson.fromJson(jsonStr, OneProfile.class);
-                oneProfile.syncAreaList(mHost.mHost);
-                Log.d(TAG, "转为对象：" + oneProfile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
         LinearLayout linearToolbar = new LinearLayout(c);
         linearToolbar.setOrientation(HORIZONTAL);
@@ -264,63 +253,6 @@ public class KeyPropertiesView extends LinearLayout implements Prop.Host {
         Class<? extends TouchAreaModel> clz = Const.modelTypeArray.get(type);
         if (clz == null) throw new RuntimeException("无法识别的model类型: " + type);
         return TouchAreaModel.newInstance(reference, clz);
-    }
-
-    /**
-     * 用新数据填充视图内容。若model与成员变量model不同，则新model变为成员变量
-     */
-    @Deprecated
-    public void updateModel(TouchAreaModel model) {
-        //TODO 要不每个类型都存一个成员变量。视图的话，先分出共有的属性，固定显示，然后再把每个类型特有的属性显示了
-//        if (mModel != model) {
-//            mModel = model;
-//            for (int i = mBinding.universalPropsCount; i < mBinding.gridLines.getChildCount(); i++)
-//                mBinding.gridLines.removeViewAt(i);
-//            getKeySubView(model).inflate(this, mBinding.gridLines);
-//        }
-        //TODO 目前的设想流程是这样的：修改model->调用updateModel根据model刷新视图的内容；
-        // onDraw的时候会自动读取到最新的model内容所以不用手动刷新吧？
-//        int index = typeList.indexOf(oneButton.type);
-//        mBinding.scrollGroupStyle.setText(typeNameList.get(index));
-//        ((RadioButton) mBinding.scrollGroupType.getChildAt(getButtonTypeFromModel(model))).setChecked(true);
-//        getKeySubView(model).updateUI(model);
-
-    }
-
-
-    private View buildFragmentReplacement(View defaultView, View altView, int switchBtnGravity, boolean showBackBtn) {
-        int containerId = View.generateViewId();
-        Context c = defaultView.getContext();
-
-        //默认视图
-        //切换键
-        Button btnSwitch = new Button(c);
-        btnSwitch.setText("⮀"); //⮂   ⮀   ⭾   各种箭头 https://www.compart.com/en/unicode/block/U+2B00
-        btnSwitch.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-
-
-        //备用视图
-        //返回键
-        Button btnBack = new Button(c);
-        btnBack.setText("←");
-        btnBack.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        QH.setRippleBackground(btnBack);
-
-        LinearLayout linearAlt = new LinearLayout(c);
-        linearAlt.setOrientation(VERTICAL);
-        linearAlt.addView(btnBack, QH.LPLinear.one(-2, -2).to());
-        linearAlt.addView(altView);
-
-
-        FrameLayout frameRoot = new FrameLayout(c);
-        frameRoot.setId(containerId);
-        frameRoot.addView(defaultView);
-        frameRoot.addView(linearAlt);
-
-        defaultView.setVisibility(VISIBLE);
-        altView.setVisibility(GONE);
-
-        return frameRoot;
     }
 
     @Override

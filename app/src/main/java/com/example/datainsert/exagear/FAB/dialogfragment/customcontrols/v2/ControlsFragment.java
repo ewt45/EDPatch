@@ -43,12 +43,16 @@ public class ControlsFragment extends Fragment {
         int frameRootId = View.generateViewId();
         FrameLayout frameRoot = new FrameLayout(c);
         frameRoot.setId(frameRootId);
+        frameRoot.setBackgroundResource(R.drawable.someimg);
 
         TouchAreaView touchAreaView = new TouchAreaView(c);
         touchAreaView.startEdit();
         frameRoot.addView(touchAreaView);
 
+
         return frameRoot;
 //        return QH.wrapAsDialogScrollView(buildUI());
     }
+
+
 }

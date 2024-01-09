@@ -31,7 +31,8 @@ public abstract class TouchAreaModel {
     protected int height;
     protected int mMinAreaSize = minTouchSize;
     protected boolean isPressed = false;
-    protected TouchAreaModel() {
+    protected TouchAreaModel(@ModelType int type) {
+        modelType = type;
         //保证初始时至少有一个keycode，以及其对应的名字
         keycodes = new ArrayList<>();
         keycodes.add(0);
