@@ -4,14 +4,17 @@
     android:layout_height="wrap_content"
     android:background="#69CAF6">
 
-    <Button
+    <ImageView
+        android:tint="@color/black"
+        android:src="?android:textCheckMark"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:id="@+id/btn_left_top"
         android:layout_width="48dp"
         android:layout_height="48dp"/>
     <Button
+        android:background="?android:selectableItemBackground"
         android:id="@+id/btn_top"
         android:layout_toEndOf="@id/btn_left_top"
         android:layout_width="48dp"

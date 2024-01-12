@@ -13,14 +13,18 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.minTouchSize;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -37,9 +41,11 @@ import android.widget.TextView;
 
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.EditMoveAdapter;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneDpad;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneStick;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaButton;
@@ -47,6 +53,8 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touch
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaGesture;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaStick;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
+import com.google.gson.TypeAdapter;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -169,6 +177,7 @@ public class TestHelper {
         Button btn = new Button(c);
         QH.setRippleBackground(btn);
         btn.setText(text);
+        btn.setTextColor(RR.attr.textColorPrimary(c));
         btn.setAllCaps(false);
         btn.setMinHeight(dp8 * 5);
         btn.setMinimumHeight(dp8 * 5);
@@ -360,6 +369,36 @@ public class TestHelper {
         return Color.HSVToColor(Color.alpha(mainColor),hsvTemp);
     }
 
+    /**
+     * 根据attr获取drawable
+     */
+    public static Drawable getAttrDrawable(Context c,int attrId){
+        TypedArray array = c.obtainStyledAttributes(new int[]{attrId});
+        Drawable drawable = array.getDrawable(0);
+        array.recycle();
+        return drawable;
+    }
+
+    /**
+     * 由于编辑的model放在内存，有修改操作时（导出，复制，切换，重命名，退出编辑）时都应该将当前model同步到本地，然后再操作
+     */
+    public static void saveCurrentEditProfileToFile(){
+        OneProfile profileInMem = Const.touchAreaViewRef.get().getProfile();
+        ModelFileSaver.saveProfile(profileInMem);
+    }
+
+    /**
+     * 显示一个二次确认的对话框
+     */
+    public static void showConfirmDialog(Context c,String s, DialogInterface.OnClickListener onClickListener) {
+        new AlertDialog.Builder(c)
+                .setMessage(s)
+                .setPositiveButton(android.R.string.ok,onClickListener)
+                .setNegativeButton(android.R.string.cancel,null)
+                .setCancelable(false)
+                .show();
+    }
+
 
     public static interface SimpleSeekbarListener extends SeekBar.OnSeekBarChangeListener {
         @Override
@@ -373,5 +412,13 @@ public class TestHelper {
         }
 
         ;
+    }
+
+    public interface SimpleTabListener extends TabLayout.OnTabSelectedListener{
+        @Override
+       default void onTabUnselected(TabLayout.Tab tab){};
+
+        @Override
+        default void onTabReselected(TabLayout.Tab tab){onTabSelected(tab);};
     }
 }

@@ -8,9 +8,9 @@ import android.widget.CompoundButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 
-public class Prop1Trigger extends Prop{
+public class Prop1Trigger extends Prop<TouchAreaModel>{
     CompoundButton checkTrigger;
-    public Prop1Trigger(Host host, Context c) {
+    public Prop1Trigger(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

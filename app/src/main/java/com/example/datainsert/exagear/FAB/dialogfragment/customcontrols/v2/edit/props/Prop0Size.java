@@ -22,10 +22,10 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.RangeSeekbar;
 import com.example.datainsert.exagear.QH;
 
-public class Prop0Size extends Prop {
+public class Prop0Size extends Prop<TouchAreaModel> {
     RangeSeekbar seekSize ;
     boolean isSeekEditing=false;
-    public Prop0Size(Host host, Context c) {
+    public Prop0Size(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

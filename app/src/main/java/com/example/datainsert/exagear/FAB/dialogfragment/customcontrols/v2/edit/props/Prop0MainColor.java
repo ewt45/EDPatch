@@ -18,11 +18,12 @@ import android.widget.TextView;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.colorpicker.ColorPicker;
 import com.example.datainsert.exagear.QH;
 
-public class Prop0MainColor extends Prop {
+public class Prop0MainColor extends Prop<TouchAreaModel> {
     GradientDrawable mDrawable;
     EditText mEdit;
     TextView mTvColorStyle;
@@ -30,7 +31,7 @@ public class Prop0MainColor extends Prop {
     int[] colorStyleInts = new int[]{Const.BtnColorStyle.STROKE, Const.BtnColorStyle.FILL};
     String[] colorStyleNames = new String[]{"描边","填充"};
 
-    public Prop0MainColor(Host host, Context c) {
+    public Prop0MainColor(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 
@@ -42,9 +43,7 @@ public class Prop0MainColor extends Prop {
         if (!isEditingEdit && !mEdit.getText().toString().equals(modelStr))
             mEdit.setText(modelStr);
 
-        int newTag = (1+(Integer) mTvColorStyle.getTag())%2;
-        mTvColorStyle.setText(colorStyleNames[newTag]);
-        mTvColorStyle.setTag(newTag);
+        mTvColorStyle.setText(colorStyleNames[model.colorStyle]);
     }
 
     /**
@@ -90,8 +89,8 @@ public class Prop0MainColor extends Prop {
         TestHelper.setTextViewSwapDrawable(mTvColorStyle);
         QH.setRippleBackground(mTvColorStyle);
         mTvColorStyle.setOnClickListener(v->{
-            int newTag = (1+(Integer) mTvColorStyle.getTag())%2;
-            mHost.getModel().colorStyle = colorStyleInts[newTag];
+            int oldStyle = mHost.getModel().colorStyle;
+            mHost.getModel().colorStyle = (oldStyle+1)%colorStyleInts.length;
             onWidgetListener();
         });
 

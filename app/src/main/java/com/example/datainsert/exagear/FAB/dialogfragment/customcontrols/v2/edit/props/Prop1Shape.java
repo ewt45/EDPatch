@@ -1,6 +1,6 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.KeyPropertiesView.buildOptionsGroup;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView.buildOptionsGroup;
 
 import android.content.Context;
 import android.view.View;
@@ -12,9 +12,9 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 
-public class Prop1Shape extends Prop {
+public class Prop1Shape extends Prop<TouchAreaModel> {
     RadioGroup groupShape;
-    public Prop1Shape(Host host, Context c) {
+    public Prop1Shape(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

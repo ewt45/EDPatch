@@ -10,9 +10,9 @@ import android.widget.TextView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.KeyOnBoardView;
 
-public class Prop1Key extends Prop{
+public class Prop1Key extends Prop<TouchAreaModel>{
     TextView tvKeycodes;
-    public Prop1Key(Host host, Context c) {
+    public Prop1Key(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

@@ -9,8 +9,12 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.SparseArray;
 
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit3ProfilesView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneDpad;
@@ -33,7 +37,11 @@ public class Const {
      */
     public static final SparseArray<Class<? extends TouchAreaModel>> modelTypeArray = new SparseArray<>();
     public static ModelFileSaver modelSaver; //用于反序列化时还原抽象类，以及处理文件位置
-    public static WeakReference<Context> ctxRef = null;
+    private static WeakReference<Context> ctxRef = null;
+    public static WeakReference<Edit1KeyView> editKeyViewRef = null;
+    public static WeakReference<Edit3ProfilesView.ProfileAdapter> profilesAdapterRef  = null  ;
+    public static WeakReference<ControlsFragment> fragmentRef = null;
+    public static WeakReference<TouchAreaView> touchAreaViewRef = null;
     public static int dp8;
     public static int minTouchSize;
     public static int minBtnAreaSize;
@@ -51,12 +59,20 @@ public class Const {
 
     }
 
+    public static Context getContext(){
+        return fragmentRef.get().requireContext();
+    }
+
     /**
      * 有些数据需要context才能获取。此函数必须在访问Const成员变量前调用一次。
      */
     public static void init(Context c) {
         if (ctxRef == null || ctxRef.get() == null)
             ctxRef = new WeakReference<>(c);
+
+//        Log.d("TAG", "init: gc前static的弱引用会被回收吗 "+testRef.get());
+//        Runtime.getRuntime().gc();
+//        Log.d("TAG", "init: gc后static的弱引用会被回收吗 "+testRef.get());//有被其他地方引用的话就不会，所以context要等到生命周期结束了的，正常用的时候没问题
 
         dp8 = QH.px(c, 8);
         minTouchSize = QH.px(c, 32);

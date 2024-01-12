@@ -1,6 +1,6 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.KeyPropertiesView.buildOptionsGroup;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView.buildOptionsGroup;
 
 import android.content.Context;
 import android.view.View;
@@ -11,9 +11,9 @@ import android.widget.RadioGroup;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneStick;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 
-public class Prop2Direction extends Prop{
+public class Prop2Direction extends Prop<TouchAreaModel>{
     RadioGroup groupDirection;
-    public Prop2Direction(Host host, Context c) {
+    public Prop2Direction(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

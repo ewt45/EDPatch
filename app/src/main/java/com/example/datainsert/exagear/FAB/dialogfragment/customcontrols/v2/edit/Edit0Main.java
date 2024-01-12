@@ -1,35 +1,28 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit;
 
-import static com.example.datainsert.exagear.RR.dimen.minCheckSize;
-
+import android.animation.LayoutTransition;
 import android.content.Context;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.view.Gravity;
+import android.transition.TransitionManager;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.RR;
 
 /**
  * 编辑模式下，用于修改设置的悬浮窗
  */
-public class EditMain extends LinearLayout {
+public class Edit0Main extends LinearLayout {
     private static final String TAG = "EditConfigWindow";
     final TouchAreaView mHost;
     final EditConfigWindow mWindow;
     final View mToolbar;
 
-    public EditMain(TouchAreaView touchAreaView, EditConfigWindow window) {
+    public Edit0Main(TouchAreaView touchAreaView, EditConfigWindow window) {
         super(touchAreaView.getContext());
         mHost = touchAreaView;
         mWindow = window;
@@ -48,27 +41,19 @@ public class EditMain extends LinearLayout {
 
         LinearLayout linearPager = new LinearLayout(c);
         linearPager.setOrientation(VERTICAL);
+        linearPager.setLayoutTransition(new LayoutTransition()); //如果在每次切换tab时，用beginDelayedTransition，不知为何会导致profile切到key的tab的时候，key高度变高，但现显示的区域还是profile那么一点，下面都空着
+
         NestedScrollView scrollPager = TestHelper.wrapAsScrollView(linearPager);
         addView(scrollPager);
 
+        tabToolbar.addOnTabSelectedListener((TestHelper.SimpleTabListener) tab -> {
+            linearPager.removeAllViews();
+//            TransitionManager.beginDelayedTransition(this);
 
-        tabToolbar.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if ("key".equals(tab.getTag()))
-                    onTabKey(linearPager);
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                onTabSelected(tab);
-            }
+            if ("key".equals(tab.getTag()))
+                linearPager.addView(new Edit1KeyView(this));
+            else if ("profile".equals(tab.getTag()))
+                linearPager.addView(new Edit3ProfilesView(this));
         });
         tabToolbar.addTab(tabToolbar.newTab().setText("按键").setTag("key"));
         tabToolbar.addTab(tabToolbar.newTab().setText("手势").setTag("gesture"));
@@ -76,23 +61,10 @@ public class EditMain extends LinearLayout {
         tabToolbar.addTab(tabToolbar.newTab().setText("其他").setTag("other"));
 
 
-
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
 
-    /**
-     * 点击 tab ”按键“ 后
-     */
-    private void onTabKey(LinearLayout linearPager) {
-        Context c = getContext();
-        linearPager.removeAllViews();
-        linearPager.addView(new KeyPropertiesView(this));
-//        linearPager.addView(LayoutInflater.from(getContext()).inflate(R.layout.aaa_test_key_properties,linearPager,false));
-    }
+
 
 //    /**
 //     * 移动时只能左右，上下铺满

@@ -4,6 +4,7 @@ import static android.view.View.MeasureSpec.AT_MOST;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
 
+import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Outline;
@@ -20,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ViewAnimator;
 
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
@@ -65,7 +65,7 @@ public class EditConfigWindow extends LinearLayout {
         ShapeDrawable bgDrawable = new ShapeDrawable();
 //        bgDrawable.setShape(new RoundRectShape(new float[]{20, 20, 20, 20, 20, 20, 20, 20}, null, null));
         bgDrawable.setShape(new RectShape());
-        bgDrawable.setTint(TestHelper.getBGColor(c) | 0xd0000000);
+        bgDrawable.setTint(TestHelper.getBGColor(c) | 0xe0000000);
         setBackground(bgDrawable);
 
         //用outline来切割圆角，记得setClipToOutline(true)
@@ -87,11 +87,12 @@ public class EditConfigWindow extends LinearLayout {
         mLinearTitle = new LinearLayout(c);
         mLinearTitle.setOrientation(HORIZONTAL);
         mLinearTitle.setVerticalGravity(Gravity.CENTER_VERTICAL);
+//        mLinearTitle.setLayoutTransition(new LayoutTransition());//这个图标附近还不能加动画，否则放大的时候又会出界 
         mLinearTitle.addView(mIconView, new LinearLayout.LayoutParams(dp8 * 6, dp8 * 6));
 
         addView(mLinearTitle);
 
-        EditMain editMain = new EditMain(host, this);
+        Edit0Main editMain = new Edit0Main(host, this);
         toNextView(editMain, editMain.mToolbar);
 
     }
@@ -99,16 +100,16 @@ public class EditConfigWindow extends LinearLayout {
     public void toNextView(View content, String title) {
         TextView titleView = QH.getTitleTextView(content.getContext(), title);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        titleView.setGravity(Gravity.CENTER_VERTICAL|Gravity.START);
-        titleView.setLayoutParams(QH.LPLinear.one(0,-1).weight().to());
+        titleView.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
+        titleView.setLayoutParams(QH.LPLinear.one(0, -1).weight().to());
         toNextView(content, titleView);
     }
 
     public void toNextView(View content, @NonNull View titleView) {
         TransitionManager.beginDelayedTransition(this);
         changeHomeButton(mSubViews.size() == 0);
-        if(titleView.getClass().equals(TextView.class))
-            TestHelper.onTouchMoveView(titleView,this);
+        if (titleView.getClass().equals(TextView.class))
+            TestHelper.onTouchMoveView(titleView, this);
 
         if (mLinearTitle.getChildCount() > 1)
             mLinearTitle.removeViewAt(1);

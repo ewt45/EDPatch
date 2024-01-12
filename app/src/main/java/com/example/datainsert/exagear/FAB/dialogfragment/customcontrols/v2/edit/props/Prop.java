@@ -12,10 +12,10 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
  * -> 调用到自己的updateUIFromModel，此时再根据需要刷新ui
  * （但是一般来说如果ui是通过用户编辑而更新的话，此时就不需要再根据model刷新ui了，注意一下别死循环了）
  */
-public abstract class Prop {
+public abstract class Prop<ModelType> {
     public View mMainView;
     final public View mAltView;
-    final protected Host mHost;
+    final protected Host<ModelType> mHost;
     boolean mIsHide = false;
     /**
      * onModelChanged调用是否是由这个属性的改变而引起的。如果返回true，则host不应再调用prop的changeUI以防循环
@@ -25,7 +25,7 @@ public abstract class Prop {
      */
     protected boolean mIsChangingSource=false;
 
-    public Prop(Host host, Context c) {
+    public Prop(Host<ModelType> host, Context c) {
         mHost = host;
         mMainView = createMainEditView(c);
         mAltView = createAltEditView(c);
@@ -69,7 +69,7 @@ public abstract class Prop {
         onWidgetListener(mHost.getModel());
     }
 
-    protected void onWidgetListener(TouchAreaModel model){
+    protected void onWidgetListener(ModelType model){
         mIsChangingSource=true;
         mHost.onModelChanged(model);
         mIsChangingSource=false;
@@ -83,11 +83,11 @@ public abstract class Prop {
         mIsHide = isHide;
     }
 
-    public interface Host {
+    public interface Host<Model> {
         /**
          * 用户修改ui后，同步到model时用来获取model
          */
-        TouchAreaModel getModel();
+        Model getModel();
 
         /**
          * 获取编辑选项最顶层的窗口
@@ -99,7 +99,7 @@ public abstract class Prop {
         /**
          * 修改model属性后通知host修改其他prop的ui。仅用于修改ui
          */
-        void onModelChanged(TouchAreaModel model);
+        void onModelChanged(Model model);
 
         /**
          * 和onModelChanged(TouchAreaModel model);一样，不过model沿用旧的host自己的model

@@ -18,10 +18,10 @@ import com.example.datainsert.exagear.QH;
 
 import java.util.Collections;
 
-public class Prop2Key extends Prop{
+public class Prop2Key extends Prop<TouchAreaModel>{
     TextView tvKeycodes;
 
-    public Prop2Key(Host host, Context c) {
+    public Prop2Key(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

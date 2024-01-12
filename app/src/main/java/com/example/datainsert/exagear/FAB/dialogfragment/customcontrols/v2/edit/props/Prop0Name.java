@@ -7,9 +7,9 @@ import android.widget.EditText;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.QH;
 
-public class Prop0Name extends Prop{
+public class Prop0Name extends Prop<TouchAreaModel>{
     EditText editName;
-    public Prop0Name(Host host, Context c) {
+    public Prop0Name(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 

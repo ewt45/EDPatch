@@ -16,15 +16,17 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 
+import java.lang.ref.WeakReference;
+
 public class TouchAreaView extends FrameLayout {
 
     final int MAX_FINGERS = 10;
     //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
-    private final OneProfile mProfile;
+    private OneProfile mProfile;
     private final Finger[] userFingers = new Finger[MAX_FINGERS];
     Mouse mMouse = new Mouse();
 
-    public TouchAreaView(@NonNull Context context) {
+    public TouchAreaView(@NonNull Context context ) {
         super(context);
 //        this.xServerFacade = viewOfXServer==null?null:viewOfXServer.getXServerFacade();
 //        this.mouse = viewOfXServer==null?null:new Mouse(new PointerEventReporter(viewOfXServer));
@@ -40,6 +42,8 @@ public class TouchAreaView extends FrameLayout {
 
         mProfile = ModelFileSaver.readCurrentProfile();
         mProfile.syncAreaList(this);
+
+        Const.touchAreaViewRef = new WeakReference<>(this);
 //        setBackground(new TouchAreaViewDrawable(mProfile));
 //        String activeName = "profile_test";
 //        ModelFileSaver.makeCurrent(activeName);
@@ -261,6 +265,11 @@ public class TouchAreaView extends FrameLayout {
 
     public OneProfile getProfile() {
         return mProfile;
+    }
+
+    public void setProfile(OneProfile profile) {
+        mProfile = profile;
+        mProfile.syncAreaList(this);
     }
 
 

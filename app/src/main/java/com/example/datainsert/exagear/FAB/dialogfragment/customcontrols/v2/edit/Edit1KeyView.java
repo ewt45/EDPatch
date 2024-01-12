@@ -4,17 +4,15 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import android.content.Context;
 import android.transition.TransitionManager;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
@@ -35,29 +33,28 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop3Key;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.QH;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
  * 显示用于修改按键属性的视图
  */
-public class KeyPropertiesView extends LinearLayout implements Prop.Host {
+public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaModel> {
     private static final String TAG = "KeyPropertiesView";
 
 //    private static final List<Class<? extends TouchAreaModel>> mTypeClasses =
 //            Arrays.asList(OneButton.class, OneStick.class, OneDpad.class);
 
-    final EditMain mHost;
+    final Edit0Main mHost;
     TouchAreaModel mModel = null;
-    Prop[][] mProps;
+    Prop<TouchAreaModel>[][] mProps;
     LinearLayout[] mPanels = new LinearLayout[2];
 
-    public static EditMoveAdapter.OnFocusListener mStubListener ;
 
-    public KeyPropertiesView(EditMain host) {
+    public Edit1KeyView(Edit0Main host) {
         super(host.getContext());
         mHost = host;
         Context c = host.getContext();
@@ -78,20 +75,21 @@ public class KeyPropertiesView extends LinearLayout implements Prop.Host {
 
         Button btnDelKey = new Button(c);
         btnDelKey.setText("删除当前");
+        btnDelKey.setOnClickListener(v-> {
+            mHost.mHost.getProfile().removeArea(mModel);
+            mHost.mHost.invalidate();
+        });
 
         Button btnTest = new Button(c);
         btnTest.setText("测试保存");
-        btnTest.setOnClickListener(v -> {
-            ModelFileSaver.saveProfile(mHost.mHost.getProfile());
-//            OneProfile oneProfile = ModelFileSaver.readProfile(mHost.mHost.getProfile().name);
-//            oneProfile.syncAreaList(mHost.mHost);
-
-        });
+        btnTest.setOnClickListener(v -> ModelFileSaver.saveProfile(mHost.mHost.getProfile()));
         LinearLayout linearToolbar = new LinearLayout(c);
         linearToolbar.setOrientation(HORIZONTAL);
         linearToolbar.addView(btnAddKey);
         linearToolbar.addView(btnDelKey);
         linearToolbar.addView(btnTest);
+        HorizontalScrollView scrollToolbar = new HorizontalScrollView(c);
+        scrollToolbar.addView(linearToolbar);
 
 
         //仅处理新model生成和更新对应的toucharea显示，调用onModelChanged在prop里调用
@@ -170,7 +168,7 @@ public class KeyPropertiesView extends LinearLayout implements Prop.Host {
         linearPanelsWrapper.addView(mPanels[0]);
         linearPanelsWrapper.addView(mPanels[1], QH.LPLinear.one().weight().to());
 
-        addView(linearToolbar);
+        addView(scrollToolbar);
         addView(linearPanelsWrapper);
         addView(LayoutInflater.from(getContext()).inflate(R.layout.aaa_test_relative, this, false));
 
@@ -180,7 +178,9 @@ public class KeyPropertiesView extends LinearLayout implements Prop.Host {
         if(!QH.isTesting()){
             throw new RuntimeException("请勿设置静态实例");
         }
-        mStubListener = model -> onModelChanged(model);
+
+        Const.editKeyViewRef = null;
+        Const.editKeyViewRef = new WeakReference<>(this);
 
 //        /*
 //        每添加一个属性编辑，需要：

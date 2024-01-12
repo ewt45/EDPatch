@@ -1,28 +1,25 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props;
 
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.KeyPropertiesView.buildOptionsGroup;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.KeyPropertiesView.getButtonModelFromType;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.KeyPropertiesView.getButtonTypeFromModel;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView.buildOptionsGroup;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView.getButtonTypeFromModel;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.KeyPropertiesView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 
-public class Prop0Type extends Prop{
+public class Prop0Type extends Prop<TouchAreaModel>{
     RadioGroup groupType;
     static String[] mTypeNames = new String[]{"按钮", "摇杆", "十字键"};
     //直接用mModel来表示当前选择的是哪一个类型就行了
     static int[] mTypeInts = new int[]{Const.BtnType.NORMAL, Const.BtnType.STICK, Const.BtnType.DPAD};
     OnTypeChangeListener mHostListener;
-    public Prop0Type(Host host, Context c, OnTypeChangeListener listener) {
+    public Prop0Type(Host<TouchAreaModel> host, Context c, OnTypeChangeListener listener) {
         super(host, c);
         mHostListener = listener;
 //        this.mMainView = mainView;;
