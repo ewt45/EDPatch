@@ -34,20 +34,19 @@ public abstract class TouchArea<T extends TouchAreaModel> {
      * 手指移出该区域
      */
     public static int HANDLED_REMOVE = 2<<2;
-    protected boolean mIsEditing =false;
 
 
 
     protected final List<Finger> activeFingers = new ArrayList<>();
     protected final List<Finger> immutableActiveFingers = Collections.unmodifiableList(this.activeFingers);
     protected TouchAdapter mAdapter;
-    private  TouchAdapter mRuntimeAdapter;
     protected TouchAreaView mHost;
-    public TouchArea(TouchAreaView host,@NonNull T data, @NonNull TouchAdapter adapter){
-        mHost = host;
+
+    public TouchArea(@NonNull T data, @NonNull TouchAdapter adapter){
+
+        mHost = Const.touchAreaViewRef.get();
         mModel = data;
         mAdapter = adapter;
-        mRuntimeAdapter = adapter;
 
     }
     public abstract void onDraw( Canvas canvas);
@@ -155,19 +154,10 @@ public abstract class TouchArea<T extends TouchAreaModel> {
         this.activeFingers.remove(finger);
     }
 
-    /**
-     * 进入编辑模式
-     */
-    public void startEditMode(){
 
-    };
 
-    public void setEditing(boolean isEditing){
-        this.mIsEditing = isEditing;
-    }
-
-    public boolean isEditing() {
-        return mIsEditing;
+    public void setAdapter(TouchAdapter adapter) {
+        this.mAdapter = adapter;
     }
 
     protected View getEditView(){

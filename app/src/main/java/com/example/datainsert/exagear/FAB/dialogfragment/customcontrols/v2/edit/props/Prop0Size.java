@@ -7,6 +7,7 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -16,42 +17,48 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.RangeSeekbar;
 import com.example.datainsert.exagear.QH;
 
 public class Prop0Size extends Prop<TouchAreaModel> {
-    RangeSeekbar seekSize ;
-    boolean isSeekEditing=false;
+    RangeSeekbar seekSize;
+    EditText editWidth;
+    EditText editHeight;
+    boolean isSelfEditing = false;
+
     public Prop0Size(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 
     @Override
     protected View createMainEditView(Context c) {
-        seekSize= new RangeSeekbar(c, dp8*6, QH.px(c,200)) {
+        seekSize = new RangeSeekbar(c, dp8 * 6, QH.px(c, 200)) {
             @Override
             protected int rawToFinal(int rawValue) {
-                return rawValue*2;
+                return rawValue * 2;
             }
 
             @Override
             protected int finalToRaw(int finalValue) {
-                return finalValue/2;
+                return finalValue / 2;
             }
         };
         seekSize.setOnValueChangeListener((seekbar, value, fromUser) -> {
-            if(isSeekEditing)
+            if (mIsChangingSource)
                 return;
-            Log.d("TAG", "createMainEditView: 大小="+value);
+            Log.d("TAG", "createMainEditView: 大小=" + value);
+            mIsChangingSource = true;
+
             mHost.getModel().setWidth(value);
             mHost.getModel().setHeight(value);
 
-            isSeekEditing=true;
+            editWidth.setText(String.valueOf(mHost.getModel().getWidth()));
+            editHeight.setText(String.valueOf(mHost.getModel().getHeight()));
+
             onWidgetListener();
-            isSeekEditing=false;
+            mIsChangingSource = false;
         });
 
         return seekSize;
@@ -66,7 +73,7 @@ public class Prop0Size extends Prop<TouchAreaModel> {
 //        return btn;
     }
 
-    private void popupWindow( TouchAreaModel mModel ,Context c ){
+    private void popupWindow(TouchAreaModel mModel, Context c) {
 
         //坐标
         TextView tvCoordinate = getTextButton(c, "");
@@ -114,11 +121,12 @@ public class Prop0Size extends Prop<TouchAreaModel> {
 
     @Override
     public void updateUIFromModel(TouchAreaModel model) {
-        if(isSeekEditing)
+        if (mIsChangingSource)
             return;
-        isSeekEditing=true;
-            seekSize.setValue(Math.min(model.getWidth(),model.getHeight()));
-            isSeekEditing=false;
+
+        seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
+        editWidth.setText(String.valueOf(model.getWidth()));
+        editHeight.setText(String.valueOf(model.getHeight()));
     }
 
     @Override
@@ -129,6 +137,40 @@ public class Prop0Size extends Prop<TouchAreaModel> {
 
     @Override
     protected View createAltEditView(Context c) {
-        return null;
+        editWidth = new EditText(c);
+        editWidth.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        editWidth.addTextChangedListener((QH.SimpleTextWatcher) s -> {
+            if (s.toString().length() == 0 || mIsChangingSource)
+                return;
+            mIsChangingSource=true;
+            TouchAreaModel model = mHost.getModel();
+            model.setWidth(Integer.parseInt(s.toString()));
+            seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
+            onWidgetListener();
+            mIsChangingSource=false;
+        });
+
+        editHeight = new EditText(c);
+        editHeight.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        editHeight.addTextChangedListener((QH.SimpleTextWatcher) s -> {
+            if (s.toString().length() == 0 || mIsChangingSource)
+                return;
+            mIsChangingSource=true;
+            TouchAreaModel model = mHost.getModel();
+            model.setHeight(Integer.parseInt(s.toString()));
+            seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
+            onWidgetListener();
+            mIsChangingSource=false;
+        });
+
+        TextView tvCross = new TextView(c);
+        tvCross.setText("×");
+
+        LinearLayout linearLayout = new LinearLayout(c);
+        linearLayout.setOrientation(HORIZONTAL);
+        linearLayout.addView(editWidth, QH.LPLinear.one(dp8 * 7, -2).left().to());
+        linearLayout.addView(tvCross, QH.LPLinear.one(-2, -2).left().to());
+        linearLayout.addView(editHeight, QH.LPLinear.one(dp8 * 7, -2).left().to());
+        return linearLayout;
     }
 }

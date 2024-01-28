@@ -3,8 +3,10 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.mode
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.minTouchSize;
 
 import android.support.annotation.IntDef;
+import android.util.Log;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
+import com.google.gson.annotations.SerializedName;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class TouchAreaModel {
+    private static final String TAG = "TouchAreaModel";
     public static final int TYPE_BUTTON = 0;
     public static final int TYPE_STICK = 1;
     public static final int TYPE_DPAD = 2;
@@ -21,6 +24,7 @@ public abstract class TouchAreaModel {
     public int mainColor = Const.defaultBgColor;
     @Const.BtnColorStyle
     public int colorStyle = Const.BtnColorStyle.STROKE;
+    @SerializedName(value = Const.GsonField.md_ModelType)
     @ModelType
     protected int modelType = TYPE_NONE;//这个要在每个子类里构造函数的时候设置成对应的
     //TODO 保证编辑完成时改值不为空， keycodes至少存在一个按键
@@ -30,7 +34,7 @@ public abstract class TouchAreaModel {
     protected int width;
     protected int height;
     protected int mMinAreaSize = minTouchSize;
-    protected boolean isPressed = false;
+    transient protected boolean isPressed = false;
     protected TouchAreaModel(@ModelType int type) {
         modelType = type;
         //保证初始时至少有一个keycode，以及其对应的名字
@@ -48,6 +52,7 @@ public abstract class TouchAreaModel {
      * @param reference 若该参数不为null，则尽可能的将该model的数据拷贝到新实例中。
      */
     public static <T extends TouchAreaModel> T newInstance(TouchAreaModel reference, Class<T> tClass) {
+        //TODO 需要优化，如果参考实例的类和目标类相同，那么这个类独有的属性就会在新建之后丢失
         try {
             T one = tClass.newInstance();
             if (reference != null) {
@@ -59,8 +64,10 @@ public abstract class TouchAreaModel {
                 one.mainColor = reference.mainColor;
                 //TODO 这样会导致联动吗
                 one.name = reference.name;
-                one.keycodes.clear();
-                one.keycodes.addAll(reference.keycodes);
+                one.setKeycodes(reference.keycodes);
+
+                if(reference.getClass().equals(tClass))
+                    Log.w(TAG, "newInstance: 需要优化，如果参考实例的类和目标类相同，那么这个类独有的属性就会在新建之后丢失");
             }
             return one;
         } catch (IllegalAccessException | InstantiationException e) {

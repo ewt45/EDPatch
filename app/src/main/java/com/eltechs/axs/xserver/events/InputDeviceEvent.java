@@ -77,7 +77,7 @@ public abstract class InputDeviceEvent extends Event {
         this.eventX = eventX;
         this.eventY = eventY;
         this.state = mask;
-        Log.d("InputDeviceEvent", logToString());
+//        Log.d("InputDeviceEvent", logToString());
     }
 
     public byte getDetail() {

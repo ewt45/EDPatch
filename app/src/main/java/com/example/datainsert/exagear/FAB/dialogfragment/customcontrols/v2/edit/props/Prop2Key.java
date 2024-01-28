@@ -35,11 +35,11 @@ public class Prop2Key extends Prop<TouchAreaModel>{
         Button btnLeft = new Button(c);
         btnLeft.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_LEFT));
         Button btnRight = new Button(c);
-        btnLeft.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_RIGHT));
+        btnRight.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_RIGHT));
         Button btnTop = new Button(c);
-        btnLeft.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_TOP));
+        btnTop.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_TOP));
         Button btnBottom = new Button(c);
-        btnLeft.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_BOTTOM));
+        btnBottom.setOnClickListener(v-> onClickBtn(v.getContext(),OneStick.KEY_BOTTOM));
 
         LinearLayout linearLine1 = new LinearLayout(c);
         linearLine1.addView(new TextView(c),QH.LPLinear.one(dp8*6,dp8*6).to());
@@ -80,7 +80,7 @@ public class Prop2Key extends Prop<TouchAreaModel>{
                 .setNegativeButton(android.R.string.cancel,null)
                 .setPositiveButton(android.R.string.ok,(dialog, which) -> {
                     model.setKeycodeAt(keyOnBoardView.getSelectedKeys().get(0),direction);
-                    model.setKeycodes(keyOnBoardView.getSelectedKeys());
+                    updateUIFromModel(model);
                     onWidgetListener();
                 })
                 .show();

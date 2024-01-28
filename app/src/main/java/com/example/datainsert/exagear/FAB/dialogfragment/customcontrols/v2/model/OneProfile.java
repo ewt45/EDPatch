@@ -3,10 +3,10 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.mode
 import android.util.Log;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.EditMoveAdapter;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchAdapter.EditMoveAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,20 +54,18 @@ public class OneProfile {
 
     /**
      * 用于反序列化之后，从model同步arealist
+     *
+     * @param editing 若为true，设置adapter为editAdapter
      */
-    public void syncAreaList(TouchAreaView host) {
+    public void syncAreaList(boolean editing) {
         touchAreaList.clear();
         for (int i = 0; i < modelList.size(); i++) {
             TouchAreaModel model = modelList.remove(i);
-            //这个要换，不能老用这个。而且切换配置之后就失效了
-            addArea(host, i, model, model1 -> {
-                if (Const.editKeyViewRef != null)
-                    Const.editKeyViewRef.get().onModelChanged(model1);
-            });
-            Log.e("OneProfile", "syncAreaList:请实现adapter ");
-//                throw new RuntimeException("请实现adapter");
+            addArea(i, model, editing);
         }
+        //TODO 最后加上gestureArea
     }
+
 
     public boolean isDebug() {
         return isDebug;
@@ -82,17 +80,48 @@ public class OneProfile {
     }
 
     /**
-     * 根据model添加一个触摸区域，
+     * 根据model添加一个按钮触摸区域，（因为手势触摸区域固定有且只有一块，不会添加或删除），根据model类型添加对应的adapter。
      * <br/>注意area最终使用的model并非传入的实例，所以在调用此方法后应通过area.getModel()来获取实际的model
+     * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
+     *
+     * @param reference 用于提供新建触摸区域的属性，该类型不会直接作为touchArea的model，而是会根据它再新建一个，以防多一个区域共用一个model。
      */
-    public TouchArea<? extends TouchAreaModel> addArea(TouchAreaView host, TouchAreaModel model, EditMoveAdapter.OnFocusListener focusListener) {
-        return addArea(host,0,model,focusListener);
+    public TouchArea<? extends TouchAreaModel> addArea(TouchAreaModel reference, boolean editing) {
+        return addArea(0, reference, editing);
     }
 
-    public TouchArea<? extends TouchAreaModel> addArea(TouchAreaView host, int index, TouchAreaModel model, EditMoveAdapter.OnFocusListener focusListener) {
-        TouchArea<?> newArea = TestHelper.newAreaEditable(host, model, focusListener);
+    /**
+     * 同{@link #addArea(TouchAreaModel, boolean)}
+     */
+    public TouchArea<? extends TouchAreaModel> addArea(int index, TouchAreaModel reference, boolean editing) {
+        //TODO 要不这个toucharea的类型也像model一样 class形成一个数组
+        TouchAreaView host = Const.touchAreaViewRef.get();
+        TouchAreaModel finalModel = TouchAreaModel.newInstance(reference, (Class<? extends TouchAreaModel>) ((reference == null) ? OneButton.class : reference.getClass()));
+        TouchAdapter adapter = !editing ? null : new EditMoveAdapter(host, finalModel, model -> {
+            if (Const.editKeyViewRef != null)
+                Const.editKeyViewRef.get().onModelChanged(model);
+        });
+        TouchArea<?> newArea = null;
+        try {
+            newArea = ModelProvider.getAreaClass(finalModel.getClass())
+                    .getDeclaredConstructor(finalModel.getClass(), TouchAdapter.class)
+                    .newInstance(finalModel, adapter);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+//        if (finalModel.getClass().equals(OneButton.class)) {
+//            newArea = new TouchAreaButton((OneButton) finalModel, adapter);
+//        } else if (finalModel.getClass().equals(OneStick.class)) {
+//            newArea = new TouchAreaStick((OneStick) finalModel, adapter);
+//        } else if (finalModel.getClass().equals(OneDpad.class)) {
+//            newArea = new TouchAreaDpad((OneDpad) finalModel, adapter);
+//        } else if (finalModel.getClass().equals(OneGestureArea.class)) {
+//            throw new RuntimeException("gestureArea应该不应该通过addArea调用。应该一开始就存在，或者在area列表被清空的那个函数里重新添加一次");
+////            newArea = new TouchAreaGesture(host, (OneGestureArea) finalModel, adapter); //TODO 这里到底处不处理gestureArea
+//        } else
+//            throw new RuntimeException("无法创建该类型的TouchArea" + reference);
+
         modelList.add(index, newArea.getModel());
-        //TODO 不能一直是editable
         touchAreaList.add(index, newArea);
         return newArea;
     }

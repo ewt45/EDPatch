@@ -10,7 +10,6 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.minTouchSize;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,7 +20,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
@@ -40,21 +38,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.EditMoveAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneDpad;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneStick;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaButton;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaDpad;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaGesture;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea.TouchAreaStick;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
-import com.google.gson.TypeAdapter;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -62,6 +50,7 @@ import java.io.IOException;
 
 public class TestHelper {
     private static final String TAG = "TestHelper";
+    private final static float[] hsvTemp = new float[3];
 
     public static void addTouchAreas(Context c, TouchAreaView touchAreaView) {
 //        OneProfile oneProfile = new OneProfile();
@@ -135,10 +124,11 @@ public class TestHelper {
 
     /**
      * 当一个视图移动了位置的时候，限制它不允许出父视图边界
+     *
      * @param movedView 移动了位置的视图
-     * @param parent 父视图，必须是FrameLayout
+     * @param parent    父视图，必须是FrameLayout
      */
-    public static void restrictViewInsideParent(View movedView ,FrameLayout parent){
+    public static void restrictViewInsideParent(View movedView, FrameLayout parent) {
         FrameLayout.LayoutParams paramsUpd = (FrameLayout.LayoutParams) movedView.getLayoutParams();
 
         //TODO 应该是留在父视图内部的剩余部分，应该保持最小宽度即可，出一点边界没关系
@@ -154,7 +144,7 @@ public class TestHelper {
 //        FrameLayout parent = (FrameLayout) movedView.getParent();
 
         //烦死了 onMeasure那里AT_MOST的话貌似又不用限制最小宽度也可能出界了。干脆右-左和 右对比父右 都看一下就行了
-        int minTouchSize = dp8*6;
+        int minTouchSize = dp8 * 6;
         if (movedView.getRight() - movedView.getLeft() < minTouchSize)
             paramsUpd.leftMargin -= minTouchSize - (movedView.getRight() - movedView.getLeft());
         else if (parent.getWidth() - movedView.getLeft() < minTouchSize)
@@ -245,32 +235,6 @@ public class TestHelper {
     }
 
     /**
-     * 创建一个新的触摸区域。根据model类型添加对应的adapter。
-     * <br/>注意area最终使用的model并非传入的实例，所以在调用此方法后应通过area.getModel()来获取实际的model
-     * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
-     * @param reference 用于提供新建触摸区域的属性，该类型不会直接作为touchArea的model，而是会根据它再新建一个，以防多一个区域共用一个model。
-     */
-    public static TouchArea<? extends TouchAreaModel> newAreaEditable(TouchAreaView host, TouchAreaModel reference, EditMoveAdapter.OnFocusListener focusListener) {
-//        TouchAreaModel finalModel = TouchAreaModel.newInstance(reference,(reference==null)?OneButton.class:reference.getClass());
-        //TODO 要不这个toucharea的类型也像model一样 class形成一个数组
-        TouchAreaModel finalModel = TouchAreaModel.newInstance(reference, (Class<? extends TouchAreaModel>) ((reference == null) ? OneButton.class : reference.getClass()));
-        TouchArea<?> editableArea ;
-        if (finalModel.getClass().equals(OneButton.class)) {
-            editableArea = new TouchAreaButton(host, (OneButton) finalModel, new EditMoveAdapter(host, finalModel, focusListener));
-        } else if (finalModel.getClass().equals(OneStick.class)) {
-            editableArea=  new TouchAreaStick(host,(OneStick) finalModel,new EditMoveAdapter(host, finalModel, focusListener));
-        } else if(finalModel.getClass().equals(OneDpad.class)){
-            editableArea = new TouchAreaDpad(host, (OneDpad) finalModel, new EditMoveAdapter(host, finalModel, focusListener));
-        }else if(finalModel.getClass().equals(OneGestureArea.class)){
-            editableArea = new TouchAreaGesture(host, (OneGestureArea) finalModel,new EditMoveAdapter(host, finalModel, focusListener));
-        }
-        else
-            throw new RuntimeException("无法创建该类型的TouchArea" + reference);
-        editableArea.setEditing(true);
-        return editableArea;
-    }
-
-    /**
      * 从apk/assets中读取一个编译后的安卓二进制xml，创建drawable
      * <br/> 使用的函数是 a.getAssets().openXmlResourceParser("assets/cc/ic_apk_document.xml")
      *
@@ -286,7 +250,6 @@ public class TestHelper {
             return new ColorDrawable(0xff000000);
         }
     }
-
 
     /**
      * 按键编辑窗口。向gridview添加一行，标题,内容。如果有可切换的副内容，则在后面加一个切换按钮
@@ -357,22 +320,21 @@ public class TestHelper {
         title.setCompoundDrawables(null, null, swapDrawable, null);
     }
 
-    private final static float[] hsvTemp = new float[3];
     /**
      * 让颜色变黑（hsv 的v减20%，如果已经很黑了就会物极必反没那么黑
      */
     public static int darkenColor(int mainColor) {
         Color.colorToHSV(mainColor, hsvTemp);
-        hsvTemp[2] = hsvTemp[2]-0.3f;
-        if(hsvTemp[2]<0)
-            hsvTemp[2]+=1;
-        return Color.HSVToColor(Color.alpha(mainColor),hsvTemp);
+        hsvTemp[2] = hsvTemp[2] - 0.3f;
+        if (hsvTemp[2] < 0)
+            hsvTemp[2] += 1;
+        return Color.HSVToColor(Color.alpha(mainColor), hsvTemp);
     }
 
     /**
      * 根据attr获取drawable
      */
-    public static Drawable getAttrDrawable(Context c,int attrId){
+    public static Drawable getAttrDrawable(Context c, int attrId) {
         TypedArray array = c.obtainStyledAttributes(new int[]{attrId});
         Drawable drawable = array.getDrawable(0);
         array.recycle();
@@ -382,7 +344,7 @@ public class TestHelper {
     /**
      * 由于编辑的model放在内存，有修改操作时（导出，复制，切换，重命名，退出编辑）时都应该将当前model同步到本地，然后再操作
      */
-    public static void saveCurrentEditProfileToFile(){
+    public static void saveCurrentEditProfileToFile() {
         OneProfile profileInMem = Const.touchAreaViewRef.get().getProfile();
         ModelFileSaver.saveProfile(profileInMem);
     }
@@ -390,11 +352,11 @@ public class TestHelper {
     /**
      * 显示一个二次确认的对话框
      */
-    public static void showConfirmDialog(Context c,String s, DialogInterface.OnClickListener onClickListener) {
+    public static void showConfirmDialog(Context c, String s, DialogInterface.OnClickListener onClickListener) {
         new AlertDialog.Builder(c)
                 .setMessage(s)
-                .setPositiveButton(android.R.string.ok,onClickListener)
-                .setNegativeButton(android.R.string.cancel,null)
+                .setPositiveButton(android.R.string.ok, onClickListener)
+                .setNegativeButton(android.R.string.cancel, null)
                 .setCancelable(false)
                 .show();
     }
@@ -414,11 +376,18 @@ public class TestHelper {
         ;
     }
 
-    public interface SimpleTabListener extends TabLayout.OnTabSelectedListener{
+    public interface SimpleTabListener extends TabLayout.OnTabSelectedListener {
         @Override
-       default void onTabUnselected(TabLayout.Tab tab){};
+        default void onTabUnselected(TabLayout.Tab tab) {
+        }
+
+        ;
 
         @Override
-        default void onTabReselected(TabLayout.Tab tab){onTabSelected(tab);};
+        default void onTabReselected(TabLayout.Tab tab) {
+            onTabSelected(tab);
+        }
+
+        ;
     }
 }

@@ -278,7 +278,7 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
                     break;
             }
 
-            fragment = new ControlsFragment();
+//            fragment = new ControlsFragment();
 
             if (fragment != null) {
                 FragmentManager supportFragmentManager = EDMainActivity.this.getSupportFragmentManager();

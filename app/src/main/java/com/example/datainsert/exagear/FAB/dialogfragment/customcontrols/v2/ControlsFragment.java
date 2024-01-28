@@ -52,7 +52,7 @@ public class ControlsFragment extends Fragment {
 
         Context c = requireContext();
         //TODO 必须在任何操作前初始化一次
-        Const.init(c);
+        Const.init(requireActivity(),null);
         int frameRootId = View.generateViewId();
         FrameLayout frameRoot = new FrameLayout(c);
         frameRoot.setId(frameRootId);
@@ -60,7 +60,7 @@ public class ControlsFragment extends Fragment {
 
         TouchAreaView touchAreaView = new TouchAreaView(c);
         OneProfile profile = ModelFileSaver.readCurrentProfile();
-        profile.syncAreaList(touchAreaView);
+
         touchAreaView.setProfile(profile);
         touchAreaView.startEdit();
         frameRoot.addView(touchAreaView);

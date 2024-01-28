@@ -12,14 +12,12 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter.EditMoveAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop0MainColor;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.props.Prop0Name;
@@ -66,7 +64,7 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         Button btnAddKey = new Button(c);
         btnAddKey.setText("添加");
         btnAddKey.setOnClickListener(v -> {
-            TouchArea<?> area = mHost.mHost.getProfile().addArea(mHost.mHost, mModel, model -> onModelChanged(model));
+            TouchArea<?> area = mHost.mHost.getProfile().addArea( mModel,true);
             mModel = area.getModel();
             mModel.setLeft(0);
             mModel.setTop(0);
@@ -103,7 +101,7 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
                 //如果没进到这个条件，mmodel就不会改变。。。
                 if (currList.get(i).getModel().equals(mModel)) {
                     mHost.mHost.getProfile().removeArea(i);
-                    TouchArea<?> newArea = mHost.mHost.getProfile().addArea(mHost.mHost, i, newModelForField, model -> onModelChanged(model));
+                    TouchArea<?> newArea = mHost.mHost.getProfile().addArea( i, newModelForField,true);
                     newModelForField = newArea.getModel();
                     break;
                 }

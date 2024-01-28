@@ -7,14 +7,16 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver.profilesDir;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver.workDir;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.SparseArray;
 
+import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
+import com.eltechs.axs.xserver.ViewFacade;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit3ProfilesView;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.ContextGesture;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneDpad;
@@ -24,6 +26,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.KeyOnBoardView;
 import com.example.datainsert.exagear.QH;
+import com.google.gson.annotations.SerializedName;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -36,18 +39,31 @@ public class Const {
      * <br/> 找不到index的时候会返回 负数，不一定是-1？
      */
     public static final SparseArray<Class<? extends TouchAreaModel>> modelTypeArray = new SparseArray<>();
+    public static float fingerStandingMaxMoveInches = 0.03f;
+    public static int fingerTapMaxMs = 300;
+    /**
+     * 经过测试，12f（安卓像素）比较合适
+     */
+    public static float fingerTapMaxMoveInches = 0.2f;
     public static ModelFileSaver modelSaver; //用于反序列化时还原抽象类，以及处理文件位置
-    private static WeakReference<Context> ctxRef = null;
     public static WeakReference<Edit1KeyView> editKeyViewRef = null;
-    public static WeakReference<Edit3ProfilesView.ProfileAdapter> profilesAdapterRef  = null  ;
+    public static WeakReference<Edit3ProfilesView.ProfileAdapter> profilesAdapterRef = null;
     public static WeakReference<ControlsFragment> fragmentRef = null;
     public static WeakReference<TouchAreaView> touchAreaViewRef = null;
+    public static WeakReference<ViewOfXServer> viewOfXServerRef = null;
+    public static WeakReference<Activity> activityRef = null;
+    public static WeakReference<ContextGesture> gestureCxtRef = null;
     public static int dp8;
     public static int minTouchSize;
     public static int minBtnAreaSize;
     public static int minStickAreaSize;
     public static int defaultBgColor = 0xffFFFAFA;
     public static int keycodeMaxCount = 256 + 7; //还有 7个鼠标按键
+    /**
+     * 由于 键盘keycode和鼠标的buttoncode混在一起用了，所以需要用个mask隔开一下，规定大于256的就是鼠标按键，减去256是实际buttoncode
+     * <br/> 比如左键就是256 | 1 = 257;
+     */
+    public static int keycodePointerMask = 256;
     public static String[] keyNames = null;
 
     static {
@@ -59,25 +75,23 @@ public class Const {
 
     }
 
-    public static Context getContext(){
-        return fragmentRef.get().requireContext();
-    }
 
     /**
      * 有些数据需要context才能获取。此函数必须在访问Const成员变量前调用一次。
      */
-    public static void init(Context c) {
-        if (ctxRef == null || ctxRef.get() == null)
-            ctxRef = new WeakReference<>(c);
+    public static void init(Activity c, ViewOfXServer viewOfXServer) {
 
 //        Log.d("TAG", "init: gc前static的弱引用会被回收吗 "+testRef.get());
 //        Runtime.getRuntime().gc();
 //        Log.d("TAG", "init: gc后static的弱引用会被回收吗 "+testRef.get());//有被其他地方引用的话就不会，所以context要等到生命周期结束了的，正常用的时候没问题
+        activityRef = new WeakReference<>(c);
+        viewOfXServerRef = new WeakReference<>(viewOfXServer);
 
         dp8 = QH.px(c, 8);
         minTouchSize = QH.px(c, 32);
         minBtnAreaSize = QH.px(c, 48);
         minStickAreaSize = minBtnAreaSize * 2;
+
         if (keyNames == null)
             keyNames = KeyOnBoardView.initXKeyCodesAndNames(c, keycodeMaxCount);
 
@@ -104,6 +118,40 @@ public class Const {
 
     }
 
+    /**
+     * detach的时候，调用clear清除内存
+     */
+    public static void clear() {
+        editKeyViewRef = null;
+        profilesAdapterRef = null;
+        activityRef = null;
+        fragmentRef = null;
+        touchAreaViewRef = null;
+        viewOfXServerRef = null;
+        gestureCxtRef = null;
+    }
+
+    public static Context getContext() {
+        return activityRef.get();
+    }
+
+    public static ViewFacade getViewFacade() {
+        ViewOfXServer viewOfXServer = viewOfXServerRef.get();
+        return viewOfXServer == null ? null : viewOfXServer.getXServerFacade();
+    }
+
+    public static float getDpi() {
+        return getContext().getResources().getDisplayMetrics().density;
+    }
+
+    public static void setGestureContext(ContextGesture gestureContext) {
+        gestureCxtRef = new WeakReference<>(gestureContext);
+    }
+
+    public static ContextGesture getGestureContext(){
+        return gestureCxtRef.get();
+    }
+
     @IntDef({NORMAL, STICK, DPAD})
     @Retention(RetentionPolicy.SOURCE)
     public @interface BtnType {
@@ -126,5 +174,40 @@ public class Const {
         int FILL = 1;
     }
 
+    /**
+     * 一些外部可控的选项，一般用于开发者（比如不是exa，而是别的应用）
+     */
+    public static class Config {
+        /**
+         * 默认false，从RR读取中文英文和俄语字符串。如果为true则从res中读取（尚未实现）
+         */
+        public static final boolean readStringFromApkRes = false;
+        /**
+         * 默认false，使用旧support库的依赖库。如果为true则使用jetpack依赖库（尚未实现）
+         */
+        public static final boolean useLegacySupportLibs = true;
+    }
 
+
+    /**
+     * 为防止变量名改动导致json无法反序列化，使用 {@link SerializedName} 注解固定序列化名称
+     */
+    public static class GsonField {
+        public final static String md_ModelType = "modelType";
+        public final static String st_StateType = "stateType";
+        public final static String st_keycode = "keycode";
+        public final static String st_doPress = "doPress";
+        public final static String st_doRelease = "doRelease";
+        public final static String st_fingerIndex = "fingerIndex";
+        public final static String st_fingerXYType = "fingerXYType";
+        public final static String st_optionType = "optionType";
+        public final static String st_waitUntilFinish = "waitUntilFinish";
+        public final static String st_ignorePixels = "ignorePixels";
+        public final static String st_zoomFingerIndex1 = "zoomFingerIndex1";
+        public final static String st_zoomFingerIndex2 = "zoomFingerIndex2";
+        public final static String st_noMoveThreshold = "noMoveThreshold";
+        public final static String st_fastMoveThreshold = "fastMoveThreshold" ;
+        public final static String st_countDownMs = "countDownMs";
+        public final static String md_fsmTable = "fsmTable";
+    }
 }

@@ -9,7 +9,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
 /**
  * 用户编辑ui
  * ->updateUIFromModel:同步内容到model，调用mHost.onModelChanged刷新全部ui
- * -> 调用到自己的updateUIFromModel，此时再根据需要刷新ui
+ * -> 调用到自己的updateUIFromModel，此时再根据需要刷新ui (还是改了吧，直接在用户编辑的监听器里改，自身跳过调用updateUI了）
  * （但是一般来说如果ui是通过用户编辑而更新的话，此时就不需要再根据model刷新ui了，注意一下别死循环了）
  */
 public abstract class Prop<ModelType> {

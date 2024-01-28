@@ -1,24 +1,18 @@
 package com.ewt45.exagearsupportv7;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-import android.util.Log;
-
 import com.example.datainsert.exagear.mutiWine.WineNameComparator;
 import com.example.datainsert.exagear.mutiWine.v2.HQParser;
 import com.example.datainsert.exagear.mutiWine.v2.HQWineInfo;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -35,6 +29,8 @@ import java.util.List;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+
+
 
 
     @Test

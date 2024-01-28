@@ -3,6 +3,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2;
 import static android.support.v4.view.InputDeviceCompat.SOURCE_STYLUS;
 import static android.view.InputDevice.SOURCE_MOUSE;
 import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
+import static android.view.KeyEvent.KEYCODE_BACK;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,10 +11,7 @@ import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
-import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.EditConfigWindow;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 
 import java.lang.ref.WeakReference;
@@ -28,6 +26,8 @@ public class TouchAreaView extends FrameLayout {
 
     public TouchAreaView(@NonNull Context context ) {
         super(context);
+        Const.touchAreaViewRef = new WeakReference<>(this);
+
 //        this.xServerFacade = viewOfXServer==null?null:viewOfXServer.getXServerFacade();
 //        this.mouse = viewOfXServer==null?null:new Mouse(new PointerEventReporter(viewOfXServer));
 //        this.keyboard = new Keyboard(new KeyEventReporter(this.xServerFacade));
@@ -40,10 +40,6 @@ public class TouchAreaView extends FrameLayout {
         setFocusableInTouchMode(true);
         installKeyListener();
 
-        mProfile = ModelFileSaver.readCurrentProfile();
-        mProfile.syncAreaList(this);
-
-        Const.touchAreaViewRef = new WeakReference<>(this);
 //        setBackground(new TouchAreaViewDrawable(mProfile));
 //        String activeName = "profile_test";
 //        ModelFileSaver.makeCurrent(activeName);
@@ -64,7 +60,11 @@ public class TouchAreaView extends FrameLayout {
     }
 
     private void installKeyListener() {
-//        setOnKeyListener((view, keyCode, keyEvent) -> {
+        setOnKeyListener((view, keyCode, keyEvent) -> {
+            if(keyCode==KEYCODE_BACK && getChildCount()==0){
+                startEdit();
+            }
+            return true;
 //            if (keyEvent.getSource() == SOURCE_MOUSE) {
 //                if (keyCode == KEYCODE_BACK) {
 //                    if (keyEvent.getAction() == ACTION_DOWN) {
@@ -118,7 +118,7 @@ public class TouchAreaView extends FrameLayout {
 //                TouchScreenControlsInputWidget.this.getHost().showPopupMenu();
 //                return true;
 //            }
-//        });
+        });
     }
 
     @Override // android.view.View
@@ -153,7 +153,6 @@ public class TouchAreaView extends FrameLayout {
             return true;
         }
 
-        int i = 0;
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -170,39 +169,38 @@ public class TouchAreaView extends FrameLayout {
                 }
                 break;
 
-            //TODO 为什么这俩要遍历所有的finger呢，只处理那一个不行吗
+            //TODO 为什么这俩要遍历所有的finger呢，只处理那一个不行吗 （啊貌似pointerId永远对应最后按下的那一根手指，其他手指接收不到事件了）（同时间多个手指的变化只会发送一次事件，所以不能一次只处理一根手指）
             case MotionEvent.ACTION_MOVE:
-                if (this.userFingers[pointerId] != null) {
-                    this.userFingers[pointerId].update(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
-                    handleFingerMove(this.userFingers[pointerId]);
-                    break;
-                }
-//                while (i < MAX_FINGERS) {
-//                    if (this.userFingers[i] != null) {
-//                        int findPointerIndex = motionEvent.findPointerIndex(i);
-//                        if (findPointerIndex >= 0) {
-//                            this.userFingers[i].update(motionEvent.getX(findPointerIndex), motionEvent.getY(findPointerIndex));
-//                            handleFingerMove(this.userFingers[i]);
-//                        } else {
-//                            handleFingerUp(this.userFingers[i]);
-//                            this.userFingers[i] = null;
-//                        }
-//                    }
-//                    i++;
+//                if (this.userFingers[pointerId] != null) {
+//                    this.userFingers[pointerId].update(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
+//                    handleFingerMove(this.userFingers[pointerId]);
+//                    break;
 //                }
+                for(int i=0; i<MAX_FINGERS; i++){
+                    if (this.userFingers[i] != null) {
+                        int findPointerIndex = motionEvent.findPointerIndex(i);
+                        if (findPointerIndex >= 0) {
+                            this.userFingers[i].update(motionEvent.getX(findPointerIndex), motionEvent.getY(findPointerIndex));
+                            handleFingerMove(this.userFingers[i]);
+                        } else {
+                            handleFingerUp(this.userFingers[i]);
+                            this.userFingers[i] = null;
+                        }
+                    }
+                }
                 break;
             case MotionEvent.ACTION_CANCEL:
-                if (this.userFingers[i] != null) {
-                    handleFingerUp(this.userFingers[i]);
-                    this.userFingers[i] = null;
-                }
-//                while (i < MAX_FINGERS) {
-//                    if (this.userFingers[i] != null) {
-//                        handleFingerUp(this.userFingers[i]);
-//                        this.userFingers[i] = null;
-//                    }
-//                    i++;
+                //同时间多个手指的变化只会发送一次事件，所以不能一次只处理一根手指
+//                if (this.userFingers[i] != null) {
+//                    handleFingerUp(this.userFingers[i]);
+//                    this.userFingers[i] = null;
 //                }
+                for(int i=0 ;i<MAX_FINGERS; i++){
+                    if (this.userFingers[i] != null) {
+                        handleFingerUp(this.userFingers[i]);
+                        this.userFingers[i] = null;
+                    }
+                }
                 break;
         }
         // TODO 要不要invalidate传入相应那个area的范围，只修改某一个区域，能减少点消耗
@@ -210,8 +208,15 @@ public class TouchAreaView extends FrameLayout {
         return true;
     }
 
+    //TODO TouchScreenControlsWidget在这里重新构建了手势区域（手势context需要用到area的宽高吧）
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
+
     /**
      * 发现一个停留在同一个区域，或移出一个区域并进入另一个区域，则停止遍历
+     * <br/> 要求一个手指最多只能由一个触摸区域处理
      */
     private void handleFingerMove(Finger userFinger) {
         int tmp = 0;
@@ -244,11 +249,18 @@ public class TouchAreaView extends FrameLayout {
         }
     }
 
+    private boolean mIsEditing =false;
+    //TODO 太乱了。如果变量又isEditing flag的话，setProfile就不用传flag了。
     /**
      * 进入编辑模式
      */
     public void startEdit() {
+        if(mIsEditing)
+            return;
+        mIsEditing =true;
+        mProfile.syncAreaList(true);
         addView(new EditConfigWindow(this));
+
 //        for (TouchArea<?> touchArea : mProfile.getTouchAreaList()) {
 //            touchArea.mAdapter = new ClickAdapter(0.05f, () -> {
 //                Toast.makeText(getContext(), "点击", Toast.LENGTH_LONG).show();
@@ -256,20 +268,29 @@ public class TouchAreaView extends FrameLayout {
 //        }
     }
 
+    public boolean isEditing() {
+        return mIsEditing;
+    }
+
     /**
      * 退出编辑模式
      */
     public void exitEdit() {
-
+        mIsEditing =false;
+        removeAllViews();
+        mProfile.syncAreaList(false);
     }
 
     public OneProfile getProfile() {
         return mProfile;
     }
 
+    /**
+     * 设置为当前的配置OneProfile，并同步touchArea
+     */
     public void setProfile(OneProfile profile) {
         mProfile = profile;
-        mProfile.syncAreaList(this);
+        mProfile.syncAreaList(mIsEditing);
     }
 
 

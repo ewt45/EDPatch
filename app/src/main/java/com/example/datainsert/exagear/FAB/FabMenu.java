@@ -22,6 +22,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.FAB.dialogfragment.VirglOverlay;
 import com.example.datainsert.exagear.FAB.dialogfragment.Xegw2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.ControlsFragment;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -123,7 +124,13 @@ public class FabMenu {
                     BaseFragment fragment = clz.newInstance();
                     //点击菜单项时显示fragment，用title当tag了
                     menu.add(fragment.getTitle()).setOnMenuItemClickListener(item1 -> {
-                        fragment.show(a.getSupportFragmentManager(), fragment.getTitle());
+//                        if(clz.equals(CustomControls.class))
+//                            a.getSupportFragmentManager().beginTransaction()
+//                                    .replace(R.id.ed_main_fragment_container, fragment, "str")
+//                                    .addToBackStack(null)
+//                                    .commit();
+//                        else
+                            fragment.show(a.getSupportFragmentManager(), fragment.getTitle());
                         return true;
                     });
                 } catch (IllegalAccessException | InstantiationException e) {

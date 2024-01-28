@@ -34,6 +34,7 @@ public class Prop1Key extends Prop<TouchAreaModel>{
                     .setNegativeButton(android.R.string.cancel,null)
                     .setPositiveButton(android.R.string.ok,(dialog, which) -> {
                         model.setKeycodes(keyOnBoardView.getSelectedKeys());
+                        updateUIFromModel(model);
                         onWidgetListener();
                     })
                     .show();

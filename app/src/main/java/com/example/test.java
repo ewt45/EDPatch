@@ -9,7 +9,9 @@ import android.media.AudioPlaybackConfiguration;
 import android.media.AudioRecordingConfiguration;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 
 import com.eltechs.axs.Globals;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,22 @@ public class test {
     public test() {
 
     }
+    @SuppressLint("NewApi")
+    public  static void test(List<Object> list ){
+        Log.d("testtag", "test: 查看列表项");
+        for(Object o :list){
+            try {
+                String name = (String) o.getClass().getField("name").get(o);
+                Log.d("testtag", "test: "+name);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+    public void test2(){
+        test.test(new ArrayList<>());
+    }
+
 
     public static void add_popupmenu(Menu menu){
         menu.add("current playing audio").setOnMenuItemClickListener(item -> {
@@ -84,8 +103,7 @@ public class test {
                 builder.append("Usage: ").append(attr.getUsage()).append(", AllowedCapturePolicy").append(attr.getAllowedCapturePolicy()).append("\n");
             }
             if(list.size()==0)
-
-            builder.append("\nActiveRecordingConfigurations\n");
+                builder.append("\nActiveRecordingConfigurations\n");
             List<AudioRecordingConfiguration> list2 = manager.getActiveRecordingConfigurations();
             for(AudioRecordingConfiguration  c:list2){
                 builder.append(c).append("\n");

@@ -121,6 +121,9 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
         List<Integer> list = new ArrayList<>();
         for (CompoundButton btn : mSelectKeys)
             list.add(getKeyByTag(btn));
+
+        if(list.size()==0)
+            list.add(0);
         return list;
     }
 

@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter;
+package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchAdapter;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;

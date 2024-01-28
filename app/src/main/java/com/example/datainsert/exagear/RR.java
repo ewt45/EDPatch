@@ -187,6 +187,18 @@ public class RR {
     public static int fabVO_btnTitles = 172;
     public static int fabVO_startResults = 173;
 
+    public static int  fsm_event_complete = 174;
+    public static int fsm_event_release  = 175;
+    public static int fsm_event_new_touch = 176;
+    public static int fsm_event_near = 177;
+    public static int fsm_event_far = 178;
+    public static int fsm_event_noMove = 179;
+    public static int fsm_event_slowMove = 180;
+    public static int fsm_event_fastMove = 181;
+    public static int fsm_event_noMoveThenRelease = 182;
+    public static int fsm_event_moveThenRelease = 183;
+
+
 
     public static String locale = refreshLocale();
 
@@ -369,6 +381,19 @@ public class RR {
         zhArray.put(fabVO_radioTitles,"覆盖位置:$左上方$居中$隐藏*$* 与VTEST_WIN=1一起使用以在X11窗口中绘制，而不是悬浮窗覆盖");
         zhArray.put(fabVO_btnTitles,"清除服务$开始服务$开启悬浮窗权限");
         zhArray.put(fabVO_startResults,"服务启动成功，现在你可以启动容器并尝试运行游戏了。$服务启动失败。");
+
+
+        zhArray.put(fsm_event_complete,"完成");
+        zhArray.put(fsm_event_release,"某手指松开");
+        zhArray.put(fsm_event_new_touch,"新手指按下");
+        zhArray.put(fsm_event_near,"手指距离指针_近");
+        zhArray.put(fsm_event_far,"手指距离指针_远");
+        zhArray.put(fsm_event_noMove,"手指_未移动");
+        zhArray.put(fsm_event_slowMove,"手指_移动_慢速");
+        zhArray.put(fsm_event_fastMove,"手指_移动_快速");
+        zhArray.put(fsm_event_noMoveThenRelease,"某手指_未移动并松开");
+        zhArray.put(fsm_event_moveThenRelease,"某手指_移动并松开");
+
         /*
 
 

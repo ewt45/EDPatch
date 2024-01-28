@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.adapter;
+package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchAdapter;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
 
@@ -33,8 +33,7 @@ public class EditMoveAdapter implements TouchAdapter {
     }
 
     private void updatePosition(Finger finger){
-//        Log.d(TAG, "updatePosition: finger位移="+(int) (firstX+finger.getX())+" "+ (firstY+finger.getY()));
-        ;
+
         mModel.setLeft((int) firstModelX + minMul4(finger.getX()  - firstFingerX));
         mModel.setTop((int) firstModelY + minMul4(finger.getY() - firstFingerY));
         mView.invalidate();

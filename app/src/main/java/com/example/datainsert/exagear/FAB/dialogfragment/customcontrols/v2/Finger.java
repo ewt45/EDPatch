@@ -2,7 +2,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2;
 
 public class Finger {
     private float x;
-    private float xWhenFingerCountLastChanged;
+    private float xWhenFingerCountLastChanged; //好像理解了，比如新手指按下后，需要观测旧手指的移动，但是想忽略旧手指之前移动的距离
     private final float xWhenFirstTouched;
     private float y;
     private float yWhenFingerCountLastChanged;

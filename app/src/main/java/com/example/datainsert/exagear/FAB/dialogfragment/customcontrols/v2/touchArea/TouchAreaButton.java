@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.toucharea;
+package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchArea;
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.BtnColorStyle.FILL;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.BtnColorStyle.STROKE;
@@ -9,24 +9,28 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.support.annotation.Nullable;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchAdapter.ButtonPressAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
-import com.example.datainsert.exagear.QH;
 
 public class TouchAreaButton extends TouchArea<OneButton> {
     Paint mTextPaint = new Paint();
     GradientDrawable mDrawable = new GradientDrawable();
     PorterDuffXfermode mDSTOVERMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
 
-    public TouchAreaButton(TouchAreaView host, @NonNull OneButton data, @NonNull TouchAdapter adapter) {
-        super(host, data, adapter);
+    public TouchAreaButton(@NonNull OneButton data) {
+        this(data, new ButtonPressAdapter(data.getKeycodes()));
+    }
+    /**
+     * @param adapter 若为null，则处于非编辑模式。自己构建运行时adapter
+     */
+    public TouchAreaButton(@NonNull OneButton data, @Nullable TouchAdapter adapter) {
+        super(data, adapter!=null?adapter:new ButtonPressAdapter(data.getKeycodes()));
         updatePaint();
     }
 
@@ -55,7 +59,7 @@ public class TouchAreaButton extends TouchArea<OneButton> {
         mTextPaint.setStyle(Paint.Style.FILL);
 //        mTextPaint.setXfermode(mData.colorStyle == STROKE?null:mDSTOVERMode ); //设置颜色混合
 
-        Log.d(TAG, "updatePaint: 文字大小=" + finalTxtSize + ", w=" + mModel.getWidth());
+//        Log.d(TAG, "updatePaint: 文字大小=" + finalTxtSize + ", w=" + mModel.getWidth());
     }
 
     @Override

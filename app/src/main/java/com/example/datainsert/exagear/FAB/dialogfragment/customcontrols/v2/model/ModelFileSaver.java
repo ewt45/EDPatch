@@ -37,11 +37,11 @@ import java.lang.reflect.Type;
  */
 public class ModelFileSaver implements JsonDeserializer<TouchAreaModel> {
     private static final String TAG = "GsonProcessor";
-    private static final String typeFieldName = "modelType";
     public static File workDir;
     public static File profilesDir;
     public static File currentProfile;
     Gson mSubGson = new Gson();
+
 
     public ModelFileSaver(String workPath) {
         workDir = new File(workPath);
@@ -221,7 +221,8 @@ public class ModelFileSaver implements JsonDeserializer<TouchAreaModel> {
 
         JsonObject jsonObject = (JsonObject) json;
         //不能直接用传入的context，因为这个context设置了TouchAreaModel的自定义反序列化（就是这个类本身），会死循环
-        return mSubGson.fromJson(json, Const.modelTypeArray.get(jsonObject.get(typeFieldName).getAsInt()));
+        int modelType = jsonObject.get(Const.GsonField.md_ModelType).getAsInt();
+        return mSubGson.fromJson(json, Const.modelTypeArray.get(modelType));
     }
 
 

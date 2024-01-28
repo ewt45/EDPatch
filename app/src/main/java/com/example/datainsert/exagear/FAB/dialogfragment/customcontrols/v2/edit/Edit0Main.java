@@ -7,7 +7,9 @@ import android.support.v4.widget.NestedScrollView;
 import android.transition.TransitionManager;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
@@ -36,8 +38,6 @@ public class Edit0Main extends LinearLayout {
         //顶部工具栏
         TabLayout tabToolbar = new TabLayout(c);
         tabToolbar.setTabMode(TabLayout.MODE_FIXED);
-        tabToolbar.setLayoutParams(QH.LPLinear.one(0, -2).weight().to());
-        this.mToolbar = tabToolbar;
 
         LinearLayout linearPager = new LinearLayout(c);
         linearPager.setOrientation(VERTICAL);
@@ -60,8 +60,13 @@ public class Edit0Main extends LinearLayout {
         tabToolbar.addTab(tabToolbar.newTab().setText("多配置").setTag("profile"));
         tabToolbar.addTab(tabToolbar.newTab().setText("其他").setTag("other"));
 
+        HorizontalScrollView scrollToolbar = new HorizontalScrollView(c);
+        scrollToolbar.addView(tabToolbar);
+        mToolbar = scrollToolbar;
+        mToolbar.setLayoutParams(QH.LPLinear.one(0, -2).weight().to());
 
     }
+
 
 
 
