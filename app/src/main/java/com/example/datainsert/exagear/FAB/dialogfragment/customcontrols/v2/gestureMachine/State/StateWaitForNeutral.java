@@ -4,7 +4,7 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * <br/> 进入活跃态时，若已经没有手指按下，则直接结束。否则等到全部手指松开了就结束。
  */
 @StateTag(tag = FSMR.state.回归初始状态,events = 完成)
-public class StateWaitForNeutral extends AbstractFSMState2 implements TouchAdapter {
+public class StateWaitForNeutral extends FSMState2 implements TouchAdapter {
 
     @Override
     protected void onAttach() {

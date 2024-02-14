@@ -197,10 +197,21 @@ public class RR {
     public static int fsm_event_fastMove = 181;
     public static int fsm_event_noMoveThenRelease = 182;
     public static int fsm_event_moveThenRelease = 183;
-
+    public static int fsm_state_testSpd = 184;
+    public static int fsm_state_init=185;
+    public static int fsm_state_fallback=186;
+    public static int fsm_state_1FMouseMove=187;
+    public static int fsm_state_action_click =188;
+    public static int fsm_state_action_msMove =189;
+    public static int fsm_state_msScroll=190;
+    public static int fsm_state_distFingerMouse=191;
+    public static int fsm_state_fingerNum=192;
+    public static int fsm_state_2FZoom=193;
+    public static int fsm_state_action_option =194;
 
 
     public static String locale = refreshLocale();
+
 
     static {
         SparseArray<String> zhArray = new SparseArray<>();
@@ -393,6 +404,17 @@ public class RR {
         zhArray.put(fsm_event_fastMove,"手指_移动_快速");
         zhArray.put(fsm_event_noMoveThenRelease,"某手指_未移动并松开");
         zhArray.put(fsm_event_moveThenRelease,"某手指_移动并松开");
+        zhArray.put(fsm_state_testSpd,"限时测量手指移速");
+        zhArray.put(fsm_state_init,"初始状态");
+        zhArray.put(fsm_state_fallback,"默认（返回初始状态）");
+        zhArray.put(fsm_state_1FMouseMove,"手指移动带动鼠标移动");
+        zhArray.put(fsm_state_action_click,"键盘/鼠标按钮");
+        zhArray.put(fsm_state_action_msMove,"鼠标位置移动");
+        zhArray.put(fsm_state_msScroll,"鼠标滚轮滚动");
+        zhArray.put(fsm_state_distFingerMouse,"判断手指与鼠标位置距离");
+        zhArray.put(fsm_state_fingerNum,"检测手指数量变化");
+        zhArray.put(fsm_state_2FZoom,"两根手指缩放");
+        zhArray.put(fsm_state_action_option,"执行选项");
 
         /*
 

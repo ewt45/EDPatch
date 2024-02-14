@@ -72,7 +72,7 @@
 ## 绝对位置点击(5.0)
 显示在input control的弹窗中。现在已适配矩阵变化，无需拉伸全屏也可正确处理点击坐标。
 1. 同上面光标样式的第一步（com.winlator.XServerDisplayActivity类），如果已经编辑过可跳过。
-2. 添加smali https://wwk.lanzout.com/iXRWc1nf1b5c 如有同名则覆盖
+2. 添加smali https://wwk.lanzout.com/iXRWc1nf1b5c 如有同名则覆盖。该代码重新实现了TouchPadView
 
 
 # 自定义wine修复

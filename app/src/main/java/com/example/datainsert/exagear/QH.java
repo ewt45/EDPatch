@@ -553,12 +553,24 @@ public class QH {
             margins[1] = margin;
             return this;
         }
+        public LPLinear bottom() {
+            margins[3] = margin8Dp();
+            return this;
+        }
         public LPLinear left(){
             margins[0] = margin8Dp();
             return this;
         }
         public LPLinear left(int margin){
             margins[0] = margin;
+            return this;
+        }
+        public LPLinear right() {
+            margins[2] = margin8Dp();
+            return this;
+        }
+        public LPLinear margin(int left, int top, int right, int bottom) {
+            margins = new int[]{left,top,right,bottom};
             return this;
         }
         public LinearLayout.LayoutParams to(){
@@ -569,5 +581,8 @@ public class QH {
             params.setMargins(margins[0],margins[1],margins[2],margins[3]);
             return params;
         }
+
+
+
     }
 }

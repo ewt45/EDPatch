@@ -18,7 +18,7 @@ import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MouseScrollAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MovementAccumulator2;
@@ -28,7 +28,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 @StateTag(tag = FSMR.state.手指移动_鼠标滚轮, events = {某手指松开,新手指按下})
-public class StateFingerMoveToMouseScroll extends AbstractFSMState2 implements TouchAdapter {
+public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdapter {
 
     transient public long mFingerLocationPollIntervalMs = 30;
     transient public float mUnitsOfOneAndroidPixelX = 0.05f;

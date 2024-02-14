@@ -101,7 +101,7 @@ public class EditConfigWindow extends LinearLayout {
         TextView titleView = QH.getTitleTextView(content.getContext(), title);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         titleView.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
-        titleView.setLayoutParams(QH.LPLinear.one(0, -1).weight().to());
+        titleView.setLayoutParams(QH.LPLinear.one(0, -1).weight().right().to());
         toNextView(content, titleView);
     }
 

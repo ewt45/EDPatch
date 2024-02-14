@@ -3,9 +3,11 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.mode
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.minTouchSize;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
 import com.google.gson.annotations.SerializedName;
 
 import java.lang.annotation.Retention;
@@ -47,28 +49,12 @@ public abstract class TouchAreaModel {
     }
 
     /**
-     * 新建一个model的实例。
-     *
-     * @param reference 若该参数不为null，则尽可能的将该model的数据拷贝到新实例中。
+     * 基于现有ref，新建一个同类型model的实例。
      */
-    public static <T extends TouchAreaModel> T newInstance(TouchAreaModel reference, Class<T> tClass) {
-        //TODO 需要优化，如果参考实例的类和目标类相同，那么这个类独有的属性就会在新建之后丢失
+    public static <T extends TouchAreaModel> T newInstance(TouchAreaModel ref,Class<T> tClass) {
         try {
             T one = tClass.newInstance();
-            if (reference != null) {
-                one.setLeft(reference.getLeft());
-                one.setTop(reference.getTop());
-                one.setWidth(reference.getWidth()); //通过setter函数，这样能处理对应的限制
-                one.setHeight(reference.getHeight());
-                one.colorStyle = reference.colorStyle;
-                one.mainColor = reference.mainColor;
-                //TODO 这样会导致联动吗
-                one.name = reference.name;
-                one.setKeycodes(reference.keycodes);
-
-                if(reference.getClass().equals(tClass))
-                    Log.w(TAG, "newInstance: 需要优化，如果参考实例的类和目标类相同，那么这个类独有的属性就会在新建之后丢失");
-            }
+            one.cloneOf(ref);
             return one;
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
@@ -175,6 +161,32 @@ public abstract class TouchAreaModel {
     public void setPressed(boolean pressed) {
         isPressed = pressed;
     }
+
+
+    /**
+     * 深拷贝。子类应该重写这个函数，完善 拷贝自身独有的变量
+     */
+    public void cloneOf(TouchAreaModel ref){
+        keycodes.clear();
+        keycodes.addAll(ref.keycodes);
+        mainColor = ref.mainColor;
+        colorStyle = ref.colorStyle;
+        name = ref.name;
+        left = ref.left;
+//        modelType = ref.modelType; //草，这个自身类型不要复制啊，不然就变身了
+
+        setLeft(ref.getLeft());
+        setTop(ref.getTop());
+        setWidth(ref.getWidth());
+        setHeight(ref.getHeight()); //通过setter函数，这样能处理对应的限制
+        colorStyle = ref.colorStyle;
+        mainColor = ref.mainColor;
+        setKeycodes(ref.keycodes);
+
+        cloneSelfFields(ref);
+    }
+
+    abstract protected void cloneSelfFields(TouchAreaModel ref);
 
     @IntDef({TYPE_BUTTON, TYPE_STICK, TYPE_DPAD, TYPE_GESTURE,TYPE_NONE})
     @Retention(RetentionPolicy.SOURCE)

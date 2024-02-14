@@ -2,7 +2,7 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gest
 
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMAction2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 @StateTag(tag = FSMR.state.操作_鼠标移动, isAction = true)
-public class ActionPointerMove extends AbstractFSMAction2 {
+public class ActionPointerMove extends FSMAction2 {
     @SerializedName(value = Const.GsonField.st_fingerIndex)
     public int mFingerIndex = 0;
     /**
@@ -26,6 +26,7 @@ public class ActionPointerMove extends AbstractFSMAction2 {
 
     @Override
     public void run() {
+
         List<Finger> fingerList = getContext().getFingers();
         if (mFingerIndex >= fingerList.size())
             mFingerXYType = FSMR.value.手指位置_最后移动;

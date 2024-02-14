@@ -249,17 +249,16 @@ public class TouchAreaView extends FrameLayout {
         }
     }
 
-    private boolean mIsEditing =false;
-    //TODO 太乱了。如果变量又isEditing flag的话，setProfile就不用传flag了。
+    private EditConfigWindow mEditWindow;
     /**
      * 进入编辑模式
      */
     public void startEdit() {
-        if(mIsEditing)
+        if(mEditWindow!=null)
             return;
-        mIsEditing =true;
         mProfile.syncAreaList(true);
-        addView(new EditConfigWindow(this));
+        mEditWindow = new EditConfigWindow(this);
+        addView(mEditWindow);
 
 //        for (TouchArea<?> touchArea : mProfile.getTouchAreaList()) {
 //            touchArea.mAdapter = new ClickAdapter(0.05f, () -> {
@@ -268,16 +267,22 @@ public class TouchAreaView extends FrameLayout {
 //        }
     }
 
+    public EditConfigWindow getEditWindow() {
+        return mEditWindow;
+    }
+
     public boolean isEditing() {
-        return mIsEditing;
+        return mEditWindow!=null;
     }
 
     /**
      * 退出编辑模式
      */
     public void exitEdit() {
-        mIsEditing =false;
-        removeAllViews();
+        if(mEditWindow==null)
+            return;
+        removeView(mEditWindow);
+        mEditWindow=null;
         mProfile.syncAreaList(false);
     }
 
@@ -290,7 +295,7 @@ public class TouchAreaView extends FrameLayout {
      */
     public void setProfile(OneProfile profile) {
         mProfile = profile;
-        mProfile.syncAreaList(mIsEditing);
+        mProfile.syncAreaList(mEditWindow!=null);
     }
 
 

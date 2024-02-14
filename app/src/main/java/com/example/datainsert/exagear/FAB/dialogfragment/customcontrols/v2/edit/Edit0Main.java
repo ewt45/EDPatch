@@ -52,8 +52,11 @@ public class Edit0Main extends LinearLayout {
 
             if ("key".equals(tab.getTag()))
                 linearPager.addView(new Edit1KeyView(this));
+            else if("gesture".equals(tab.getTag()))
+                linearPager.addView(new Edit2GestureView(this));
             else if ("profile".equals(tab.getTag()))
                 linearPager.addView(new Edit3ProfilesView(this));
+
         });
         tabToolbar.addTab(tabToolbar.newTab().setText("按键").setTag("key"));
         tabToolbar.addTab(tabToolbar.newTab().setText("手势").setTag("gesture"));
@@ -66,10 +69,6 @@ public class Edit0Main extends LinearLayout {
         mToolbar.setLayoutParams(QH.LPLinear.one(0, -2).weight().to());
 
     }
-
-
-
-
 
 //    /**
 //     * 移动时只能左右，上下铺满

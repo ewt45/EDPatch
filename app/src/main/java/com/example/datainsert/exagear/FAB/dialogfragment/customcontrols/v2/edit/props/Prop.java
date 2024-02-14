@@ -89,12 +89,6 @@ public abstract class Prop<ModelType> {
          */
         Model getModel();
 
-        /**
-         * 获取编辑选项最顶层的窗口
-         *
-         * @return
-         */
-        EditConfigWindow getWindow();
 
         /**
          * 修改model属性后通知host修改其他prop的ui。仅用于修改ui

@@ -4,12 +4,12 @@ import com.eltechs.axs.xserver.ViewFacade;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.XKeyInjector;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMAction2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.google.gson.annotations.SerializedName;
 
 @StateTag(tag = FSMR.state.操作_点击, isAction = true)
-public class ActionButtonClick extends AbstractFSMAction2 {
+public class ActionButtonClick extends FSMAction2 {
     @SerializedName(value = Const.GsonField.st_keycode)
     public int mKeycode = 0;
     @SerializedName(value = Const.GsonField.st_doPress)

@@ -7,9 +7,9 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annot
  * <br/> 实现action请重写run，执行时不调用active和inactive, 不发送事件，因此不能单独作为状态
  * <br/>  StateTag 的isAction应该为true
  */
-public abstract class AbstractFSMAction2 extends AbstractFSMState2{
+public abstract class FSMAction2 extends FSMState2 {
 
-    public AbstractFSMAction2(){
+    public FSMAction2(){
         super();
         StateTag ant = getClass().getAnnotation(StateTag.class);
         assert ant != null;

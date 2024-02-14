@@ -5,7 +5,7 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import com.eltechs.axs.helpers.Assert;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * <br/> 设置完状态机后立即将此状态设为活跃状态，因此 添加触摸监听器的这个时候，还没有手指按下。发送手指按下事件的时候 第一根手指刚按下
  */
 @StateTag(tag = FSMR.state.初始状态, events = {新手指按下})
-public class StateNeutral  extends AbstractFSMState2 implements TouchAdapter {
+public class StateNeutral  extends FSMState2 implements TouchAdapter {
 
 
     @Override

@@ -10,7 +10,7 @@ import com.eltechs.axs.widgets.viewOfXServer.XZoomController;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 import com.google.gson.annotations.SerializedName;
@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 @StateTag(tag = FSMR.state.两根手指缩放, events = {某手指松开,FSMR.event.新手指按下})
-public class State2FingersZoom extends AbstractFSMState2 implements TouchAdapter {
+public class State2FingersZoom extends FSMState2 implements TouchAdapter {
     @SerializedName(value = Const.GsonField.st_zoomFingerIndex1)
     public int mFingerIndex1 = 0;
     @SerializedName(value = Const.GsonField.st_zoomFingerIndex2)

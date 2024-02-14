@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State;
 
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.手指_未移动;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.手指_移动_快速;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.手指_移动_慢速;
@@ -7,8 +8,11 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.某手指_未移动并松开;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.某手指_移动并松开;
 
-import android.util.Log;
+import android.content.Context;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.helpers.Assert;
@@ -17,9 +21,11 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.ContextGesture;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureContext2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.LimitEditText;
+import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -45,7 +51,7 @@ import java.util.List;
                 某手指_移动并松开,
                 新手指按下 //时间段内有新手指按下，立刻发送此事件
         })
-public class StateCountDownMeasureSpeed extends AbstractFSMState2 implements TouchAdapter {
+public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapter {
     @SerializedName(value = Const.GsonField.st_noMoveThreshold)
     public float mNoMoveThreshold = 12f;
     @SerializedName(value = Const.GsonField.st_fastMoveThreshold)
@@ -152,10 +158,58 @@ public class StateCountDownMeasureSpeed extends AbstractFSMState2 implements Tou
         if (observeFinger == null)
             return;
         double distance = GeometryHelpers.distance(observeFinger.getX(), observeFinger.getY(), observeFinger.getXWhenFirstTouched(), observeFinger.getYWhenFirstTouched());
-        Log.d(niceName, "recalculateDistance: 计算距离：" + currentDistance + " -> " + distance);
+//        Log.d(getNiceName(), "recalculateDistance: 计算距离：" + currentDistance + " -> " + distance);
         if (this.currentDistance < distance) {
             this.currentDistance = distance;
         }
+    }
+
+    @Override
+    public View createPropEditView(Context c) {
+
+        LinearLayout linearRoot = new LinearLayout(c);
+        linearRoot.setOrientation(LinearLayout.VERTICAL);
+
+
+        LimitEditText editNoMoveThreshold = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)
+                .setFloatValue(mNoMoveThreshold)
+                .setUpdateListener(editText -> {
+                    mNoMoveThreshold = editText.getFloatValue();
+                    if (mNoMoveThreshold> mFastMoveThreshold)
+                        mFastMoveThreshold = mNoMoveThreshold;
+                });
+
+        LimitEditText editFastMoveThreshold = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)
+                .setFloatValue(mFastMoveThreshold)
+                .setUpdateListener(editText -> {
+                    mFastMoveThreshold = editText.getFloatValue();
+                    if (mNoMoveThreshold> mFastMoveThreshold)
+                        mFastMoveThreshold = mNoMoveThreshold;
+                });
+
+        LimitEditText editCountDownMs = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
+                .setIntValue(mCountDownMs)
+                .setRange(0, Integer.MAX_VALUE)
+                .setUpdateListener(editText -> mCountDownMs = editText.getIntValue());
+
+        LimitEditText editFingerIndex = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
+                .setIntValue(mFingerIndex)
+                .setRange(0, 10)
+                .setUpdateListener(editText -> mFingerIndex = editText.getIntValue());
+
+        //TODO getFieldS之后，如果包含$字符，则拆开，后半段作为说明
+        linearRoot.addView(QH.getOneLineWithTitle(c, "小于此距离则算作不移动", editNoMoveThreshold, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, 0).to());
+        linearRoot.addView(QH.getOneLineWithTitle(c, "大于此距离则算作快速移动", editFastMoveThreshold, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, 0).to());
+        linearRoot.addView(QH.getOneLineWithTitle(c, "倒计时限时 (毫秒)", editCountDownMs, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, 0).to());
+        linearRoot.addView(QH.getOneLineWithTitle(c, "观测第几根手指", editFingerIndex, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, dp8).to());
+
+        ScrollView scrollView = new ScrollView(c);
+        scrollView.addView(linearRoot);
+        return scrollView;
     }
 
     //TODO
@@ -170,7 +224,7 @@ public class StateCountDownMeasureSpeed extends AbstractFSMState2 implements Tou
     public static class Builder {
         private StateCountDownMeasureSpeed i;
 
-        public Builder(ContextGesture gesture) {
+        public Builder(GestureContext2 gesture) {
             i = new StateCountDownMeasureSpeed();
         }
 

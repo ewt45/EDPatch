@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneStick;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.KeyOnBoardView;
@@ -62,7 +63,7 @@ public class Prop2Key extends Prop<TouchAreaModel>{
         linearRoot.addView(linearLine3,QH.LPLinear.one().gravity(Gravity.CENTER).to());
 
         tvKeycodes = getTextButton(c, "");
-        tvKeycodes.setOnClickListener(v -> mHost.getWindow().toNextView(linearRoot,"按键码"));
+        tvKeycodes.setOnClickListener(v -> Const.getEditWindow().toNextView(linearRoot,"按键码"));
         return tvKeycodes;
     }
 

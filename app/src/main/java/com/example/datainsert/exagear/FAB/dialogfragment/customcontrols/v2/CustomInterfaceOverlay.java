@@ -1,41 +1,19 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-import static android.widget.LinearLayout.HORIZONTAL;
 import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_FILE_NAME_SETTING;
-import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_SHOW_CURSOR;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.eltechs.axs.CommonApplicationConfigurationAccessor;
-import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
-import com.eltechs.axs.activities.XServerDisplayActivityUiOverlaySidePanels;
-import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
-import com.eltechs.axs.xserver.PointerListener;
-import com.eltechs.ed.EDApplicationState;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutTouchScreenControlsFactory2;
-import com.example.datainsert.exagear.controls.widget.BtnContainer;
-import com.example.datainsert.exagear.controls.widget.SpecialPopupMenu;
-
-import java.lang.ref.WeakReference;
 
 public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay {
     public static final String TAG = "FalloutIOverlay2";
@@ -72,7 +50,7 @@ public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOv
 
 
         touchAreaView = new TouchAreaView(a);
-        OneProfile profile = ModelFileSaver.readCurrentProfile();
+        OneProfile profile = ModelProvider.readCurrentProfile();
         touchAreaView.setProfile(profile);
 
         viewOfXServer.getConfiguration().setShowCursor(true);

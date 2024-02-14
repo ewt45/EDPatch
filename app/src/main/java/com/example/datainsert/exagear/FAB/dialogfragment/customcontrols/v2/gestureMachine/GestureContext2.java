@@ -11,10 +11,9 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestu
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchAdapter.GestureDistributeAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchArea.TouchAreaGesture;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class ContextGesture {
+public class GestureContext2 {
     private final ViewOfXServer host;
     private final AndroidPointReporter pointerEventReporter;
     private final TouchAreaGesture touchArea;
@@ -22,7 +21,7 @@ public class ContextGesture {
     private KeyEventReporter keyboardReporter;
     private GestureMachine machine;
 
-    public ContextGesture(TouchAreaGesture touchArea, GestureDistributeAdapter gestureTouchAdapter) {
+    public GestureContext2(TouchAreaGesture touchArea, GestureDistributeAdapter gestureTouchAdapter) {
         this.host = Const.viewOfXServerRef.get();
         this.pointerEventReporter = new AndroidPointReporter();
         if (host != null)
@@ -62,7 +61,7 @@ public class ContextGesture {
     }
 
     /**
-     * @deprecated 请用 {@link AbstractFSMState2#addTouchListener(TouchAdapter)}
+     * @deprecated 请用 {@link FSMState2#addTouchListener(TouchAdapter)}
      */
     @Deprecated
     public GestureDistributeAdapter getFingerEventsSource() {
@@ -100,4 +99,6 @@ public class ContextGesture {
     public XZoomController getZoomController() {
         return this.host.getZoomController();
     }
+
+
 }

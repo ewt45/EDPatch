@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.ScrollingMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -32,7 +31,7 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -70,7 +69,7 @@ public class Edit3ProfilesView extends LinearLayout {
             popupMenu.getMenu().add(Menu.NONE, MENU_CREATE_NEW, Menu.NONE, "空白配置");
             SubMenu subMenu = popupMenu.getMenu().addSubMenu(Menu.NONE, MENU_COPY, Menu.NONE, "复制现有配置");
             popupMenu.getMenu().add(Menu.NONE, MENU_IMPORT, Menu.NONE, "从本地文件导入");
-            for (String name : Objects.requireNonNull(ModelFileSaver.profilesDir.list()))
+            for (String name : Objects.requireNonNull(ModelProvider.profilesDir.list()))
                 subMenu.add(2, Menu.NONE, Menu.NONE, name);
 
             popupMenu.setOnMenuItemClickListener(item -> {
@@ -108,13 +107,13 @@ public class Edit3ProfilesView extends LinearLayout {
         TextView btnProfileName = TestHelper.getTextButton(c, "当前存档");
         QH.setRippleBackground(btnProfileName);
         btnProfileName.setOnClickListener(v -> {
-            String[] names = ModelFileSaver.profilesDir.list();
+            String[] names = ModelProvider.profilesDir.list();
             if (names == null)
                 return;
             PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
             for (String fileName : names) {
                 popupMenu.getMenu().add(fileName).setOnMenuItemClickListener(item -> {
-                    ModelFileSaver.makeCurrent(fileName);
+                    ModelProvider.makeCurrent(fileName);
                     return true;
                 });
             }
@@ -151,12 +150,12 @@ public class Edit3ProfilesView extends LinearLayout {
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     TestHelper.saveCurrentEditProfileToFile();
-                    String finalName = ModelFileSaver.getNiceProfileName(editText.getText().toString());
+                    String finalName = ModelProvider.getNiceProfileName(editText.getText().toString());
                     if (createNew)
-                        ModelFileSaver.createNewProfile(finalName, refName, true); //新建
+                        ModelProvider.createNewProfile(finalName, refName, true); //新建
                     else {
-                        ModelFileSaver.createNewProfile(finalName, refName, false); //重命名也相当于新建一个，然后把旧的删了就行
-                        boolean b = new File(ModelFileSaver.profilesDir, refName).delete();
+                        ModelProvider.createNewProfile(finalName, refName, false); //重命名也相当于新建一个，然后把旧的删了就行
+                        boolean b = new File(ModelProvider.profilesDir, refName).delete();
                     }
                     //创建完了之后，需要刷新回收视图.
                     boolean needResetSelected = createNew || adapter.mDataList.get(adapter.currentSelect).equals(refName);
@@ -169,7 +168,7 @@ public class Edit3ProfilesView extends LinearLayout {
                 .show();
     }
 
-    public static class ProfileAdapter extends RecyclerView.Adapter<Edit3ProfilesView.ViewHolder> {
+     public static class ProfileAdapter extends RecyclerView.Adapter<Edit3ProfilesView.ViewHolder> {
         List<String> mDataList = new ArrayList<>();
         int currentSelect = 0;
         TouchAreaView mHostView;
@@ -178,7 +177,7 @@ public class Edit3ProfilesView extends LinearLayout {
             super();
             mHostView = hostView;
             refreshDataSet();
-            currentSelect = mDataList.indexOf(ModelFileSaver.getCurrentProfileCanonicalName());
+            currentSelect = mDataList.indexOf(ModelProvider.getCurrentProfileCanonicalName());
         }
 
         /**
@@ -186,7 +185,7 @@ public class Edit3ProfilesView extends LinearLayout {
          */
         public void setCheckedItemByCurrent() {
             try {
-                String currentName = ModelFileSaver.currentProfile.getCanonicalFile().getName();
+                String currentName = ModelProvider.currentProfile.getCanonicalFile().getName();
                 setCheckedItem(currentName);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -206,11 +205,11 @@ public class Edit3ProfilesView extends LinearLayout {
 //            if ((index != -1 && index != currentSelect) || (index==0 && mDataList.size()==1)) { //只剩下两个，第一个已选中，删除第一个，第二个变为第一个，但不会被选中，所以需要加个判断条件
                 int oldSelect = currentSelect;
                 currentSelect = index;
-                ModelFileSaver.makeCurrent(name);
+                ModelProvider.makeCurrent(name);
                 notifyItemChanged(oldSelect);
                 notifyItemChanged(index);
                 //刷新触摸区域显示
-                mHostView.setProfile(ModelFileSaver.readProfile(name));
+                mHostView.setProfile(ModelProvider.readProfile(name));
                 mHostView.postInvalidate();
             }
         }
@@ -221,7 +220,7 @@ public class Edit3ProfilesView extends LinearLayout {
          */
         public void refreshDataSet() {
             mDataList.clear();
-            String[] names = ModelFileSaver.profilesDir.list();
+            String[] names = ModelProvider.profilesDir.list();
             if (names != null)
                 mDataList.addAll(Arrays.asList(names));
         }
@@ -236,7 +235,7 @@ public class Edit3ProfilesView extends LinearLayout {
             //勾选
             ImageView iconCheck = new ImageView(c);
             iconCheck.setId(android.R.id.checkbox);
-            iconCheck.setImageDrawable(c.getDrawable(R.drawable.aaa_check));
+            iconCheck.setImageDrawable( TestHelper.getAssetsDrawable(c,"controls/check.xml"));
             iconCheck.setPadding(dp8 / 2, dp8 / 2, dp8 / 2, dp8 / 2);
 
             //配置名
@@ -309,8 +308,8 @@ public class Edit3ProfilesView extends LinearLayout {
                                 break;
                             TestHelper.showConfirmDialog(v.getContext(), "确定要删除吗?", (DialogInterface.OnClickListener) (dialog, which) -> {
                                 int removedIndex = mDataList.indexOf(profileName);
-                                boolean selectAnother = profileName.equals(ModelFileSaver.getCurrentProfileCanonicalName());
-                                new File(ModelFileSaver.profilesDir, profileName).delete();
+                                boolean selectAnother = profileName.equals(ModelProvider.getCurrentProfileCanonicalName());
+                                new File(ModelProvider.profilesDir, profileName).delete();
                                 refreshDataSet();
                                 notifyItemRemoved(removedIndex);
                                 if (selectAnother)

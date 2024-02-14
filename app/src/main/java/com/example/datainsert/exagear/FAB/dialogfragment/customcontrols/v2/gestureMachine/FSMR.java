@@ -1,8 +1,11 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine;
 
-import android.util.SparseArray;
-import android.util.SparseIntArray;
+import static com.example.datainsert.exagear.RR.getS;
 
+import android.util.Log;
+import android.util.SparseArray;
+
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.RR;
 
 /**
@@ -10,30 +13,46 @@ import com.example.datainsert.exagear.RR;
  * <br/> 由于注解需要值为final，所以一旦field设置了tag，就不要修改tag以及这个tag的值
  */
 public class FSMR {
-
+    private static final String TAG = "FSMR";
 
     private static final SparseArray<String> stateArr = new SparseArray<>();
     private static final SparseArray<String> fieldArr = new SparseArray<>();
-    private static final SparseIntArray eventIdToStrId = new SparseIntArray();
+    private static final SparseArray<String> eventIdArr = new SparseArray<>();
 
     static {
 //        stateArr.put(state.一指测速, RR.getS(RR.一直测速));
+        stateArr.put(FSMR.state.限时测速,getS(RR.fsm_state_testSpd));
+        stateArr.put(FSMR.state.初始状态,getS(RR.fsm_state_init));
+        stateArr.put(FSMR.state.回归初始状态,getS(RR.fsm_state_fallback));
+        stateArr.put(FSMR.state.一指移动带动鼠标移动,getS(RR.fsm_state_1FMouseMove));
+        stateArr.put(FSMR.state.操作_点击,getS(RR.fsm_state_action_click));
+        stateArr.put(FSMR.state.操作_鼠标移动,getS(RR.fsm_state_action_msMove));
+        stateArr.put(FSMR.state.手指移动_鼠标滚轮,getS(RR.fsm_state_msScroll));
+        stateArr.put(FSMR.state.判断_手指与鼠标位置距离,getS(RR.fsm_state_distFingerMouse));
+        stateArr.put(FSMR.state.监测手指数量变化,getS(RR.fsm_state_fingerNum));
+        stateArr.put(FSMR.state.两根手指缩放,getS(RR.fsm_state_2FZoom));
+        stateArr.put(state.操作_直接执行选项,getS(RR.fsm_state_action_option));
 
-        eventIdToStrId.put(event.完成, RR.fsm_event_complete);
-        eventIdToStrId.put(event.某手指松开, RR.fsm_event_release);
-        eventIdToStrId.put(event.新手指按下, RR.fsm_event_new_touch);
-        eventIdToStrId.put(event.手指距离指针_近, RR.fsm_event_near);
-        eventIdToStrId.put(event.手指距离指针_远, RR.fsm_event_far);
-        eventIdToStrId.put(event.手指_未移动, RR.fsm_event_noMove);
-        eventIdToStrId.put(event.手指_移动_慢速, RR.fsm_event_slowMove);
-        eventIdToStrId.put(event.手指_移动_快速, RR.fsm_event_fastMove);
-        eventIdToStrId.put(event.某手指_未移动并松开, RR.fsm_event_noMoveThenRelease);
-        eventIdToStrId.put(event.某手指_移动并松开, RR.fsm_event_moveThenRelease);
+        eventIdArr.put(event.完成, getS(RR.fsm_event_complete));
+        eventIdArr.put(event.某手指松开, getS(RR.fsm_event_release));
+        eventIdArr.put(event.新手指按下, getS(RR.fsm_event_new_touch));
+        eventIdArr.put(event.手指距离指针_近, getS(RR.fsm_event_near));
+        eventIdArr.put(event.手指距离指针_远, getS(RR.fsm_event_far));
+        eventIdArr.put(event.手指_未移动, getS(RR.fsm_event_noMove));
+        eventIdArr.put(event.手指_移动_慢速, getS(RR.fsm_event_slowMove));
+        eventIdArr.put(event.手指_移动_快速, getS(RR.fsm_event_fastMove));
+        eventIdArr.put(event.某手指_未移动并松开, getS(RR.fsm_event_noMoveThenRelease));
+        eventIdArr.put(event.某手指_移动并松开, getS(RR.fsm_event_moveThenRelease));
 
     }
 
     public static String getStateS(int id) {
-        return stateArr.get(id);
+        String str = stateArr.get(id);
+        if(str == null){
+            Log.e(TAG, "getStateS: 该状态没有对应文本："+id);
+            str = ModelProvider.getStateClassByTypeInt(id).getSimpleName();
+        }
+        return str;
     }
 
     public static String getFieldS(int id) {
@@ -44,11 +63,15 @@ public class FSMR {
      * 获取事件对应的字符串
      *
      * @param eventId 对应 {@link FSMR.event} 中的值
-     * @return 从RR中获取对应字符串，若没有字符串则返回"eventId@"+eventId
+     * @return 从RR中获取对应字符串，若没有字符串则返回"event@"+eventId
      */
     public static String getEventS(int eventId) {
-        int strId = eventIdToStrId.get(eventId);
-        return strId == 0 ? "eventId@" + eventId : RR.getS(strId);
+        String str = eventIdArr.get(eventId);
+        if(str == null){
+            Log.e(TAG, "getStateS: 该状态没有对应文本："+eventId);
+            str = "event@"+eventId;
+        }
+        return str;
     }
 
     public static class state {
@@ -126,6 +149,7 @@ public class FSMR {
          * 将fingerIndex设置为此值时，StateCountDownMeasureSpeed会观测全部手指
          */
         public static final int 观测手指序号_全部 = -2;
+        public static final int stateIdInvalid = -1;
     }
 
 

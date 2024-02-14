@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.provider.DocumentFile;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,7 @@ import android.widget.Toast;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.QH;
 
@@ -59,7 +57,7 @@ public class ControlsFragment extends Fragment {
         frameRoot.setBackgroundResource(R.drawable.someimg);
 
         TouchAreaView touchAreaView = new TouchAreaView(c);
-        OneProfile profile = ModelFileSaver.readCurrentProfile();
+        OneProfile profile = ModelProvider.readCurrentProfile();
 
         touchAreaView.setProfile(profile);
         touchAreaView.startEdit();
@@ -78,7 +76,7 @@ public class ControlsFragment extends Fragment {
         String endMsg;
         if (requestCode == REQUEST_IMPORT_PROFILE) {
             try {
-                OneProfile oneProfile = ModelFileSaver.importProfileFromUri(data.getData());
+                OneProfile oneProfile = ModelProvider.importProfileFromUri(data.getData());
                 Const.profilesAdapterRef.get().refreshDataSet(); //导入成功后要刷新列表显示
                 Const.profilesAdapterRef.get().notifyDataSetChanged();
                 endMsg = "导入成功: "+oneProfile.name;
@@ -89,7 +87,7 @@ public class ControlsFragment extends Fragment {
         }
         else if(requestCode == REQUEST_EXPORT_PROFILE){
             try {
-                ModelFileSaver.exportProfileToUri(data.getData(),profileExporting);
+                ModelProvider.exportProfileToUri(data.getData(),profileExporting);
                 endMsg = "导出成功: "+profileExporting;
             } catch (Exception e) {
                 endMsg = "导出失败: " + e.getCause();

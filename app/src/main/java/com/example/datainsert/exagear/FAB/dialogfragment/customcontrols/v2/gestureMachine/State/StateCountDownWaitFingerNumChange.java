@@ -8,7 +8,7 @@ import com.eltechs.axs.helpers.OneShotTimer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 import com.google.gson.annotations.SerializedName;
@@ -16,7 +16,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 @StateTag(tag = FSMR.state.监测手指数量变化, events = {新手指按下,某手指松开, 手指数量不变})
-public class StateCountDownWaitFingerNumChange extends AbstractFSMState2 implements TouchAdapter {
+public class StateCountDownWaitFingerNumChange extends FSMState2 implements TouchAdapter {
     @SerializedName(value = Const.GsonField.st_countDownMs)
     public int mCountDownMs = 250;
     transient private OneShotTimer timer;

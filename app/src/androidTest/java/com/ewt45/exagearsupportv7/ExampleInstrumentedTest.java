@@ -14,7 +14,12 @@ import static org.junit.Assert.*;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State.StateCountDownMeasureSpeed;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.IntRangeEditable;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.DeserializerOfModel;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.RangeSeekbar;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +34,16 @@ import java.lang.reflect.Field;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     private static final String TAG = "ExampleInstrumentedTest";
+
+    @Test
+    public void gson反序列化state怎么少了一个(){
+        String json = "{\"modelList\":[{\"allStateList\":[{\"id\":1,\"stateType\":2},{\"id\":2,\"stateType\":3},{\"countDownMs\":250,\"fastMoveThreshold\":36.0,\"fingerIndex\":0,\"noMoveThreshold\":12.0,\"id\":3,\"niceName\":\"\",\"stateType\":1}],\"tranActionsList\":[[]],\"tranEventList\":[1],\"tranPostStateList\":[1],\"tranPreStateList\":[2],\"colorStyle\":0,\"height\":1600,\"keycodes\":[0],\"left\":0,\"mMinAreaSize\":80,\"mainColor\":-1286,\"modelType\":3,\"name\":\"None\",\"top\":0,\"width\":2560}],\"name\":\"1\",\"version\":0}\n";
+        Gson gson = new GsonBuilder()
+                .registerTypeHierarchyAdapter(TouchAreaModel.class, new DeserializerOfModel())
+                .create();
+        OneProfile oneProfile = gson.fromJson(json, OneProfile.class);
+        System.out.println("state个数="+oneProfile.getGestureAreaModel().getAllStateList().size());
+    }
 
     @Test
     public void 测试_矩阵先平移再缩放和先缩放再平移有区别吗(){

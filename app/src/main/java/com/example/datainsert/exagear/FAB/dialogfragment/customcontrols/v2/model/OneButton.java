@@ -9,8 +9,8 @@ public class OneButton extends TouchAreaModel {
     @Const.BtnShape
     public int shape = Const.BtnShape.RECT;
     public boolean isTrigger = false;
-    private int triggerFlag=0;
-    OneButton() {
+    transient private int triggerFlag=0;
+    public OneButton() {
         super(TYPE_BUTTON);
         mMinAreaSize = Const.minBtnAreaSize;
         width = mMinAreaSize;
@@ -38,5 +38,14 @@ public class OneButton extends TouchAreaModel {
 
     public String getCoordinateString() {
         return String.format(Locale.ROOT, "%d,%d", left, top);
+    }
+
+    @Override
+    protected void cloneSelfFields(TouchAreaModel ref) {
+        if(ref.getClass().equals(OneButton.class)){
+            OneButton ref2 = (OneButton) ref;
+            shape = ref2.shape;
+            isTrigger = ref2.isTrigger;
+        }
     }
 }

@@ -9,7 +9,7 @@ import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 import com.google.gson.annotations.SerializedName;
@@ -18,7 +18,7 @@ import com.google.gson.annotations.SerializedName;
  * 虽然是瞬间完成但是由于需要发送事件，所以没法写成action，还是state了
  */
 @StateTag(tag = FSMR.state.判断_手指与鼠标位置距离, events = {FSMR.event.手指距离指针_近, FSMR.event.手指距离指针_远})
-public class StateCheckFingerNearToPointer extends AbstractFSMState2 {
+public class StateCheckFingerNearToPointer extends FSMState2 {
     private static final String TAG = "StateCheckFingerNearToPointer";
     @SerializedName(value = Const.GsonField.st_fingerIndex)
     public int mFingerIndex = 0;
@@ -37,6 +37,11 @@ public class StateCheckFingerNearToPointer extends AbstractFSMState2 {
     @SuppressLint("LongLogTag")
     @Override
     public void notifyBecomeActive() {
+        if(Const.viewOfXServerRef.get()==null){
+            sendEvent(FSMR.event.手指距离指针_近);
+            return;
+        }
+
         Assert.state(getContext().getFingers().size() > mFingerIndex);
         Point pointerLocation = getContext().getViewFacade().getPointerLocation();
         float[] posInAMatrix = {pointerLocation.x, pointerLocation.y};

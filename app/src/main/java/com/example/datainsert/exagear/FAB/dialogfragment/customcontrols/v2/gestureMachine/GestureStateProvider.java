@@ -21,31 +21,31 @@ import java.util.Map;
  */
 public class GestureStateProvider {
     public final static Map<Integer, StateInfo> allStatesEditableList = new HashMap<>();
-    public final static Map<Class<? extends AbstractFSMState2>,StateInfo> allStateEditableList2 = new HashMap<>();
+    public final static Map<Class<? extends FSMState2>,StateInfo> allStateEditableList2 = new HashMap<>();
 
     public static abstract class FSMStateFactory<FSMStateClass>{
-        abstract public AbstractFSMState2 createState();
+        abstract public FSMState2 createState();
         abstract public View createDetailEditView();
         abstract public View createShortInfoView();
     }
-    public final static SparseArray<FSMStateFactory<? extends AbstractFSMState2>> stateArray = new SparseArray<>();
+    public final static SparseArray<FSMStateFactory<? extends FSMState2>> stateArray = new SparseArray<>();
 
     static {
         addState(StateCountDownMeasureSpeed.class);
     }
 
-    private static void addState(Class<? extends AbstractFSMState2> clz) {
-        allStatesEditableList.put(AbstractFSMState2.getClassTag(clz),new StateInfo(clz));
+    private static void addState(Class<? extends FSMState2> clz) {
+        allStatesEditableList.put(FSMState2.getClassTag(clz),new StateInfo(clz));
         allStateEditableList2.put(clz,new StateInfo(clz));
     }
 
 
     public static class StateInfo {
         private static final String TAG = "StateInfo";
-        final Class<? extends AbstractFSMState2> clz;
+        final Class<? extends FSMState2> clz;
         final Map<Integer, EditableField<?,?>> fieldMap;
 
-        public StateInfo(Class<? extends AbstractFSMState2> clz) {
+        public StateInfo(Class<? extends FSMState2> clz) {
             this.clz = clz;
             fieldMap = new HashMap<>();
             for (Field field : this.clz.getDeclaredFields()) {

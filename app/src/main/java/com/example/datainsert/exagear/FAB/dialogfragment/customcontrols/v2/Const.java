@@ -3,9 +3,9 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.BtnType.DPAD;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.BtnType.NORMAL;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.BtnType.STICK;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver.currentProfile;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver.profilesDir;
-import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver.workDir;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider.currentProfile;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider.profilesDir;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider.workDir;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,8 +16,9 @@ import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit1KeyView;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.Edit3ProfilesView;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.ContextGesture;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.EditConfigWindow;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureContext2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneDpad;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
@@ -28,36 +29,37 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widge
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
 public class Const {
-    /**
-     * 记录model的全部类型及其对应int
-     * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
-     * <br/> 找不到index的时候会返回 负数，不一定是-1？
-     */
-    public static final SparseArray<Class<? extends TouchAreaModel>> modelTypeArray = new SparseArray<>();
+//    /**
+//     * 记录model的全部类型及其对应int
+//     * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
+//     * <br/> 找不到index的时候会返回 负数，不一定是-1？
+//     */
+//    public static final SparseArray<Class<? extends TouchAreaModel>> modelTypeArray = new SparseArray<>();
     public static float fingerStandingMaxMoveInches = 0.03f;
     public static int fingerTapMaxMs = 300;
     /**
      * 经过测试，12f（安卓像素）比较合适
      */
     public static float fingerTapMaxMoveInches = 0.2f;
-    public static ModelFileSaver modelSaver; //用于反序列化时还原抽象类，以及处理文件位置
+//    public static JsonDeserializerTouchAreaModel modelSaver; //用于反序列化时还原抽象类，以及处理文件位置
     public static WeakReference<Edit1KeyView> editKeyViewRef = null;
     public static WeakReference<Edit3ProfilesView.ProfileAdapter> profilesAdapterRef = null;
     public static WeakReference<ControlsFragment> fragmentRef = null;
     public static WeakReference<TouchAreaView> touchAreaViewRef = null;
     public static WeakReference<ViewOfXServer> viewOfXServerRef = null;
     public static WeakReference<Activity> activityRef = null;
-    public static WeakReference<ContextGesture> gestureCxtRef = null;
+    public static WeakReference<GestureContext2> gestureCxtRef = null;
     public static int dp8;
     public static int minTouchSize;
     public static int minBtnAreaSize;
     public static int minStickAreaSize;
-    public static int defaultBgColor = 0xffFFFAFA;
+    public static int defaultBgColor = 0xffc2e2ff;
     public static int keycodeMaxCount = 256 + 7; //还有 7个鼠标按键
     /**
      * 由于 键盘keycode和鼠标的buttoncode混在一起用了，所以需要用个mask隔开一下，规定大于256的就是鼠标按键，减去256是实际buttoncode
@@ -66,15 +68,7 @@ public class Const {
     public static int keycodePointerMask = 256;
     public static String[] keyNames = null;
 
-    static {
-        modelTypeArray.put(TouchAreaModel.TYPE_BUTTON, OneButton.class);
-        modelTypeArray.put(TouchAreaModel.TYPE_STICK, OneStick.class);
-        modelTypeArray.put(TouchAreaModel.TYPE_DPAD, OneDpad.class);
-        modelTypeArray.put(TouchAreaModel.TYPE_GESTURE, OneGestureArea.class);
-        modelTypeArray.put(TouchAreaModel.TYPE_NONE, TouchAreaModel.class);
-
-    }
-
+    public static String defaultProfileName = "default"; //没有任何配置时，默认配置名称
 
     /**
      * 有些数据需要context才能获取。此函数必须在访问Const成员变量前调用一次。
@@ -95,7 +89,9 @@ public class Const {
         if (keyNames == null)
             keyNames = KeyOnBoardView.initXKeyCodesAndNames(c, keycodeMaxCount);
 
-        modelSaver = new ModelFileSaver(QH.Files.edPatchDir() + "/customcontrols2");
+        ModelProvider.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
+        ModelProvider.profilesDir = new File(ModelProvider.workDir, "profiles");
+        ModelProvider.currentProfile = new File(ModelProvider.workDir, "current");
         //        先检查一下路径是否存在，然后决定是否要初始化；
         //        保证各个文件夹存在，配置至少有一个（算上预设的），且current的符号链接存在
         boolean isFirst = false;
@@ -111,9 +107,9 @@ public class Const {
             isFirst = true;
 
         if (isFirst) {
-            OneProfile defaultProfile = new OneProfile("default_test");
-            ModelFileSaver.saveProfile(defaultProfile);
-            ModelFileSaver.makeCurrent(defaultProfile.name);
+            OneProfile defaultProfile = new OneProfile(defaultProfileName);
+            ModelProvider.saveProfile(defaultProfile);
+            ModelProvider.makeCurrent(defaultProfile.name);
         }
 
     }
@@ -144,12 +140,19 @@ public class Const {
         return getContext().getResources().getDisplayMetrics().density;
     }
 
-    public static void setGestureContext(ContextGesture gestureContext) {
+    public static void setGestureContext(GestureContext2 gestureContext) {
         gestureCxtRef = new WeakReference<>(gestureContext);
     }
 
-    public static ContextGesture getGestureContext(){
+    public static GestureContext2 getGestureContext(){
         return gestureCxtRef.get();
+    }
+
+    /**
+     * 获取EditConfigWindow
+     */
+    public static EditConfigWindow getEditWindow() {
+        return touchAreaViewRef.get().getEditWindow();
     }
 
     @IntDef({NORMAL, STICK, DPAD})

@@ -14,22 +14,22 @@ public class FSMListenersList2 {
         this.listeners.remove(fSMListener);
     }
 
-    public void sendLeftState(AbstractFSMState2 fSMState) {
+    public void sendLeftState(FSMState2 fSMState) {
         for (FSMListener fSMListener : this.listeners) {
             fSMListener.leftState(fSMState);
         }
     }
 
-    public void sendEnteredState(AbstractFSMState2 fSMState) {
+    public void sendEnteredState(FSMState2 fSMState) {
         for (FSMListener fSMListener : this.listeners) {
             fSMListener.enteredState(fSMState);
         }
     }
 
     public interface FSMListener {
-        void enteredState(AbstractFSMState2 fSMState);
+        void enteredState(FSMState2 fSMState);
 
-        void leftState(AbstractFSMState2 fSMState);
+        void leftState(FSMState2 fSMState);
     }
 
 }

@@ -75,6 +75,14 @@ public class OneStick extends TouchAreaModel {
             keycodes.remove(keycodes.size() - 1);
     }
 
+    @Override
+    protected void cloneSelfFields(TouchAreaModel ref) {
+        if(ref.getClass().equals(OneStick.class)){
+            OneStick ref2 = (OneStick) ref;
+            direction = ref2.direction;
+            size = ref2.size;
+        }
+    }
 
     @IntDef({WAY_4, WAY_8})
     @Retention(RetentionPolicy.SOURCE)

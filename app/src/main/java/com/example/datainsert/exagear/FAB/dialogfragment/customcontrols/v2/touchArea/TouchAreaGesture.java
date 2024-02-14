@@ -13,16 +13,15 @@ import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.view.View;
+import android.util.Log;
 
-import com.eltechs.axs.GestureStateMachine.GestureStateMouseWarpToFingerLastCoords;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.xserver.Pointer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchArea;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.ContextGesture;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureContext2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureMachine;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State.ActionButtonClick;
@@ -40,17 +39,22 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.options.OptionsProvider;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touchAdapter.GestureDistributeAdapter;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 public class TouchAreaGesture extends TouchArea<OneGestureArea> {
     GestureDistributeAdapter gestureAdapter;
 
+    private final GestureContext2 gestureContext;
 
     public TouchAreaGesture(@NonNull OneGestureArea data, @Nullable TouchAdapter adapter) {
         super(data, new GestureDistributeAdapter());
         gestureAdapter = (GestureDistributeAdapter) mAdapter;
-        inflate(this);
+        gestureContext = new GestureContext2(this,gestureAdapter);
+        Const.setGestureContext(gestureContext);
+        //完善model的初始化（由于反序列化要求无参构造 导致无法一次性初始化完成）
+        getModel().init();
+//        inflateFromCode();
+        inflateFromProfile();
 
         //构建gestureArea的时候，宽高应该铺满屏幕，无视记录的数据
         DisplayMetrics metrics = Const.getContext().getResources().getDisplayMetrics();
@@ -65,47 +69,39 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
         //TODO 编辑模式下，实时显示当前走到哪一阶段
     }
 
+    public void inflateFromProfile(){
+        OneGestureArea areaModel = getModel();
+        GestureMachine machine = new GestureMachine();
+        machine.setModel(areaModel);
+        machine.configurationCompleted();
+        gestureContext.setMachine(machine);
+    }
+
     /**
      * 手势区域的构造函数中调用一次，构建状态机
      */
-    public void inflate(TouchAreaGesture touchArea) {
-        ContextGesture gestureContext = new ContextGesture(touchArea, gestureAdapter);
-        Const.setGestureContext(gestureContext);
-
+    public void inflateFromCode() {
 //        ContextPointer pointerContext = new ContextPointer();
+        OneGestureArea areaModel = getModel();
 
         DisplayMetrics displayMetrics = AndroidHelpers.getDisplayMetrics();
         int dpi = displayMetrics.densityDpi;
         float maxMovePx = Const.fingerStandingMaxMoveInches * dpi;
         float pointerOffsetAimInchesY = -0.5f;
 
-        StateNeutral stateNeutral = new StateNeutral();
-        StateWaitForNeutral stateWaitForNeutral = new StateWaitForNeutral();
+        StateNeutral stateNeutral = areaModel.getInitState();
+        StateWaitForNeutral stateWaitForNeutral = areaModel.getDefaultState();
 //        State1FingerMeasureSpeed state1FingerMeasureSpeed = new State1FingerMeasureSpeed(gestureContext, 200, maxMovePx, maxMovePx, Const.fingerTapMaxMoveInches * dpi, 400.0f);
         StateCountDownMeasureSpeed stateWatch1F = new StateCountDownMeasureSpeed();
-        stateWatch1F.niceName = "1指短时间观测";
+        stateWatch1F.setNiceName("1指短时间观测");
         stateWatch1F.mFingerIndex = 0;
         stateWatch1F.mCountDownMs = 250;
 //        stateWatch1F.mNoMoveMaxDistance = 0.15f * Const.getDpi();
 
-//        double d = 0.15f * dpi;
-//        GestureStateCheckFingerNearToPointer gestureStateCheckFingerNearToPointer = new GestureStateCheckFingerNearToPointer(gestureContext, d, false);
-//        GestureStateCheckFingerNearToPointer gestureStateCheckFingerNearToPointer2 = new GestureStateCheckFingerNearToPointer(gestureContext, d, false);
-//        GestureStateClickToFingerFirstCoords gestureStateClickToFingerFirstCoords = new GestureStateClickToFingerFirstCoords(gestureContext, new MouseClickAdapterWithCheckPlacementContext(new SimpleMousePointAndClickAdapter(MouseMoveAdapter.dummy, new PressAndReleaseMouseClickAdapter(gestureContext.getPointerReporter(), 1, 50), pointerContext), new SimpleMousePointAndClickAdapter(MouseMoveAdapter.dummy, new PressAndReleaseMouseClickAdapter(gestureContext.getPointerReporter(), 1, 50), pointerContext), new SimpleMousePointAndClickAdapter(new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()), new PressAndReleaseMouseClickAdapter(gestureContext.getPointerReporter(), 1, 50), pointerContext), pointerContext, 200));
-//        GestureState1FingerMoveToScrollAsync gestureState1FingerMoveToScrollAsync = new GestureState1FingerMoveToScrollAsync(gestureContext, new AsyncScrollAdapterWithPointer(gestureContext.getViewFacade(), new Rectangle(0, 0, gestureContext.getViewFacade().getScreenInfo().widthInPixels, gestureContext.getViewFacade().getScreenInfo().heightInPixels)), 1000000.0f, 1000000.0f, 30.0f, true, 15, true);
-//        GestureStateClickToFingerFirstCoords gestureStateClickToFingerFirstCoords2 = new GestureStateClickToFingerFirstCoords(gestureContext, new SimpleMousePointAndClickAdapter(new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()), new PressAndReleaseMouseClickAdapter(gestureContext.getPointerReporter(), 1, 50), pointerContext));
-//        GestureStateClickToFingerFirstCoords gestureStateClickToFingerFirstCoords3 = new GestureStateClickToFingerFirstCoords(gestureContext, new SimpleMousePointAndClickAdapter(MouseMoveAdapter.dummy, new PressAndReleaseMouseClickAdapter(gestureContext.getPointerReporter(), 3, 50), pointerContext));
-//        GestureState1FingerToLongClick gestureState1FingerToLongClick = new GestureState1FingerToLongClick(gestureContext, new SimpleMousePointAndClickAdapter(new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()), new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 3), pointerContext));
-//        GestureStateWaitFingersNumberChangeWithTimeout gestureStateWaitFingersNumberChangeWithTimeout = new GestureStateWaitFingersNumberChangeWithTimeout(gestureContext, 200);
-//        GestureStateCheckIfZoomed gestureStateCheckIfZoomed = new GestureStateCheckIfZoomed(gestureContext);
-//        GestureStateMouseWarpToFingerLastCoords gestureStateMouseWarpToFingerLastCoords = new GestureStateMouseWarpToFingerLastCoords(gestureContext, new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()), pointerContext);
-//        GestureStateWaitFingersNumberChangeWithTimeout gestureStateWaitFingersNumberChangeWithTimeout2 = new GestureStateWaitFingersNumberChangeWithTimeout(gestureContext, 200);
-//        FSMStateRunRunnable fSMStateRunRunnable = new FSMStateRunRunnable(runnable);
-
 
         //一指左键拖拽前同步鼠标到手指位置
         ActionPointerMove actionMouseMoveToFinger = new ActionPointerMove();
-        actionMouseMoveToFinger.niceName = "鼠标移动到手指位置";
+        actionMouseMoveToFinger.setNiceName("鼠标移动到手指位置");
         actionMouseMoveToFinger.mFingerIndex = FSMR.value.手指位置_最后移动;
         //左键按下和松开
         ActionButtonClick actionPressLeftMouse = new ActionButtonClick();
@@ -131,7 +127,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
         //第一次左键单击后，短时间内检查是否有第二次左键单击形成双击，如果有则第二次点击时不移动鼠标位置，防止微小的鼠标移动导致系统不识别双击
         StateCountDownWaitFingerNumChange stateWaitDoubleTapCountDown = new StateCountDownWaitFingerNumChange();
-        stateWaitDoubleTapCountDown.niceName = "点击一次后，短时间等待第二次点击";
+        stateWaitDoubleTapCountDown.setNiceName("点击一次后，短时间等待第二次点击");
         stateWaitDoubleTapCountDown.mCountDownMs = 250;
 
         StateCheckFingerNearToPointer checkIfNearPointer = new StateCheckFingerNearToPointer();
@@ -140,13 +136,13 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
         //1指长按后，等待移动或松手
         StateCountDownMeasureSpeed stateWait1FActionAfterLongPress = new StateCountDownMeasureSpeed();
-        stateWait1FActionAfterLongPress.niceName = "1指长按后，等待移动或松手";
+        stateWait1FActionAfterLongPress.setNiceName("1指长按后，等待移动或松手");
         stateWait1FActionAfterLongPress.mCountDownMs = 1000000;
         stateWait1FActionAfterLongPress.mFingerIndex = 0;
 
         //1指长按松手，鼠标右键
         ActionButtonClick actionRightClick = new ActionButtonClick();
-        actionRightClick.niceName = "右键";
+        actionRightClick.setNiceName("右键");
         actionRightClick.mDoPress = true;
         actionRightClick.mDoRelease = true;
         actionRightClick.mKeycode = Const.keycodePointerMask | Pointer.BUTTON_RIGHT;
@@ -155,14 +151,14 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
         //2指按下，短时间测速
         StateCountDownMeasureSpeed stateWatch2F = new StateCountDownMeasureSpeed();
-        stateWatch2F.niceName = "2指按下，短时间测速";
+        stateWatch2F.setNiceName("2指按下，短时间测速");
         stateWatch2F.mCountDownMs = Const.fingerTapMaxMs;
         stateWatch2F.mFastMoveThreshold = stateWatch2F.mNoMoveThreshold;
         stateWatch2F.mFingerIndex = FSMR.value.观测手指序号_全部; //应该观测全部手指，比如只动第一根 不动第二根，这也算动了应该走缩放
 
         //2指短时间没反应，长时间观测
         StateCountDownMeasureSpeed stateWait2FDoSth = new StateCountDownMeasureSpeed();
-        stateWait2FDoSth.niceName = "2指按下后短时间没动，长时间测速";
+        stateWait2FDoSth.setNiceName("2指按下后短时间没动，长时间测速");
         stateWait2FDoSth.mCountDownMs = 100000;
         stateWait2FDoSth.mFastMoveThreshold = stateWait2FDoSth.mNoMoveThreshold; //倒计时不会结束，只能靠fast_move来通知移动
         stateWait2FDoSth.mFingerIndex = FSMR.value.观测手指序号_全部;
@@ -186,39 +182,44 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
         actionShowAllOptions.mOptionType = OptionsProvider.OPTION_SHOW_ALL_OPTIONS;
 
         GestureMachine machine = new GestureMachine();
-        machine.setStatesList(
-                stateNeutral,
-                stateWaitForNeutral,
-                stateWatch1F,
-//                gestureStateCheckFingerNearToPointer,
-//                gestureStateCheckFingerNearToPointer2,
-//                gestureState1FingerToLongClick,
-//                gestureStateClickToFingerFirstCoords3,
-//                gestureStateClickToFingerFirstCoords2,
-//                gestureStateClickToFingerFirstCoords,
-//                gestureStateWaitFingersNumberChangeWithTimeout,
-//                gestureStateWaitFingersNumberChangeWithTimeout2,
-//                gestureStateMouseWarpToFingerLastCoords,
-//                gestureState1FingerMoveToScrollAsync,
-//                gestureStateCheckIfZoomed,
-//                fSMStateRunRunnable,
-                actionLeftClick,
-                stateMouseScroll,
-                actionMouseMoveToFinger,
-                state1FingerMoveToMouseMove,
-                actionPressLeftMouse,
-                stateReleaseLeftMouse,
-                stateWaitDoubleTapCountDown,
-                checkIfNearPointer,
-                stateWait1FActionAfterLongPress,
-                actionRightClick,
-                stateWatch2F,
-                stateWait2FDoSth,
-                actionShowSoftInput,
-                state2FingersZoom,
-                stateWait3FDoSth,
-                actionShowAllOptions
-        );
+        machine.setModel(areaModel);
+        Log.e(TAG, "inflateFromCode: 错误操作：若从代码构建状态机则不应从json恢复那些状态");
+        //TODO 如果以后要保留代码构建的话，就清空model的statelist（要么就代码直接保存json）
+
+//        areaModel.addStates(
+//                stateWatch1F,
+////                gestureStateCheckFingerNearToPointer,
+////                gestureStateCheckFingerNearToPointer2,
+////                gestureState1FingerToLongClick,
+////                gestureStateClickToFingerFirstCoords3,
+////                gestureStateClickToFingerFirstCoords2,
+////                gestureStateClickToFingerFirstCoords,
+////                gestureStateWaitFingersNumberChangeWithTimeout,
+////                gestureStateWaitFingersNumberChangeWithTimeout2,
+////                gestureStateMouseWarpToFingerLastCoords,
+////                gestureState1FingerMoveToScrollAsync,
+////                gestureStateCheckIfZoomed,
+////                fSMStateRunRunnable,
+//                actionLeftClick,
+//                stateMouseScroll,
+//                actionMouseMoveToFinger,
+//                state1FingerMoveToMouseMove,
+//                actionPressLeftMouse,
+//                stateReleaseLeftMouse,
+//                stateWaitDoubleTapCountDown,
+//                checkIfNearPointer,
+//                stateWait1FActionAfterLongPress,
+//                actionRightClick,
+//                stateWatch2F,
+//                stateWait2FDoSth,
+//                actionShowSoftInput,
+//                state2FingersZoom,
+//                stateWait3FDoSth,
+//                actionShowAllOptions
+//        );
+
+
+
         machine.addTransition(stateWaitForNeutral, 完成, stateNeutral);
         //1指测速
         machine.addTransition(stateNeutral, 新手指按下, stateWatch1F);
@@ -269,8 +270,8 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
         //TODO 尚未实现缩放后一指移动。
         // 三指点击后下滑触发截屏，必定触发三指点击操作，然后会卡死在waitNeutral(解决了，onTouchEvent里 cancel的时候遍历全部手指就行了）
         // 二指点击或三指点击的时候鼠标会跟着移动一下 （解决了，状态机在状态切换时，中间加个 执行附加动作）
-        machine.setInitialState(stateNeutral);
-        machine.setDefaultState(stateWaitForNeutral);
+//        machine.setInitialState(stateNeutral);
+//        machine.setDefaultState(stateWaitForNeutral);
         machine.configurationCompleted();
         gestureContext.setMachine(machine);
 //        machine.addTransition(state1FingerMeasureSpeed, GestureState1FingerMeasureSpeed.FINGER_TAPPED, gestureStateCheckFingerNearToPointer);
@@ -294,7 +295,12 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
     }
 
+
     public List<Finger> getFingers() {
         return immutableActiveFingers;
+    }
+
+    public GestureContext2 getGestureContext() {
+        return gestureContext;
     }
 }

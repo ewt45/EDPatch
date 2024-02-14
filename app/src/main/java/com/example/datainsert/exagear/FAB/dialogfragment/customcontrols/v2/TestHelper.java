@@ -38,7 +38,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelFileSaver;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.QH;
@@ -346,7 +346,7 @@ public class TestHelper {
      */
     public static void saveCurrentEditProfileToFile() {
         OneProfile profileInMem = Const.touchAreaViewRef.get().getProfile();
-        ModelFileSaver.saveProfile(profileInMem);
+        ModelProvider.saveProfile(profileInMem);
     }
 
     /**
@@ -360,6 +360,7 @@ public class TestHelper {
                 .setCancelable(false)
                 .show();
     }
+
 
 
     public static interface SimpleSeekbarListener extends SeekBar.OnSeekBarChangeListener {

@@ -5,8 +5,7 @@ import com.eltechs.axs.helpers.Assert;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.AbstractFSMState2;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.ContextPointer;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MouseMoveAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MouseMoveSimpleAdapter;
@@ -22,7 +21,7 @@ import java.util.List;
  * <br/> 当新手指按下时，无视
  */
 @StateTag(tag = FSMR.state.一指移动带动鼠标移动, events = {FSMR.event.新手指按下,FSMR.event.某手指松开})
-public class State1FingerMoveToMouseMove extends AbstractFSMState2 implements TouchAdapter {
+public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapter {
     @SerializedName(value = Const.GsonField.st_ignorePixels)
     public float mIgnorePixels = 0;
     transient private float[] firstXY;
