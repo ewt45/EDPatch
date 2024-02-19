@@ -1,7 +1,9 @@
 package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.geom.Point;
@@ -12,6 +14,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finge
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -27,7 +30,8 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
     /**
      * 单位是安卓像素
      */
-    public double distThreshold = 9f;
+    @SerializedName(value = Const.GsonField.st_nearFarThreshold)
+    public float mDistThreshold = 12f;
 
     @Override
     protected void onAttach() {
@@ -53,13 +57,40 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
         float shortestDist = GeometryHelpers.distance(posInAMatrix[0], posInAMatrix[1], fingerXY[0], fingerXY[1]);
         Log.d(TAG, "第二次左键单击 手指距离光标位置 = "+shortestDist);
 
-        sendEvent( shortestDist< this.distThreshold
+        sendEvent( shortestDist<= this.mDistThreshold
                 ? FSMR.event.手指距离指针_近
                 : FSMR.event.手指距离指针_远);
     }
 
     @Override
     public void notifyBecomeInactive() {
+    }
 
+    @Override
+    public View createPropEditView(Context c) {
+        LimitEditText editFingerIndex = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
+                .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
+                .setSelectedValue(mFingerIndex)
+                .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
+
+        LimitEditText editFingerXYType = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
+                .setSelectableOptions(FSMR.value.手指位置_全部可用选项)
+                .setSelectedValue(mFingerXYType)
+                .setUpdateListener(editText -> mFingerXYType = editText.getSelectedValue());
+
+        LimitEditText editThreshold = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)
+                .setFloatValue(mDistThreshold)
+                .setUpdateListener(editText -> mDistThreshold = editText.getFloatValue());
+
+        return createEditViewQuickly(c,
+                new String[][]{
+                        {"观测第几根手指",null},
+                        {"观测手指的哪个坐标",null},
+                        {"超过此大小则属于远距离",null}
+                },
+                new View[]{editFingerIndex,editFingerXYType,editThreshold});
     }
 }

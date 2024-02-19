@@ -24,6 +24,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annot
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureContext2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.DrawableAlign;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.LimitEditText;
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
@@ -40,8 +41,6 @@ import java.util.List;
  * 比standingFingerMaxMove还小，发送Stand事件，
  * 比standingFingerMaxMove大，但小于flashFingerMaxMove，发送Walk事件
  * 比flashFingerMaxMove还大，发送Flash事件
- * <p>
- * 也可以不观测手指，设置fingerIndex为 {@link FSMR.value#观测手指序号_无} 即可
  */
 @StateTag(tag = FSMR.state.限时测速,
         events = {手指_未移动,
@@ -166,17 +165,12 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
 
     @Override
     public View createPropEditView(Context c) {
-
-        LinearLayout linearRoot = new LinearLayout(c);
-        linearRoot.setOrientation(LinearLayout.VERTICAL);
-
-
         LimitEditText editNoMoveThreshold = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)
                 .setFloatValue(mNoMoveThreshold)
                 .setUpdateListener(editText -> {
                     mNoMoveThreshold = editText.getFloatValue();
-                    if (mNoMoveThreshold> mFastMoveThreshold)
+                    if (mNoMoveThreshold > mFastMoveThreshold)
                         mFastMoveThreshold = mNoMoveThreshold;
                 });
 
@@ -185,32 +179,37 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
                 .setFloatValue(mFastMoveThreshold)
                 .setUpdateListener(editText -> {
                     mFastMoveThreshold = editText.getFloatValue();
-                    if (mNoMoveThreshold> mFastMoveThreshold)
+                    if (mNoMoveThreshold > mFastMoveThreshold)
                         mFastMoveThreshold = mNoMoveThreshold;
                 });
 
         LimitEditText editCountDownMs = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
-                .setIntValue(mCountDownMs)
                 .setRange(0, Integer.MAX_VALUE)
+                .setIntValue(mCountDownMs)
                 .setUpdateListener(editText -> mCountDownMs = editText.getIntValue());
 
         LimitEditText editFingerIndex = new LimitEditText(c)
-                .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
-                .setIntValue(mFingerIndex)
-                .setRange(0, 10)
-                .setUpdateListener(editText -> mFingerIndex = editText.getIntValue());
+                .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
+                .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
+                .setSelectedValue(mFingerIndex)
+                .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
 
-        //TODO getFieldS之后，如果包含$字符，则拆开，后半段作为说明
-        linearRoot.addView(QH.getOneLineWithTitle(c, "小于此距离则算作不移动", editNoMoveThreshold, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, 0).to());
-        linearRoot.addView(QH.getOneLineWithTitle(c, "大于此距离则算作快速移动", editFastMoveThreshold, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, 0).to());
-        linearRoot.addView(QH.getOneLineWithTitle(c, "倒计时限时 (毫秒)", editCountDownMs, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, 0).to());
-        linearRoot.addView(QH.getOneLineWithTitle(c, "观测第几根手指", editFingerIndex, true), QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, dp8).to());
-
-        ScrollView scrollView = new ScrollView(c);
-        scrollView.addView(linearRoot);
-        return scrollView;
+        //TODO getFieldS返回数组，如果包含$字符，则第二个元素是说明，否则第二个元素是空
+        return createEditViewQuickly(c,
+                new String[][]{
+                        {"小于此距离则算作不移动", null},
+                        {"大于此距离则算作快速移动", null},
+                        {"倒计时限时 (毫秒)", null},
+                        {"观测第几根手指", null},},
+                new View[]{
+                       editNoMoveThreshold,
+                       editFastMoveThreshold,
+                       editCountDownMs,
+                       editFingerIndex
+                });
     }
+
 
     //TODO
     // map<string, adapterProperties> key为该adapter对应名称，用注解标注，adapterProperties里记录adapter的class，以及全部可编辑属性

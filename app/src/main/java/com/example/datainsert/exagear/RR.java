@@ -852,6 +852,13 @@ public class RR {
             return color;
         }
 
+        public static int colorControlNormal(Context c) {
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.colorControlNormal});
+            int color = array.getColor(0, 0xff2196F3);
+            array.recycle();
+            return color;
+        }
+
         public static Drawable selectableItemBackground(Context c) {
             TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
             Drawable d = array.getDrawable(0);
@@ -859,6 +866,12 @@ public class RR {
             return d;
         }
 
+        public static Drawable listDivider(Context c) {
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.listDivider});
+            Drawable d = array.getDrawable(0);
+            array.recycle();
+            return d;
+        }
     }
 
     public static class dimen {

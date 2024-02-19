@@ -2,11 +2,9 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.mode
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.完成;
 
-import com.eltechs.axs.helpers.Assert;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureContext2;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureMachine;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State.StateNeutral;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State.StateWaitForNeutral;
 
@@ -14,15 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OneGestureArea extends TouchAreaModel {
+    public static final int IDX_TRAN_PRESTATE=0;
+    public static final int IDX_TRAN_EVENT=1;
+    public static final int IDX_TRAN_POSTSTATE = 2;
+    public static final int IDX_TRAN_ACTION_START = 3;
     //TODO statemachine的table和defaultState啥的都放这里
-
+    List<FSMState2> allStateList = new ArrayList<>();
+    List<List<Integer>> transitionList = new ArrayList<>(); //每一项是一个转换。0是前状态，1是事件，2是后状态，3往后都是附加操作
     transient private StateWaitForNeutral defaultState;
     transient private StateNeutral initState;
     transient private int maxIdValue = 0; //当前已分配状态id的最大值
-
-
-    List<FSMState2> allStateList = new ArrayList<>();
-    List<List<Integer>> transitionList = new ArrayList<>(); //每一项是一个转换。0是前状态，1是事件，2是后状态，3往后都是附加操作
 
     public OneGestureArea() {
         super(TYPE_GESTURE);
@@ -34,14 +33,14 @@ public class OneGestureArea extends TouchAreaModel {
     public void init() {
 
         //默认和初始状态，应优先从全部状态列表中寻找。如果全部状态列表中没有，则自己新建并添加返回初始状态的转换。
-        for(FSMState2 state:allStateList){
-            if(state instanceof StateNeutral)
+        for (FSMState2 state : allStateList) {
+            if (state instanceof StateNeutral)
                 initState = (StateNeutral) state;
-            else if(state instanceof  StateWaitForNeutral)
+            else if (state instanceof StateWaitForNeutral)
                 defaultState = (StateWaitForNeutral) state;
         }
 
-        if(initState==null || defaultState==null){
+        if (initState == null || defaultState == null) {
             //初始化后必须包含初始状态，默认状态和默认状态到初始状态的转换
             initState = new StateNeutral();
             initState.setId(generateStateId());
@@ -57,30 +56,45 @@ public class OneGestureArea extends TouchAreaModel {
         }
 
         //重新分配一遍id吧
-        maxIdValue=0;
-        for(FSMState2 state:allStateList){
+        maxIdValue = 0;
+        for (FSMState2 state : allStateList) {
             int oldStateId = state.getId();
             int newStateId = generateStateId();
             state.setId(newStateId);
 
-            for(List<Integer> oneTran:transitionList){
-                for(int i=0; i<oneTran.size(); i++){
-                    if(i==1) continue;
-                    if(oneTran.get(i)==-1)
+            for (List<Integer> oneTran : transitionList) {
+                for (int i = 0; i < oneTran.size(); i++) {
+                    if (i == 1) continue;
+                    if (oneTran.get(i) == -1)
                         throw new RuntimeException("状态id不应为-1");
-                    if(oneTran.get(i).equals(oldStateId)){
+                    if (oneTran.get(i).equals(oldStateId)) {
                         oneTran.remove(i);
-                        oneTran.add(i,newStateId);
+                        oneTran.add(i, newStateId);
                     }
                 }
             }
         }
+
+        //检查是否有同一事件但不同PostState的，如果有，删掉旧的
+        List<Integer> compareList = new ArrayList<>();
+        for (int i = 0; i < transitionList.size(); i++) {
+            List<Integer> oneTran = transitionList.get(i);
+            int currPreAndEvent = oneTran.get(0) * 100 + oneTran.get(1);
+            if (compareList.contains(currPreAndEvent)) {
+                int index = compareList.indexOf(currPreAndEvent);
+                compareList.remove((Integer) currPreAndEvent);
+                transitionList.remove(index);
+                i--;
+            } else
+                compareList.add(currPreAndEvent);
+        }
+
     }
 
 
     @Override
     protected void cloneSelfFields(TouchAreaModel ref) {
-        if(ref.getClass().equals(OneGestureArea.class)){
+        if (ref.getClass().equals(OneGestureArea.class)) {
             allStateList.clear();
             allStateList.addAll(((OneGestureArea) ref).allStateList);
             transitionList.clear();
@@ -91,7 +105,7 @@ public class OneGestureArea extends TouchAreaModel {
     /**
      * 生成一个新的State的id，不与其他state的id冲突
      */
-    public int generateStateId(){
+    public int generateStateId() {
         maxIdValue++;
         return maxIdValue;
     }
@@ -108,45 +122,35 @@ public class OneGestureArea extends TouchAreaModel {
         return allStateList;
     }
 
-    public void addStates(FSMState2... states){
-        for(FSMState2 state:states)
-            if(!allStateList.contains(state))
+    public void addStates(FSMState2... states) {
+        for (FSMState2 state : states)
+            if (!allStateList.contains(state))
                 allStateList.add(state);
     }
 
+
+    /**
+     * 从全部状态列表中筛选掉action，返回剩下的状态列表。用于编辑界面展示状态列表
+     */
+    public List<FSMState2> getEditableStateList(){
+        return TestHelper.filterList(allStateList,item->!(item instanceof FSMAction2));
+
+    }
+    /**
+     * 从全部状态列表中筛选掉state，返回剩下的action列表。用于编辑界面展示操作列表
+     */
+    public List<FSMAction2> getEditableActionList(){
+        List<FSMAction2> returnList = new ArrayList<>();
+        for(FSMState2 state:getAllStateList())
+            if(state instanceof FSMAction2)
+                returnList.add((FSMAction2) state);
+        return returnList;
+    }
 
     public List<List<Integer>> getTransitionList() {
         return transitionList;
     }
 
-//    public void test(GestureContext2 gestureContext) {
-//        GestureMachine machine = new GestureMachine();
-//        machine.setModel(this);
-//        for (int i = 0; i < tranPreStateList.size(); i++) {
-//            int preId = tranPreStateList.get(i), postId = tranPostStateList.get(i);
-//            List<Integer> actionIds = tranActionsList.get(i);
-//            FSMState2 preState = null, postState = null;
-//            FSMAction2[] actions = new FSMAction2[actionIds.size()];
-//            //将id转为state实例
-//            for (FSMState2 state : allStateList) {
-//                if (state.getId() == preId)
-//                    preState = state;
-//                else if (state.getId() == postId)
-//                    postState = state;
-//                else {
-//                    int actionIndex = actionIds.indexOf(state.getId());
-//                    if (actionIndex != -1)
-//                        actions[actionIndex] = (FSMAction2) state;
-//                }
-//            }
-//            //交给machine
-//            machine.addTransition(preState, tranEventList.get(i), postState, actions);
-//
-//        }
-//
-//        machine.configurationCompleted();
-//        gestureContext.setMachine(machine);
-//    }
 
     /**
      * 添加一个状态转换（向四个列表中都添加一项）
@@ -168,38 +172,48 @@ public class OneGestureArea extends TouchAreaModel {
     }
 
     /**
-     * 删除一个状态，顺便删除与其相关的全部状态转移
+     * 删除一个状态，顺便删除与其相关的全部状态转移。如果是操作，则只删除转移中的操作id，不删除状态转移
      */
-    public void deleteState(FSMState2 state) {
-        Assert.isFalse(state instanceof StateNeutral || state instanceof StateWaitForNeutral);
+    public void removeState(FSMState2 state) {
+        TestHelper.assertTrue(!(state instanceof StateNeutral || state instanceof StateWaitForNeutral));
         allStateList.remove(state);
         int deleteId = state.getId();
 
-        for(int i=0; i<transitionList.size(); i++){
+        for (int i = 0; i < transitionList.size(); i++) {
             List<Integer> oneTran = transitionList.get(i);
-            if( oneTran.get(0).equals(deleteId) || oneTran.get(2).equals(deleteId)){
+            //如果是状态，则删除整个转移
+            if (oneTran.get(0).equals(deleteId) || oneTran.get(2).equals(deleteId)) {
                 transitionList.remove(i);
                 i--;
+            }
+            //如果是操作，则只删除操作id
+            else {
+                for(int actIdx=3; actIdx<oneTran.size(); actIdx++)
+                    if(oneTran.get(actIdx).equals(deleteId)){
+                        oneTran.remove(actIdx);
+                        actIdx--;
+                    }
             }
         }
     }
 
+    /**
+     * 获取某状态，发送某事件 对应的状态转移，请确保该状态已存在于全部状态列表中
+     * @return 状态转移。若不存在，则会首先创建一个默认的转移，将其加入的转移列表中并返回该转移
+     */
+    public List<Integer> getTransition(FSMState2 preState, int eventId){
+        TestHelper.assertTrue(allStateList.contains(preState),"请确保该状态已存在于全部状态列表中");
+        for(List<Integer> transition:getTransitionList())
+            if(transition.get(0) == preState.getId() && transition.get(1) == eventId)
+                return transition;
 
-
-
-    public static class FSMTransitionTableEntry {
-        public final int event;
-        public final FSMState2 postState;
-        public final FSMState2 preState;
-        //TODO 注意这个actions有先后顺序之分。写用户ui的时候记得添加调整顺序的功能
-        public final FSMAction2[] actions;
-
-        public FSMTransitionTableEntry(FSMState2 abstractFSMState, int fSMEvent, FSMState2 FSMState2, FSMAction2[] actions) {
-            this.preState = abstractFSMState;
-            this.event = fSMEvent;
-            this.postState = FSMState2;
-            this.actions = actions;
-        }
+        //若不存在，则会首先创建一个默认的转移，将其加入的转移列表中并返回该转移
+        List<Integer> targetTransition = new ArrayList<>();
+        targetTransition.add(preState.getId());
+        targetTransition.add(eventId);
+        targetTransition.add(getDefaultState().getId());
+        transitionList.add(targetTransition);
+        return targetTransition;
     }
 
 

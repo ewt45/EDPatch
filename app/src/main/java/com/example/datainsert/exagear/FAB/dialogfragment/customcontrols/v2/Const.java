@@ -10,7 +10,6 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.IntDef;
-import android.util.SparseArray;
 
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
@@ -19,12 +18,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.edit.EditConfigWindow;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.GestureContext2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneButton;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneDpad;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneStick;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.KeyOnBoardView;
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
@@ -49,7 +43,6 @@ public class Const {
     public static float fingerTapMaxMoveInches = 0.2f;
 //    public static JsonDeserializerTouchAreaModel modelSaver; //用于反序列化时还原抽象类，以及处理文件位置
     public static WeakReference<Edit1KeyView> editKeyViewRef = null;
-    public static WeakReference<Edit3ProfilesView.ProfileAdapter> profilesAdapterRef = null;
     public static WeakReference<ControlsFragment> fragmentRef = null;
     public static WeakReference<TouchAreaView> touchAreaViewRef = null;
     public static WeakReference<ViewOfXServer> viewOfXServerRef = null;
@@ -119,7 +112,6 @@ public class Const {
      */
     public static void clear() {
         editKeyViewRef = null;
-        profilesAdapterRef = null;
         activityRef = null;
         fragmentRef = null;
         touchAreaViewRef = null;
@@ -212,5 +204,6 @@ public class Const {
         public final static String st_fastMoveThreshold = "fastMoveThreshold" ;
         public final static String st_countDownMs = "countDownMs";
         public final static String md_fsmTable = "fsmTable";
+        public final static String st_nearFarThreshold = "nearFarThreshold";
     }
 }

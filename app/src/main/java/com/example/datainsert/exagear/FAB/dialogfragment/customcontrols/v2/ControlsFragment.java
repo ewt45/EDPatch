@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +24,10 @@ import com.example.datainsert.exagear.QH;
 import java.lang.ref.WeakReference;
 
 public class ControlsFragment extends Fragment {
-    static final int REQUEST_IMPORT_PROFILE = 124;
-    static final int REQUEST_EXPORT_PROFILE = 125;
+    private static final int REQUEST_IMPORT_PROFILE = 124;
+    private static final int REQUEST_EXPORT_PROFILE = 125;
+    private SparseArray<IntentResultCallback> intentCallbackList = new SparseArray<>();
+
 
     public ControlsFragment() {
         Const.fragmentRef = new WeakReference<>(this);
@@ -74,45 +77,36 @@ public class ControlsFragment extends Fragment {
         if (data == null || data.getData() == null )
             return;
         String endMsg;
+        IntentResultCallback callback = intentCallbackList.get(requestCode);
+
         if (requestCode == REQUEST_IMPORT_PROFILE) {
-            try {
-                OneProfile oneProfile = ModelProvider.importProfileFromUri(data.getData());
-                Const.profilesAdapterRef.get().refreshDataSet(); //导入成功后要刷新列表显示
-                Const.profilesAdapterRef.get().notifyDataSetChanged();
-                endMsg = "导入成功: "+oneProfile.name;
-            } catch (Exception e) {
-                endMsg = "导入失败: " + e.getCause();
-            }
-            Toast.makeText(requireContext(), endMsg, Toast.LENGTH_SHORT).show();
+            if(callback!=null)
+                callback.onReceive(requestCode,resultCode,data);
         }
         else if(requestCode == REQUEST_EXPORT_PROFILE){
-            try {
-                ModelProvider.exportProfileToUri(data.getData(),profileExporting);
-                endMsg = "导出成功: "+profileExporting;
-            } catch (Exception e) {
-                endMsg = "导出失败: " + e.getCause();
-            }
-            profileExporting = null;
-            Toast.makeText(requireContext(), endMsg, Toast.LENGTH_SHORT).show();
+            if(callback!=null)
+                callback.onReceive(requestCode,resultCode,data);
         }
     }
 
     /**
      * 从本地文件导入配置
      */
-    public void requestImportProfile() {
+    public void requestImportProfile(IntentResultCallback callback) {
+        intentCallbackList.put(REQUEST_IMPORT_PROFILE,callback);
+
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
         startActivityForResult(intent, REQUEST_IMPORT_PROFILE);
     }
 
-    private String profileExporting; //用于被导出的配置，只能用一次，导出后置为null
     /**
      * 将某个配置保存到本地，调用此函数前应确保该model数据是最新的，比如 如果导出的是当前编辑的model，那么应该先保存一下
      */
-    public void requestExportProfile(@NonNull String profileName) {
-        profileExporting = profileName;
+    public void requestExportProfile(@NonNull String profileName,IntentResultCallback callback) {
+        intentCallbackList.put(REQUEST_EXPORT_PROFILE,callback);
+
         Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("application/json");
@@ -120,4 +114,10 @@ public class ControlsFragment extends Fragment {
         startActivityForResult(intent, REQUEST_EXPORT_PROFILE);
     }
 
+    /**
+     * 用于外部注册 发送intent后 接收到结果时的回调
+     */
+    public interface IntentResultCallback{
+        public void onReceive(int requestCode, int resultCode, Intent data);
+    }
 }

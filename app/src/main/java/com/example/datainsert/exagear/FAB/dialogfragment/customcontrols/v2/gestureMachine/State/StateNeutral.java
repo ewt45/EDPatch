@@ -2,12 +2,18 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gest
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.新手指按下;
 
+import android.content.Context;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+
 import com.eltechs.axs.helpers.Assert;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
+import com.example.datainsert.exagear.QH;
 
 import java.util.List;
 
@@ -17,7 +23,6 @@ import java.util.List;
  */
 @StateTag(tag = FSMR.state.初始状态, events = {新手指按下})
 public class StateNeutral  extends FSMState2 implements TouchAdapter {
-
 
     @Override
     protected void onAttach() {
@@ -55,5 +60,10 @@ public class StateNeutral  extends FSMState2 implements TouchAdapter {
     @Override
     public void notifyMovedIn(Finger finger, List<Finger> list) {
         sendEvent(新手指按下);
+    }
+
+    @Override
+    public View createPropEditView(Context c) {
+        return Helper.createEmptyPropEditView(c);
     }
 }

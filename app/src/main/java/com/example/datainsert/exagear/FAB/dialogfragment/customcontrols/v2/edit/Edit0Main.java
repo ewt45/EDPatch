@@ -37,25 +37,29 @@ public class Edit0Main extends LinearLayout {
 
         //顶部工具栏
         TabLayout tabToolbar = new TabLayout(c);
-        tabToolbar.setTabMode(TabLayout.MODE_FIXED);
+        //TODO 设置fixed在宽度窄的时候，文字较多的会变成两排。设置scrollable在宽度宽的时候较少文字也会占很大一块空白
+        // 原因是每个tab宽度强制相等了。能否变成自适应宽度？
+        tabToolbar.setTabMode(TabLayout.MODE_SCROLLABLE);
+        TestHelper.setTabLayoutTabMinWidth0(tabToolbar);
+//        tabToolbar.setTabGravity(TabLayout.GRAVITY_CENTER);
+//        tabToolbar.setTabIndicatorFullWidth(false);
 
         LinearLayout linearPager = new LinearLayout(c);
         linearPager.setOrientation(VERTICAL);
         linearPager.setLayoutTransition(new LayoutTransition()); //如果在每次切换tab时，用beginDelayedTransition，不知为何会导致profile切到key的tab的时候，key高度变高，但现显示的区域还是profile那么一点，下面都空着
 
-        NestedScrollView scrollPager = TestHelper.wrapAsScrollView(linearPager);
-        addView(scrollPager);
+//        NestedScrollView scrollPager = TestHelper.wrapAsScrollView(linearPager);
+        addView(linearPager,QH.LPLinear.one(-2,-2).to());
 
         tabToolbar.addOnTabSelectedListener((TestHelper.SimpleTabListener) tab -> {
             linearPager.removeAllViews();
 //            TransitionManager.beginDelayedTransition(this);
-
             if ("key".equals(tab.getTag()))
-                linearPager.addView(new Edit1KeyView(this));
+                linearPager.addView(new Edit1KeyView(this),QH.LPLinear.one(-2,-2).to());
             else if("gesture".equals(tab.getTag()))
-                linearPager.addView(new Edit2GestureView(this));
+                linearPager.addView(new Edit2GestureView(this),QH.LPLinear.one(-2,-2).to());
             else if ("profile".equals(tab.getTag()))
-                linearPager.addView(new Edit3ProfilesView(this));
+                linearPager.addView(new Edit3ProfilesView(this),QH.LPLinear.one(-2,-2).to());
 
         });
         tabToolbar.addTab(tabToolbar.newTab().setText("按键").setTag("key"));
@@ -67,7 +71,6 @@ public class Edit0Main extends LinearLayout {
         scrollToolbar.addView(tabToolbar);
         mToolbar = scrollToolbar;
         mToolbar.setLayoutParams(QH.LPLinear.one(0, -2).weight().to());
-
     }
 
 //    /**

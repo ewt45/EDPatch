@@ -2,11 +2,17 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gest
 
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.完成;
 
+import android.content.Context;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
+import com.example.datainsert.exagear.QH;
 
 import java.util.List;
 
@@ -51,5 +57,10 @@ public class StateWaitForNeutral extends FSMState2 implements TouchAdapter {
     @Override
     public void notifyBecomeInactive() {
         removeTouchListener(this);
+    }
+
+    @Override
+    public View createPropEditView(Context c) {
+        return Helper.createEmptyPropEditView(c);
     }
 }

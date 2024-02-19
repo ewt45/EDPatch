@@ -3,6 +3,9 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gest
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.新手指按下;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.某手指松开;
 
+import android.content.Context;
+import android.view.View;
+
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
@@ -10,15 +13,17 @@ import com.eltechs.axs.widgets.viewOfXServer.XZoomController;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-@StateTag(tag = FSMR.state.两根手指缩放, events = {某手指松开,FSMR.event.新手指按下})
+@StateTag(tag = FSMR.state.两根手指缩放, events = {某手指松开, FSMR.event.新手指按下})
 public class State2FingersZoom extends FSMState2 implements TouchAdapter {
+    transient private final float[] tmpMatrixValues = new float[3];
     @SerializedName(value = Const.GsonField.st_zoomFingerIndex1)
     public int mFingerIndex1 = 0;
     @SerializedName(value = Const.GsonField.st_zoomFingerIndex2)
@@ -28,7 +33,6 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
     transient private float[] lastCenterXY;
     transient private float lastDistance;
     transient private ViewOfXServer viewOfXServer;
-    transient private final float[] tmpMatrixValues = new float[3];
 
     @Override
     protected void onAttach() {
@@ -42,10 +46,11 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
         Assert.state(totalFingerCount > mFingerIndex1 && totalFingerCount > mFingerIndex2);
         finger1 = getContext().getFingers().get(mFingerIndex1);
         finger2 = getContext().getFingers().get(mFingerIndex2);
-        lastCenterXY = new float[]{(finger1.getX()+finger2.getX())/2,(finger1.getY()+finger2.getY())/2};
-        lastDistance = GeometryHelpers.distance(finger1.getX(),finger1.getY(),finger2.getX(),finger2.getY());;
+        lastCenterXY = new float[]{(finger1.getX() + finger2.getX()) / 2, (finger1.getY() + finger2.getY()) / 2};
+        lastDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
+        ;
         //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
-        if(viewOfXServer!=null)
+        if (viewOfXServer != null)
             getContext().getZoomController().setAnchorBoth(finger1.getX(), finger1.getY());
 
     }
@@ -59,11 +64,11 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
 
     @Override
     public void notifyMoved(Finger finger, List<Finger> list) {
-        if(viewOfXServer==null)
+        if (viewOfXServer == null)
             return;
 
         XZoomController zoomController = getContext().getZoomController();
-        float newDistance = GeometryHelpers.distance(finger1.getX(),finger1.getY(),finger2.getX(),finger2.getY());
+        float newDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
         double scaleDelta = newDistance / this.lastDistance;
         boolean isEarlierZoomed = zoomController.isZoomed();
 
@@ -121,4 +126,23 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
         sendEvent(新手指按下);
     }
 
+    @Override
+    public View createPropEditView(Context c) {
+        LimitEditText edit1 = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
+                .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
+                .setSelectedValue(mFingerIndex1)
+                .setUpdateListener(editText -> mFingerIndex1 = editText.getSelectedValue());
+
+        LimitEditText edit2 = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
+                .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
+                .setSelectedValue(mFingerIndex2)
+                .setUpdateListener(editText -> mFingerIndex2 = editText.getSelectedValue());
+        return createEditViewQuickly(c,
+                new String[][]{
+                        {"检测第几根按下的手指 (其一)", null},
+                        {"检测第几根按下的手指 (其二)", null}},
+                new View[]{edit1, edit2});
+    }
 }

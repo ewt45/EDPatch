@@ -13,11 +13,11 @@ import java.util.List;
 
 public class GestureMachine {
     private static final String TAG = "FiniteStateMachine";
-    private final List<OneGestureArea.FSMTransitionTableEntry> transitionTable = new ArrayList<>();
+    private final List<FSMTransitionTableEntry> transitionTable = new ArrayList<>();
     private final List<FSMState2> allStates = new ArrayList<>();
     private final FSMListenersList2 listeners = new FSMListenersList2();
     private FSMState2 currentState;
-    private OneGestureArea.FSMTransitionTableEntry defaultEntry;
+    private FSMTransitionTableEntry defaultEntry;
     private OneGestureArea model;
 
     /**
@@ -32,7 +32,7 @@ public class GestureMachine {
             initStateIfNeeded(state);
 
         currentState = model.getInitState();
-        defaultEntry = new OneGestureArea.FSMTransitionTableEntry(null, FSMR.event.完成, model.getDefaultState(), new FSMAction2[0]);
+        defaultEntry = new FSMTransitionTableEntry(null, FSMR.event.完成, model.getDefaultState(), new FSMAction2[0]);
 
         //添加已有的转换
         for(List<Integer> transition:model.getTransitionList()){
@@ -53,9 +53,6 @@ public class GestureMachine {
      */
     private void initStateIfNeeded(FSMState2... states){
         for(FSMState2 state: states){
-            if(state instanceof ActionPointerMove){
-                Log.d(TAG, "initStateIfNeeded: 找到ActionPointerMove:"+state);
-            }
             if(!allStates.contains(state)){
                 state.attach(this);
                 allStates.add(state);
@@ -102,7 +99,7 @@ public class GestureMachine {
 
         if (preState instanceof FSMAction2 || postState instanceof FSMAction2)
             throw new RuntimeException("转移前后的state不能为action");
-        this.transitionTable.add(new OneGestureArea.FSMTransitionTableEntry(preState, event, postState, actions));
+        this.transitionTable.add(new FSMTransitionTableEntry(preState, event, postState, actions));
     }
 
 
@@ -122,7 +119,7 @@ public class GestureMachine {
 //            Log.d(TAG, String.format("sendEvent: 状态改变：%s --- %s --> %s",currentState.debugName,FSMR.getEventS(fSMEvent),nextState.debugName));
 //            changeState(nextState);
 
-            OneGestureArea.FSMTransitionTableEntry entry = getTransitionEntry(preState, fSMEvent);
+            FSMTransitionTableEntry entry = getTransitionEntry(preState, fSMEvent);
             Log.d(TAG, String.format("sendEvent: 状态改变：%s --- %s%s --> %s",
                     preState.getNiceName(), FSMR.getEventS(fSMEvent), getActionArrNames(entry.actions), entry.postState.getNiceName()));
             this.currentState.notifyBecomeInactive();
@@ -148,8 +145,8 @@ public class GestureMachine {
 
 
 
-    private OneGestureArea.FSMTransitionTableEntry getTransitionEntry(FSMState2 preState, int event) {
-        for (OneGestureArea.FSMTransitionTableEntry entry : this.transitionTable) {
+    private FSMTransitionTableEntry getTransitionEntry(FSMState2 preState, int event) {
+        for (FSMTransitionTableEntry entry : this.transitionTable) {
             if (entry.preState == preState && entry.event == event) {
                 return entry;
             }
@@ -185,4 +182,18 @@ public class GestureMachine {
         }
     }
 
+    public static class FSMTransitionTableEntry {
+        public final int event;
+        public final FSMState2 postState;
+        public final FSMState2 preState;
+        //TODO 注意这个actions有先后顺序之分。写用户ui的时候记得添加调整顺序的功能
+        public final FSMAction2[] actions;
+
+        public FSMTransitionTableEntry(FSMState2 abstractFSMState, int fSMEvent, FSMState2 FSMState2, FSMAction2[] actions) {
+            this.preState = abstractFSMState;
+            this.event = fSMEvent;
+            this.postState = FSMState2;
+            this.actions = actions;
+        }
+    }
 }

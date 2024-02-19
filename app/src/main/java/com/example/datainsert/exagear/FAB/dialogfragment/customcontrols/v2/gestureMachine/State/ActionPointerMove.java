@@ -8,14 +8,17 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annot
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
-
+/**
+ * 若执行此操作时没有手指按下，则忽略fingerIndex，从历史记录中获取手指位置
+ */
 @StateTag(tag = FSMR.state.操作_鼠标移动, isAction = true)
 public class ActionPointerMove extends FSMAction2 {
+    /**
+     * 若执行此操作时没有手指按下，则忽略该值，从历史记录中获取手指位置
+     */
     @SerializedName(value = Const.GsonField.st_fingerIndex)
     public int mFingerIndex = 0;
-    /**
-     * 当设置为 {@link FSMR.value#观测手指序号_无} 时，说明当前没有手指按下，忽略fingerIndex，应从历史记录中获取手指位置
-     */
+
     @SerializedName(value = Const.GsonField.st_fingerXYType)
     public int mFingerXYType = FSMR.value.手指位置_最后移动;
 

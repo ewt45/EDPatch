@@ -8,7 +8,9 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR.event.某手指松开;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MovementAccumulator2.Direction.ASC;
 
+import android.content.Context;
 import android.graphics.Matrix;
+import android.view.View;
 
 import com.eltechs.axs.GuestAppActionAdapters.ScrollDirections;
 import com.eltechs.axs.helpers.Assert;
@@ -18,24 +20,25 @@ import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Finger;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAdapter;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMR;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MouseScrollAdapter;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.adapter.MovementAccumulator2;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-@StateTag(tag = FSMR.state.手指移动_鼠标滚轮, events = {某手指松开,新手指按下})
+@StateTag(tag = FSMR.state.手指移动_鼠标滚轮, events = {某手指松开, 新手指按下})
 public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdapter {
-
+    @SerializedName(value = Const.GsonField.st_fingerIndex)
+    public int mFingerIndex = 0;
     transient public long mFingerLocationPollIntervalMs = 30;
     transient public float mUnitsOfOneAndroidPixelX = 0.05f;
     transient public float mUnitsOfOneAndroidPixelY = 0.05f;
-    @SerializedName(value = Const.GsonField.st_fingerIndex)
-    public int mFingerIndex = 0;
-    transient  private float movementUnitsInOnePixelX;
+
+    transient private float movementUnitsInOnePixelX;
     transient private float movementUnitsInOnePixelY;
     transient private MouseScrollAdapter scrollAdapter;
     transient private MovementAccumulator2 movementX;
@@ -43,6 +46,7 @@ public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdap
     transient private Finger savedFinger;
     transient private InfiniteTimer timer;
     transient private ViewOfXServer viewOfXServer;
+
     public StateFingerMoveToMouseScroll() {
 
     }
@@ -51,7 +55,7 @@ public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdap
     protected void onAttach() {
         this.scrollAdapter = new MouseScrollAdapter();
         this.viewOfXServer = Const.viewOfXServerRef.get();
-        if(viewOfXServer!=null){
+        if (viewOfXServer != null) {
             Matrix aToXMatrix = viewOfXServer.getViewToXServerTransformationMatrix();
             this.movementUnitsInOnePixelX = mUnitsOfOneAndroidPixelX * TransformationHelpers.getScaleX(aToXMatrix);
             this.movementUnitsInOnePixelY = mUnitsOfOneAndroidPixelY * TransformationHelpers.getScaleY(aToXMatrix);
@@ -153,5 +157,14 @@ public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdap
     @Override
     public void notifyTouched(Finger finger, List<Finger> list) {
         sendEvent(新手指按下);
+    }
+
+    @Override
+    public View createPropEditView(Context c) {
+        return createEditViewQuickly(c, new String[][]{{"观测第几根手指", null}}, new View[]{new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
+                .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
+                .setIntValue(mFingerIndex)
+                .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue())});
     }
 }

@@ -9,8 +9,10 @@ import android.media.AudioPlaybackConfiguration;
 import android.media.AudioRecordingConfiguration;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Process;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.Toolbar;
+import android.system.Os;
 import android.util.Log;
 import android.view.Menu;
 
@@ -20,10 +22,12 @@ import com.eltechs.ed.R;
 import com.eltechs.ed.fragments.ManageContainersFragment;
 import com.eltechs.ed.guestContainers.GuestContainer;
 import com.example.datainsert.exagear.FAB.dialogfragment.DriveD;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.controls.CursorToggle;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -33,12 +37,20 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class test {
-    private static final File mUserAreaDir = DriveD.getDriveDDir();
+//    private static final File mUserAreaDir = DriveD.getDriveDDir();
     private static boolean staticNotFinal = false;
     private final static boolean staticAndFinal  = true; //smali声明变量那一行就会赋值
     Object i2;
 
     public test() {
+
+    }
+
+    public static void main(String[] args){
+
+        int mainPid = Process.myPid(); //这个用不了？
+        Log.d("TAG", "log: 主进程： "+mainPid+", "+Const.activityRef);
+        System.out.println("system: 主进程： "+mainPid+", "+Const.activityRef);
 
     }
     @SuppressLint("NewApi")

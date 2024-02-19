@@ -10,7 +10,9 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.HORIZONTAL;
 import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.dp8;
+import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const.viewOfXServerRef;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
@@ -28,25 +30,35 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.ModelProvider;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.DrawableAlign;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.LimitEditText;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class TestHelper {
     private static final String TAG = "TestHelper";
@@ -66,10 +78,6 @@ public class TestHelper {
 //            }
 //        });
         //添加一个悬浮窗。点击可以展开或折叠
-    }
-
-    public static void showEditOptions(Context c) {
-
     }
 
     public static void onTouchMoveView(View touchedView, View movedView) {
@@ -361,6 +369,73 @@ public class TestHelper {
                 .show();
     }
 
+    /**
+     * 断言condition为true，否则抛出异常信息
+     */
+    public static void assertTrue(boolean condition, String error) {
+        if(!condition)
+            throw new RuntimeException(error);
+    }
+
+    /**
+     * 断言condition为true，否则抛出异常信息
+     */
+    public static void assertTrue(boolean condition) {
+        if(!condition)
+            throw new RuntimeException("错误！未满足条件");
+    }
+
+    /**
+     * 设置 tabLayout的tab最小宽度为0，以自适应宽度
+     */
+    public static void setTabLayoutTabMinWidth0(TabLayout tabLayout) {
+        try {
+            Field  field = tabLayout.getClass().getDeclaredField("requestedTabMinWidth");
+            field.setAccessible(true);
+            field.setInt(tabLayout,0);
+            field.setAccessible(false);
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 为对应视图右上角添加一个问号图标，点击可查看说明
+     */
+    public static void addHelpBadgeToView(View view,String helpText) {
+        view.getOverlay().add(new DrawableAlign(view));
+        view.setOnClickListener(v -> TestHelper.showConfirmDialog(v.getContext(), helpText, (dialog, which) -> {
+        }));
+    }
+
+    /**
+     * 分割线视图。会自动设置layoutparam（宽度为2dp）
+     * @param vertical true为竖向分割线，否则为横向分割线
+     */
+    public static View getDividerView(Context c,boolean vertical) {
+        View divider = new View(c);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,QH.px(c,2));
+        divider.setLayoutParams(params);
+        divider.setBackground(RR.attr.listDivider(c));
+        return divider;
+    }
+
+    /**
+     * 过滤列表中某些元素，返回一个新数组
+     */
+    public static <T> List<T> filterList(List<T> list, ArrayFilter<T> filter) {
+        List<T> resultList = new ArrayList<>();
+        for(int i=0; i<list.size(); i++)
+            if(filter.accept(list.get(i)))
+                resultList.add(list.get(i));
+
+        return resultList;
+    }
+
+    public static interface ArrayFilter<T>{
+        public boolean accept(T item);
+    }
 
 
     public static interface SimpleSeekbarListener extends SeekBar.OnSeekBarChangeListener {
@@ -390,5 +465,36 @@ public class TestHelper {
         }
 
         ;
+    }
+
+    /**
+     * 创建一个PopupMenu
+     */
+    public static class PopupMenuTemplate{
+        private PopupMenu mPopupMenu;
+        public PopupMenuTemplate(Context c, View anchor){
+            mPopupMenu = new PopupMenu(c,anchor);
+
+        }
+
+        public PopupMenuTemplate add(String itemName, Runnable action) {
+            mPopupMenu.getMenu().add(itemName).setOnMenuItemClickListener(item->{
+                action.run();
+                return true;
+            });
+            return this;
+        }
+
+        public PopupMenu build(){
+            PopupMenu tmpMenu = mPopupMenu;
+            mPopupMenu =null;
+            return tmpMenu;
+
+        }
+    }
+
+    public interface LayoutTransitionEndListener extends LayoutTransition.TransitionListener {
+        @Override
+        default void startTransition(LayoutTransition transition, ViewGroup container, View view, int transitionType){}
     }
 }

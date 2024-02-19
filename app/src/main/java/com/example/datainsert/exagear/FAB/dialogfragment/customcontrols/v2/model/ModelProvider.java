@@ -119,7 +119,7 @@ public class ModelProvider {
     /**
      * 根据stateTag int值 获取对应的state class
      */
-    public static  Class<? extends FSMState2> getStateClassByTypeInt(int typeInt){
+    public static  Class<? extends FSMState2> getStateClass(int typeInt){
         int typeIndex = 0;
         for(; typeIndex<ModelProvider.stateTypeInts.length; typeIndex++)
             if(ModelProvider.stateTypeInts[typeIndex] == typeInt)

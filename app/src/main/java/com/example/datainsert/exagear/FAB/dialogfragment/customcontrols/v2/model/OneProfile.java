@@ -94,7 +94,7 @@ public class OneProfile {
 
         TouchAreaView host = Const.touchAreaViewRef.get();
         TouchAdapter adapter = !editing ? null : new EditMoveAdapter(host, model, editModel -> {
-            if (Const.editKeyViewRef != null)
+            if (Const.editKeyViewRef != null && Const.editKeyViewRef.get()!=null)
                 Const.editKeyViewRef.get().onModelChanged(editModel);
         });
         TouchArea<?> newArea;

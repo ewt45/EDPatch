@@ -42,7 +42,7 @@ import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.touch
 import java.util.List;
 
 public class TouchAreaGesture extends TouchArea<OneGestureArea> {
-    GestureDistributeAdapter gestureAdapter;
+    private GestureDistributeAdapter gestureAdapter;
 
     private final GestureContext2 gestureContext;
 
@@ -132,7 +132,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
         StateCheckFingerNearToPointer checkIfNearPointer = new StateCheckFingerNearToPointer();
         checkIfNearPointer.mFingerIndex = 0;
-        checkIfNearPointer.distThreshold = 12f; //经过测试，12f（安卓像素）比较合适
+        checkIfNearPointer.mDistThreshold = 12f; //经过测试，12f（安卓像素）比较合适
 
         //1指长按后，等待移动或松手
         StateCountDownMeasureSpeed stateWait1FActionAfterLongPress = new StateCountDownMeasureSpeed();

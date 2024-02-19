@@ -3,17 +3,16 @@ package com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gest
 import android.util.Log;
 
 import com.eltechs.axs.helpers.Assert;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneGestureArea;
 
 import java.util.ArrayList;
 
 public class GestureMachine_old extends GestureMachine {
     private static final String TAG = "FiniteStateMachine";
-    private final ArrayList<OneGestureArea.FSMTransitionTableEntry> transitionTable = new ArrayList<>();
+    private final ArrayList<FSMTransitionTableEntry> transitionTable = new ArrayList<>();
     private final ArrayList<FSMState2> allStates = new ArrayList<>();
     private final FSMListenersList2 listeners = new FSMListenersList2();
     private FSMState2 currentState;
-    private OneGestureArea.FSMTransitionTableEntry defaultEntry;
+    private FSMTransitionTableEntry defaultEntry;
 
     public void setStatesList(FSMState2... abstractFSMStateArr) {
         for (FSMState2 abstractFSMState : abstractFSMStateArr) {
@@ -32,7 +31,7 @@ public class GestureMachine_old extends GestureMachine {
      * <br/> 这个默认状态最终应该能回到初始状态。
      */
     public void setDefaultState(FSMState2 postState) {
-        this.defaultEntry = new OneGestureArea.FSMTransitionTableEntry(null, FSMR.event.完成, postState, new FSMAction2[0]);
+        this.defaultEntry = new FSMTransitionTableEntry(null, FSMR.event.完成, postState, new FSMAction2[0]);
     }
 
     public void configurationCompleted() {
@@ -52,7 +51,7 @@ public class GestureMachine_old extends GestureMachine {
         Assert.state(this.allStates.contains(postState), "Transition to unknown state");
         if (preState instanceof FSMAction2 || postState instanceof FSMAction2)
             throw new RuntimeException("转移前后的state不能为action");
-        this.transitionTable.add(new OneGestureArea.FSMTransitionTableEntry(preState, event, postState, actions));
+        this.transitionTable.add(new FSMTransitionTableEntry(preState, event, postState, actions));
     }
 
     public boolean isActiveState(FSMState2 abstractFSMState) {
@@ -70,7 +69,7 @@ public class GestureMachine_old extends GestureMachine {
 //            Log.d(TAG, String.format("sendEvent: 状态改变：%s --- %s --> %s",currentState.debugName,FSMR.getEventS(fSMEvent),nextState.debugName));
 //            changeState(nextState);
 
-            OneGestureArea.FSMTransitionTableEntry entry = getTransitionEntry(preState, fSMEvent);
+            FSMTransitionTableEntry entry = getTransitionEntry(preState, fSMEvent);
             Log.d(TAG, String.format("sendEvent: 状态改变：%s --- %s%s --> %s",
                     preState.getNiceName(), FSMR.getEventS(fSMEvent), getActionArrNames(entry.actions), entry.postState.getNiceName()));
             this.currentState.notifyBecomeInactive();
@@ -83,8 +82,8 @@ public class GestureMachine_old extends GestureMachine {
         }
     }
 
-    private OneGestureArea.FSMTransitionTableEntry getTransitionEntry(FSMState2 preState, int event) {
-        for (OneGestureArea.FSMTransitionTableEntry entry : this.transitionTable) {
+    private FSMTransitionTableEntry getTransitionEntry(FSMState2 preState, int event) {
+        for (FSMTransitionTableEntry entry : this.transitionTable) {
             if (entry.preState == preState && entry.event == event) {
                 return entry;
             }

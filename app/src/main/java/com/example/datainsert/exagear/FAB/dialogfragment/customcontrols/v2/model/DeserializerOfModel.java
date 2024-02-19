@@ -50,7 +50,7 @@ public class DeserializerOfModel implements JsonDeserializer<TouchAreaModel> {
             JsonObject jsonObject = (JsonObject) json;
             //不能直接用传入的context，因为这个context设置了TouchAreaModel的自定义反序列化（就是这个类本身），会死循环
             int stateTag = jsonObject.get(Const.GsonField.st_StateType).getAsInt();
-            return plainGson.fromJson(json, ModelProvider.getStateClassByTypeInt(stateTag));
+            return plainGson.fromJson(json, ModelProvider.getStateClass(stateTag));
         }
     }
 }

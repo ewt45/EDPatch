@@ -2,15 +2,19 @@ package com.ewt45.exagearsupportv7;
 
 import android.content.Context;
 import android.graphics.Matrix;
+import android.os.Process;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
+import android.view.ViewDebug;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.eltechs.axs.proto.output.replies.Str;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State.StateCountDownMeasureSpeed;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.IntRangeEditable;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
@@ -23,8 +27,13 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -36,7 +45,35 @@ public class ExampleInstrumentedTest {
     private static final String TAG = "ExampleInstrumentedTest";
 
     @Test
+    public void 测试_安卓dalvikvm运行外部java代码是否是在同进程下() throws IOException {
+        //对比：进程号，某个类的变量
+        int mainPid = Process.myPid();
+        Const.activityRef = new WeakReference<>(null);
+        Log.d(TAG, "主进程： "+mainPid+", "+Const.activityRef);
+//        System.out.println("system:主进程： "+mainPid+", "+Const.activityRef);
+//        runProcessWithOutput("dalvikvm","-help");
+        runProcessWithOutput("dalvikvm","-cp","/sdcard/test.dex","com.example.test");
+    }
+
+    private void runProcessWithOutput(String ... cmds) throws IOException {
+        java.lang.Process process = new ProcessBuilder()
+                .command(cmds)
+                .redirectErrorStream(true)
+                .start();
+        try (InputStream is = process.getInputStream();
+             InputStreamReader reader = new InputStreamReader(is, Charset.defaultCharset())){
+            char[] chars = new char[2048];
+            int len;
+            do{
+                len = reader.read(chars,0,2048);
+                System.out.println("system.out: "+new String(chars));
+            }while (len!=-1);
+        }
+    }
+
+    @Test
     public void gson反序列化state怎么少了一个(){
+
         String json = "{\"modelList\":[{\"allStateList\":[{\"id\":1,\"stateType\":2},{\"id\":2,\"stateType\":3},{\"countDownMs\":250,\"fastMoveThreshold\":36.0,\"fingerIndex\":0,\"noMoveThreshold\":12.0,\"id\":3,\"niceName\":\"\",\"stateType\":1}],\"tranActionsList\":[[]],\"tranEventList\":[1],\"tranPostStateList\":[1],\"tranPreStateList\":[2],\"colorStyle\":0,\"height\":1600,\"keycodes\":[0],\"left\":0,\"mMinAreaSize\":80,\"mainColor\":-1286,\"modelType\":3,\"name\":\"None\",\"top\":0,\"width\":2560}],\"name\":\"1\",\"version\":0}\n";
         Gson gson = new GsonBuilder()
                 .registerTypeHierarchyAdapter(TouchAreaModel.class, new DeserializerOfModel())

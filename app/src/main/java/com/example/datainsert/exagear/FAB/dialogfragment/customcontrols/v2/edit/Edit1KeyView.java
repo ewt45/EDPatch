@@ -184,7 +184,7 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         linearPanelsWrapper.addView(mPanels[1], QH.LPLinear.one().weight().to());
 
         addView(scrollToolbar);
-        addView(linearPanelsWrapper);
+        addView(linearPanelsWrapper,QH.LPLinear.one(-2,-2).to());
         addView(LayoutInflater.from(getContext()).inflate(R.layout.aaa_test_relative, this, false));
 
         //初始的时候成员变量为null，然后传入一个实例，这样才会判断不等，调用inflate初次生成视图
@@ -284,7 +284,6 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
             mModel = model;
             int type = getButtonTypeFromModel(model);
             int line = mProps[0].length;
-            TransitionManager.beginDelayedTransition(mHost.mWindow);
             for (int i = 1; i < mProps.length; i++)
                 for (Prop unused : mProps[i]) {
                     mPanels[0].getChildAt(line).setVisibility(type == (i - 1) ? VISIBLE : GONE);

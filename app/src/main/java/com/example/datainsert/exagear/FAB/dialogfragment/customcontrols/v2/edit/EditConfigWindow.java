@@ -7,7 +7,11 @@ import static com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Outline;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.NonNull;
@@ -16,6 +20,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -26,9 +31,11 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TestHelper;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.TouchAreaView;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 编辑时，装编辑视图的容器。用于处理视图切换（就不用fragment了）
@@ -40,8 +47,9 @@ import java.util.List;
 public class EditConfigWindow extends LinearLayout {
     private static final String TAG = "EditConfigWindow";
     final TouchAreaView mAreaView;
-    private final int mMaxWidth, mMaxHeight;
+    public final int mMaxWidth, mMaxHeight;
     private final LinearLayout mLinearTitle;
+    private final FrameLayout mPager;
     private final List<View> mTitles = new ArrayList<>();
     private final List<View> mSubViews = new ArrayList<>();
     private final ImageView mIconView;//最小化时只显示这个图标
@@ -52,12 +60,18 @@ public class EditConfigWindow extends LinearLayout {
         mAreaView = host;
         Context c = host.getContext();
 
+        LayoutTransition layoutTransition = new LayoutTransition();
+        // (但是用layoutTransition的话必须要等动画完全结束再检查，所以放这了）（不对，不是自身的动画，是mLinearTitle的动画导致的）
+
+//        layoutTransition.addTransitionListener((TestHelper.LayoutTransitionEndListener) (tr, ct, vi, trt) ->
+//                postDelayed(()->TestHelper.restrictViewInsideParent(EditConfigWindow.this,(FrameLayout) getParent()),500));
+        setLayoutTransition(layoutTransition);
         setOrientation(VERTICAL);
         mMaxWidth = QH.px(c, 400);
         mMaxHeight = QH.px(c, 600);
 
         //宽高怎么适配比较好呢？
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-1, -2);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-2, -2);
         params.setMargins(dp8, dp8, dp8, dp8);
         params.gravity = Gravity.CENTER_HORIZONTAL;
         setLayoutParams(params);
@@ -77,20 +91,35 @@ public class EditConfigWindow extends LinearLayout {
         });
         setClipToOutline(true);
 
+        View dragbarView = TestHelper.getDividerView(c,false);
+        dragbarView.setMinimumHeight(dp8/4);
+        if(dragbarView.getBackground() instanceof GradientDrawable){
+            dragbarView.getBackground().mutate();
+            ((GradientDrawable) dragbarView.getBackground()).setColor(RR.attr.colorPrimary(c));
+        }
 
         mIconView = new ImageView(c);
         mIconView.setPadding(dp8, dp8, dp8, dp8);
         QH.setRippleBackground(mIconView);
         TestHelper.onTouchMoveView(mIconView, this);
 
-
+        //toolbar
         mLinearTitle = new LinearLayout(c);
         mLinearTitle.setOrientation(HORIZONTAL);
         mLinearTitle.setVerticalGravity(Gravity.CENTER_VERTICAL);
-//        mLinearTitle.setLayoutTransition(new LayoutTransition());//这个图标附近还不能加动画，否则放大的时候又会出界 
+//        mLinearTitle.setLayoutTransition(new LayoutTransition());//这个图标附近还不能加动画，否则放大的时候又会出界
         mLinearTitle.addView(mIconView, new LinearLayout.LayoutParams(dp8 * 6, dp8 * 6));
+        mLinearTitle.addView(new View(c));
 
-        addView(mLinearTitle);
+        //pager
+        mPager = new FrameLayout(c);
+        mPager.setLayoutTransition(new LayoutTransition());
+
+        //dragbar整不好，放弃，先占个位吧
+        addView(new View(c),QH.LPLinear.one(0,0).to());
+//        addView(dragbarView,QH.LPLinear.one(-2,dp8/2).margin(dp8*6,dp8/2,dp8*6,dp8/2).weight().to());
+        addView(mLinearTitle,QH.LPLinear.one(-2,-2).to());
+        addView(mPager,QH.LPLinear.one(-1,-2).to());
 
         Edit0Main editMain = new Edit0Main(host, this);
         toNextView(editMain, editMain.mToolbar);
@@ -106,20 +135,18 @@ public class EditConfigWindow extends LinearLayout {
     }
 
     public void toNextView(View content, @NonNull View titleView) {
-        TransitionManager.beginDelayedTransition(this);
+//        TransitionManager.beginDelayedTransition(this);
         changeHomeButton(mSubViews.size() == 0);
         if (titleView.getClass().equals(TextView.class))
             TestHelper.onTouchMoveView(titleView, this);
 
-        if (mLinearTitle.getChildCount() > 1)
-            mLinearTitle.removeViewAt(1);
+        mLinearTitle.removeViewAt(1);
         mLinearTitle.addView(titleView);
 
         mSubViews.add(content);
         mTitles.add(titleView);
-        if (this.getChildCount() > 1)
-            this.removeViewAt(1);
-        this.addView(content);
+        mPager.removeAllViews();
+        mPager.addView(content,QH.LPLinear.one(-2,-2).to());
     }
 
 
@@ -127,12 +154,13 @@ public class EditConfigWindow extends LinearLayout {
         if (mSubViews.size() < 2)
             return;
 
-        TransitionManager.beginDelayedTransition(this);
+//        TransitionManager.beginDelayedTransition(this);
 
         mSubViews.remove(mSubViews.size() - 1);
         mTitles.remove(mTitles.size() - 1);
-        this.removeViewAt(1);
-        this.addView(mSubViews.get(mSubViews.size() - 1));
+
+        mPager.removeAllViews();
+        mPager.addView(mSubViews.get(mSubViews.size() - 1));
         mLinearTitle.removeViewAt(1);
         mLinearTitle.addView(mTitles.get(mTitles.size() - 1));
 
@@ -150,13 +178,20 @@ public class EditConfigWindow extends LinearLayout {
             mIconView.setImageDrawable(getContext().getDrawable(R.drawable.aaa_editwindowicon));
 //        //TODO 为什么在onTouch里performClick的话，会触发两次点击事件呢？另外一个调用到底哪来的
             mIconView.setOnClickListener(v -> {
-                if (mLinearTitle.getChildCount() > 1)
-                    mLinearTitle.getChildAt(1).setVisibility(isMinimized ? VISIBLE : GONE);
-                if (this.getChildCount() > 1)
-                    this.getChildAt(1).setVisibility(isMinimized ? VISIBLE : GONE);
-                isMinimized = !isMinimized;
+                if(isMinimized)
+                    setLayoutTransition(null);
+
+                mLinearTitle.getChildAt(1).setVisibility(isMinimized ? VISIBLE : GONE);
+                this.getChildAt(0).setVisibility(isMinimized ? VISIBLE : GONE);
+                this.getChildAt(2).setVisibility(isMinimized ? VISIBLE : GONE);
+
+                if(isMinimized)
+                    setLayoutTransition(new LayoutTransition());
                 //放大时，可能会导致左侧出边界然后无法移动，所以需要限制位置。但是必须放在post里否则不生效
-                post(() -> TestHelper.restrictViewInsideParent(this, (FrameLayout) this.getParent()));
+                //另外，设置LayoutTransition也会导致限制不生效。为LayoutTransition设置监听器，会导致回正用力过度不知道怎么解决，所以只好在放大的时候临时取消动画。。
+                post(()->TestHelper.restrictViewInsideParent(EditConfigWindow.this,(FrameLayout) getParent()));
+
+                isMinimized = !isMinimized;
             });
         } else {
             mIconView.setImageDrawable(getContext().getDrawable(R.drawable.aaa_back));
@@ -176,14 +211,29 @@ public class EditConfigWindow extends LinearLayout {
 //        Log.d(TAG, "onMeasure: 宽度：" + oriWidthSize);
 
 
+
         //TODO 宽度过小时，给定一个固定的精确值，保证getRight()能够超出父边界，
         // 这样触摸监听里才能判断出右侧出界以便移回来（但把这个判断放到触摸监听里，右-左<最小宽度 也行吧
         // 还要测试一下，手机竖屏，如果屏幕宽度没有mMaxWidth，那么是按屏幕宽度还是mMaxWidth
+//        int finalWidthSpec = makeMeasureSpec(Math.min(oriWidthSize, mMaxWidth), AT_MOST);
+//        int finalHeightSpec = makeMeasureSpec(Math.min(oriHeightSize, mMaxHeight), AT_MOST);
+//
+//        mLinearTitle.measure(finalWidthSpec,finalHeightSpec);
+//        mPager.measure(finalWidthSpec,finalHeightSpec);
+//
+//        int fullWidth = Math.max( mLinearTitle.getMeasuredWidth(),mPager.getMeasuredWidth());
+//        int selfWidthMax = Math.min(fullWidth,mMaxWidth);
+//        setMeasuredDimension(
+//                makeMeasureSpec(Math.min(oriWidthSize,selfWidthMax),MeasureSpec.EXACTLY),
+//                makeMeasureSpec(Math.min(oriHeightSize,mMaxHeight),MeasureSpec.EXACTLY)
+//        );
+
         int finalWidthSpec = makeMeasureSpec(Math.min(oriWidthSize, mMaxWidth), AT_MOST);
         int finalHeightSpec = makeMeasureSpec(Math.min(oriHeightSize, mMaxHeight), AT_MOST);
-
         super.onMeasure(finalWidthSpec, finalHeightSpec);
     }
+
+
 
 
     @Override

@@ -35,7 +35,7 @@ public class GestureStateProvider {
     }
 
     private static void addState(Class<? extends FSMState2> clz) {
-        allStatesEditableList.put(FSMState2.getClassTag(clz),new StateInfo(clz));
+        allStatesEditableList.put(FSMState2.getStateTag(clz),new StateInfo(clz));
         allStateEditableList2.put(clz,new StateInfo(clz));
     }
 
