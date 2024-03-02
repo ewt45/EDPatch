@@ -1,12 +1,15 @@
 package com.example.datainsert.exagear.FAB.dialogfragment;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -24,7 +27,9 @@ import android.widget.Toast;
 
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.FabMenu;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.ControlsFragment;
+import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.ControlsFragment;
+import com.example.datainsert.exagear.controlsV2.XServerViewHolderImpl;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -120,10 +125,16 @@ public class AboutFab extends BaseFragment {
             Button btnControls2 = new Button(c);
             btnControls2.setText("自定义操作2");
             btnControls2.setOnClickListener(v -> {
-                requireActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.ed_main_fragment_container, new ControlsFragment(), "ControlsFragment")
-                        .addToBackStack(null)
-                        .commit();
+                requireActivity().getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN );
+                ActionBar actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
+                if (actionBar != null) actionBar.hide();
+
+                Const.init(requireActivity(), new XServerViewHolderImpl(null));
+                ControlsFragment fragment = new ControlsFragment()  ;
+                Bundle args = new Bundle();
+                args.putBoolean(ControlsFragment.ARGV_START_EDIT_ON_SHOW,true);
+                fragment.setArguments(args);
+                Const.initShowFragment(R.id.ed_main_fragment_container,fragment);
                 dismiss();
             });
             linearLayout.addView(btnControls2);

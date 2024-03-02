@@ -6,30 +6,26 @@ import android.os.Process;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
-import android.view.ViewDebug;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-import com.eltechs.axs.proto.output.replies.Str;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.Const;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.gestureMachine.State.StateCountDownMeasureSpeed;
+import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateCountDownMeasureSpeed;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.IntRangeEditable;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.StateTag;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.DeserializerOfModel;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.OneProfile;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.model.TouchAreaModel;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.widget.RangeSeekbar;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
+import com.example.datainsert.exagear.controlsV2.model.DeserializerOfModel;
+import com.example.datainsert.exagear.controlsV2.model.OneProfile;
+import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
+import com.example.datainsert.exagear.controlsV2.widget.RangeSeekbar;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;

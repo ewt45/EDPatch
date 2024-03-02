@@ -208,6 +208,7 @@ public class RR {
     public static int fsm_state_fingerNum=192;
     public static int fsm_state_2FZoom=193;
     public static int fsm_state_action_option =194;
+    public static int fsm_event_finger_num_same = 195;
 
 
     public static String locale = refreshLocale();
@@ -404,6 +405,7 @@ public class RR {
         zhArray.put(fsm_event_fastMove,"手指_移动_快速");
         zhArray.put(fsm_event_noMoveThenRelease,"某手指_未移动并松开");
         zhArray.put(fsm_event_moveThenRelease,"某手指_移动并松开");
+        zhArray.put(fsm_event_finger_num_same,"手指数量不变");
         zhArray.put(fsm_state_testSpd,"限时测量手指移速");
         zhArray.put(fsm_state_init,"初始状态");
         zhArray.put(fsm_state_fallback,"默认（返回初始状态）");
@@ -844,6 +846,12 @@ public class RR {
             array.recycle();
             return color;
         }
+        public static int textColorPrimaryInverse(Context c){
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.textColorPrimaryInverse});
+            int color = array.getColor(0, Color.WHITE);
+            array.recycle();
+            return color;
+        }
 
         public static int colorPrimary(Context c) {
             TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.colorPrimary});
@@ -916,6 +924,9 @@ public class RR {
         }
         public static int ed_main_fragment_container(){
             return rslvID(R.id.ed_main_fragment_container,0x7f090070);
+        }
+        public static int mainView(){
+            return rslvID(R.id.mainView,0x7f0900a0);
         }
     }
 

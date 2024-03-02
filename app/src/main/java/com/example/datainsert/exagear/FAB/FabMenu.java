@@ -22,7 +22,6 @@ import com.example.datainsert.exagear.FAB.dialogfragment.PulseAudio;
 import com.example.datainsert.exagear.FAB.dialogfragment.VirglOverlay;
 import com.example.datainsert.exagear.FAB.dialogfragment.Xegw2;
 import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.ControlsFragment;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
