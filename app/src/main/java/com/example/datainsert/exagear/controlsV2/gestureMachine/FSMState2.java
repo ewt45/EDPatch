@@ -104,7 +104,9 @@ public abstract class FSMState2 {
 //    }
 
     /**
-     * 目前可能被调用不止一次
+     * 将状态机附加到自身上。
+     * <br/> 自身id若为-1，则在这里生成一个id。所以新建的state在添加到全部状态列表前应该先调用此方法
+     * <br/> 目前可能被调用不止一次
      */
     public final void attach(GestureMachine finiteStateMachine) {
         if (machine != null)

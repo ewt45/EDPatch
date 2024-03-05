@@ -48,6 +48,9 @@ public class Const {
     public static int minTouchSize;
     public static int minBtnAreaSize;
     public static int minStickAreaSize;
+    public static float stickInnerOuterRatio = 2/3f; //摇杆的内圆与外圆半径之比
+    public static float stickInnerMaxOffOuterRadiusRatio = 1; //摇杆内圆允许移动的距离（到内圆圆心）与外圆半径之比
+
     public static int defaultBgColor = 0xffc2e2ff;
     public static int keycodeMaxCount = 256 + 7; //还有 7个鼠标按键
     /**
@@ -74,7 +77,7 @@ public class Const {
         dp8 = QH.px(c, 8);
         minTouchSize = QH.px(c, 32);
         minBtnAreaSize = QH.px(c, 48);
-        minStickAreaSize = minBtnAreaSize * 2;
+        minStickAreaSize = minBtnAreaSize;
 
         if (keyNames == null)
             keyNames = KeyOnBoardView.initXKeyCodesAndNames(c, keycodeMaxCount);

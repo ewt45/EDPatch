@@ -54,11 +54,6 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
     transient private OneShotTimer timer;
 
     public StateCountDownMeasureSpeed() {
-        //TODO 感觉有问题，如果这个距离单位是inch的话，应该获取xdpi才对
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_IN, 0.03f, Const.getContext().getResources().getDisplayMetrics());
-        float dpi = Const.getDpi();
-        float maxMovePx = Const.fingerStandingMaxMoveInches * dpi;
-
 //        this.mNoMoveMaxDistance = maxMovePx;
 //        this.mFastMoveMinDistance = maxMovePx;
 //        this.mTapMaxDistance = Const.fingerTapMaxMoveInches * dpi;
@@ -183,7 +178,6 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
                 .setSelectedValue(mFingerIndex)
                 .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
 
-        //TODO getFieldS返回数组，如果包含$字符，则第二个元素是说明，否则第二个元素是空
         return createEditViewQuickly(c,
                 new String[][]{
                         {"小于此距离则算作不移动", null},
@@ -197,31 +191,4 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
                        editFingerIndex
                 });
     }
-
-
-    //TODO
-    // map<string, adapterProperties> key为该adapter对应名称，用注解标注，adapterProperties里记录adapter的class，以及全部可编辑属性
-    // editable只用于编辑，gson处理还是常规处理
-    // 序列化：父类记录一个name，每个adapter唯一。（读取全部adapter放入map的时候检查一下有没有重复的吧）子类adapter用注解标注到类上，父类在构造函数里获取注解（此时能获取到吗）
-    // 反序列化：通过name找到对应adapter的class，然后想办法传入gestureContext
-    // editable：为用户可编辑的属性添加注解。初始化时获取这些field，根据注解类型，新建属性编辑视图（seekbar，edittext，checkbox，radiogroup）
-    //   用户与视图交互时，在视图回调中调用对应的field.set 为对应adapter实例设置对应的值（再包一层，可能输入数值需要变换之后才作为属性值）
-    // 放弃，注解功能还是太有限了，比如添加功能介绍
-    // 反序列化要不就无参构造函数吧，然后再单独写一个init函数，在加到状态机里的时候调用一下就行了
-    public static class Builder {
-        private StateCountDownMeasureSpeed i;
-
-        public Builder(GestureContext2 gesture) {
-            i = new StateCountDownMeasureSpeed();
-        }
-
-        public StateCountDownMeasureSpeed create() {
-            StateCountDownMeasureSpeed tmp = i;
-            i = null;
-            return tmp;
-
-        }
-    }
-
-
 }

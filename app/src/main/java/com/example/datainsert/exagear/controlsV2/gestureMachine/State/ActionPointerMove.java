@@ -49,14 +49,16 @@ public class ActionPointerMove extends FSMAction2 {
                 .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
                 .setSelectedValue(mFingerIndex)
                 .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
+        editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
 
-        //TODO 如果这个选最后移动，那么观测手指序号应该禁用。（另一个state也需要改）
         LimitEditText editFingerXYType = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
                 .setSelectableOptions(FSMR.value.手指位置_全部可用选项)
                 .setSelectedValue(mFingerXYType)
-                .setUpdateListener(editText -> mFingerXYType = editText.getSelectedValue());
-
+                .setUpdateListener(editText -> {
+                    mFingerXYType = editText.getSelectedValue();
+                    editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
+                });
 
         return createEditViewQuickly(c,
                 new String[][]{

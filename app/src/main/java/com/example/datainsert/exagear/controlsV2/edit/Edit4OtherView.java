@@ -49,7 +49,7 @@ public class Edit4OtherView extends LinearLayout {
     public static void setProfileShowTouchArea(boolean showTouchArea){
         Const.getActiveProfile().setShowTouchArea(showTouchArea);
         Const.getTouchView().invalidate();
-        //TODO 这种修改了profile的，切换了之后应该存入本地
+        //TODO (勿删）这种修改了profile的，切换了之后应该存入本地
         ModelProvider.saveProfile(Const.getActiveProfile());
     }
 

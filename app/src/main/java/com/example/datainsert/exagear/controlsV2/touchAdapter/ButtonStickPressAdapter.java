@@ -29,14 +29,17 @@ public class ButtonStickPressAdapter implements TouchAdapter {
     public int nowFingerAt = FINGER_AT_CENTER;
     @FingerAt
     protected int lastFingerAt = FINGER_AT_CENTER;
-    protected float startCenterX = 0;
-    protected float startCenterY = 0;
+    protected float fingerFirstDownX = 0; //TODO 需要把startCenterX改为downX，原先用这个的现在用outerCenterX（dpad会不会有影响）
+    protected float fingerFirstDownY = 0;
+    protected float outerCenterX = 0;
+    protected float outerCenterY = 0;
     protected float innerCenterX = 0;
     protected float innerCenterY = 0;
     private Finger mFinger;
 
     public ButtonStickPressAdapter(OneStick model) {
         mModel = model;
+        updateRealOuterCenterXYAndFingerDownXY(false);
     }
 
     /**
@@ -49,35 +52,35 @@ public class ButtonStickPressAdapter implements TouchAdapter {
 //                !isEditing() &&
 //                 activeFingers.size() > 0
 //                 mModel.isPressed();
-        updateRealCenterXY(isTouching);
 
         nowFingerAt = FINGER_AT_CENTER;
 
+
         if (!isTouching) {
-            innerCenterX = startCenterX;
-            innerCenterY = startCenterY;
+            innerCenterX = outerCenterX;
+            innerCenterY = outerCenterY;
         } else {
-            float xDiff = mFinger.getX() - startCenterX;
-            float yDiff = mFinger.getY() - startCenterY;
-            double unLimitedRadius = Math.hypot(xDiff, yDiff);
-            float maxRadius = mModel.getSize() / 2f;
-            if (unLimitedRadius > maxRadius) {
-                double ratio = maxRadius / unLimitedRadius;
-                xDiff *= ratio;
-                yDiff *= ratio;
-            }
-            innerCenterX = startCenterX + xDiff;
-            innerCenterY = startCenterY + yDiff;
+            //内圆中心偏移 计算是从外圆圆心到手指当前按下，并非手指初始按下到当前按下，因为前者可能大于后者
+            float xDiffUnlimited = mFinger.getX() - outerCenterX;
+            float yDiffUnlimited = mFinger.getY() - outerCenterY;
+
+            //内圆中心点 当前位置 (不能超过允许的最大移动范围）
+            double maxAndUnlimitedRadiusRatio = mModel.getInnerMaxOffsetFromOuterCenter() / Math.hypot(xDiffUnlimited, yDiffUnlimited);
+            float xDiffLimited = (float) (xDiffUnlimited * (maxAndUnlimitedRadiusRatio < 1 ? maxAndUnlimitedRadiusRatio : 1));
+            float yDiffLimited = (float) (yDiffUnlimited * (maxAndUnlimitedRadiusRatio < 1 ? maxAndUnlimitedRadiusRatio : 1));
+
+            innerCenterX = outerCenterX + xDiffLimited;
+            innerCenterY = outerCenterY + yDiffLimited;
 
             //先判断是否在0-3/8π范围内，确定上下，然后再判断是否在1/8π-1/2π范围内，叠加左右
-            float tanCurrent = Math.abs(xDiff / yDiff);
+            float tanCurrent = Math.abs(xDiffLimited / yDiffLimited);
             //不允许斜向
             if (mModel.direction == OneStick.WAY_4) {
-                if (tanCurrent <= 1 && yDiff < 0) {
+                if (tanCurrent <= 1 && yDiffLimited < 0) {
                     nowFingerAt |= FINGER_AT_TOP;
                 } else if (tanCurrent <= 1) {
                     nowFingerAt |= FINGER_AT_BOTTOM;
-                } else if (tanCurrent > 1 && xDiff < 0) {
+                } else if (tanCurrent > 1 && xDiffLimited < 0) {
                     nowFingerAt |= FINGER_AT_LEFT;
                 } else if (tanCurrent > 1) {
                     nowFingerAt |= FINGER_AT_RIGHT;
@@ -86,27 +89,38 @@ public class ButtonStickPressAdapter implements TouchAdapter {
             //允许斜向
             else {
                 //注意dy是向下的大小，如果大于0说明是手指向下移动。。。然后上下和左右之间不要用else，否则没法斜向了
-                if (tanCurrent < cot35d && yDiff < 0)
+                if (tanCurrent < cot35d && yDiffLimited < 0)
                     nowFingerAt |= FINGER_AT_TOP;
-                else if (tanCurrent < cot35d && yDiff > 0)
+                else if (tanCurrent < cot35d && yDiffLimited > 0)
                     nowFingerAt |= FINGER_AT_BOTTOM;
 
-                if (tanCurrent > tan35d && xDiff < 0)
+                if (tanCurrent > tan35d && xDiffLimited < 0)
                     nowFingerAt |= FINGER_AT_LEFT;
-                else if (tanCurrent > tan35d && xDiff > 0)
+                else if (tanCurrent > tan35d && xDiffLimited > 0)
                     nowFingerAt |= FINGER_AT_RIGHT;
             }
         }
     }
 
     /**
-     * updatePressPos时调用，更新整体中心位置。因为dpad的中心位置不会在按下时改变，所以单独抽出来作为一个方法，dpad里重写
+     * 构造函数、手指按下或松开时调用，更新外圆中心位置和手指初始按下位置。因为dpad的中心位置不会在按下时改变，所以单独抽出来作为一个方法，dpad里重写
      *
      * @param isTouching 是否有手指在这个区域内按着
      */
-    protected void updateRealCenterXY(boolean isTouching) {
-        startCenterX = isTouching ? mFinger.getXWhenFirstTouched() : (mModel.getLeft() + mModel.getSize() / 2f);
-        startCenterY = isTouching ? mFinger.getYWhenFirstTouched() : (mModel.getTop() + mModel.getSize() / 2f);
+    protected void updateRealOuterCenterXYAndFingerDownXY(boolean isTouching) {
+        float centerX = mModel.getLeft() + mModel.getSize() / 2f;
+        float centerY = mModel.getTop() + mModel.getSize() / 2f;
+
+        fingerFirstDownX = isTouching ? mFinger.getXWhenFirstTouched() : centerX;
+        fingerFirstDownY = isTouching ? mFinger.getYWhenFirstTouched() : centerY;
+
+        float xOffFromCenter = fingerFirstDownX - centerX;
+        float yOffFromCenter = fingerFirstDownY - centerY;
+
+        //外圆中心起始时，最大移动范围为内圆边缘
+        double maxAndCurrentRadio = mModel.getInnerRadius() / Math.hypot(xOffFromCenter, yOffFromCenter);
+        outerCenterX = (float) (centerX + xOffFromCenter * (maxAndCurrentRadio >= 1 ? 1 : maxAndCurrentRadio));
+        outerCenterY = (float) (centerY + yOffFromCenter * (maxAndCurrentRadio >= 1 ? 1 : maxAndCurrentRadio));
     }
 
     /**
@@ -150,6 +164,7 @@ public class ButtonStickPressAdapter implements TouchAdapter {
         nowFingerAt = FINGER_AT_CENTER;
         lastFingerAt = FINGER_AT_CENTER;
 
+        updateRealOuterCenterXYAndFingerDownXY(false);
         updatePressPos();
         sendKeys();
     }
@@ -163,16 +178,17 @@ public class ButtonStickPressAdapter implements TouchAdapter {
         nowFingerAt = FINGER_AT_CENTER;
         lastFingerAt = FINGER_AT_CENTER;
 
+        updateRealOuterCenterXYAndFingerDownXY(true);
         updatePressPos();
 
     }
 
-    public float getStartCenterX() {
-        return startCenterX;
+    public float getOuterCenterX() {
+        return outerCenterX;
     }
 
-    public float getStartCenterY() {
-        return startCenterY;
+    public float getOuterCenterY() {
+        return outerCenterY;
     }
 
     public float getInnerCenterX() {

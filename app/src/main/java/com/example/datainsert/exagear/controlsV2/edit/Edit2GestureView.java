@@ -16,9 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
+import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
@@ -26,14 +28,13 @@ import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateNeutr
 import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateWaitForNeutral;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneGestureArea;
-import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaGesture;
 import com.example.datainsert.exagear.controlsV2.widget.RecyclerAdapter;
 import com.example.datainsert.exagear.controlsV2.widget.TabPagerLayout;
-import com.example.datainsert.exagear.QH;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @SuppressLint("NotifyDataSetChanged")
 public class Edit2GestureView extends LinearLayout implements EditConfigWindow.OnReEnterListener {
     private final StateAdapter mStateAdapter;
@@ -91,11 +92,14 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
         // 如果改变状态机内容时，当前有未完成的操作会不会出现异常？
         CheckBox checkGestureHistory = new CheckBox(c);
         checkGestureHistory.setText("实时显示状态转移");
-        checkGestureHistory.setOnCheckedChangeListener((buttonView, isChecked) -> Const.getTouchView().getGestureHistoryTextView().setVisibility(isChecked?VISIBLE:GONE));
+        checkGestureHistory.setOnCheckedChangeListener((buttonView, isChecked) -> Const.getTouchView().getGestureHistoryTextView().setVisibility(isChecked ? VISIBLE : GONE));
 
         Button btnPreviewInGraphic = new Button(c);
         btnPreviewInGraphic.setText("查看当前的状态转移图");
-        btnPreviewInGraphic.setOnClickListener(v->{TestHelper.showConfirmDialog(c,"尚未实现",(dialog, which) -> {});});
+        btnPreviewInGraphic.setOnClickListener(v -> {
+            TestHelper.showConfirmDialog(c, "尚未实现", (dialog, which) -> {
+            });
+        });
 
         //放入tabPager
         LinearLayout linearState = new LinearLayout(c);
@@ -116,7 +120,7 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
         TabPagerLayout tabPagerLayout = new TabPagerLayout(c)
                 .addTabAndPage("状态", linearState)
                 .addTabAndPage("附加操作", linearAction)
-                .addTabAndPage("调试",linearDebug);
+                .addTabAndPage("调试", linearDebug);
 
         addView(tabPagerLayout);
     }
@@ -155,8 +159,9 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
         btnFinish.setOnClickListener(v -> {
             String alias = editNiceName.getText().toString().trim();
             //应该强制用户自定义一个名称，以防在状态编辑界面 用户把实例和类搞混，在想为什么选项变少了
-            if(alias.equals("")){
-                TestHelper.showConfirmDialog(v.getContext(),"请填写别名。",(dialog, which) -> {});
+            if (alias.equals("")) {
+                TestHelper.showConfirmDialog(v.getContext(), "请填写别名。", (dialog, which) -> {
+                });
                 return;
             }
             List<Integer> stateTypeList = isAction ? actionTypeCreatable : stateTypeCreatable;
@@ -174,20 +179,18 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
             else mStateAdapter.setDataList(getGestureAreaModel().getEditableStateList());
         });
 
-        linearRoot.addView(QH.getOneLineWithTitle(c, isAction?"附加操作":"状态", spinState, true));
+        linearRoot.addView(QH.getOneLineWithTitle(c, isAction ? "附加操作" : "状态", spinState, true));
         linearRoot.addView(QH.getOneLineWithTitle(c, "别名", editNiceName, true));
         linearRoot.addView(btnFinish, QH.LPLinear.one(-1, -2).top().to());
 
-        Const.getEditWindow().toNextView(linearRoot, isAction?"新建 (操作)":"新建 (状态)");
+        Const.getEditWindow().toNextView(linearRoot, isAction ? "新建 (操作)" : "新建 (状态)");
     }
 
     @Override
     public void onReEnter() {
         //状态重命名后刷新
         mStateAdapter.setDataList(getGestureAreaModel().getEditableStateList());
-        mStateAdapter.notifyDataSetChanged();
         mActionAdapter.setDataList(getGestureAreaModel().getEditableActionList());
-        mActionAdapter.notifyDataSetChanged();
     }
 
     private static class StateAdapter extends RecyclerAdapter<FSMState2> {
@@ -216,8 +219,18 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
                 return true;
             });
             popupMenu.getMenu().add("删除").setEnabled(!shouldNotDelete).setOnMenuItemClickListener(item -> {
-                TestHelper.showConfirmDialog(c, "确定要删除吗？与此状态相关的状态转移也会被一并删除。", (dialog, which) -> {
-                    //TODO 列出具体的，包含该状态的状态转移
+                int deleteId = state.getId();
+                StringBuilder builder = new StringBuilder();
+                OneGestureArea model = getGestureAreaModel();
+                for (List<Integer> oneTran : model.getTransitionList())
+                    if (oneTran.get(0).equals(deleteId) || oneTran.get(2).equals(deleteId))
+                        builder.append("\n").append(model.findStateById(oneTran.get(0)).getNiceName())
+                                .append(" ---").append(FSMR.getEventS(oneTran.get(1))).append("---> ")
+                                .append(model.findStateById(oneTran.get(2)).getNiceName());
+                if (builder.length() > 0)
+                    builder.insert(0, "\n\n以下转移将会被删除: ");
+
+                TestHelper.showConfirmDialog(c, "确定要删除吗？与此状态相关的状态转移也会被一并删除。" + builder.toString(), (dialog, which) -> {
                     getGestureAreaModel().removeState(state);
                     setDataList(getGestureAreaModel().getEditableStateList()); //需要重新设置列表，因为这个列表不于allStateList同步
                 });
@@ -250,8 +263,17 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
                 return true;
             });
             popupMenu.getMenu().add("删除").setOnMenuItemClickListener(item -> {
-                TestHelper.showConfirmDialog(c, "确定要删除吗？", (dialog, which) -> {
-                    //TODO 列出具体的包含该操作的状态转移
+                int deleteId = action.getId();
+                StringBuilder builder = new StringBuilder();
+                OneGestureArea model = getGestureAreaModel();
+                for (List<Integer> oneTran : TestHelper.filterList(model.getTransitionList(), item1 -> item1.indexOf(deleteId) >= 3))
+                    builder.append("\n").append(model.findStateById(oneTran.get(0)).getNiceName())
+                            .append(" ---").append(FSMR.getEventS(oneTran.get(1))).append("---> ")
+                            .append(model.findStateById(oneTran.get(2)).getNiceName());
+                if (builder.length() > 0)
+                    builder.insert(0, "\n\n以下状态转移将无法再使用此附加操作: ");
+
+                TestHelper.showConfirmDialog(c, "确定要删除吗？" + builder.toString(), (dialog, which) -> {
                     getGestureAreaModel().removeState(action);
                     setDataList(getGestureAreaModel().getEditableActionList()); //需要重新设置列表，因为这个列表不于allStateList同步
                 });

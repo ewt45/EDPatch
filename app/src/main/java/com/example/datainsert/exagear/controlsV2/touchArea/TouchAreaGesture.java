@@ -13,10 +13,12 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.xserver.Pointer;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.GestureContext2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.GestureMachine;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.State.ActionButtonClick;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TouchAreaGesture extends TouchArea<OneGestureArea> {
+public class TouchAreaGesture extends TouchArea<OneGestureArea> implements GestureMachine.FSMListener {
     private final GestureDistributeAdapter gestureAdapter;
 
     private final GestureContext2 gestureContext;
@@ -60,23 +62,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
         //编辑模式下，添加一个状态机的监听器，在状态转移时回调，将该转移显示到textview上
         if (Const.isEditing()) {
-            gestureContext.getMachine().addListener((preState, event, postState, actions) -> {
-//                String builder = (preState instanceof StateNeutral ? "\n\n" : "") +
-//                        preState.getNiceName()
-//                        + "  -----" + FSMR.getEventS(event) + "----->  " +
-//                        postState.getNiceName() +
-//                        (actions.length == 0 ? "" : "(" + Arrays.toString(actions) + ")");
-//                historyGestureList.add(builder);
-                historyGestureList.add(Arrays.asList(preState.getNiceName(), FSMR.getEventS(event), postState.getNiceName(), getActionsString(actions)));
-                if (historyGestureList.size() > 200)
-                    historyGestureList.remove(0);
-
-                mHandler.post(() ->  {
-                    TransitionHistoryView view = Const.getTouchView().getGestureHistoryTextView();
-                    if(view.getVisibility() == View.VISIBLE)
-                        view.addHistory(historyGestureList.get(historyGestureList.size()-1));
-                });
-            });
+            gestureContext.getMachine().addListener(this);
         }
 
 
@@ -89,18 +75,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
     @Override
     public void onDraw(Canvas canvas) {
         //TODO 编辑模式下，实时显示当前走到哪一阶段
-
     }
-
-    private String getActionsString(FSMAction2[] actions){
-        StringBuilder builder = new StringBuilder();
-        for(FSMAction2 action:actions)
-            builder.append(action.getNiceName()).append(", ");
-        if(builder.length()>=2)
-            builder.delete(builder.length()-2,builder.length());
-        return builder.toString();
-    }
-
 
     /**
      * 从配置中读取状态机内容，构建状态机存入context
@@ -337,5 +312,18 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> {
 
     public GestureContext2 getGestureContext() {
         return gestureContext;
+    }
+
+    @Override
+    public void onTransition(FSMState2 preState, int event, FSMState2 postState, List<FSMAction2> actions) {
+        historyGestureList.add(Arrays.asList(preState.getNiceName(), FSMR.getEventS(event), postState.getNiceName(), TestHelper.getActionsString(actions)));
+        if (historyGestureList.size() > 200)
+            historyGestureList.remove(0);
+
+        mHandler.post(() ->  {
+            TransitionHistoryView view = Const.getTouchView().getGestureHistoryTextView();
+            if(view.getVisibility() == View.VISIBLE)
+                view.addHistory(historyGestureList.get(historyGestureList.size()-1));
+        });
     }
 }

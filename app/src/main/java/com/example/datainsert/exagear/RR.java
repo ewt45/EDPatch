@@ -867,6 +867,12 @@ public class RR {
             return color;
         }
 
+        public static int colorBackground(Context c) {
+            TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.colorBackground});
+            int color = array.getColor(0, 0x00ffffff);
+            array.recycle();
+            return color;
+        }
         public static Drawable selectableItemBackground(Context c) {
             TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.selectableItemBackground});
             Drawable d = array.getDrawable(0);

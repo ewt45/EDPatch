@@ -31,7 +31,7 @@ public abstract class TouchAreaModel {
     protected int top = 0;
     protected int width;
     protected int height;
-    protected int mMinAreaSize = minTouchSize;
+    transient protected int mMinAreaSize = minTouchSize;
     transient protected boolean isPressed = false;
     protected TouchAreaModel(@ModelType int type) {
         modelType = type;

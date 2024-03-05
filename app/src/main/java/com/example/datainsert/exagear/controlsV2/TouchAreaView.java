@@ -209,7 +209,7 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
                 }
                 break;
         }
-        // TODO 要不要invalidate传入相应那个area的范围，只修改某一个区域，能减少点消耗
+        //要不要invalidate传入相应那个area的范围，只修改某一个区域，能减少点消耗（阿这 传入边界的犯法已经被废弃了）
         invalidate();//按下时按钮背景会变化，移动时摇杆要移动，所以需要重绘
         return true;
     }

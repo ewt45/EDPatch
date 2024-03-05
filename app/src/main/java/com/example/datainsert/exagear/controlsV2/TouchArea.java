@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controlsV2;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;

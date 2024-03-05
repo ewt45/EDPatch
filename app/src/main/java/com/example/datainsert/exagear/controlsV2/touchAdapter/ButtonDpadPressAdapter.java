@@ -8,8 +8,8 @@ public class ButtonDpadPressAdapter extends ButtonStickPressAdapter{
     }
 
     @Override
-    protected void updateRealCenterXY(boolean isTouching) {
-        startCenterX = mModel.getLeft()+mModel.getSize()/2f;
-        startCenterY = mModel.getTop() + mModel.getSize()/2f;
+    protected void updateRealOuterCenterXYAndFingerDownXY(boolean isTouching) {
+        fingerFirstDownX = mModel.getLeft()+mModel.getSize()/2f;
+        fingerFirstDownY = mModel.getTop() + mModel.getSize()/2f;
     }
 }

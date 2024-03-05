@@ -13,9 +13,8 @@ public class AndroidPointReporter {
 
     public AndroidPointReporter() {
         this.host = Const.getXServerHolder();
-        //TODO 日后应该除掉这种null的情况
         int[] xWH = host.getXScreenPixels();
-        this.maximalDelta = xWH == null ? 20 : 1.0f * Math.min(xWH[0], xWH[1]) / this.maxDivisor;
+        this.maximalDelta =  1.0f * Math.min(xWH[0], xWH[1]) / this.maxDivisor;
     }
 
     private void sendCoordinates(float f, float f2) {

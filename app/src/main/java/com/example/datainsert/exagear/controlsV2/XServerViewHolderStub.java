@@ -22,11 +22,6 @@ public abstract class XServerViewHolderStub implements XServerViewHolder {
     }
 
     @Override
-    public XZoomController getZoomController() {
-        return null;
-    }
-
-    @Override
     public Matrix getViewToXServerTransformationMatrix() {
         return mMatrix;
     }

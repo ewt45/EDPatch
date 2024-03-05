@@ -49,7 +49,6 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
         //TODO 这里原代码用的getXWhenFirstTouched，是有什么理由吗？）
         float[] fingerXY = getContext().getFingerXYByType(mFingerXYType,mFingerIndex);
         float shortestDist = GeometryHelpers.distance(posInAMatrix[0], posInAMatrix[1], fingerXY[0], fingerXY[1]);
-        Log.d(TAG, "第二次左键单击 手指距离光标位置 = "+shortestDist);
 
         sendEvent( shortestDist<= this.mDistThreshold
                 ? FSMR.event.手指距离指针_近
@@ -67,12 +66,16 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
                 .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
                 .setSelectedValue(mFingerIndex)
                 .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
+        editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
 
         LimitEditText editFingerXYType = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
                 .setSelectableOptions(FSMR.value.手指位置_全部可用选项)
                 .setSelectedValue(mFingerXYType)
-                .setUpdateListener(editText -> mFingerXYType = editText.getSelectedValue());
+                .setUpdateListener(editText -> {
+                    mFingerXYType = editText.getSelectedValue();
+                    editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
+                });
 
         LimitEditText editThreshold = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)

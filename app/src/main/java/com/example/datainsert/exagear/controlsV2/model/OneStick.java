@@ -4,6 +4,8 @@ import static com.example.datainsert.exagear.controlsV2.Const.minStickAreaSize;
 
 import android.support.annotation.IntDef;
 
+import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 
 import java.lang.annotation.Retention;
@@ -23,7 +25,8 @@ public class OneStick extends TouchAreaModel {
      * 宽高相等的大小
      */
     protected int size;
-    OneStick(){
+
+    OneStick() {
         this(TYPE_STICK);
     }
 
@@ -40,18 +43,46 @@ public class OneStick extends TouchAreaModel {
 
     @Override
     public void setWidth(int width) {
-        super.setWidth(width);
-        this.size = Math.max(this.width, height);
+        setSize(width);
     }
 
     @Override
     public void setHeight(int height) {
-        super.setHeight(height);
-        this.size = Math.max(this.width, height);
+        setSize(height);
     }
 
+    public void setSize(int newSize) {
+        this.size = Math.max(newSize, minStickAreaSize);
+        this.width = this.size;
+        this.height  = this.size;
+    }
+
+    /**
+     * 获取此区域的正方形边长（外圆的半径）
+     */
     public int getSize() {
         return size;
+    }
+
+    /**
+     * 获取外圆半径，为区域边长的一半
+     */
+    public float getOuterRadius() {
+        return size / 2f;
+    }
+
+    /**
+     * 获取内圆半径,为外圆半径*Const.stickInnerOuterRatio
+     */
+    public float getInnerRadius() {
+        return getOuterRadius() * Const.stickInnerOuterRatio;
+    }
+
+    /**
+     * 获取内圆圆心距离外圆圆心的最远距离。为外圆半径*Const.stickInnerMaxOffOuterRadiusRatio
+     */
+    public float getInnerMaxOffsetFromOuterCenter() {
+        return getOuterRadius() * Const.stickInnerMaxOffOuterRadiusRatio;
     }
 
     public void setKeycodeAt(int keycode, @KeyPos int pos) {
@@ -79,12 +110,13 @@ public class OneStick extends TouchAreaModel {
 
     @Override
     protected void cloneSelfFields(TouchAreaModel ref) {
-        if(ref.getClass().equals(OneStick.class)){
+        if (ref.getClass().equals(OneStick.class)) {
             OneStick ref2 = (OneStick) ref;
             direction = ref2.direction;
             size = ref2.size;
         }
     }
+
 
     @IntDef({WAY_4, WAY_8})
     @Retention(RetentionPolicy.SOURCE)

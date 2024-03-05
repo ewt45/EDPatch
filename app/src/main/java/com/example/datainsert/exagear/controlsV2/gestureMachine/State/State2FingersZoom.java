@@ -12,6 +12,7 @@ import com.eltechs.axs.widgets.viewOfXServer.XZoomController;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
+import com.example.datainsert.exagear.controlsV2.XZoomController2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
@@ -31,7 +32,7 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
     transient private Finger finger2;
     transient private float[] lastCenterXY;
     transient private float lastDistance;
-    transient private XZoomController mZoomController;
+    transient private XZoomController2 mZoomController;
     @Override
     protected void onAttach() {
     }
@@ -43,14 +44,12 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
         Assert.state(totalFingerCount > mFingerIndex1 && totalFingerCount > mFingerIndex2);
         finger1 = getContext().getFingers().get(mFingerIndex1);
         finger2 = getContext().getFingers().get(mFingerIndex2);
-        lastCenterXY = new float[]{(finger1.getX() + finger2.getX()) / 2, (finger1.getY() + finger2.getY()) / 2};
-        lastDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
-        ;
-        //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
+//        lastCenterXY = new float[]{(finger1.getX() + finger2.getX()) / 2, (finger1.getY() + finger2.getY()) / 2};
+//        lastDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
+//        //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
         mZoomController = getContext().getZoomController();
-        if (mZoomController != null)
-            mZoomController.setAnchorBoth(finger1.getX(), finger1.getY());
-
+//        mZoomController.setAnchorBoth(finger1.getX(), finger1.getY());
+        mZoomController.start(finger1.getX(),finger1.getY(),finger2.getX(),finger2.getY());
     }
 
     @Override
@@ -62,23 +61,7 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
 
     @Override
     public void notifyMoved(Finger finger, List<Finger> list) {
-        if (mZoomController == null)
-            return;
-
-        float newDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
-        double scaleDelta = newDistance / this.lastDistance;
-        boolean isEarlierZoomed = mZoomController.isZoomed();
-
-        mZoomController.insertZoomFactorChange(scaleDelta);
-        mZoomController.refreshZoom();
-
-        if (isEarlierZoomed != mZoomController.isZoomed()) {
-            mZoomController.setAnchorBoth(finger1.getX(), finger1.getY());
-        } else {
-            mZoomController.setAnchorHost(finger1.getX(), finger1.getY());
-        }
-        mZoomController.refreshZoom();
-        this.lastDistance = newDistance;
+        mZoomController.update(finger1.getX(),finger1.getY(),finger2.getX(),finger2.getY());
 
         //TODO 改为自己的缩放方法
 //        //1. 定位中心点：两指的中心

@@ -14,7 +14,6 @@ import static org.junit.Assert.*;
 
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateCountDownMeasureSpeed;
-import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.v2.annotation.IntRangeEditable;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.model.DeserializerOfModel;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
@@ -129,35 +128,7 @@ public class ExampleInstrumentedTest {
     public void test_father_class_get_child_annotation(){
         new ChildTest();
     }
-    @Test
-    public void test_get_field_annotations(){
-        for(Field field: StateCountDownMeasureSpeed.class.getDeclaredFields()){
-            for(Annotation annotation: field.getAnnotations()){
-                Class<?> aCls = annotation.annotationType();
-                Log.d(TAG, "test: class="+aCls);
-                if(aCls.equals(IntRangeEditable.class)){
-                    field.setAccessible(true);
-                    IntRangeEditable intRangeEditable = (IntRangeEditable) annotation;
-                    int[] range = intRangeEditable.range();
-                    int defaultValue = intRangeEditable.defVal();
-                    Context c = InstrumentationRegistry.getInstrumentation().getTargetContext();
-                    RangeSeekbar seekbar = new RangeSeekbar(c,range[0],range[1]) {
-                        @Override
-                        protected int rawToFinal(int rawValue) {
-                            return rawValue;
-                        }
 
-                        @Override
-                        protected int finalToRaw(int finalValue) {
-                            return finalValue;
-                        }
-                    };
-                    seekbar.setValue(defaultValue);
-                }
-            }
-        }
-
-    }
     @Test
     public void useAppContext() {
         // Context of the app under test.

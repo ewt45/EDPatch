@@ -43,6 +43,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.eltechs.ed.R;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.controlsV2.widget.DrawableAlign;
@@ -188,21 +189,19 @@ public class TestHelper {
         return btn;
     }
 
-    public static int getBGColor(Context c) {
-        TypedArray array = c.obtainStyledAttributes(new int[]{android.R.attr.colorBackground});
-        int color = array.getColor(0, BLACK);
-        array.recycle();
-        return ColorUtils.blendARGB(0xababab, color, 0.3f);
 
+
+    /**
+     * 修改颜色int（argb）的a值
+     */
+    public int setColorA(int argb, int newA){
+        return (argb & 0x00ffffff) | (newA << 24);
     }
 
     /**
      * 由于边距设置到外层时一直存在，导致无法判断可滚动的方向，所以不在这里设置边距了
-     *
-     * @return
      */
     public static NestedScrollView wrapAsScrollView(View view) {
-        int p = dp8 * 2;
         NestedScrollView scrollView = QH.wrapAsDialogScrollView(view);
         scrollView.setPadding(0, 0, 0, 0);
 //        scrollView.getChildAt(0).setPadding(p,p,p,p);
@@ -232,7 +231,7 @@ public class TestHelper {
     /**
      * 仅修改一个颜色中的透明度值。
      */
-    public static int setColorAlpha(int alpha, int argb) {
+    public static int setColorAlpha(int argb, int alpha) {
         return (argb & 0x00ffffff) | (alpha << 24);
     }
 
@@ -448,6 +447,23 @@ public class TestHelper {
             if (i < min)
                 min = i;
         return min;
+    }
+
+    public static int max(int ... values) {
+        int max = values[0];
+        for(int i:values)
+            if(i>max)
+                max = i;
+        return max;
+    }
+
+    public static String getActionsString(List<FSMAction2> actions){
+        StringBuilder builder = new StringBuilder();
+        for(FSMAction2 action:actions)
+            builder.append(action.getNiceName()).append(", ");
+        if(builder.length()>=2)
+            builder.delete(builder.length()-2,builder.length());
+        return builder.toString();
     }
 
 

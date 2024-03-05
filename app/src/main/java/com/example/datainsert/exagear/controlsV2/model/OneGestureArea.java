@@ -3,24 +3,26 @@ package com.example.datainsert.exagear.controlsV2.model;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateNeutral;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateWaitForNeutral;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OneGestureArea extends TouchAreaModel {
-    public static final int IDX_TRAN_PRESTATE=0;
-    public static final int IDX_TRAN_EVENT=1;
+    public static final int IDX_TRAN_PRESTATE = 0;
+    public static final int IDX_TRAN_EVENT = 1;
     public static final int IDX_TRAN_POSTSTATE = 2;
     public static final int IDX_TRAN_ACTION_START = 3;
     //TODO statemachine的table和defaultState啥的都放这里
-    List<FSMState2> allStateList = new ArrayList<>();
-    List<List<Integer>> transitionList = new ArrayList<>(); //每一项是一个转换。0是前状态，1是事件，2是后状态，3往后都是附加操作
+    private List<FSMState2> allStateList = new ArrayList<>();
+    private List<List<Integer>> transitionList = new ArrayList<>(); //每一项是一个转换。0是前状态，1是事件，2是后状态，3往后都是附加操作
     transient private StateWaitForNeutral defaultState;
     transient private StateNeutral initState;
+    transient private List<FSMState2> unModifiableAllStateList;
     transient private int maxIdValue = 0; //当前已分配状态id的最大值
 
     public OneGestureArea() {
@@ -31,7 +33,8 @@ public class OneGestureArea extends TouchAreaModel {
      * 请务必在初始时调用一次该函数
      */
     public void init() {
-
+        unModifiableAllStateList = Collections.unmodifiableList(allStateList);
+        ;
         //默认和初始状态，应优先从全部状态列表中寻找。如果全部状态列表中没有，则自己新建并添加返回初始状态的转换。
         for (FSMState2 state : allStateList) {
             if (state instanceof StateNeutral)
@@ -118,13 +121,20 @@ public class OneGestureArea extends TouchAreaModel {
         return initState;
     }
 
+    /**
+     * 获取全部状态列表，注意状态列表应该由model内部维护，外部不能直接修改
+     */
     public List<FSMState2> getAllStateList() {
-        return allStateList;
+        return unModifiableAllStateList;
     }
 
     public void addStates(FSMState2... states) {
         for (FSMState2 state : states)
-            if (!allStateList.contains(state))
+            if(state.getId() == FSMR.value.stateIdInvalid)
+                throw new RuntimeException("请在调用attach（分配id）后再添加此状态");
+            else if (state instanceof StateWaitForNeutral || state instanceof StateNeutral)
+                throw new RuntimeException("新添加的状态不能是初始或默认状态");
+            else if (!allStateList.contains(state))
                 allStateList.add(state);
     }
 
@@ -132,17 +142,17 @@ public class OneGestureArea extends TouchAreaModel {
     /**
      * 从全部状态列表中筛选掉action，返回剩下的状态列表。用于编辑界面展示状态列表
      */
-    public List<FSMState2> getEditableStateList(){
-        return TestHelper.filterList(allStateList, item->!(item instanceof FSMAction2));
-
+    public List<FSMState2> getEditableStateList() {
+        return TestHelper.filterList(allStateList, item -> !(item instanceof FSMAction2));
     }
+
     /**
      * 从全部状态列表中筛选掉state，返回剩下的action列表。用于编辑界面展示操作列表
      */
-    public List<FSMAction2> getEditableActionList(){
+    public List<FSMAction2> getEditableActionList() {
         List<FSMAction2> returnList = new ArrayList<>();
-        for(FSMState2 state:getAllStateList())
-            if(state instanceof FSMAction2)
+        for (FSMState2 state : getAllStateList())
+            if (state instanceof FSMAction2)
                 returnList.add((FSMAction2) state);
         return returnList;
     }
@@ -188,8 +198,8 @@ public class OneGestureArea extends TouchAreaModel {
             }
             //如果是操作，则只删除操作id
             else {
-                for(int actIdx=3; actIdx<oneTran.size(); actIdx++)
-                    if(oneTran.get(actIdx).equals(deleteId)){
+                for (int actIdx = 3; actIdx < oneTran.size(); actIdx++)
+                    if (oneTran.get(actIdx).equals(deleteId)) {
                         oneTran.remove(actIdx);
                         actIdx--;
                     }
@@ -199,12 +209,13 @@ public class OneGestureArea extends TouchAreaModel {
 
     /**
      * 获取某状态，发送某事件 对应的状态转移，请确保该状态已存在于全部状态列表中
+     *
      * @return 状态转移。若不存在，则会首先创建一个默认的转移，将其加入的转移列表中并返回该转移
      */
-    public List<Integer> getTransition(FSMState2 preState, int eventId){
-        TestHelper.assertTrue(allStateList.contains(preState),"请确保该状态已存在于全部状态列表中");
-        for(List<Integer> transition:getTransitionList())
-            if(transition.get(0) == preState.getId() && transition.get(1) == eventId)
+    public List<Integer> getTransition(FSMState2 preState, int eventId) {
+        TestHelper.assertTrue(allStateList.contains(preState), "请确保该状态已存在于全部状态列表中");
+        for (List<Integer> transition : getTransitionList())
+            if (transition.get(0) == preState.getId() && transition.get(1) == eventId)
                 return transition;
 
         //若不存在，则会首先创建一个默认的转移，将其加入的转移列表中并返回该转移
@@ -221,8 +232,8 @@ public class OneGestureArea extends TouchAreaModel {
      * 通过id寻找state
      */
     public <T extends FSMState2> T findStateById(int stateId) {
-        for(FSMState2 state:allStateList)
-            if(state.getId()==stateId)
+        for (FSMState2 state : allStateList)
+            if (state.getId() == stateId)
                 return (T) state;
         return null;
     }

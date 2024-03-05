@@ -9,6 +9,9 @@ import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.example.datainsert.exagear.RR;
 
+/**
+ * 每次切屏/旋转 都会彻底删除fragment并重新添加
+ */
 public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay {
     public static final String TAG = "FalloutIOverlay2";
     public static final float buttonSizeInches = 0.4f;

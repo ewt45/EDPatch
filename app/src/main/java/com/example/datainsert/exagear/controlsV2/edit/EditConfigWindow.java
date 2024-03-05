@@ -69,11 +69,9 @@ public class EditConfigWindow extends RelativeLayout {
         params.gravity = Gravity.CENTER_HORIZONTAL;
         setLayoutParams(params);
 
-        //TODO 颜色适配
         ShapeDrawable bgDrawable = new ShapeDrawable();
-//        bgDrawable.setShape(new RoundRectShape(new float[]{20, 20, 20, 20, 20, 20, 20, 20}, null, null));
         bgDrawable.setShape(new RectShape());
-        bgDrawable.setTint(TestHelper.getBGColor(c) | 0xe0000000);
+        bgDrawable.setTint(TestHelper.setColorAlpha(RR.attr.colorBackground(c),0xe0));
         setBackground(bgDrawable);
 
         //用outline来切割圆角，记得setClipToOutline(true)
@@ -110,7 +108,7 @@ public class EditConfigWindow extends RelativeLayout {
         mPager.setMinimumWidth(QH.px(c, 150));
         mPager.setLayoutTransition(new LayoutTransition());
 
-        //TODO 为什么在onTouch里performClick的话，会触发两次点击事件呢？另外一个调用到底哪来的
+        //为什么在onTouch里performClick的话，会触发两次点击事件呢？另外一个调用到底哪来的（现在么问题了，不知道咋解决的）
         //如果第一个视图，点击为缩小或放大，否则为返回键
         mIconView.setOnClickListener(v -> {
             if (!isFirstView())
@@ -234,10 +232,9 @@ public class EditConfigWindow extends RelativeLayout {
      * 改变homeBtn的样式和功能
      */
     private void changeHomeButtonIcon() {
-        //TODO 放入assets
         mIconView.setImageDrawable(isFirstView()
-                ? getContext().getDrawable(R.drawable.aaa_editwindowicon)
-                : getContext().getDrawable(R.drawable.aaa_back));
+                ? TestHelper.getAssetsDrawable(getContext(),"controls/edit_window_icon.xml")
+                : TestHelper.getAssetsDrawable(getContext(),"controls/back.xml"));
     }
 
     /**

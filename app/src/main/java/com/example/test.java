@@ -13,6 +13,7 @@ import android.os.Process;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.ApplicationStateBase;

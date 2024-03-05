@@ -7,6 +7,8 @@ import static com.example.datainsert.exagear.controlsV2.TestHelper.getTextButton
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v4.graphics.ColorUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 
 public class ZZZArchive {
     private void popupWindow(TouchAreaModel mModel, Context c) {
@@ -57,10 +60,23 @@ public class ZZZArchive {
             popupWindow.setContentView(linearPopupRoot);
 //            popupWindow.setWidth(getWidth());
             popupWindow.setHeight(WRAP_CONTENT);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(TestHelper.getBGColor(c)));
+            popupWindow.setBackgroundDrawable(new ColorDrawable(RR.attr.colorBackground(c)));
             popupWindow.setOutsideTouchable(true);
             popupWindow.setFocusable(true);
             popupWindow.showAsDropDown((View) v.getParent());
         });
+    }
+
+    public static int getBGColor(Context c) {
+        int color = RR.attr.colorBackground(c);
+        return ColorUtils.blendARGB(0xababab, color, 0.3f);
+
+    }
+
+    public void inchToPx(){ //from: StateCountDownMeasureSpeed
+        //TODO 感觉有问题，如果这个距离单位是inch的话，应该获取xdpi才对
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_IN, 0.03f, Const.getContext().getResources().getDisplayMetrics());
+        float dpi = Const.getDpi();
+        float maxMovePx = Const.fingerStandingMaxMoveInches * dpi;
     }
 }

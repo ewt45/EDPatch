@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controlsV2;
 
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.support.annotation.IntDef;
 
 import com.eltechs.axs.geom.Point;
@@ -16,11 +17,14 @@ import java.util.List;
 public interface XServerViewHolder {
 
     Matrix getXServerToViewTransformationMatrix();
-
-    @Deprecated
-    XZoomController getZoomController();
-
     Matrix getViewToXServerTransformationMatrix();
+    void setViewToXServerTransformationMatrix(Matrix matrix);
+    XZoomController2 getZoomController();
+
+    /**
+     * 设置x屏幕上可见的范围的起始位置和宽高（相对完整可见区域）
+     */
+    void setXViewport(float l,float t,float r,float b);
 
     /**
      * // pressKeyOrPointer 这几个改到接口作为default，因为这个pointer还是key的区分是我自己定义的，不属于通用规则，子类不应该管这些的实现
@@ -84,7 +88,7 @@ public interface XServerViewHolder {
     void injectPointerWheelDown(int times);
 
     int[] getXScreenPixels();
-
+    int[] getAndroidViewPixels();
     Point getPointerLocation();
     boolean isShowCursor();
 

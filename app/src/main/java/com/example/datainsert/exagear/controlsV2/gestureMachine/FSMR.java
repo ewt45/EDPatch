@@ -67,7 +67,7 @@ public class FSMR {
         }
         return str;
     }
-
+    //TODO getFieldS返回数组，如果包含$字符，则第二个元素是说明，否则第二个元素是空
     public static String getFieldS(int id) {
         return fieldArr.get(id);
     }
@@ -166,7 +166,7 @@ public class FSMR {
         public static final int 手指位置_最后移动 = -1;
         public static final int 手指位置_初始按下 = 1;
         public static final int 手指位置_当前 = 2;
-        //TODO 要翻译的话，直接把这个数组作为key吧，单int值作为key容易重复还太多
+        //要翻译的话，直接把这个数组作为key吧，单int值作为key容易重复还太多
         public static final int[] 手指位置_全部可用选项 = new int[]{手指位置_最后移动, 手指位置_初始按下, 手指位置_当前};
 
 

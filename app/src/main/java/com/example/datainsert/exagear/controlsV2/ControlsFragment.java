@@ -70,6 +70,12 @@ public class ControlsFragment extends Fragment {
     }
 
     @Override
+    public void onDestroy() {
+        //TODO
+        super.onDestroy();
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResultCallback callback = intentCallbackList.get(requestCode);
 
