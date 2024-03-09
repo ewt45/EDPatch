@@ -8,6 +8,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.model.OneButton;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
@@ -20,14 +21,14 @@ public class Prop1Shape extends Prop<TouchAreaModel> {
 
     @Override
     public String getTitle() {
-        return "形状";
+        return RR.getS(RR.global_shape);
     }
 
     @Override
     protected View createMainEditView(Context c) {
         //形状
         HorizontalScrollView scrollGroupShape = buildOptionsGroup(c,
-                new String[]{"矩形", "圆形",},
+                RR.getSArr(RR.ctr2_prop_shape_names) , //矩形 圆形
                 new int[]{Const.BtnShape.RECT, Const.BtnShape.OVAL,},
                 (group, btn, intValue) -> {
                     if (mHost.getModel() instanceof OneButton)

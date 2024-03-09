@@ -44,10 +44,10 @@ public class test {
     }
 
     public static void main(String[] args){
-
-        int mainPid = Process.myPid(); //这个用不了？
-        Log.d("TAG", "log: 主进程： "+mainPid+", "+Const.activityRef);
-        System.out.println("system: 主进程： "+mainPid+", "+Const.activityRef);
+//
+//        int mainPid = Process.myPid(); //这个用不了？
+//        Log.d("TAG", "log: 主进程： "+mainPid+", "+Const.activityRef);
+//        System.out.println("system: 主进程： "+mainPid+", "+Const.activityRef);
 
     }
     @SuppressLint("NewApi")

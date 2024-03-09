@@ -34,8 +34,6 @@ public abstract class TouchArea<T extends TouchAreaModel> {
      */
     public static int HANDLED_REMOVE = 2<<2;
 
-
-
     protected final List<Finger> activeFingers = new ArrayList<>();
     protected final List<Finger> immutableActiveFingers = Collections.unmodifiableList(this.activeFingers);
     protected final TouchAdapter mAdapter;

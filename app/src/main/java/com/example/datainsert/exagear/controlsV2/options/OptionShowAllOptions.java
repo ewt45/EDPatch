@@ -32,7 +32,8 @@ public class OptionShowAllOptions extends AbstractOption{
         LinearLayout linearControlOuter = new LinearLayout(c);
         linearControlOuter.setOrientation(LinearLayout.VERTICAL);
         linearControlOuter.setVerticalGravity(Gravity.CENTER_VERTICAL);
-        TextView tvControl = TestHelper.getTextButton(Const.getContext(),"▶ "+"自定义操作模式");//▶ ▼
+        final String customControlTitle = RR.getS(RR.ctr2_customControls2);
+        TextView tvControl = TestHelper.getTextButton(Const.getContext(),"▶ "+customControlTitle);//▶ ▼
 
         LinearLayout linearControlPart2 = new LinearLayout(c);
         linearControlPart2.setOrientation(LinearLayout.VERTICAL);
@@ -43,7 +44,7 @@ public class OptionShowAllOptions extends AbstractOption{
 
         tvControl.setOnClickListener(v->{
             boolean isShowing = part2Params.height!=0;
-            tvControl.setText((isShowing?"▶ ":"▼ ")+"自定义操作模式");
+            tvControl.setText((isShowing?"▶ ":"▼ ")+customControlTitle);
             part2Params.height=isShowing?0:-2;
             linearControlPart2.setLayoutParams(part2Params);
         });
@@ -51,7 +52,7 @@ public class OptionShowAllOptions extends AbstractOption{
         linearControlOuter.addView(tvControl);
         linearControlOuter.addView(linearControlPart2);
 
-        TextView tvCancel = TestHelper.getTextButton(c,"取消");
+        TextView tvCancel = TestHelper.getTextButton(c,c.getString(android.R.string.cancel));
         tvCancel.setOnClickListener(v-> runOptionAndCloseDialog(null));
 
         LinearLayout linearRoot = new LinearLayout(c);
@@ -94,6 +95,6 @@ public class OptionShowAllOptions extends AbstractOption{
 
     @Override
     public String getName() {
-        return "显示全部选项";
+        return RR.getS(RR.ctr2_option_showAll);
     }
 }

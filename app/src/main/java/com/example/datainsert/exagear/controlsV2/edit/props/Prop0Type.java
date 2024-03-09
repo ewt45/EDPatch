@@ -10,12 +10,13 @@ import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 
 public class Prop0Type extends Prop<TouchAreaModel>{
     RadioGroup groupType;
-    static String[] mTypeNames = new String[]{"按钮", "摇杆", "十字键"};
+    static String[] mTypeNames = RR.getSArr(RR.ctr2_prop_type_names); //按钮 摇杆 十字键
     //直接用mModel来表示当前选择的是哪一个类型就行了
     static int[] mTypeInts = new int[]{Const.BtnType.NORMAL, Const.BtnType.STICK, Const.BtnType.DPAD};
     OnTypeChangeListener mHostListener;
@@ -28,7 +29,7 @@ public class Prop0Type extends Prop<TouchAreaModel>{
 
     @Override
     public String getTitle() {
-        return "类型";
+        return RR.getS(RR.global_type);
     }
 
     @Override

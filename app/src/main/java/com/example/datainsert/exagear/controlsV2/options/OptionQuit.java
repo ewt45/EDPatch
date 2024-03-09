@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.options;
 
 import com.eltechs.axs.activities.StartupActivity;
+import com.example.datainsert.exagear.RR;
 
 public class OptionQuit extends AbstractOption{
     @Override
@@ -10,6 +11,6 @@ public class OptionQuit extends AbstractOption{
 
     @Override
     public String getName() {
-        return "退出";
+        return RR.getS(RR.global_quit);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.edit.props;
 
 import static android.widget.LinearLayout.VERTICAL;
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.controlsV2.Const.minTouchSize;
 
@@ -16,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
@@ -28,7 +30,7 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
     TextView mTvColorStyle;
     boolean isEditingEdit=false;
     int[] colorStyleInts = new int[]{Const.BtnColorStyle.STROKE, Const.BtnColorStyle.FILL};
-    String[] colorStyleNames = new String[]{"描边","填充"};
+    String[] colorStyleNames = RR.getSArr(RR.ctr2_prop_colorStyle_names); //描边, 填充
 
     public Prop0MainColor(Host<TouchAreaModel> host, Context c) {
         super(host, c);
@@ -55,7 +57,7 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
 
     @Override
     public String getTitle() {
-        return "颜色";
+        return getS(RR.global_color);
     }
 
     @Override

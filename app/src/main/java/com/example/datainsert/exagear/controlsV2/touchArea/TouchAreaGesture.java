@@ -45,9 +45,6 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
     private final GestureDistributeAdapter gestureAdapter;
 
     private final GestureContext2 gestureContext;
-    private final List<List<String>> historyGestureList = new ArrayList<>(); //记录用户按下的历史手势，用于编辑时调试
-    Handler mHandler = new Handler(Looper.getMainLooper());
-
     public TouchAreaGesture(@NonNull OneGestureArea data, @Nullable TouchAdapter adapter) {
         super(data, new GestureDistributeAdapter());
         gestureAdapter = (GestureDistributeAdapter) getAdapter();
@@ -65,7 +62,6 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
             gestureContext.getMachine().addListener(this);
         }
 
-
         //构建gestureArea的时候，宽高应该铺满屏幕，无视记录的数据
         DisplayMetrics metrics = Const.getContext().getResources().getDisplayMetrics();
         this.mModel.setWidth(metrics.widthPixels);
@@ -75,6 +71,14 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
     @Override
     public void onDraw(Canvas canvas) {
         //TODO 编辑模式下，实时显示当前走到哪一阶段
+    }
+
+    /**
+     * 触摸区域是最后一个判断的，如果手指没有在任何的按钮区域内，则必须认为其处于触摸区域内
+     */
+    @Override
+    protected boolean isInside(Finger finger) {
+        return true;
     }
 
     /**
@@ -316,14 +320,8 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
 
     @Override
     public void onTransition(FSMState2 preState, int event, FSMState2 postState, List<FSMAction2> actions) {
-        historyGestureList.add(Arrays.asList(preState.getNiceName(), FSMR.getEventS(event), postState.getNiceName(), TestHelper.getActionsString(actions)));
-        if (historyGestureList.size() > 200)
-            historyGestureList.remove(0);
-
-        mHandler.post(() ->  {
-            TransitionHistoryView view = Const.getTouchView().getGestureHistoryTextView();
-            if(view.getVisibility() == View.VISIBLE)
-                view.addHistory(historyGestureList.get(historyGestureList.size()-1));
-        });
+        TransitionHistoryView view = Const.getTouchView().getGestureHistoryTextView();
+        if(view.getVisibility() == View.VISIBLE)
+            view.addHistory(Arrays.asList(preState.getNiceName(), FSMR.getEventS(event), postState.getNiceName(), TestHelper.getActionsString(actions)));
     }
 }

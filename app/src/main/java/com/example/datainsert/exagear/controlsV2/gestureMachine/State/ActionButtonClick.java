@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
@@ -55,18 +56,19 @@ public class ActionButtonClick extends FSMAction2 {
                     .show();
         });
 
+        String[] pressReleaseStr = RR.getSArr(RR.ctr2_stateProp_PrsRlsCheck);
         CheckBox checkDoPress = new CheckBox(c);
-        checkDoPress.setText("按下");
+        checkDoPress.setText(pressReleaseStr[0]);//按下
         checkDoPress.setChecked(mDoPress);
         checkDoPress.setOnCheckedChangeListener((buttonView, isChecked) -> mDoPress = isChecked);
 
         CheckBox checkDoRelease = new CheckBox(c);
-        checkDoRelease.setText("松开");
-        checkDoRelease.setChecked(mDoPress);
+        checkDoRelease.setText(pressReleaseStr[1]);//松开
+        checkDoRelease.setChecked(mDoRelease);
         checkDoRelease.setOnCheckedChangeListener((buttonView, isChecked) -> mDoRelease = isChecked);
 
         return createEditViewQuickly(c,
-                new String[][]{{"按钮",null},{"",null},{"",null}},
+                new String[][]{{RR.getS(RR.global_keycode),null},{"",null},{"",null}},
                 new View[]{tvKeycodes,checkDoPress,checkDoRelease});
     }
 }

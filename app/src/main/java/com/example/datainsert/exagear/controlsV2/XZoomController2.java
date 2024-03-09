@@ -43,11 +43,11 @@ public class XZoomController2 {
     /**
      * 实时更新的，移动位置的那根手指对应安卓的坐标
      */
-    private PointF anchorHost;
+    private final PointF anchorHost = new PointF();
     /**
      * 应该是只在进入或退出缩放状态时设置一次，移动位置的那根手指对应xserver的坐标
      */
-    private PointF anchorXServer;
+    private final PointF anchorXServer = new PointF();
     private boolean isZoomed;
     private float lastDistance;
 
@@ -82,7 +82,8 @@ public class XZoomController2 {
 
         lastDistance = GeometryHelpers.distance(x1, y1, x2, y2);
         //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
-        setAnchorBoth(x1, y1);
+        setAnchorHost(x1, y1);
+        setAnchorXServer(x1,y1);
     }
 
     /**
@@ -96,11 +97,10 @@ public class XZoomController2 {
         zoomFactorCurr = zoomFactorCurr * scaleDelta;
         refreshZoom();
 
-        if (isEarlierZoomed != isZoomed) {
-            setAnchorBoth(x1, y1);
-        } else {
-            setAnchorHost(x1, y1);
-        }
+        setAnchorHost(x1, y1);
+        if(isEarlierZoomed!=isZoomed)
+            setAnchorXServer(x1,y1);
+
         refreshZoom();
         this.lastDistance = newDistance;
 
@@ -149,15 +149,14 @@ public class XZoomController2 {
         return zoomFactorCurr != 1;
     }
 
-    public void setAnchorBoth(float x, float y) {
-        setAnchorHost(x, y);
-        float[] fArr = {x, y};
-        viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(fArr);
-        this.anchorXServer = new PointF(fArr[0], fArr[1]);
+    private void setAnchorXServer(float x, float y){
+        float[] xPos = {x, y};
+        viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(xPos);
+        this.anchorXServer.set(xPos[0],xPos[1]);
     }
 
-    public void setAnchorHost(float x, float y) {
-        this.anchorHost = new PointF(x, y);
+    private void setAnchorHost(float x, float y) {
+        this.anchorHost.set(x,y);
     }
 
 
@@ -174,7 +173,7 @@ public class XZoomController2 {
             resetZoom();
         } else {
             int[] xserverWH = viewOfXServer.getXScreenPixels();
-            //这个是缩放之后可见的宽高，比如放大了那就比完整宽高要小
+            //这个是缩放之后可见的宽高，比如放大了那就比完整宽高要小(x单位）
             float zoomedW = (float) (xserverWH[0] / this.zoomFactorCurr);
             float zoomedH = (float) (xserverWH[1] / this.zoomFactorCurr);
             //用于移动位置的那根手指，会将安卓坐标同步到anchorHost，这里将其转换为xserver坐标
@@ -192,7 +191,7 @@ public class XZoomController2 {
     private void applyZoomRect(RectF newVisibleRect) {
         int[] viewWH = viewOfXServer.getAndroidViewPixels();
         Matrix TransMatrix = makeTransformationMatrix(viewWH[0], viewWH[1], newVisibleRect.left, newVisibleRect.top, newVisibleRect.width(), newVisibleRect.height(), viewOfXServer.getScaleStyle());
-        Assert.state(TransMatrix.invert(TransMatrix), "xScreenRect is degenerate");
+        TestHelper.assertTrue(TransMatrix.invert(TransMatrix), "xScreenRect is degenerate");
         this.viewOfXServer.setViewToXServerTransformationMatrix(TransMatrix);
         this.viewOfXServer.setXViewport(newVisibleRect.left, newVisibleRect.top, newVisibleRect.right, newVisibleRect.bottom);
     }

@@ -39,7 +39,8 @@ public class TabPagerLayout extends LinearLayout implements TabLayout.OnTabSelec
         mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         TestHelper.setTabLayoutTabMinWidth0(mTabLayout);
         //点击tab时切换pager的视图，并执行回调。这个应该在添加第一个tab前设置，否则添加第一个tab时自动调动select就无法触发这个监听器了
-        mTabLayout.addOnTabSelectedListener(this);
+        //TODO 笔记里记一下，以后exa用tabLayout的话，都要用QH.addTabLayoutListener 添加监听
+        QH.addTabLayoutListener(mTabLayout,this);
 
         mPager = new FrameLayout(c);
         mPager.setId(generateViewId());

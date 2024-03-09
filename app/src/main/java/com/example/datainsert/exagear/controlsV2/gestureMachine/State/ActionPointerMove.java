@@ -3,6 +3,7 @@ package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
 import android.content.Context;
 import android.view.View;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
@@ -62,8 +63,8 @@ public class ActionPointerMove extends FSMAction2 {
 
         return createEditViewQuickly(c,
                 new String[][]{
-                        {"观测第几根手指",null},
-                        {"观测手指的哪个坐标",null},
+                        /*第几根手指*/{RR.getS(RR.ctr2_stateProp_fingerIndex),null},
+                        /*手指坐标类型*/{RR.getS(RR.ctr2_stateProp_fingerXYType),null},
                 },
                 new View[]{editFingerIndex,editFingerXYType});
     }

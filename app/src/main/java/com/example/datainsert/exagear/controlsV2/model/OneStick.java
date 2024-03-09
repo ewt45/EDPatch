@@ -26,7 +26,8 @@ public class OneStick extends TouchAreaModel {
      */
     protected int size;
 
-    OneStick() {
+    //用于反射，请勿删除
+    public OneStick() {
         this(TYPE_STICK);
     }
 

@@ -1,10 +1,9 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
@@ -38,11 +37,12 @@ public class ActionRunOption extends FSMAction2 {
 
     @Override
     public void run() {
-        if (!mWaitUntilFinish) {
-            doOptionAndLeave();
-        } else {
-            new Handler(Looper.getMainLooper()).post(() -> doOptionAndLeave());
-        }
+        doOptionAndLeave();
+//        if (!mWaitUntilFinish) {
+//            doOptionAndLeave();
+//        } else {
+//            new Handler(Looper.getMainLooper()).post(() -> doOptionAndLeave());
+//        }
     }
 
     @Override
@@ -52,6 +52,6 @@ public class ActionRunOption extends FSMAction2 {
                 .setSelectableOptions(OptionsProvider.optionsInt,OptionsProvider.optionsName)
                 .setSelectedValue(OptionsProvider.OPTION_SHOW_SOFT_INPUT)
                 .setUpdateListener(editText -> mOptionType = editText.getSelectedValue());
-        return createEditViewQuickly(c,new String[][]{{"要执行的操作",null}},new View[]{editOption});
+        return createEditViewQuickly(c,new String[][]{{/*操作*/RR.getS(RR.ctr2_stateProp_option),null}},new View[]{editOption});
     }
 }

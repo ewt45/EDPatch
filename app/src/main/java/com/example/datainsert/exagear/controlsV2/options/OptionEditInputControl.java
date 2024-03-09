@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.controlsV2.options;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 
 public class OptionEditInputControl extends AbstractOption{
@@ -10,6 +11,6 @@ public class OptionEditInputControl extends AbstractOption{
 
     @Override
     public String getName() {
-        return "编辑操作模式";
+        return RR.getS(RR.global_edit);
     }
 }

@@ -35,7 +35,7 @@ public class ButtonStickPressAdapter implements TouchAdapter {
     protected float outerCenterY = 0;
     protected float innerCenterX = 0;
     protected float innerCenterY = 0;
-    private Finger mFinger;
+    protected Finger mFinger;
 
     public ButtonStickPressAdapter(OneStick model) {
         mModel = model;
@@ -161,12 +161,14 @@ public class ButtonStickPressAdapter implements TouchAdapter {
     @Override
     public void notifyReleased(Finger finger, List<Finger> list) {
         mFinger = null;
-        nowFingerAt = FINGER_AT_CENTER;
-        lastFingerAt = FINGER_AT_CENTER;
 
         updateRealOuterCenterXYAndFingerDownXY(false);
         updatePressPos();
         sendKeys();
+
+        //这个手指位置应该在最后重置，否则就破坏了上面的逻辑，导致没法正常松开按键了
+        nowFingerAt = FINGER_AT_CENTER;
+        lastFingerAt = FINGER_AT_CENTER;
     }
 
     @Override

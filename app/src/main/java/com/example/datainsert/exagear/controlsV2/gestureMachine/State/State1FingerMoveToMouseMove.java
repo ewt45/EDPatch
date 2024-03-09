@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.eltechs.axs.GeometryHelpers;
-import com.eltechs.axs.helpers.Assert;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
@@ -78,11 +78,15 @@ public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapt
 
     @Override
     public void notifyReleased(Finger finger, List<Finger> list) {
+        //TODO 松手和和新手指按下时，也应该先同步一下当前观测的手指的位置，再退出。尝试用于解决点击底部没反应的问题？但是是否会带来副作用（比如现在是鼠标和手指位置同步，如果要用相对偏移的话呢？）
+        notifyMoved(finger,list);
         sendEvent(FSMR.event.某手指松开);
     }
 
     @Override
     public void notifyTouched(Finger finger, List<Finger> list) {
+        //发送事件前，也应该先移动一下鼠标
+        notifyMoved(this.finger,list);
         sendEvent(FSMR.event.新手指按下);
     }
 
@@ -105,7 +109,7 @@ public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapt
                 .setFloatValue(mNoMoveThreshold)
                 .setUpdateListener(editText -> mNoMoveThreshold = editText.getFloatValue());
         return createEditViewQuickly(c,
-                new String[][]{{"观测哪根手指",null},{"手指移动小于此距离时不移动鼠标",null}},
+                new String[][]{{/*第几根手指*/RR.getS(RR.ctr2_stateProp_fingerIndex),null},{RR.getS(RR.ctr2_stateProp_noMoveThreshold),null}},
                 new View[]{editFingerIndex,editNoMoveThreshold});
     }
 }

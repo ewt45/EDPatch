@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.model.OneButton;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 
@@ -22,7 +23,7 @@ public class Prop1Trigger extends Prop<TouchAreaModel>{
     @Override
     protected View createMainEditView(Context c) {
         checkTrigger = new CheckBox(c);
-        checkTrigger.setText("点击后不回弹");
+        checkTrigger.setText(RR.getS(RR.cmCtrl_BtnEditTrigger));//按下不回弹
         checkTrigger.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(!(mHost.getModel() instanceof OneButton))
                 return;

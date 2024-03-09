@@ -15,6 +15,7 @@ import com.eltechs.axs.GuestAppActionAdapters.ScrollDirections;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.helpers.InfiniteTimer;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -159,7 +160,9 @@ public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdap
 
     @Override
     public View createPropEditView(Context c) {
-        return createEditViewQuickly(c, new String[][]{{"观测第几根手指", null}}, new View[]{new LimitEditText(c)
+        return createEditViewQuickly(c,
+                new String[][]{{RR.getS(RR.ctr2_stateProp_fingerIndex), null}}, //观测第几根手指
+                new View[]{new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
                 .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
                 .setSelectedValue(mFingerIndex)

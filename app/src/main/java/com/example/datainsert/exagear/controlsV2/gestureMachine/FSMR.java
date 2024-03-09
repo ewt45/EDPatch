@@ -51,23 +51,25 @@ public class FSMR {
         eventIdArr.put(event.某手指_移动并松开, getS(RR.fsm_event_moveThenRelease));
 
         //用int[] 做key，可以正确获取到吗
-        valueArr.put(value.手指位置_全部可用选项,new String[]{"任意一根手指最后一次位置改变时","手指初始按下时", "手指当前位置"});
-        valueArr.put(value.观测手指序号_全部可用选项,new String[]{ "观测全部手指","1","2","3","4","5","6","7","8","9","10"});
-        valueArr.put(value.鼠标移动逻辑_全部可用选项,new String[]{"正常","视角转动"});
+
+        valueArr.put(value.手指位置_全部可用选项,RR.getSArr(RR.ctr2_FSMR_value_fingerXYType));//"任意一根手指最后一次位置改变时","手指初始按下时", "手指当前位置"
+        valueArr.put(value.观测手指序号_全部可用选项,RR.getSArr(RR.ctr2_FSMR_value_fingerIndex));//"全部手指","1","2","3","4","5","6","7","8","9","10
+        valueArr.put(value.鼠标移动逻辑_全部可用选项,RR.getSArr(RR.ctr2_FSMR_value_pointerMoveType)); //正常 视角转动
     }
 
     /**
-     * 每个state的原始名称，并非用户自定义的别名
+     * 每个state的原始名称，并非用户自定义的别名。传入的是stateTag
      */
-    public static String getStateS(int id) {
-        String str = stateArr.get(id);
+    public static String getStateS(int stateTag) {
+        String str = stateArr.get(stateTag);
         if (str == null) {
-            Log.e(TAG, "getStateS: 该状态没有对应文本：" + id);
-            str = ModelProvider.getStateClass(id).getSimpleName();
+            Log.e(TAG, "getStateS: 该状态没有对应文本：" + stateTag);
+            str = ModelProvider.getStateClass(stateTag).getSimpleName();
         }
         return str;
     }
     //TODO getFieldS返回数组，如果包含$字符，则第二个元素是说明，否则第二个元素是空
+    @Deprecated
     public static String getFieldS(int id) {
         return fieldArr.get(id);
     }

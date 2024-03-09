@@ -1,5 +1,8 @@
 package com.example.datainsert.exagear.controlsV2;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -13,18 +16,19 @@ import com.example.datainsert.exagear.RR;
  * 每次切屏/旋转 都会彻底删除fragment并重新添加
  */
 public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay {
-    public static final String TAG = "FalloutIOverlay2";
+    public static final String TAG = "CustomInterfaceOverlay";
     public static final float buttonSizeInches = 0.4f;
     private static final float buttonSzNormalDisplayInches = 0.4f;
     private static final float buttonSzSmallDisplayInches = 0.3f;
     private static final float displaySizeThresholdInches = 5.0f;
+    private static int containerViewId = View.NO_ID;
     private final int buttonWidthPixelsFixup = 30;
     private boolean isToolbarsVisible = true;
-    private static int containerViewId = View.NO_ID;
+    private boolean hasAttached = false;
 
     @Override // com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay
     public View attach(XServerDisplayActivity a, ViewOfXServer viewOfXServer) {
-
+        Log.d(TAG, "attach: ");
         //加一个framelayout视图，设置id（attach可能重复调用所以首先检查是否已经存在）（但是添加fragment之后framelayout还在嘛 应该还在）
         //先设置extension，再调用init，传入activity和xserverviewholder，此时会创建fragment
         // detach要删除fragment吗？
@@ -34,21 +38,62 @@ public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOv
 
 
         //先检查container视图是否存在，若不存在则添加到视图树中
-        if(containerViewId == View.NO_ID || a.findViewById(containerViewId)==null){
-            FrameLayout containerView = new FrameLayout(a);
-            containerViewId = View.generateViewId();
-            containerView.setId(containerViewId);
-            ((ViewGroup)a.findViewById(RR.id.mainView())).addView(containerView,new ViewGroup.LayoutParams(-1,-1));
-        }
 
-        Const.init(a,new XServerViewHolderImpl(viewOfXServer));
-        Const.initShowFragment(containerViewId, new ControlsFragment()); //fragment挂载到刚才新建的视图的id上
+        //必要的全局初始化
+        Const.init(a, new XServerViewHolderImpl(viewOfXServer));
+
+        FrameLayout containerView = new FrameLayout(a);
+        containerViewId = View.generateViewId();
+        containerView.setId(containerViewId);
+        ((ViewGroup) a.findViewById(RR.id.mainView())).addView(containerView, new ViewGroup.LayoutParams(-1, -1));
+
+        Fragment oldFragment = a.getSupportFragmentManager().findFragmentByTag(Const.fragmentTag);
+        Fragment fragment = ControlsFragment.newInstance(oldFragment);
+
+        FragmentTransaction transaction = a.getSupportFragmentManager().beginTransaction();
+
+        if (oldFragment != null)
+            transaction.remove(oldFragment);
+
+        transaction.add(containerViewId, fragment, Const.fragmentTag)
+                .commit();
+
+
+
+        //可行的方法
+
+//        boolean shouldAddFragment = false;
+//        Fragment fragment = a.getSupportFragmentManager().findFragmentByTag(Const.fragmentTag);
+//
+//        if(containerViewId == View.NO_ID || a.findViewById(containerViewId)==null){
+//            shouldAddFragment = true;
+//            FrameLayout containerView = new FrameLayout(a);
+//            containerViewId = View.generateViewId();
+//            containerView.setId(containerViewId);
+//            ((ViewGroup)a.findViewById(RR.id.mainView())).addView(containerView,new ViewGroup.LayoutParams(-1,-1));
+//
+//            //由于容器视图不存在，原先如果有附加的fragment也要删除,保证下面会新建fragment
+//            if(fragment!=null)
+//                a.getSupportFragmentManager().beginTransaction().remove(fragment).commitNow();
+//        }
+//
+//        //必要的全局初始化
+//        Const.init(a,new XServerViewHolderImpl(viewOfXServer));
+//
+//        //如果fragment不存在，则挂载到刚才新建的视图的id上，否则不添加
+//        if(shouldAddFragment || a.getSupportFragmentManager().findFragmentByTag(Const.fragmentTag)==null){
+//            if(fragment==null)
+//                fragment = new ControlsFragment()   ;
+//            Const.initShowFragment(containerViewId, (ControlsFragment) fragment);
+//        }
 
         Const.getXServerHolder().setShowCursor(true);
 
         View nullView = new View(a);
+        nullView.setFocusable(false);
+        nullView.setFocusableInTouchMode(false);
         nullView.setVisibility(View.GONE);
-        nullView.setLayoutParams(new ViewGroup.LayoutParams(0,0));
+        nullView.setLayoutParams(new ViewGroup.LayoutParams(0, 0));
         return nullView;
 //        SharedPreferences sp = a.getSharedPreferences(PREF_FILE_NAME_SETTING, Context.MODE_PRIVATE);
 //        this.tscWidget = new TouchScreenControlsWidget(a, viewOfXServer, this.controlsFactory, TouchScreenControlsInputConfiguration.DEFAULT);
@@ -67,7 +112,8 @@ public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOv
 
     @Override // com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay
     public void detach() {
-        Const.clearFragment();
+        //这里不清除fragment了，让系统自动处理（而且如果要导入导出配置的话，这里清除就没法回调了）
+//        Const.clearFragment();
         Const.clear();
     }
 
@@ -135,8 +181,6 @@ public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOv
 //    public FalloutTouchScreenControlsFactory2 getControlsFactory() {
 //        return controlsFactory;
 //    }
-
-
 
 
 }

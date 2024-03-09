@@ -64,7 +64,6 @@ public class ColorPicker extends LinearLayout {
 
             }
 
-
             private int getColorValue() {
                 return Color.HSVToColor(new float[]{getHSVValue(), 1f, 1f});
             }
@@ -266,9 +265,8 @@ public class ColorPicker extends LinearLayout {
      * 需要注意给topDrawable设置一个宽高，否则会按照bitmap的宽高来，非常小
      */
     public static LayerDrawable wrapAlphaAlertBg(Context c, GradientDrawable topDrawable) {
-        Drawable bgAlertSingleDrawable = c.getDrawable(R.drawable.alpha_bg);
-        assert bgAlertSingleDrawable != null;
-        Bitmap bgAlertSingleBitmap = Bitmap.createBitmap(bgAlertSingleDrawable.getIntrinsicWidth(), bgAlertSingleDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Drawable bgAlertSingleDrawable = new DrawableMosaic();//c.getDrawable(R.drawable.alpha_bg);
+        Bitmap bgAlertSingleBitmap = Bitmap.createBitmap(dp8*2,dp8*2, Bitmap.Config.ARGB_8888);
         Canvas tmpCanvas = new Canvas(bgAlertSingleBitmap);
         bgAlertSingleDrawable.setBounds(0, 0, bgAlertSingleBitmap.getWidth(), bgAlertSingleBitmap.getHeight());
         bgAlertSingleDrawable.draw(tmpCanvas);

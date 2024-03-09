@@ -19,9 +19,9 @@ android {
 
     buildTypes {
         release {
-            //代码和资源缩减
-            shrinkResources true
-            minifyEnabled true
+            //代码和资源缩减(不行，否则FileProvider的类名也跟着变了，然后找不到类。。。）
+            shrinkResources false
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

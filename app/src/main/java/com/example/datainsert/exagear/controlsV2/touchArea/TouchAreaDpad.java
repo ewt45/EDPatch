@@ -57,7 +57,6 @@ public class TouchAreaDpad extends TouchAreaStick {
 
         updatePaint();
 
-
         float startCenterX = mModel.getLeft() + mModel.getSize() / 2f;
         float startCenterY = mModel.getTop() + mModel.getSize() / 2f;
         int nowFingerAt = runtimeAdapter != null ? runtimeAdapter.nowFingerAt : ButtonStickPressAdapter.FINGER_AT_CENTER;

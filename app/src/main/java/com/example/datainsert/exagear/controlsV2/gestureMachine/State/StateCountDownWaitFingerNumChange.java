@@ -8,6 +8,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.eltechs.axs.helpers.OneShotTimer;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -36,7 +37,8 @@ public class StateCountDownWaitFingerNumChange extends FSMState2 implements Touc
         timer = new OneShotTimer(mCountDownMs) {
             @Override
             public void onFinish() {
-                sendEvent(手指数量不变);
+                if(getContext().getMachine().isActiveState(StateCountDownWaitFingerNumChange.this))
+                    sendEvent(手指数量不变);
             }
         };
         timer.start();
@@ -65,12 +67,10 @@ public class StateCountDownWaitFingerNumChange extends FSMState2 implements Touc
 
     @Override
     public View createPropEditView(Context c) {
-        return createEditViewQuickly(c, new String[][]{{"倒计时限时 (毫秒)", null}}, new View[]{new LimitEditText(c)
+        return createEditViewQuickly(c, new String[][]{{RR.getS(RR.ctr2_stateProp_countDown), null}}, new View[]{new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
                 .setRange(0, Integer.MAX_VALUE)
                 .setIntValue(mCountDownMs)
                 .setUpdateListener(editText -> mCountDownMs = editText.getIntValue())});
-
-
     }
 }

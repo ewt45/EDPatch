@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.widget.KeyOnBoardView;
 
@@ -18,7 +19,7 @@ public class Prop1Key extends Prop<TouchAreaModel>{
 
     @Override
     public String getTitle() {
-        return "按键码";
+        return RR.getS(RR.global_keycode);
     }
 
     @Override

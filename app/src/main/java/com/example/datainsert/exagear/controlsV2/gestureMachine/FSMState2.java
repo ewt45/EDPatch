@@ -1,6 +1,8 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
+import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.RR.getSArr;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
 import android.content.Context;
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.eltechs.axs.helpers.Assert;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -198,18 +201,21 @@ public abstract class FSMState2 {
         LinearLayout linearRoot = new LinearLayout(c);
         linearRoot.setOrientation(LinearLayout.VERTICAL);
 
+        //state类型
+        TextView tvStateType = QH.TV.one(c).text16Sp().solidColor().text(FSMR.getStateS(getStateTag(getClass()))).to();
         //用户自定义别名
         LimitEditText editNiceName = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_TEXT_SINGLE_LINE)
                 .setStringValue(niceName == null ? "" : niceName) //如果没有自定义名称就留空，以保证多次进入后还是空，否则用getNiceName 进入一次就会从空变为对应的翻译文本了
                 .setUpdateListener(editText -> setNiceName(editText.getStringValue()));
-        LinearLayout linearEditName = QH.getOneLineWithTitle(c, "别名", editNiceName, true);
-        linearRoot.addView(linearEditName, QH.LPLinear.one(-1, -2).left().right().top().to());
+
+        linearRoot.addView(QH.getOneLineWithTitle(c,getS(RR.global_type),tvStateType,true),QH.LPLinear.one(-1, -2).left().right().top().to());
+        linearRoot.addView(QH.getOneLineWithTitle(c, getS(RR.global_alias), editNiceName, true), QH.LPLinear.one(-1, -2).left().right().top().to());
 
         for (int i = 0; i < titleAndHelps.length; i++) {
             String[] titleAndHelp = titleAndHelps[i];
             LinearLayout linear1 = QH.getOneLineWithTitle(c, titleAndHelp[0], editViews[i], true);
-            if (titleAndHelp.length>1 && titleAndHelp[1] != null && titleAndHelp[1].trim().length() > 0)
+            if (titleAndHelp.length>1 && titleAndHelp[1] != null && !titleAndHelp[1].isEmpty())
                 TestHelper.addHelpBadgeToView(linear1.getChildAt(0), titleAndHelp[1]);
 
             int bottomMargin = i == titleAndHelps.length - 1 ? dp8 : 0;
@@ -238,21 +244,18 @@ public abstract class FSMState2 {
 
         TextView tvInfo = TestHelper.getTextView16sp(c);
         tvInfo.setPadding(0, 0, dp8 * 2, 0);
-        tvInfo.setText("说明");
-        TestHelper.addHelpBadgeToView(tvInfo,
-                "状态转移的基本概念：[当前状态]运行 -> 满足某个条件 -> 发送对应[事件] -> 执行对应[附加操作] -> 停止当前状态，运行[下一个状态]。\n为每个事件设置不同的下一状态，即可走向不同分支。" +
-                        "\n\n可发送事件: 该状态可能发送的全部事件" +
-                        "\n\n下一个状态: 用户可自定义此状态。只能从当前已创建的状态列表中选择。" +
-                        "\n\n 附加操作: 用户可自定义此操作。注意执行多个操作时有先后顺序，从上到下依次执行。");
+        tvInfo.setText(/*说明*/getS(RR.global_instructions));
+        TestHelper.addHelpBadgeToView(tvInfo, getS(RR.ctr2_ges_transInfo));
         root.addView(tvInfo, QH.LPRelative.one(-2,-2).top().left().to());//QH.LPLinear.one(-2, -2).top().left().to()
 
         //表格头
         LinearLayout linearHeader = new LinearLayout(c);
         linearHeader.setOrientation(LinearLayout.HORIZONTAL);
 
-        linearHeader.addView(QH.TV.one(c).text("可发送事件").solidColor().bold().textGravity(CENTER_HORIZONTAL).to(), lp1);
-        linearHeader.addView(QH.TV.one(c).text("下一个状态").solidColor().bold().textGravity(CENTER_HORIZONTAL).to(), lp2);
-        linearHeader.addView(QH.TV.one(c).text("附加操作").solidColor().bold().textGravity(CENTER_HORIZONTAL).to(), lp3);
+        String[] headerNames = getSArr(RR.ctr2_ges_state_edit_tran_tableHeaders);//可发送事件$下一个状态$附加操作
+        linearHeader.addView(QH.TV.one(c).text(headerNames[0]).solidColor().bold().textGravity(CENTER_HORIZONTAL).to(), lp1);
+        linearHeader.addView(QH.TV.one(c).text(headerNames[1]).solidColor().bold().textGravity(CENTER_HORIZONTAL).to(), lp2);
+        linearHeader.addView(QH.TV.one(c).text(headerNames[2]).solidColor().bold().textGravity(CENTER_HORIZONTAL).to(), lp3);
 
         root.addView(linearHeader, getRParams(root,-2,-2));//QH.LPLinear.one(-1, -2).top().to()
         root.addView(TestHelper.getDividerView(c, false), getRParams(root,-2,QH.px(c,2)));//QH.LPLinear.one(-1, QH.px(c, 2)).top().to()

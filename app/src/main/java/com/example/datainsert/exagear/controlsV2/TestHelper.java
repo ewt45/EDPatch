@@ -28,6 +28,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -46,6 +47,7 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
+import com.example.datainsert.exagear.controlsV2.widget.CustomXmlResourceParser;
 import com.example.datainsert.exagear.controlsV2.widget.DrawableAlign;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
@@ -263,6 +265,20 @@ public class TestHelper {
     }
 
     /**
+     * <br/> 使用的函数是 a.getAssets().openXmlResourceParser("assets/cc/ic_apk_document.xml")
+     * @param name 字符串，只需传入相对路径，如“cc/ic_apk_document.xml” 即可
+     */
+    public static View getAssetsView(Context c, String name){
+        try (XmlResourceParser parser =
+                c.getApplicationContext().getAssets().openXmlResourceParser("assets/" + name)) {
+            return LayoutInflater.from(c).inflate(parser,null,false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * 按键编辑窗口。向gridview添加一行，标题,内容。如果有可切换的副内容，则在后面加一个切换按钮
      * 用grid是为了保证多行内容的开头是对齐的。
      *
@@ -398,7 +414,18 @@ public class TestHelper {
             field.setInt(tabLayout, 0);
             field.setAccessible(false);
         } catch (Throwable th) {
-            th.printStackTrace();
+            Log.w(TAG, "setTabLayoutTabMinWidth0: "+th.getCause() );
+        }
+
+        //exa里用的是这个
+        try {
+            Field field = tabLayout.getClass().getDeclaredField("mRequestedTabMinWidth");
+            field.setAccessible(true);
+            field.setInt(tabLayout, 0);
+            field.setAccessible(false);
+        } catch (Throwable th) {
+            Log.w(TAG, "setTabLayoutTabMinWidth0: "+th.getCause() );
+
         }
 
     }

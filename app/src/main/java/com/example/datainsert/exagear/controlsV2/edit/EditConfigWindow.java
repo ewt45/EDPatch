@@ -44,7 +44,7 @@ public class EditConfigWindow extends RelativeLayout {
     private static final String TAG = "EditConfigWindow";
     public final int mMaxWidth, mMaxHeight;
     private final LinearLayout mLinearTitle;
-    private final FrameLayout mPager;
+    private final FrameLayout mPager; //TODO 这个也改成relative？
     private final List<View> mTitles = new ArrayList<>();
     private final List<View> mSubViews = new ArrayList<>();
     private final ImageView mIconView;//最小化时只显示这个图标
@@ -71,7 +71,7 @@ public class EditConfigWindow extends RelativeLayout {
 
         ShapeDrawable bgDrawable = new ShapeDrawable();
         bgDrawable.setShape(new RectShape());
-        bgDrawable.setTint(TestHelper.setColorAlpha(RR.attr.colorBackground(c),0xe0));
+        bgDrawable.setTint(TestHelper.setColorAlpha(RR.attr.colorBackground(c),0xe9));
         setBackground(bgDrawable);
 
         //用outline来切割圆角，记得setClipToOutline(true)
@@ -114,8 +114,7 @@ public class EditConfigWindow extends RelativeLayout {
             if (!isFirstView())
                 toPreviousView();
             else {
-                if (isMinimized)
-                    disableTransitionBeforeMaximize();
+                disableTransitionBeforeMaximize();
 
                 //最小化时去掉右侧对齐父布局，否则宽度不会变小
                 RelativeLayout.LayoutParams toolbarParams = (LayoutParams) mLinearTitle.getLayoutParams();
@@ -124,10 +123,9 @@ public class EditConfigWindow extends RelativeLayout {
                 this.getChildAt(0).setVisibility(isMinimized ? VISIBLE : GONE);
                 this.getChildAt(2).setVisibility(isMinimized ? VISIBLE : GONE);
 
-                if (isMinimized)
-                    enableTransitionAfterMaximize();
+                enableTransitionAfterMaximize();
 
-                //放大时，可能会导致左侧出边界然后无法移动，所以需要限制位置。但是必须放在post里否则不生效
+                //放大时，可能会导致左侧出边界然后无法移动，所以需要限制位置。但是必须放在post里否则不生效（emm缩小时也需要）
                 //另外，设置LayoutTransition也会导致限制不生效。为LayoutTransition设置监听器，会导致回正用力过度不知道怎么解决，所以只好在放大的时候临时取消动画。。
                 post(() -> TestHelper.restrictViewInsideParent(EditConfigWindow.this, (FrameLayout) getParent()));
 
@@ -165,21 +163,33 @@ public class EditConfigWindow extends RelativeLayout {
      * 最大化时，动画效果会导致左侧出界，所以需要临时禁用
      */
     private void disableTransitionBeforeMaximize() {
-        if (this.getLayoutTransition() != null)
+        if (this.getLayoutTransition() != null) {
             this.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        if (mLinearTitle.getLayoutTransition() != null)
+            this.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        }
+        if (mLinearTitle.getLayoutTransition() != null){
             mLinearTitle.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        if (mPager.getLayoutTransition() != null)
+            mLinearTitle.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        }
+        if (mPager.getLayoutTransition() != null){
             mPager.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGE_APPEARING);
+            mPager.getLayoutTransition().disableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        }
     }
 
     private void enableTransitionAfterMaximize() {
-        if (this.getLayoutTransition() != null)
+        if (this.getLayoutTransition() != null){
             this.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        if (mLinearTitle.getLayoutTransition() != null)
+            this.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        }
+        if (mLinearTitle.getLayoutTransition() != null){
             mLinearTitle.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_APPEARING);
-        if (mPager.getLayoutTransition() != null)
-            mPager.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_APPEARING);
+            mLinearTitle.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        }
+        if (mPager.getLayoutTransition() != null){
+            mLinearTitle.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_APPEARING);
+            mLinearTitle.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING);
+        }
     }
 
     public void toNextView(View content, String title) {

@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.widget;
 
+import static com.example.datainsert.exagear.controlsV2.Const.keyNames;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
@@ -7,11 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.eltechs.ed.R;
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 
 import java.util.ArrayList;
@@ -35,10 +41,34 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context);
         addView(horizontalScrollView, new NestedScrollView.LayoutParams(-2, -2));
 
-        //TODO 最后移到assets
-        mKeyboardView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.aaa_available_key_view, horizontalScrollView, false);
+        mKeyboardView = (ViewGroup) TestHelper.getAssetsView(context,
+                QH.isTesting()
+                        ?"controls/available_key_view_buggy.xml":"controls/available_key_view.xml");
+//        mKeyboardView = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.aaa_available_key_view, horizontalScrollView, false);
+
+//        TODO app:layout_constraint_xxxx 这种属性放在exa的app里会变成别的，暂时不知道怎么解决，先用最普通的视图吧
         setupUI(mKeyboardView);
         horizontalScrollView.addView(mKeyboardView);
+
+//        if(!Const.isInitiated()){
+//            setupUI(mKeyboardView);
+//            horizontalScrollView.addView(mKeyboardView);
+//        }else{
+//            LinearLayout simpleView = new LinearLayout(context);
+//            simpleView.setOrientation(LinearLayout.VERTICAL);
+//            for(int i=0; i<keyNames.length; i++){
+//                String keyName = keyNames[i];
+//                if(keyName==null || keyName.isEmpty())
+//                    continue;
+//                CheckBox checkBox = new CheckBox(context);
+//                checkBox.setText(keyName);
+//                checkBox.setTag(Integer.toString(i));
+//                checkBox.setOnCheckedChangeListener(this);
+//                mKeyBtnMap.put(i,checkBox);
+//                simpleView.addView(checkBox);
+//            }
+//            horizontalScrollView.addView(simpleView);
+//        }
     }
 
     private static int getKeyByTag(View btn) {

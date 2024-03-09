@@ -1,9 +1,12 @@
 package com.example.datainsert.exagear.controlsV2.edit.props;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.QH;
 
@@ -22,7 +25,7 @@ public class Prop0Name extends Prop<TouchAreaModel>{
 
     @Override
     public String getTitle() {
-        return "名称";
+        return getS(RR.global_alias);
     }
 
     @Override

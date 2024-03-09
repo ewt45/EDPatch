@@ -29,6 +29,7 @@ public class OneProfile {
 
     transient private boolean isEditing = false;
 
+
     /**
      * 给gson反序列化用的
      */
@@ -122,8 +123,8 @@ public class OneProfile {
                 throw new RuntimeException("该model已属于一个area，无法再新建area");
 
         TouchAdapter adapter = !isEditing ? null : new EditMoveAdapter(Const.getTouchView(), model, editModel -> {
-            if (Const.editKeyViewRef != null && Const.editKeyViewRef.get()!=null)
-                Const.editKeyViewRef.get().onModelChanged(editModel);
+            if (Const.editKeyView != null)
+                Const.editKeyView.onModelChanged(editModel);
         });
         TouchArea<?> newArea;
         try {

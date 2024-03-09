@@ -9,6 +9,7 @@ import android.view.View;
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.viewOfXServer.XZoomController;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -119,10 +120,12 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
                 .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
                 .setSelectedValue(mFingerIndex2)
                 .setUpdateListener(editText -> mFingerIndex2 = editText.getSelectedValue());
+
+        String[] titles = RR.getSArr(RR.ctr2_stateProp_zoom2Finger);//第几根手指 (其一)$第几根手指 (其二)
         return createEditViewQuickly(c,
                 new String[][]{
-                        {"检测第几根按下的手指 (其一)", null},
-                        {"检测第几根按下的手指 (其二)", null}},
+                        {titles[0], null},
+                        {titles[1], null}},
                 new View[]{edit1, edit2});
     }
 }

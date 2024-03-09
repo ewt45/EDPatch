@@ -21,14 +21,14 @@ public class OptionsProvider {
     /**
      * 初始时必须将全部OPTION放入map中，没有的就放EMPTY
      */
-    private static final Map<Integer, Class<? extends AbstractOption>> optionsLoader = new HashMap<>();
+    private static final Map<Integer, AbstractOption> optionsLoader = new HashMap<>();
     //TODO 要不直接存实例吧，然后名字应该实时获取，因为有的涉及到显示隐藏的
 
 
     static {
 //        optionsLoader.put(OPTION_EMPTY, EMPTY_OPTION.class);
-        optionsLoader.put(OPTION_SHOW_SOFT_INPUT, OptionToggleSoftInput.class);
-        optionsLoader.put(OPTION_SHOW_ALL_OPTIONS, OptionShowAllOptions.class);
+        optionsLoader.put(OPTION_SHOW_SOFT_INPUT, new OptionToggleSoftInput());
+        optionsLoader.put(OPTION_SHOW_ALL_OPTIONS, new OptionShowAllOptions());
 
         optionsName = new String[optionsInt.length];
         for(int i=0; i< optionsInt.length; i++){
@@ -37,13 +37,14 @@ public class OptionsProvider {
     }
 
     public static AbstractOption getOption(@OptionType int optionType) {
-        Class<? extends AbstractOption> clz = optionsLoader.get(optionType);
-        try {
-            assert clz != null;
-            return clz.newInstance();
-        } catch (IllegalAccessException | InstantiationException e) {
-            return new EMPTY_OPTION();
-        }
+        return optionsLoader.get(optionType);
+//        Class<? extends AbstractOption> clz = optionsLoader.get(optionType);
+//        try {
+//            assert clz != null;
+//            return clz.newInstance();
+//        } catch (IllegalAccessException | InstantiationException e) {
+//            return new EMPTY_OPTION();
+//        }
     }
 
     @IntDef({ OPTION_SHOW_SOFT_INPUT,OPTION_SHOW_ALL_OPTIONS})

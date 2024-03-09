@@ -117,15 +117,18 @@ public class GestureMachine {
                 }
             }
 
+            //输出logcat或供用户对照的屏幕文字
+            for (FSMListener listener : listeners)
+                listener.onTransition(preState, fSMEvent, postState, actionsReuse);
+
+            //TODO 是synchronized导致的现象吗？如果把listener调用放在这里之后，且postState通知活跃后立刻sendEvent，
+            // 会直接跳回到currentState.notifyBecomeInactive();没走listener那行？！（额应该是又进入sendEvent走到这的，不知道为啥调试器不是从第一行代码开始走，但单步调试看 上面代码应该是走了的）
+            // 也就是说，目前会有sendEvent走到一半，又循环调用sendEvent的情况，这是否会引起异常？是否应该用单线程池按发送顺序sendEvent？
             currentState.notifyBecomeInactive();
             for (FSMAction2 action : actionsReuse) //执行过渡动作
                 action.run();
             currentState = postState;
             currentState.notifyBecomeActive();
-
-            //输出logcat或供用户对照的屏幕文字
-            for (FSMListener listener : listeners)
-                listener.onTransition(preState, fSMEvent, postState, actionsReuse);
         }
     }
 

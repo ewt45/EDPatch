@@ -3,7 +3,8 @@ package com.example.datainsert.exagear.controlsV2.model;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 
 public class OneDpad extends OneStick{
-    OneDpad(){
+    //用于反射，请勿删除
+    public OneDpad(){
         super(TYPE_DPAD);
         direction = WAY_8;
     }

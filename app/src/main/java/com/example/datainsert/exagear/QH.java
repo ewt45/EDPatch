@@ -19,6 +19,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -43,6 +44,7 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 
 import org.apache.commons.io.FileUtils;
 
@@ -457,6 +459,22 @@ public class QH {
         scrollView.setFocusableInTouchMode(true);
         scrollView.requestFocus();
         return scrollView;
+    }
+
+    /**
+     * /exa的库里还没有 TabLayout.BaseOnTabSelectedListener,只有OnTabSelectedListener。改依赖版本又没有用。试试反射吧
+     */
+    public static void addTabLayoutListener(TabLayout tabToolbar, TabLayout.OnTabSelectedListener listener) {
+        if(QH.isTesting()){
+            tabToolbar.addOnTabSelectedListener(listener);
+        }else{
+            try {
+                TabLayout.class.getDeclaredMethod("addOnTabSelectedListener", TabLayout.OnTabSelectedListener.class)
+                        .invoke(tabToolbar, listener);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 

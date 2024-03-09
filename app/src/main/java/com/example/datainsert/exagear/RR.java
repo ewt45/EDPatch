@@ -209,10 +209,67 @@ public class RR {
     public static int fsm_state_2FZoom=193;
     public static int fsm_state_action_option =194;
     public static int fsm_event_finger_num_same = 195;
+    public static int ctr2_editTab_titles = 200;
+    public static int global_type = 204;
+    public static int global_color = 205;
+    public static int global_alias = 207;
+    public static int global_size = 208;
+    public static int global_keycode = 209;
+    public static int global_shape = 210;
+    public static int ctr2_prop_direction_title = 212;
+    public static int ctr2_prop_colorStyle_names = 213;
+    public static int ctr2_prop_type_names = 214;
+    public static int ctr2_prop_shape_names = 215;
+    public static int ctr2_prop_direction_names = 216;
+    public static int ctr2_ges_state = 217;
+    public static int ctr2_ges_action = 218;
+    public static int ctr2_ges_transition = 219;
+    public static int ctr2_ges_preState = 220;
+    public static int ctr2_ges_postState = 221;
+    public static int ctr2_ges_subTitles= 222;
+    public static int ctr2_ges_debug_realtimeInfo =223;
+    public static int ctr2_ges_debug_graph = 224;
+    public static int global_done = 225;
+    public static int ctr2_ges_fillInAlias = 226;
+    public static int ctr2_ges_state_edit_tabTitles = 227;
+    public static int ctr2_ges_stateDelWarns = 228;
+    public static int ctr2_ges_actionDelWarns = 229;
+    public static int global_instructions = 230;
+    public static int ctr2_ges_transInfo = 231;
+    public static int ctr2_ges_state_edit_tran_tableHeaders = 232;
+    public static int ctr2_stateProp_PrsRlsCheck = 233;
+    public static int ctr2_stateProp_fingerIndex = 234;
+    public static int ctr2_stateProp_fingerXYType = 235;
+    public static int ctr2_stateProp_option = 236;
+    public static int ctr2_stateProp_noMoveThreshold = 237;
+    public static int ctr2_stateProp_zoom2Finger = 238;
+    public static int ctr2_stateProp_farDistThres = 239;
+    public static int ctr2_stateProp_fastMoveThres = 240;
+    public static int ctr2_stateProp_countDown = 241;
+    public static int global_empty = 242;
+    public static int ctr2_FSMR_value_fingerXYType = 243;
+    public static int ctr2_FSMR_value_fingerIndex = 244;
+    public static int ctr2_FSMR_value_pointerMoveType = 245;
+    public static int ctr2_customControls2 = 246;
+    public static int ctr2_option_showHideTouchArea = 248;
+    public static int global_quit = 249;
+    public static int ctr2_option_showAll = 250;
+    public static int ctr2_option_softInput = 251;
+    public static int ctr2_profile_importMsgs=252;
+    public static int ctr2_profile_exportMsgs=253;
+    public static int ctr2_profile_addOptions=254;
+    public static int ctr2_profile_oneOptions=255;
+    public static int ctr2_profile_editName=256;
+    public static int ctr2_profile_delConfirm=257;
+    public static int global_save=258;
+    public static int ctr2_other_saveExit=259;
+    public static int ctr2_other_mouseSpeed=260;
+    public static int ctr2_other_showTouchArea = 261;
+
+
 
 
     public static String locale = refreshLocale();
-
 
     static {
         SparseArray<String> zhArray = new SparseArray<>();
@@ -417,6 +474,68 @@ public class RR {
         zhArray.put(fsm_state_fingerNum,"检测手指数量变化");
         zhArray.put(fsm_state_2FZoom,"两根手指缩放");
         zhArray.put(fsm_state_action_option,"执行选项");
+        zhArray.put(ctr2_editTab_titles,"按键$手势$多配置$其他");
+        zhArray.put(global_type,"类型");
+        zhArray.put(global_color,"颜色");
+        zhArray.put(global_alias,"别名");
+        zhArray.put(global_size,"尺寸");
+        zhArray.put(global_keycode,"按键码");
+        zhArray.put(global_shape,"形状");
+        zhArray.put(ctr2_prop_direction_title,"方向");
+        zhArray.put(ctr2_prop_colorStyle_names,"描边$填充");
+        zhArray.put(ctr2_prop_type_names,"按钮$摇杆$十字键");
+        zhArray.put(ctr2_prop_shape_names,"矩形$圆形");
+        zhArray.put(ctr2_prop_direction_names,"4方向$8方向");
+        zhArray.put(ctr2_ges_state,"状态");
+        zhArray.put(ctr2_ges_action,"附加操作");
+        zhArray.put(ctr2_ges_transition,"状态转移");
+        zhArray.put(ctr2_ges_preState,"转移前状态");
+        zhArray.put(ctr2_ges_postState,"转移后状态");
+        zhArray.put(ctr2_ges_subTitles,"状态$附加操作$调试");
+        zhArray.put(ctr2_ges_debug_realtimeInfo,"实时显示状态转移");
+        zhArray.put(ctr2_ges_debug_graph,"查看当前的状态转移图");
+        zhArray.put(global_done,"完成");
+        zhArray.put(ctr2_ges_fillInAlias,"请填写别名。");
+        zhArray.put(ctr2_ges_state_edit_tabTitles,"状态转移$属性");
+        zhArray.put(ctr2_ges_stateDelWarns,"确定要删除吗？与此状态相关的状态转移也会被一并删除。" +
+                "$以下转移将会被删除:");
+        zhArray.put(ctr2_ges_actionDelWarns,"确定要删除吗？" +
+                "$以下状态转移将无法再使用此附加操作:");
+        zhArray.put(global_instructions,"说明");
+        zhArray.put(ctr2_ges_transInfo,"状态转移的基本概念：[当前状态]运行 -> 满足某个条件 -> 发送对应[事件] -> 执行对应[附加操作] -> 停止当前状态，运行[下一个状态]。\n为每个事件设置不同的下一状态，即可走向不同分支。" +
+                "\n\n可发送事件: 该状态可能发送的全部事件" +
+                "\n\n下一个状态: 用户可自定义此状态。只能从当前已创建的状态列表中选择。" +
+                "\n\n 附加操作: 用户可自定义此操作。只能从当前已创建的操作列表中选择。注意执行多个操作时有先后顺序。");
+        zhArray.put(ctr2_ges_state_edit_tran_tableHeaders,"可发送事件$下一个状态$附加操作");
+        zhArray.put(ctr2_stateProp_PrsRlsCheck,"按下$松开");
+        zhArray.put(ctr2_stateProp_fingerIndex,"第几根手指");
+        zhArray.put(ctr2_stateProp_fingerXYType,"手指坐标类型");
+        zhArray.put(ctr2_stateProp_option,"操作");
+        zhArray.put(ctr2_stateProp_noMoveThreshold,"手指移动小于此距离，则算作不移动");
+        zhArray.put(ctr2_stateProp_zoom2Finger,"第几根手指 (其一)$第几根手指 (其二)");
+        zhArray.put(ctr2_stateProp_farDistThres,"超过此大小则属于远距离，否则属于近距离");
+        zhArray.put(ctr2_stateProp_fastMoveThres,"手指移动大于此距离，则算作快速移动；小于此距离则算作慢速移动");
+        zhArray.put(ctr2_stateProp_countDown,"倒计时限时 (毫秒)");
+        zhArray.put(global_empty,"空");
+        zhArray.put(ctr2_FSMR_value_fingerXYType,"任意一根手指最后一次位置改变时$手指初始按下时$手指当前位置");
+        zhArray.put(ctr2_FSMR_value_fingerIndex,"全部手指$1$2$3$4$5$6$7$8$9$10");
+        zhArray.put(ctr2_FSMR_value_pointerMoveType,"正常$视角转动");
+        zhArray.put(ctr2_customControls2,"自定义操作模式");
+        zhArray.put(ctr2_option_showHideTouchArea,"显示/隐藏屏幕按键");
+        zhArray.put(global_quit,"退出");
+        zhArray.put(ctr2_option_showAll,"显示全部选项");
+        zhArray.put(ctr2_option_softInput,"显示/隐藏安卓输入法");
+        zhArray.put(ctr2_profile_importMsgs,"导入成功: $导入失败: ");
+        zhArray.put(ctr2_profile_exportMsgs,"导出成功: $导出失败: ");
+        zhArray.put(ctr2_profile_addOptions,"空白配置$复制现有配置$从本地文件导入");
+        zhArray.put(ctr2_profile_oneOptions,"导出为文件$重命名$删除");
+        zhArray.put(ctr2_profile_editName,"配置名称");
+        zhArray.put(ctr2_profile_delConfirm,"确定要删除吗？");
+        zhArray.put(global_save,"保存");
+        zhArray.put(ctr2_other_saveExit,"保存并退出编辑");
+        zhArray.put(ctr2_other_mouseSpeed,"鼠标移动速度倍率");
+        zhArray.put(ctr2_other_showTouchArea,"显示屏幕按键 (退出编辑时生效)");
+
 
         /*
 
@@ -608,6 +727,95 @@ public class RR {
         enArray.put(fabVO_btnTitles,"Clean Services$Start Services$Allow Drawing Overlay");
         enArray.put(fabVO_startResults,"Services start successfully. Now you can try to start the container and run games.$Services start failed.");
 
+
+
+        enArray.put(fsm_event_complete,"complete");
+        enArray.put(fsm_event_release,"a finger released");
+        enArray.put(fsm_event_new_touch,"new finger pressed");
+        enArray.put(fsm_event_near,"near");
+        enArray.put(fsm_event_far,"far");
+        enArray.put(fsm_event_noMove,"finger not move");
+        enArray.put(fsm_event_slowMove,"finger slow move");
+        enArray.put(fsm_event_fastMove,"finger fast move");
+        enArray.put(fsm_event_noMoveThenRelease,"a finger not moved then released");
+        enArray.put(fsm_event_moveThenRelease,"a finger moved then released");
+        enArray.put(fsm_event_finger_num_same,"finger numbers not change");
+        enArray.put(fsm_state_testSpd,"Measure finger speed with countdown");
+        enArray.put(fsm_state_init,"Init state");
+        enArray.put(fsm_state_fallback,"Default state (return to init state)");
+        enArray.put(fsm_state_1FMouseMove,"Finger move to pointer move");
+        enArray.put(fsm_state_action_click,"Keyboard/Mouse button");
+        enArray.put(fsm_state_action_msMove,"Move pointer position");
+        enArray.put(fsm_state_msScroll,"Finger move to mouse scroll");
+        enArray.put(fsm_state_distFingerMouse,"Check distance between finger and pointer");
+        enArray.put(fsm_state_fingerNum,"Detect finger number change");
+        enArray.put(fsm_state_2FZoom,"Two fingers zoom");
+        enArray.put(fsm_state_action_option,"Run options");
+        enArray.put(ctr2_editTab_titles,"Keys$Gestures$Profiles$Others");
+        enArray.put(global_type,"Type");
+        enArray.put(global_color,"Color");
+        enArray.put(global_alias,"Alias");
+        enArray.put(global_size,"Size");
+        enArray.put(global_keycode,"Keycodes");
+        enArray.put(global_shape,"Shape");
+        enArray.put(ctr2_prop_direction_title,"Direction");
+        enArray.put(ctr2_prop_colorStyle_names,"stroke$fill");
+        enArray.put(ctr2_prop_type_names,"Button$Stick$D-pad");
+        enArray.put(ctr2_prop_shape_names,"Rectangle$Circle");
+        enArray.put(ctr2_prop_direction_names,"4 directions$8 directions");
+        enArray.put(ctr2_ges_state,"State");
+        enArray.put(ctr2_ges_action,"Action");
+        enArray.put(ctr2_ges_transition,"Transition");
+        enArray.put(ctr2_ges_preState,"pre-state");
+        enArray.put(ctr2_ges_postState,"post-state");
+        enArray.put(ctr2_ges_subTitles,"States$Actions$Debug");
+        enArray.put(ctr2_ges_debug_realtimeInfo,"realtime transition info");
+        enArray.put(ctr2_ges_debug_graph,"show all transitions in a graph");
+        enArray.put(global_done,"Done");
+        enArray.put(ctr2_ges_fillInAlias,"Please fill in the Alias.");
+        enArray.put(ctr2_ges_state_edit_tabTitles,"Transitions$Properties");
+        enArray.put(ctr2_ges_stateDelWarns,"Are you sure? All transitions that contains this state will be deleted too." +
+                "$The following transitions will be deleted:");
+        enArray.put(ctr2_ges_actionDelWarns,"Are you sure?" +
+                "$The following transitions will be unable to use this action:");
+        enArray.put(global_instructions,"Instructions");
+        enArray.put(ctr2_ges_transInfo,
+                "Basic concept of transition: [current(pre) state] running -> match a condition -> send corresponding [event] -> perform corresponding [actions] -> stop pre state, run [post state].\n" +
+                        "Set different post states for different events, so that it works the way you want." +
+                "\n\nEvents: all possible events that this pre state is able to send." +
+                "\n\nPost States: Users can customize the states. Only states that have been previously created at Gesture tab can be selected." +
+                "\n\nActions: Users can customize the actions. They also need to be created first. Note that multiple actions run in the order you set.");
+        enArray.put(ctr2_ges_state_edit_tran_tableHeaders,"Events$Post States$Actions");
+        enArray.put(ctr2_stateProp_PrsRlsCheck,"Press$Release");
+        enArray.put(ctr2_stateProp_fingerIndex,"Which finger");
+        enArray.put(ctr2_stateProp_fingerXYType,"Finger location type");
+        enArray.put(ctr2_stateProp_option,"Option");
+        enArray.put(ctr2_stateProp_noMoveThreshold,"Finger movement less than this distance is counted as no movement");
+        enArray.put(ctr2_stateProp_zoom2Finger,"Which finger (one)$Which finger (the other)");
+        enArray.put(ctr2_stateProp_farDistThres,"Distance above this is counted as far distance, otherwise near");
+        enArray.put(ctr2_stateProp_fastMoveThres,"Finger movement greater than this distance is a fast move, otherwise is a slow move");
+        enArray.put(ctr2_stateProp_countDown,"Countdown (millisecond)");
+        enArray.put(global_empty,"Empty");
+        enArray.put(ctr2_FSMR_value_fingerXYType, "Latest location of any finger" +
+                        "$Location when this finger touch the screen" +
+                        "$Current location of this finger");
+        enArray.put(ctr2_FSMR_value_fingerIndex,"All fingers$1$2$3$4$5$6$7$8$9$10");
+        enArray.put(ctr2_FSMR_value_pointerMoveType,"Normal$Game camera moving");
+        enArray.put(ctr2_customControls2,"Custom Controls 2");
+        enArray.put(ctr2_option_showHideTouchArea,"Show/Hide buttons");
+        enArray.put(global_quit,"Quit");
+        enArray.put(ctr2_option_showAll,"Show all options");
+        enArray.put(ctr2_option_softInput,"Show/Hide Android input method");
+        enArray.put(ctr2_profile_importMsgs,"Import succeeded: $Import failed: ");
+        enArray.put(ctr2_profile_exportMsgs,"Export succeeded: $Export failed: ");
+        enArray.put(ctr2_profile_addOptions,"Empty profile$Copy existing profile$Import from local file");
+        enArray.put(ctr2_profile_oneOptions,"Export as file$Rename$Delete");
+        enArray.put(ctr2_profile_editName,"Profile name");
+        enArray.put(ctr2_profile_delConfirm,"Delete this profile?");
+        enArray.put(global_save,"Save");
+        enArray.put(ctr2_other_saveExit,"Save and exit");
+        enArray.put(ctr2_other_mouseSpeed,"Mouse movement speed multiplier");
+        enArray.put(ctr2_other_showTouchArea,"Show buttons on screen \n(take effect after exit edit mode)");
         /*
 
 

@@ -1,5 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
 
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
@@ -9,6 +11,7 @@ import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
@@ -84,9 +87,9 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
 
         return createEditViewQuickly(c,
                 new String[][]{
-                        {"观测第几根手指",null},
-                        {"观测手指的哪个坐标",null},
-                        {"超过此大小则属于远距离",null}
+                        {getS(RR.ctr2_stateProp_fingerIndex),null},//"观测第几根手指"
+                        {getS(RR.ctr2_stateProp_fingerXYType),null},//观测手指的哪个坐标
+                        {getS(RR.ctr2_stateProp_farDistThres),null}//超过此大小则属于远距离
                 },
                 new View[]{editFingerIndex,editFingerXYType,editThreshold});
     }

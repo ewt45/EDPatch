@@ -27,6 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
 public class Const {
+    public static boolean initiated=false;
 //    /**
 //     * 记录model的全部类型及其对应int
 //     * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
@@ -39,11 +40,11 @@ public class Const {
      * 经过测试，12f（安卓像素）比较合适
      */
     public static float fingerTapMaxMoveInches = 0.2f;
-    public static WeakReference<Edit1KeyView> editKeyViewRef = null;
-    private static WeakReference<TouchAreaView> touchAreaViewRef = null;
-    public static WeakReference<XServerViewHolder> xServerViewHolderRef = null;
-    public static WeakReference<FragmentActivity> activityRef = null;
-    public static WeakReference<GestureContext2> gestureContextRef = null;
+    public static Edit1KeyView editKeyView = null;
+    private static TouchAreaView touchAreaView = null;
+    public static XServerViewHolder xServerViewHolder = null;
+    public static FragmentActivity activityRef = null;
+    public static GestureContext2 gestureContextRef = null;
     public static int dp8;
     public static int minTouchSize;
     public static int minBtnAreaSize;
@@ -63,6 +64,7 @@ public class Const {
     public static String defaultProfileName = "default"; //没有任何配置时，默认配置名称
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
 
+    public static boolean detailDebug = false; //用于调试的便捷开关
     //TODO 如果要在没有全部完成之前发布的话，在“其他”页面添加说明这个是alpha版，不推荐使用，可能含有bug，升级到正式版时可能有冲突需要清除数据重装。
     /**
      * 有些数据需要context才能获取。此函数必须在访问Const成员变量前调用一次。
@@ -71,8 +73,8 @@ public class Const {
 //        Log.d("TAG", "init: gc前static的弱引用会被回收吗 "+testRef.get());
 //        Runtime.getRuntime().gc();
 //        Log.d("TAG", "init: gc后static的弱引用会被回收吗 "+testRef.get());//有被其他地方引用的话就不会，所以context要等到生命周期结束了的，正常用的时候没问题
-        activityRef = new WeakReference<>(c);
-        xServerViewHolderRef = new WeakReference<>(holder);
+        activityRef = c;
+        xServerViewHolder = holder;
 
         dp8 = QH.px(c, 8);
         minTouchSize = QH.px(c, 32);
@@ -99,11 +101,14 @@ public class Const {
         if (!ModelProvider.currentProfile.exists())
             isFirst = true;
 
+        //TODO 添加预设的几个配置（不过不应该在这添加，因为不应该允许用户删除）
         if (isFirst) {
             OneProfile defaultProfile = new OneProfile(defaultProfileName);
             ModelProvider.saveProfile(defaultProfile);
             ModelProvider.makeCurrent(defaultProfile.name);
         }
+
+        initiated=true;
     }
 
     /**
@@ -130,12 +135,21 @@ public class Const {
      */
     public static void clear() {
         activityRef = null;
-        xServerViewHolderRef = null;
-        editKeyViewRef = null;
-        touchAreaViewRef = null;
-        gestureContextRef = null;
+        xServerViewHolder = null;
+        //TODO touchAreaView不清空了，声明周期让fragment维护（其附属的的view和profile也要考虑下怎么办）
+//        editKeyViewRef = null;
+//        touchAreaViewRef = null;
+//        gestureContextRef = null;
+
+        initiated=false;
     }
 
+    /**
+     * 用于判断是否已经调用过init。
+     */
+    public static boolean isInitiated() {
+        return initiated;
+    }
 
     /**
      * 调用clear之前，调用此方法删除fragment
@@ -143,7 +157,6 @@ public class Const {
     public static void clearFragment() {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         Fragment fragment = manager.findFragmentByTag(Const.fragmentTag);
-
         if(fragment instanceof ControlsFragment){
             manager.beginTransaction().remove(fragment).commit();
         }
@@ -153,7 +166,7 @@ public class Const {
     public static Context getContext() {
         return getActivity();
     }
-    public static FragmentActivity getActivity(){return activityRef.get();}
+    public static FragmentActivity getActivity(){return activityRef;}
 
     public static ControlsFragment getControlFragment(){
         return (ControlsFragment) getActivity().getSupportFragmentManager().findFragmentByTag(fragmentTag);
@@ -164,11 +177,11 @@ public class Const {
     }
 
     public static void setGestureContext(GestureContext2 ctx) {
-        gestureContextRef = new WeakReference<>(ctx);
+        gestureContextRef = ctx;
     }
 
     public static GestureContext2 getGestureContext(){
-        return gestureContextRef.get();
+        return gestureContextRef;
     }
 
     /**
@@ -179,21 +192,21 @@ public class Const {
     }
 
     public static void setTouchView(TouchAreaView view){
-        touchAreaViewRef = new WeakReference<>(view);
+        touchAreaView = view;
     }
 
     /**
      * 获取TouchAreaView
      */
     public static TouchAreaView getTouchView() {
-        return touchAreaViewRef.get();
+        return touchAreaView;
     }
 
     /**
      * 从touchareaview中获取当前profile
      */
     public static OneProfile getActiveProfile(){
-        return touchAreaViewRef.get().getProfile();
+        return touchAreaView.getProfile();
     }
 
     public static boolean isEditing(){
@@ -201,7 +214,7 @@ public class Const {
     }
 
     public static XServerViewHolder getXServerHolder(){
-        return xServerViewHolderRef.get();
+        return xServerViewHolder;
     }
 
 

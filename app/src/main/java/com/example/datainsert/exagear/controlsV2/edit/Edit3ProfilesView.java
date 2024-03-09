@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.controlsV2.edit;
 
+import static com.example.datainsert.exagear.RR.getSArr;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.RR.getS;
 
@@ -37,10 +38,6 @@ import java.util.Objects;
 
 @SuppressLint("ViewConstructor")
 public class Edit3ProfilesView extends LinearLayout {
-    private static final int MENU_CREATE_NEW = 9999;
-    private static final int MENU_COPY = 9998;
-    private static final int MENU_IMPORT = 9997;
-
 
     @SuppressLint("NotifyDataSetChanged")
     public Edit3ProfilesView(Context c) {
@@ -56,31 +53,36 @@ public class Edit3ProfilesView extends LinearLayout {
         Button btnAdd = TestHelper.getTextButton(c, getS(RR.global_add));
         btnAdd.setAllCaps(false);
         ControlsFragment.IntentResultCallback importCallback = (requestCode, resultCode, data) -> {
+            String[] msgs = getSArr(RR.ctr2_profile_importMsgs);
             try {
                 OneProfile oneProfile = ModelProvider.importProfileFromUri(data.getData());
                 profileAdapter.refreshDataSet(true); //导入成功后要刷新列表显示
-                Toast.makeText(Const.getContext(), "导入成功: "+oneProfile.name, Toast.LENGTH_SHORT).show();
+                Toast.makeText(Const.getContext(), /*导入成功*/msgs[0]+oneProfile.name, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(Const.getContext(),"导入失败: " + e.getCause(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                Toast.makeText(Const.getContext(),/*导入失败*/ msgs[1] + e.getCause(), Toast.LENGTH_SHORT).show();
             }
         };
+
+
+        String[] addTitles = getSArr(RR.ctr2_profile_addOptions);
         PopupMenu popupMenuAdd = new PopupMenu(c, btnAdd, Gravity.FILL_HORIZONTAL);
-        popupMenuAdd.getMenu().add(Menu.NONE, MENU_CREATE_NEW, Menu.NONE, "空白配置").setOnMenuItemClickListener(item -> {
+        popupMenuAdd.getMenu().add(/*空白配置*/addTitles[0]).setOnMenuItemClickListener(item -> {
             showEditNameDialog(c, null, true, profileAdapter);
             return true;
         });
-        popupMenuAdd.getMenu().addSubMenu(Menu.NONE, MENU_COPY, Menu.NONE, "复制现有配置").getItem().setOnMenuItemClickListener(item->{
+        popupMenuAdd.getMenu().addSubMenu(/*复制现有配置*/addTitles[1]).getItem().setOnMenuItemClickListener(item->{
             popupMenuAdd.dismiss();
             PopupMenu popupMenuCopyCurrent = new PopupMenu(c,btnAdd);
             for (String name : Objects.requireNonNull(ModelProvider.profilesDir.list()))
-                popupMenuCopyCurrent.getMenu().add(2, Menu.NONE, Menu.NONE, name).setOnMenuItemClickListener(itemSub -> {
+                popupMenuCopyCurrent.getMenu().add( name).setOnMenuItemClickListener(itemSub -> {
                     showEditNameDialog(c, name, true, profileAdapter);
                     return true;
                 });
             popupMenuCopyCurrent.show();
             return true;
         });
-        popupMenuAdd.getMenu().add(Menu.NONE, MENU_IMPORT, Menu.NONE, "从本地文件导入").setOnMenuItemClickListener(item->{
+        popupMenuAdd.getMenu().add(/*从本地文件导入*/addTitles[2]).setOnMenuItemClickListener(item->{
             Const.getControlFragment().requestImportProfile(importCallback);
             return true;
         });
@@ -117,23 +119,22 @@ public class Edit3ProfilesView extends LinearLayout {
         if (refName != null)
             editText.setText(refName);
         new AlertDialog.Builder(c)
-                .setTitle("配置名称")
+                .setTitle(getS(RR.ctr2_profile_editName))//配置名称
                 .setView(frameRoot)
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     TestHelper.saveCurrentEditProfileToFile();
                     String finalName = ModelProvider.getNiceProfileName(editText.getText().toString());
-                    if (createNew)
-                        ModelProvider.createNewProfile(finalName, refName, true); //新建
-                    else {
-                        ModelProvider.createNewProfile(finalName, refName, false); //重命名也相当于新建一个，然后把旧的删了就行
-                        boolean b = new File(ModelProvider.profilesDir, refName).delete();
+                    ModelProvider.createNewProfile(finalName, refName, true); //新建
+                    if (!createNew){
+                        boolean b = new File(ModelProvider.profilesDir, refName).delete();//重命名也相当于新建一个，然后把旧的删了就行
                     }
                     //创建完了之后，需要刷新回收视图.
-                    boolean needResetSelected = createNew || adapter.getDataList().get(adapter.currentSelect).equals(refName);
                     adapter.refreshDataSet(true);
+
+                    boolean needResetSelected = createNew || adapter.getDataList().get(adapter.currentSelect).equals(refName);
                     if (needResetSelected)
-                        adapter.setCheckedItem(finalName);
+                        adapter.setCheckedItem(finalName); //在这里将新的profile实例设置到touchAreaView上
                 })
                 .setCancelable(false)
                 .show();
@@ -206,37 +207,38 @@ public class Edit3ProfilesView extends LinearLayout {
 
             holder.btnMenu.setOnClickListener(v -> {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 1, "使用该配置");
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, "导出为文件");
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, "重命名");
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 4, "删除");
+                String[] itemNames = getSArr(RR.ctr2_profile_oneOptions);
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 1, itemNames[0]);//导出为文件
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//重命名
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//删除
 
                 ControlsFragment.IntentResultCallback exportCallback = (requestCode, resultCode, data) -> {
+                    String[] exportMsgs = getSArr(RR.ctr2_profile_exportMsgs);
                     try {
                         ModelProvider.exportProfileToUri(data.getData(),profileName);
-                        Toast.makeText(Const.getContext(), "导出成功: "+profileName, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Const.getContext(), /*成功*/exportMsgs[0]+profileName, Toast.LENGTH_SHORT).show();
                     } catch (Exception e) {
-                        Toast.makeText(Const.getContext(), "导出失败: " + e.getCause(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Const.getContext(), /*失败*/exportMsgs[1]+ e.getCause(), Toast.LENGTH_SHORT).show();
                     }
                 };
                 //由于编辑的model放在内存，有修改操作时（导出，复制，切换，重命名，退出编辑）时都应该将当前model同步到本地(saveProfile())，然后再操作
                 popupMenu.setOnMenuItemClickListener(item -> {
                     TestHelper.saveCurrentEditProfileToFile();
                     switch (item.getOrder() & 0x0f) {
-                        case 1: //使用该配置
-                            holder.root.performClick();
-                            break;
-                        case 2: //导出
+//                        case 1: //使用该配置
+//                            holder.root.performClick();
+//                            break;
+                        case 1: //导出
                             Const.getControlFragment().requestExportProfile(profileName, exportCallback);
                             break;
-                        case 3: //重命名
+                        case 2: //重命名
                             showEditNameDialog(v.getContext(), profileName, false, this);
                             break;
-                        case 4: //删除
+                        case 3: //删除
                             //只剩一个 不删。 被选中的删了，切换选中到第一个
                             if (getDataList().size() == 1)
                                 break;
-                            TestHelper.showConfirmDialog(v.getContext(), "确定要删除吗?", (DialogInterface.OnClickListener) (dialog, which) -> {
+                            TestHelper.showConfirmDialog(v.getContext(), getS(RR.ctr2_profile_delConfirm), (dialog, which) -> {
                                 int removedIndex = getDataList().indexOf(profileName);
                                 boolean selectAnother = profileName.equals(ModelProvider.getCurrentProfileCanonicalName());
                                 new File(ModelProvider.profilesDir, profileName).delete();

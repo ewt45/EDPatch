@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.widget.RangeSeekbar;
@@ -77,7 +78,7 @@ public class Prop0Size extends Prop<TouchAreaModel> {
 
     @Override
     public String getTitle() {
-        return "尺寸";
+        return RR.getS(RR.global_size);
     }
 
 

@@ -11,6 +11,8 @@ public class OneButton extends TouchAreaModel {
     public int shape = Const.BtnShape.RECT;
     public boolean isTrigger = false;
     transient private int triggerFlag=0;
+
+    //用于反射，请勿删除
     public OneButton() {
         super(TYPE_BUTTON);
         mMinAreaSize = Const.minBtnAreaSize;

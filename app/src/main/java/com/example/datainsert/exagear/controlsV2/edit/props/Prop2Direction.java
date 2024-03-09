@@ -8,6 +8,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.model.OneStick;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 
@@ -19,13 +20,13 @@ public class Prop2Direction extends Prop<TouchAreaModel>{
 
     @Override
     public String getTitle() {
-        return "方向";
+        return RR.getS(RR.ctr2_prop_direction_title);
     }
 
     @Override
     protected View createMainEditView(Context c) {
         HorizontalScrollView scrollGroupDirection = buildOptionsGroup(c,
-                new String[]{"4方向", "8方向",},
+                RR.getSArr(RR.ctr2_prop_direction_names),//"4方向  8方向"
                 new int[]{OneStick.WAY_4, OneStick.WAY_8},
                 (group, btn, intValue) -> {
                     if (mHost.getModel() instanceof OneStick)

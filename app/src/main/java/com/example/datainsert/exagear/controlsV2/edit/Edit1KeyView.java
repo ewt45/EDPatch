@@ -1,11 +1,12 @@
 package com.example.datainsert.exagear.controlsV2.edit;
 
+import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
@@ -14,8 +15,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.eltechs.ed.R;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
@@ -57,14 +58,14 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
 
     public Edit1KeyView(Context c) {
         super(c);
-        Const.editKeyViewRef = new WeakReference<>(this);
+        Const.editKeyView = this;
         setOrientation(VERTICAL);
         //TODO 调整设置后，再新建的按钮 默认设置也随之更改。（再出一个复制按钮功能吧）
 
         TouchAreaView touchAreaView = Const.getTouchView();
         //工具栏
         Button btnAddKey = new Button(c);
-        btnAddKey.setText("添加");
+        btnAddKey.setText(getS(RR.global_add)); //添加
         btnAddKey.setOnClickListener(v -> {
             //如果当前的model不属于任何area（当前坐标没有按钮），那么就在当前坐标新建area，否则将新建到0,0
             boolean isRefModelAlreadyInList = false;
@@ -86,7 +87,7 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         });
 
         Button btnDelKey = new Button(c);
-        btnDelKey.setText("删除当前");
+        btnDelKey.setText(getS(RR.global_del)); //删除当前
         btnDelKey.setOnClickListener(v -> {
             touchAreaView.getProfile().removeModelAndArea(mModel);
             touchAreaView.invalidate();
@@ -111,8 +112,10 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         linearToolbar.setOrientation(HORIZONTAL);
         linearToolbar.addView(btnAddKey);
         linearToolbar.addView(btnDelKey);
-        linearToolbar.addView(btnTest);
-        linearToolbar.addView(btnTestRead);
+        if(QH.isTesting()){
+            linearToolbar.addView(btnTest);
+            linearToolbar.addView(btnTestRead);
+        }
         HorizontalScrollView scrollToolbar = new HorizontalScrollView(c);
         scrollToolbar.addView(linearToolbar);
 
@@ -140,6 +143,7 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
             mPanels[i] = new LinearLayout(c);
             mPanels[i].setOrientation(VERTICAL);
             mPanels[i].setVerticalGravity(Gravity.CENTER_VERTICAL);
+            mPanels[i].setLayoutTransition(new LayoutTransition());
         }
 
         mProps = new Prop[][]{
@@ -190,9 +194,9 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         //初始的时候成员变量为null，然后传入一个实例，这样才会判断不等，调用inflate初次生成视图
         onModelChanged(createDefaultButtonWhenEmpty());
 
-        if (!QH.isTesting()) {
-            throw new RuntimeException("请勿设置静态实例");
-        }
+//        if (!QH.isTesting()) {
+//            throw new RuntimeException("请勿设置静态实例");
+//        }
 
 
 //        /*

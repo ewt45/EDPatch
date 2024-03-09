@@ -1,19 +1,22 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
 
+import static com.example.datainsert.exagear.RR.ctr2_stateProp_countDown;
+import static com.example.datainsert.exagear.RR.ctr2_stateProp_fastMoveThres;
+import static com.example.datainsert.exagear.RR.getS;
+
 import android.content.Context;
-import android.util.TypedValue;
 import android.view.View;
 
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.helpers.OneShotTimer;
+import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.GestureContext2;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
 
@@ -180,10 +183,10 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
 
         return createEditViewQuickly(c,
                 new String[][]{
-                        {"小于此距离则算作不移动", null},
-                        {"大于此距离则算作快速移动", null},
-                        {"倒计时限时 (毫秒)", null},
-                        {"观测第几根手指", null},},
+                        {getS(RR.ctr2_stateProp_noMoveThreshold), null}, //小于此距离则算作不移动
+                        {getS(ctr2_stateProp_fastMoveThres), null},//大于此距离则算作快速移动
+                        {getS(ctr2_stateProp_countDown), null},//倒计时限时 (毫秒)
+                        {getS(RR.ctr2_stateProp_fingerIndex), null},},//观测第几根手指
                 new View[]{
                        editNoMoveThreshold,
                        editFastMoveThreshold,

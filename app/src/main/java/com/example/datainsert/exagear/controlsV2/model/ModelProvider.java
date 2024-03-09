@@ -157,7 +157,7 @@ public class ModelProvider {
         try {
             Gson gson = new Gson();
             String jsonStr = gson.toJson(profile);
-            Log.d(TAG, "转为json：" + jsonStr);
+//            Log.d(TAG, "转为json：" + jsonStr);
 
             File file = new File(profilesDir, profile.name);
             if (file.exists() && !file.delete())
@@ -237,6 +237,7 @@ public class ModelProvider {
         //为防止与现在的实例冲突，所以需要从json重新构建一个实例。
         // 然后需要改成指定的名字，再存为json
         OneProfile newProfile = ref != null ? readProfile(ref) : new OneProfile(newName);
+        newProfile.name = newName;
         saveProfile(newProfile);
         if (makeCurrent)
             makeCurrent(newName);

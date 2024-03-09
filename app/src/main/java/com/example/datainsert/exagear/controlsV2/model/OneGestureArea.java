@@ -25,6 +25,7 @@ public class OneGestureArea extends TouchAreaModel {
     transient private List<FSMState2> unModifiableAllStateList;
     transient private int maxIdValue = 0; //当前已分配状态id的最大值
 
+    //用于反射，请勿删除
     public OneGestureArea() {
         super(TYPE_GESTURE);
     }

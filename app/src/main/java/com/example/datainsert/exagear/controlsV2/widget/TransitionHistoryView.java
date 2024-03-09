@@ -95,10 +95,20 @@ public class TransitionHistoryView extends View {
         }
     }
 
+    /**
+     * 添加一条记录
+     */
     public void addHistory(List<String> tran){
-        mHistoryList.add(tran   );
-        if(mHistoryList.size()%5==0)
-            mHistoryList.add(Arrays.asList("中文","English","111","fsfsdf"));
+        mHistoryList.add(tran);
+//        if(mHistoryList.size()%5==0)
+//            mHistoryList.add(Arrays.asList("中文","English","111","fsfsdf"));
         postInvalidate();
+    }
+
+    /**
+     * 清空全部记录
+     */
+    public void clearHistory() {
+        mHistoryList.clear();
     }
 }

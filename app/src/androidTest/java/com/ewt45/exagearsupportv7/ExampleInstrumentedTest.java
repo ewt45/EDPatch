@@ -41,13 +41,13 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void 测试_安卓dalvikvm运行外部java代码是否是在同进程下() throws IOException {
-        //对比：进程号，某个类的变量
-        int mainPid = Process.myPid();
-        Const.activityRef = new WeakReference<>(null);
-        Log.d(TAG, "主进程： "+mainPid+", "+Const.activityRef);
-//        System.out.println("system:主进程： "+mainPid+", "+Const.activityRef);
-//        runProcessWithOutput("dalvikvm","-help");
-        runProcessWithOutput("dalvikvm","-cp","/sdcard/test.dex","com.example.test");
+//        //对比：进程号，某个类的变量
+//        int mainPid = Process.myPid();
+//        Const.activityRef = new WeakReference<>(null);
+//        Log.d(TAG, "主进程： "+mainPid+", "+Const.activityRef);
+////        System.out.println("system:主进程： "+mainPid+", "+Const.activityRef);
+////        runProcessWithOutput("dalvikvm","-help");
+//        runProcessWithOutput("dalvikvm","-cp","/sdcard/test.dex","com.example.test");
     }
 
     private void runProcessWithOutput(String ... cmds) throws IOException {

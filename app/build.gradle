@@ -113,6 +113,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.tukaani:xz:1.9' //下载wine压缩包，解压tar.xz需要
 
+
     //tx11的类，只作为提供api，最新代码应该去termuxx11那个project里找
 
 //    implementation project(path: ':edapi')
@@ -120,4 +121,5 @@ dependencies {
 //    implementation project(path: ':overlayapp')
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    compileOnly project(':app:stub')
 }

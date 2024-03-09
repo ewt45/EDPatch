@@ -8,7 +8,10 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +22,7 @@ import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.controlsV2.options.OptionsProvider;
 import com.example.datainsert.exagear.controlsV2.widget.TransitionHistoryView;
+import com.example.datainsert.exagear.controlsV2.widget.colorpicker.ColorPicker;
 
 public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
 
@@ -30,11 +34,11 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
     private OneProfile mProfile;
     private EditConfigWindow mEditWindow; //编辑模式下的编辑视图根窗口
     private TransitionHistoryView mTvGestureHistory; //显示
+    Paint mFramePaint = new Paint();
+
 
     public TouchAreaView(@NonNull Context context) {
         super(context);
-        Const.setTouchView(this);
-
 //        this.xServerFacade = viewOfXServer==null?null:viewOfXServer.getXServerFacade();
 //        this.mouse = viewOfXServer==null?null:new Mouse(new PointerEventReporter(viewOfXServer));
 //        this.keyboard = new Keyboard(new KeyEventReporter(this.xServerFacade));
@@ -46,6 +50,9 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
         setWillNotDraw(false); //设置为false，否则onDraw不会被调用
         requestFocus();
         setOnKeyListener(this);
+
+        mFramePaint.setStrokeWidth(4);
+        mFramePaint.setColor(Color.RED);
     }
 
     /**
@@ -59,6 +66,13 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
+        if(Const.detailDebug){
+            canvas.drawLine(0,0,getWidth(),0,mFramePaint);
+            canvas.drawLine(getWidth(),0,getWidth(),getHeight(),mFramePaint);
+            canvas.drawLine(getWidth(),getHeight(),0,getHeight(),mFramePaint);
+            canvas.drawLine(0,getHeight(),0,0,mFramePaint);
+
+        }
         for (TouchArea<?> touchArea : mProfile.getTouchAreaList())
             touchArea.onDraw(canvas);
         super.onDraw(canvas);
@@ -67,6 +81,7 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
         if (keyCode == KEYCODE_BACK && keyEvent.getAction() == ACTION_UP) {
+            Log.d(TAG, "onKey: 拦截到返回键");
             if(!mProfile.isEditing()) OptionsProvider.getOption(OptionsProvider.OPTION_SHOW_ALL_OPTIONS).run();
             else exitEdit();
         }
