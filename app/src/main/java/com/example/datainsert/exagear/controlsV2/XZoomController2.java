@@ -7,11 +7,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
 
-import com.eltechs.axs.GeometryHelpers;
-import com.eltechs.axs.geom.RectangleF;
-import com.eltechs.axs.helpers.ArithHelpers;
-import com.eltechs.axs.helpers.Assert;
-import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 
 /**
  * 内部存一个viewOfXServer。
@@ -41,13 +36,13 @@ public class XZoomController2 {
     private double zoomFactorWhenStart = zoomFactorCurr; //调用start()时的缩放比例，之后update时依据这个来调整
     private float distanceStart; //start()时，两根手指的距离
     /**
-     * 实时更新的，移动位置的那根手指对应安卓的坐标
+     * 用于确定位置的手指（锚点）x单位坐标。缩放过程中实时更新。(原anchorHost)
      */
-    private final PointF anchorHost = new PointF();
+    private final PointF anchorLatestInX = new PointF();
     /**
-     * 应该是只在进入或退出缩放状态时设置一次，移动位置的那根手指对应xserver的坐标
+     * 用于确定位置的手指（锚点）x单位坐标。缩放矩阵开始改变之前，此位置确定下来，缩放过程中不再改变。(原anchorXServer)
      */
-    private final PointF anchorXServer = new PointF();
+    private final PointF anchorWhenZoomStartInX = new PointF();
     private boolean isZoomed;
     private float lastDistance;
 
@@ -80,28 +75,52 @@ public class XZoomController2 {
 //        //记录起始时缩放倍率
 //        zoomFactorWhenStart = zoomFactorCurr;
 
-        lastDistance = GeometryHelpers.distance(x1, y1, x2, y2);
+        lastDistance = TestHelper.distance(x1, y1, x2, y2);
         //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
-        setAnchorHost(x1, y1);
-        setAnchorXServer(x1,y1);
+        setAnchorWhenStart(x1,y1);
+        setAnchorLatest(x1,y1);
     }
 
     /**
      * 缩放更新，传入传入此时的两根手指的坐标(event中获取）。函数内部会重新计算缩放倍率和当前应显示的画面区域，并将此区域提交给viewOfXServer
      */
     public void update(float x1, float y1, float x2, float y2) {
-        float newDistance = GeometryHelpers.distance(x1, y1, x2, y2);
-        double scaleDelta = newDistance / this.lastDistance;
+        float newDistance = TestHelper.distance(x1, y1, x2, y2);
         boolean isEarlierZoomed = isZoomed;
 
-        zoomFactorCurr = zoomFactorCurr * scaleDelta;
-        refreshZoom();
+        //更新锚点手指的位置（安卓单位）
+        setAnchorLatest(x1, y1);
 
-        setAnchorHost(x1, y1);
-        if(isEarlierZoomed!=isZoomed)
-            setAnchorXServer(x1,y1);
+        //更新缩放倍率和缩放状态
+        zoomFactorCurr = zoomFactorCurr * (newDistance / this.lastDistance);
+        //限制缩放倍率在1到5之间
+        zoomFactorCurr = Math.max(zoomFactorCurr,1);
+        zoomFactorCurr = Math.min(zoomFactorCurr,MAX_ZOOM_FACTOR);
+        //如果非常接近1，则认作没有缩放(isZoomed=false），但zoomFactor记录的数值不重置为1
+        isZoomed = !(this.zoomFactorCurr < ZOOM_SENSETIVITY_THRESHOLD);
 
-        refreshZoom();
+        //只有在缩放过程以外的时候，才更新锚点手指的位置（x单位），因为缩放过程中view到x的矩阵一直在变化，导致锚点的x单位坐标也会一直变化
+        if(!isEarlierZoomed)
+            setAnchorWhenStart(x1, y1);
+
+        //修改缩放矩阵
+        if (!isZoomed) {
+            resetZoom();
+        } else {
+            int[] xserverWH = viewOfXServer.getXScreenPixels();
+            //这个是缩放之后可见的宽高，比如放大了那就比完整宽高要小(x单位）
+            float zoomedW = (float) (xserverWH[0] / this.zoomFactorCurr);
+            float zoomedH = (float) (xserverWH[1] / this.zoomFactorCurr);
+            //应用新的裁切矩形，原点根据第一根手指的坐标调整一下，宽高根据两根手指的距离调整一下
+
+            visibleRectangle.left = visibleRectangle.left + anchorWhenZoomStartInX.x - anchorLatestInX.x;
+            visibleRectangle.top = visibleRectangle.top + anchorWhenZoomStartInX.y -anchorLatestInX.y;
+            visibleRectangle.right = visibleRectangle.left + zoomedW;
+            visibleRectangle.bottom = visibleRectangle.top + zoomedH;
+            applyZoomRect(visibleRectangle);
+        }
+
+        //最后更新两指间距离
         this.lastDistance = newDistance;
 
 
@@ -149,44 +168,21 @@ public class XZoomController2 {
         return zoomFactorCurr != 1;
     }
 
-    private void setAnchorXServer(float x, float y){
+    private void setAnchorWhenStart(float x, float y){
         float[] xPos = {x, y};
         viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(xPos);
-        this.anchorXServer.set(xPos[0],xPos[1]);
+        this.anchorWhenZoomStartInX.set(xPos[0],xPos[1]);
     }
 
-    private void setAnchorHost(float x, float y) {
-        this.anchorHost.set(x,y);
+    private void setAnchorLatest(float x, float y) {
+//        this.anchorLatestInX.set(x,y);
+        float[] xPos = {x, y};
+        viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(xPos);
+        this.anchorLatestInX.set(xPos[0],xPos[1]);
     }
 
 
-    public void refreshZoom() {
-        //限制缩放倍率在1到5之间
-        if (this.zoomFactorCurr < 1.0d)
-            this.zoomFactorCurr = 1.0d;
-        else if (this.zoomFactorCurr > MAX_ZOOM_FACTOR)
-            this.zoomFactorCurr = MAX_ZOOM_FACTOR;
 
-        //非常接近1时直接设置为1.否则正常处理放大
-        isZoomed = !(this.zoomFactorCurr < ZOOM_SENSETIVITY_THRESHOLD);
-        if (!isZoomed) {
-            resetZoom();
-        } else {
-            int[] xserverWH = viewOfXServer.getXScreenPixels();
-            //这个是缩放之后可见的宽高，比如放大了那就比完整宽高要小(x单位）
-            float zoomedW = (float) (xserverWH[0] / this.zoomFactorCurr);
-            float zoomedH = (float) (xserverWH[1] / this.zoomFactorCurr);
-            //用于移动位置的那根手指，会将安卓坐标同步到anchorHost，这里将其转换为xserver坐标
-            float[] newAnchorXServer = {this.anchorHost.x, this.anchorHost.y};
-            viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(newAnchorXServer);
-            //应用新的裁切矩形，原点根据第一根手指的坐标调整一下，宽高根据两根手指的距离调整一下
-            visibleRectangle.left = visibleRectangle.left + anchorXServer.x - newAnchorXServer[0];
-            visibleRectangle.top = visibleRectangle.top + anchorXServer.y - newAnchorXServer[1];
-            visibleRectangle.right = visibleRectangle.left + zoomedW;
-            visibleRectangle.bottom = visibleRectangle.top + zoomedH;
-            applyZoomRect(visibleRectangle);
-        }
-    }
 
     private void applyZoomRect(RectF newVisibleRect) {
         int[] viewWH = viewOfXServer.getAndroidViewPixels();
