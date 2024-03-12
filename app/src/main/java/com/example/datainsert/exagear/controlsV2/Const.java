@@ -124,8 +124,8 @@ public class Const {
     public static void initShowFragment(int frameId, ControlsFragment fragment){
         //添加fragment
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(frameId, fragment, Const.fragmentTag)
-//                .addToBackStack(null) //如果不用退出fragment的话不驾到backstack也无所谓吧
+                .add(frameId, fragment, Const.fragmentTag)
+                .addToBackStack(null) //如果不用退出fragment的话不驾到backstack也无所谓吧
                 .commit();
 
     }

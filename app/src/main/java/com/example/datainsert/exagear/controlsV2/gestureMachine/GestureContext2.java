@@ -1,12 +1,11 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine;
 
-import com.eltechs.axs.widgets.viewOfXServer.XZoomController;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
-import com.example.datainsert.exagear.controlsV2.XZoomController2;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.AndroidPointReporter;
+import com.example.datainsert.exagear.controlsV2.XZoomHandler;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.GestureDistributeAdapter;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaGesture;
 
@@ -89,7 +88,7 @@ public class GestureContext2 {
         return this.host;
     }
 
-    public XZoomController2 getZoomController() {
+    public XZoomHandler getZoomController() {
         return this.host.getZoomController();
     }
 

@@ -3,74 +3,90 @@ package com.example.datainsert.exagear.controlsV2;
 import static android.support.v4.view.InputDeviceCompat.SOURCE_STYLUS;
 import static android.view.InputDevice.SOURCE_MOUSE;
 import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.ACTION_MULTIPLE;
 import static android.view.KeyEvent.ACTION_UP;
 import static android.view.KeyEvent.KEYCODE_BACK;
+import static android.view.KeyEvent.KEYCODE_BUTTON_L1;
+import static android.view.KeyEvent.KEYCODE_BUTTON_L2;
+import static android.view.KeyEvent.KEYCODE_BUTTON_R1;
+import static android.view.KeyEvent.KEYCODE_BUTTON_R2;
+import static android.view.KeyEvent.KEYCODE_DPAD_CENTER;
+import static android.view.KeyEvent.KEYCODE_MENU;
+import static android.view.KeyEvent.KEYCODE_UNKNOWN;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidKeyReporter;
+import com.example.datainsert.exagear.controlsV2.axs.Key;
 import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.controlsV2.options.OptionsProvider;
 import com.example.datainsert.exagear.controlsV2.widget.TransitionHistoryView;
-import com.example.datainsert.exagear.controlsV2.widget.colorpicker.ColorPicker;
 
-public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
+public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
 
     private static final String TAG = "TouchAreaView";
     final int MAX_FINGERS = 10;
     private final Finger[] userFingers = new Finger[MAX_FINGERS];
+    private final Paint mFramePaint = new Paint();
+//    private final Keyboard mKeyboard;
     Mouse mMouse = new Mouse();
     //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
     private OneProfile mProfile;
     private EditConfigWindow mEditWindow; //编辑模式下的编辑视图根窗口
     private TransitionHistoryView mTvGestureHistory; //显示
-    Paint mFramePaint = new Paint();
-
 
     public TouchAreaView(@NonNull Context context) {
         super(context);
 //        this.xServerFacade = viewOfXServer==null?null:viewOfXServer.getXServerFacade();
 //        this.mouse = viewOfXServer==null?null:new Mouse(new PointerEventReporter(viewOfXServer));
-//        this.keyboard = new Keyboard(new KeyEventReporter(this.xServerFacade));
+//        this.mKeyboard = new Keyboard(new KeyEventReporter(viewFacade));
 //        this.configuration = touchScreenControlsInputConfiguration;
 
 //        setLayerType(LAYER_TYPE_HARDWARE,null);
 
         setId(View.generateViewId());
         setWillNotDraw(false); //设置为false，否则onDraw不会被调用
-        requestFocus();
         setOnKeyListener(this);
+
+        requireFocus();
 
         mFramePaint.setStrokeWidth(4);
         mFramePaint.setColor(Color.RED);
     }
 
+
+
     /**
-     * 用于拦截按键
+     * 获取焦点。用于拦截按键
      */
-    public void requireFocus(){
+    public void requireFocus() {
         setFocusable(true);
         setFocusableInTouchMode(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            setFocusedByDefault(true);
         requestFocus();
     }
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-        if(Const.detailDebug){
-            canvas.drawLine(0,0,getWidth(),0,mFramePaint);
-            canvas.drawLine(getWidth(),0,getWidth(),getHeight(),mFramePaint);
-            canvas.drawLine(getWidth(),getHeight(),0,getHeight(),mFramePaint);
-            canvas.drawLine(0,getHeight(),0,0,mFramePaint);
+        if (Const.detailDebug) {
+            canvas.drawLine(0, 0, getWidth(), 0, mFramePaint);
+            canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), mFramePaint);
+            canvas.drawLine(getWidth(), getHeight(), 0, getHeight(), mFramePaint);
+            canvas.drawLine(0, getHeight(), 0, 0, mFramePaint);
 
         }
         for (TouchArea<?> touchArea : mProfile.getTouchAreaList())
@@ -80,66 +96,74 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
 
     @Override
     public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
-        if (keyCode == KEYCODE_BACK && keyEvent.getAction() == ACTION_UP) {
-            Log.d(TAG, "onKey: 拦截到返回键");
-            if(!mProfile.isEditing()) OptionsProvider.getOption(OptionsProvider.OPTION_SHOW_ALL_OPTIONS).run();
-            else exitEdit();
-        }
-        return true;
-        // 原本的按键监听最后需要加回来
-//            if (keyEvent.getSource() == SOURCE_MOUSE) {
-//                if (keyCode == KEYCODE_BACK) {
-//                    if (keyEvent.getAction() == ACTION_DOWN) {
-//                        this.xServerFacade.injectPointerButtonPress(3);
-//                    } else if (keyEvent.getAction() == ACTION_UP) {
-//                        this.xServerFacade.injectPointerButtonRelease(3);
-//                    }
+        int action = keyEvent.getAction();
+        if (keyEvent.getSource() == SOURCE_MOUSE) {
+            if (keyCode == KEYCODE_BACK) {
+                if (action == ACTION_DOWN) {
+                    Const.getXServerHolder().injectPointerButtonPress(3);
+                } else if (action == ACTION_UP) {
+                    Const.getXServerHolder().injectPointerButtonRelease(3);
+                }
+            }
+            return true;
+        } else if (keyCode == KEYCODE_MENU && keyEvent.getAction() == ACTION_UP) {
+            handleShowAllOptions();
+            return true;
+        } else {
+            if (keyCode == KEYCODE_BACK) {// && this.configuration.backKeyAction == SHOW_POPUP_MENU
+                if (action == ACTION_UP)
+                    handleShowAllOptions();
+                return true;
+            } else if (keyCode == KEYCODE_DPAD_CENTER) {
+                if (action == ACTION_DOWN) {
+                    Const.getXServerHolder().injectPointerButtonPress(3);
+                } else if (action == ACTION_UP) {
+                    Const.getXServerHolder().injectPointerButtonRelease(3);
+                }
+                return true;
+            } else if (keyCode == KEYCODE_BUTTON_L1 || keyCode == KEYCODE_BUTTON_L2) {
+                if(action == ACTION_DOWN)
+                    Const.getXServerHolder().injectKeyPress(Key.key_left_shift.xKeyCode);
+                else if(action == ACTION_UP)
+                    Const.getXServerHolder().injectKeyRelease(Key.key_left_shift.xKeyCode);
+                return true;
+            } else if (keyCode == KEYCODE_BUTTON_R1 || keyCode == KEYCODE_BUTTON_R2) {
+                if(action == ACTION_DOWN)
+                    Const.getXServerHolder().injectKeyPress(Key.key_left_ctrl.xKeyCode);
+                else if(action == ACTION_UP)
+                    Const.getXServerHolder().injectKeyRelease(Key.key_left_ctrl.xKeyCode);
+                return true;
+            }
+//            else if (keyCode != KEYCODE_UNKNOWN) {
+//                if (keyEvent.getAction() == ACTION_DOWN) {
+//                    return mKeyboard.handleKeyDown(keyCode, keyEvent);
 //                }
-//                return true;
-//            } else if (keyCode != KEYCODE_MENU || keyEvent.getAction() != ACTION_UP) {
-//                if (keyCode == KEYCODE_BACK && this.configuration.backKeyAction == SHOW_POPUP_MENU) {
-//                    if (keyEvent.getAction() == 1) {
-//                        getHost().showPopupMenu();
-//                    }
-//                    return true;
-//                } else if (keyCode == KEYCODE_DPAD_CENTER) {
-//                    if (keyEvent.getAction() == 0) {
-//                        this.xServerFacade.injectPointerButtonPress(3);
-//                    } else if (keyEvent.getAction() == 1) {
-//                        this.xServerFacade.injectPointerButtonRelease(3);
-//                    }
-//                    return true;
-//                } else if (keyCode == 102 || keyCode == 104) {
-//                    if (keyEvent.getAction() == 0) {
-//                        TouchScreenControlsInputWidget.this.xServerFacade.injectKeyPress((byte) KeyCodesX.KEY_SHIFT_LEFT.getValue());
-//                    } else if (keyEvent.getAction() == 1) {
-//                        TouchScreenControlsInputWidget.this.xServerFacade.injectKeyRelease((byte) KeyCodesX.KEY_SHIFT_LEFT.getValue());
-//                    }
-//                    return true;
-//                } else if (keyCode == 103 || keyCode == 105) {
-//                    if (keyEvent.getAction() == 0) {
-//                        TouchScreenControlsInputWidget.this.xServerFacade.injectKeyPress((byte) KeyCodesX.KEY_CONTROL_LEFT.getValue());
-//                    } else if (keyEvent.getAction() == 1) {
-//                        TouchScreenControlsInputWidget.this.xServerFacade.injectKeyRelease((byte) KeyCodesX.KEY_CONTROL_LEFT.getValue());
-//                    }
-//                    return true;
-//                } else if (keyCode != 0) {
-//                    if (keyEvent.getAction() == 0) {
-//                        return TouchScreenControlsInputWidget.this.keyboard.handleKeyDown(keyCode, keyEvent);
-//                    }
-//                    if (keyEvent.getAction() == 1) {
-//                        return TouchScreenControlsInputWidget.this.keyboard.handleKeyUp(keyCode, keyEvent);
-//                    }
-//                    return false;
-//                } else if (keyEvent.getAction() == 2) {
-//                    return TouchScreenControlsInputWidget.this.keyboard.handleUnicodeKeyType(keyEvent);
-//                } else {
-//                    return false;
+//                if (keyEvent.getAction() == ACTION_UP) {
+//                    return mKeyboard.handleKeyUp(keyCode, keyEvent);
 //                }
-//            } else {
-//                TouchScreenControlsInputWidget.this.getHost().showPopupMenu();
-//                return true;
+//                return false;
+//            } else if (keyEvent.getAction() == ACTION_MULTIPLE) {
+//                return mKeyboard.handleUnicodeKeyType(keyEvent);
 //            }
+            else if(keyCode != KEYCODE_UNKNOWN || action == ACTION_MULTIPLE){
+                return AndroidKeyReporter.handleAKeyEvent(
+                        action,keyCode,keyEvent.getUnicodeChar(),keyEvent.getCharacters());
+            }
+            else {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * 当按下返回键/菜单键时，应该显示全部选项。如果处于编辑模式下，则改为显示“是否退出编辑”的对话框
+     */
+    private void handleShowAllOptions() {
+        if (!mProfile.isEditing())
+            OptionsProvider.getOption(OptionsProvider.OPTION_SHOW_ALL_OPTIONS).run();
+        else
+            TestHelper.showConfirmDialog(getContext(), RR.getS(RR.ctr2_editExitConfirm), (dialog, which) -> exitEdit());
+
     }
 
 
@@ -282,9 +306,9 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
         //手势历史的textview
         mTvGestureHistory = new TransitionHistoryView(c);
         mTvGestureHistory.setVisibility(GONE);
-        FrameLayout.LayoutParams param = new LayoutParams(-1,-1);
+        FrameLayout.LayoutParams param = new LayoutParams(-1, -1);
 //        param.topMargin = 40;
-        addView(mTvGestureHistory,param);
+        addView(mTvGestureHistory, param);
 
         mEditWindow = new EditConfigWindow(c);
         addView(mEditWindow);
@@ -331,7 +355,6 @@ public class TouchAreaView extends FrameLayout  implements View.OnKeyListener {
         mProfile.syncAreaList(isEditing);
         //TODO 还应该同步profile里存储的全局属性，比如屏幕按键显隐，鼠标移动速度等
     }
-
 
 
 }

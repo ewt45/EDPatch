@@ -248,6 +248,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
         //1指长按后松开，右键点击
         machine.addTransition(stateWait1FActionAfterLongPress, FSMR.event.某手指_未移动并松开, stateWaitForNeutral, actionMouseMoveToFinger, actionRightClick);
 
+        //TODO 一指长按拖拽时，鼠标初始移动到的是手指当前位置而非初始按下位置，导致想拖动标题栏时，可能鼠标初始移动到了标题栏下面
         //1指长按后移动，左键拖拽
 //        machine.addTransition(stateWait1FActionAfterLongPress, StateCountDownMeasureSpeed.SLOW_MOVE, actionPressLeftMouse);//由于不会超时，所以不会产生slow_move事件
         machine.addTransition(stateWait1FActionAfterLongPress, FSMR.event.手指_移动_快速, state1FingerMoveToMouseMove, actionMouseMoveToFinger, actionPressLeftMouse);

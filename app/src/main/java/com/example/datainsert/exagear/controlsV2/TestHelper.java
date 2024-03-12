@@ -9,6 +9,7 @@ import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static android.view.View.VISIBLE;
 import static android.widget.LinearLayout.HORIZONTAL;
+import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
 import android.animation.LayoutTransition;
@@ -22,7 +23,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -47,7 +47,6 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
-import com.example.datainsert.exagear.controlsV2.widget.CustomXmlResourceParser;
 import com.example.datainsert.exagear.controlsV2.widget.DrawableAlign;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
@@ -199,6 +198,13 @@ public class TestHelper {
         return (float) Math.sqrt((dx * dx) + (dy * dy));
     }
 
+    /**
+     * 调整为unit的倍数（向下取整）。用于调整按钮的坐标，方便对齐多个按钮
+     */
+    public static int makeMultipleOf(int unit, int value) {
+        return Math.floorDiv(value, unit) * unit;
+    }
+
 
     /**
      * 修改颜色int（argb）的a值
@@ -211,8 +217,14 @@ public class TestHelper {
      * 由于边距设置到外层时一直存在，导致无法判断可滚动的方向，所以不在这里设置边距了
      */
     public static NestedScrollView wrapAsScrollView(View view) {
-        NestedScrollView scrollView = QH.wrapAsDialogScrollView(view);
+        Context c = view.getContext();
+        NestedScrollView scrollView = new NestedScrollView(c);
+        scrollView.setPadding(dialogPadding(), 0, dialogPadding(), 0);
+        scrollView.addView(view);
         scrollView.setPadding(0, 0, 0, 0);
+        scrollView.setFocusable(true);
+        scrollView.setFocusableInTouchMode(true);
+        scrollView.requestFocus();
 //        scrollView.getChildAt(0).setPadding(p,p,p,p);
         return scrollView;
     }

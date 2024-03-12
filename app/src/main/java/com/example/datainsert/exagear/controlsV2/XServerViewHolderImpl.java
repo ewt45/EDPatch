@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
 public class XServerViewHolderImpl implements XServerViewHolder {
     private WeakReference<ViewOfXServer> mRenderViewRef = null;
     private Matrix mMatrix = new Matrix();
-    private XZoomController2 mZoomController;
+    private XZoomHandlerImpl mZoomController;
     private int scaleStyle = SCALE_FULL_WITH_RATIO;
     private WeakReference<XZoomController> mOriginZoomControllerRef; //用于对比当前原始controller，尽量及时发现是否已经被重置
 
@@ -33,7 +33,7 @@ public class XServerViewHolderImpl implements XServerViewHolder {
             scaleStyle = view.getConfiguration().getFitStyleHorizontal() == STRETCH ? SCALE_FULL_IGNORE_RATIO : SCALE_FULL_WITH_RATIO;
         }
         mOriginZoomControllerRef = new WeakReference<>(view==null?null:view.getZoomController());
-        mZoomController = new XZoomController2(this);
+        mZoomController = new XZoomHandlerImpl(this);
     }
 
 
@@ -75,17 +75,17 @@ public class XServerViewHolderImpl implements XServerViewHolder {
     }
 
     @Override
-    public void injectKeyPress(int keycode) {
+    public void injectKeyPress(int keycode, int keySym) {
         ViewFacade facade = getXServerFacade();
         if (facade != null && !Const.isEditing())
-            facade.injectKeyPress((byte) (keycode + 8));
+            facade.injectKeyPressWithSym((byte) (keycode + 8),keySym);
     }
 
     @Override
-    public void injectKeyRelease(int keycode) {
+    public void injectKeyRelease(int keycode, int keySym) {
         ViewFacade facade = getXServerFacade();
         if (facade != null && !Const.isEditing())
-            facade.injectKeyRelease((byte) (keycode + 8));
+            facade.injectKeyReleaseWithSym((byte) (keycode + 8),keySym);
     }
 
     private ViewFacade getXServerFacade() {
@@ -111,7 +111,7 @@ public class XServerViewHolderImpl implements XServerViewHolder {
 
 
     @Override
-    public XZoomController2 getZoomController() {
+    public XZoomHandler getZoomController() {
         //TODO viewOfXServer在setHorizontalStretchEnabled和onSizeChanged函数中
         // 会主动新建zoomcontroller，其缩放重置，自己如果单独维护XZoomController2则不会收到更新
         // 劫持函数又不现实，在不改动原有代码的基础上，只能尽量及时手动同步了。比如调用holder.getController的时候，手动同步一次factor

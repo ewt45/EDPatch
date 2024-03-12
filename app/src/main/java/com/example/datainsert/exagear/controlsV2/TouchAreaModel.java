@@ -1,6 +1,8 @@
 package com.example.datainsert.exagear.controlsV2;
 
+import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.controlsV2.Const.minTouchSize;
+import static com.example.datainsert.exagear.controlsV2.TestHelper.makeMultipleOf;
 
 import android.support.annotation.IntDef;
 
@@ -11,6 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 宽高设置为4dp的倍数，坐标设置为8dp的倍数
+ */
 public abstract class TouchAreaModel {
     private static final String TAG = "TouchAreaModel";
     public static final int TYPE_BUTTON = 0;
@@ -113,9 +118,11 @@ public abstract class TouchAreaModel {
 
     /**
      * 更新该按钮的别名。若别名trim后为长度为0，则变为所有按键码的别名（getKeycodesString()）
+     * <br/> 会去掉前后空格，换行换成空格
      */
     public void setName(String newName) {
-        this.name = (newName.trim().length() == 0)
+        newName = newName.trim().replace("\n"," "); //去掉前后空格，换行换成空格
+        this.name = (newName.trim().isEmpty())
                 ? getKeycodesString() : newName;
     }
 
@@ -123,32 +130,44 @@ public abstract class TouchAreaModel {
         return left;
     }
 
+    /**
+     * 设置为8dp的倍数
+     */
     public void setLeft(int left) {
-        this.left = Math.max(0, left);
+        this.left = Math.max(0, makeMultipleOf(dp8,left));
     }
 
     public int getTop() {
         return top;
     }
 
+    /**
+     * 设置为8dp的倍数
+     */
     public void setTop(int top) {
-        this.top = Math.max(0, top);
+        this.top = Math.max(0, makeMultipleOf(dp8,top));
     }
 
     public int getWidth() {
         return width;
     }
 
+    /**
+     * 设置为4dp的倍数
+     */
     public void setWidth(int width) {
-        this.width = Math.max(mMinAreaSize, width);
+        this.width = Math.max(mMinAreaSize, makeMultipleOf(dp8/2,width));
     }
 
     public int getHeight() {
         return height;
     }
 
+    /**
+     * 设置为4dp的倍数
+     */
     public void setHeight(int height) {
-        this.height = Math.max(mMinAreaSize, height);
+        this.height = Math.max(mMinAreaSize, makeMultipleOf(dp8/2,height));
     }
 
     public boolean isPressed() {

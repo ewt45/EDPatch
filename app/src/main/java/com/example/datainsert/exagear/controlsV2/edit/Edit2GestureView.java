@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
@@ -32,6 +31,7 @@ import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateWaitF
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneGestureArea;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaGesture;
+import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.example.datainsert.exagear.controlsV2.widget.RecyclerAdapter;
 import com.example.datainsert.exagear.controlsV2.widget.TabPagerLayout;
 
@@ -157,18 +157,18 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
         spinState.setAdapter(new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, isAction ? actionNameCreatable : stateNameCreatable));
         spinState.setSelection(0);
 
-        EditText editNiceName = new EditText(c);
-        editNiceName.setSingleLine(true);
-        editNiceName.setText("");
+        LimitEditText editNiceName = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_TEXT_SINGLE_LINE)
+                .setStringValue("");
 
         //新建状态
         Button btnFinish = new Button(c);
         btnFinish.setText(getS(RR.global_done));//完成
 
         btnFinish.setOnClickListener(v -> {
-            String alias = editNiceName.getText().toString().trim();
+            String alias = editNiceName.getStringValue().trim();
             //应该强制用户自定义一个名称，以防在状态编辑界面 用户把实例和类搞混，在想为什么选项变少了
-            if (alias.equals("")) {
+            if (alias.isEmpty()) {
                 TestHelper.showConfirmDialog(v.getContext(), getS(RR.ctr2_ges_fillInAlias), (dialog, which) -> {
                 });
                 return;

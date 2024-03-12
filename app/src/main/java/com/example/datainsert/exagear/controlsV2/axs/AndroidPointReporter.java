@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.adapter;
+package com.example.datainsert.exagear.controlsV2.axs;
 
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.example.datainsert.exagear.controlsV2.Const;

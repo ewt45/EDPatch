@@ -122,7 +122,7 @@ public class OneProfile {
             if(area.getModel() == model)
                 throw new RuntimeException("该model已属于一个area，无法再新建area");
 
-        TouchAdapter adapter = !isEditing ? null : new EditMoveAdapter(Const.getTouchView(), model, editModel -> {
+        TouchAdapter adapter = !isEditing ? null : new EditMoveAdapter(model, editModel -> {
             if (Const.editKeyView != null)
                 Const.editKeyView.onModelChanged(editModel);
         });

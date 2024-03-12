@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -20,13 +19,14 @@ import android.widget.TextView;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
+import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.example.datainsert.exagear.controlsV2.widget.RangeSeekbar;
 import com.example.datainsert.exagear.QH;
 
 public class Prop0Size extends Prop<TouchAreaModel> {
     RangeSeekbar seekSize;
-    EditText editWidth;
-    EditText editHeight;
+    LimitEditText editWidth;
+    LimitEditText editHeight;
     boolean isSelfEditing = false;
 
     public Prop0Size(Host<TouchAreaModel> host, Context c) {
@@ -84,40 +84,46 @@ public class Prop0Size extends Prop<TouchAreaModel> {
 
     @Override
     protected View createAltEditView(Context c) {
-        editWidth = new EditText(c);
-        editWidth.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        editWidth.addTextChangedListener((QH.SimpleTextWatcher) s -> {
-            if (s.toString().length() == 0 || mIsChangingSource)
-                return;
-            mIsChangingSource=true;
-            TouchAreaModel model = mHost.getModel();
-            model.setWidth(Integer.parseInt(s.toString()));
-            seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
-            onWidgetListener();
-            mIsChangingSource=false;
-        });
+        editWidth = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
+                .setUpdateListener(editText -> {
+                    if (editText.getIntValue()==0 || mIsChangingSource)
+                        return;
+                    mIsChangingSource=true;
+                    TouchAreaModel model = mHost.getModel();
+                    model.setWidth(editText.getIntValue());
+                    seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
+                    onWidgetListener();
+                    mIsChangingSource=false;
+                });
+        editWidth.setMinWidth(dp8*7);
+        editWidth.setMinimumWidth(dp8*7);
 
-        editHeight = new EditText(c);
-        editHeight.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        editHeight.addTextChangedListener((QH.SimpleTextWatcher) s -> {
-            if (s.toString().length() == 0 || mIsChangingSource)
-                return;
-            mIsChangingSource=true;
-            TouchAreaModel model = mHost.getModel();
-            model.setHeight(Integer.parseInt(s.toString()));
-            seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
-            onWidgetListener();
-            mIsChangingSource=false;
-        });
+
+        editHeight = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
+                .setUpdateListener(editText -> {
+                    if (editText.getIntValue() == 0 || mIsChangingSource)
+                        return;
+                    mIsChangingSource=true;
+                    TouchAreaModel model = mHost.getModel();
+                    model.setHeight(editText.getIntValue());
+                    seekSize.setValue(Math.min(model.getWidth(), model.getHeight()));
+                    onWidgetListener();
+                    mIsChangingSource=false;
+                });
+        editHeight.setMinWidth(dp8*7);
+        editHeight.setMinimumWidth(dp8*7);
+
 
         TextView tvCross = new TextView(c);
         tvCross.setText("×");
 
         LinearLayout linearLayout = new LinearLayout(c);
         linearLayout.setOrientation(HORIZONTAL);
-        linearLayout.addView(editWidth, QH.LPLinear.one(dp8 * 7, -2).left().to());
+        linearLayout.addView(editWidth, QH.LPLinear.one(-2, -2).left().to());
         linearLayout.addView(tvCross, QH.LPLinear.one(-2, -2).left().to());
-        linearLayout.addView(editHeight, QH.LPLinear.one(dp8 * 7, -2).left().to());
+        linearLayout.addView(editHeight, QH.LPLinear.one(-2, -2).left().right().to());
         return linearLayout;
     }
 }

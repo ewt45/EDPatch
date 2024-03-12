@@ -15,9 +15,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.v4.graphics.ColorUtils;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -26,6 +26,7 @@ import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 
 /**
  * 创建一个选择颜色的视图
@@ -38,7 +39,7 @@ public class ColorPicker extends LinearLayout {
     private final ColoredSeekbar mSeekH, mSeekS, mSeekV;
     private final ColoredSeekbar mSeekA;
     private final ImageView mImageResult;
-    private final EditText mEditHex;
+    private final LimitEditText mEditHex;
     private final OnColorChangeListener mChangeListener;
 
     public ColorPicker(Context context, int initColor, OnColorChangeListener listener) {
@@ -208,11 +209,12 @@ public class ColorPicker extends LinearLayout {
         mImageResult.setImageDrawable(resultD);
         mImageResult.setBackground(wrapAlphaAlertBg(c, new GradientDrawable()));
 
-        mEditHex = new EditText(c);
+        mEditHex = new LimitEditText(c);
         mEditHex.setText("000000");
         mEditHex.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         mEditHex.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-        mEditHex.addTextChangedListener((QH.SimpleTextWatcher) s -> {
+        mEditHex.setUpdateListener(editText -> {
+            Editable s = editText.getText();
             for (int i = 0; i < s.length(); i++) {
                 char c1 = s.charAt(i);
                 if ((c1 >= '0' && c1 <= '9') || (c1 >= 'a' && c1 <= 'f') || (c1 >= 'A' && c1 <= 'F'))
@@ -221,6 +223,7 @@ public class ColorPicker extends LinearLayout {
                 return; //只要更改一处，就不往下走了，因为这次更改会再触发一次监听
             }
         });
+
         //TODO 不仅手动输入的时候会进入监听，拖拽seekbar的时候也会改变文字进入监听。要不改成输入法确定？或者平时textview，点击变edittext。
         // 这个设置会修改seekH的progress，触发监听导致又修改了EditText的值，导致输入和输出不等，不过还好差的不多
         mEditHex.setOnEditorActionListener((v, actionId, event) -> {

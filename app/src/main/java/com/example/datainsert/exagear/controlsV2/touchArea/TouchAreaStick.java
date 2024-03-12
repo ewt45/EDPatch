@@ -16,9 +16,12 @@ import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.model.OneStick;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.ButtonStickPressAdapter;
 
+/**
+ * 设置描边宽度为外圆半径的十分之一
+ */
 public class TouchAreaStick extends TouchArea<OneStick> {
     protected GradientDrawable mRoundDraw = new GradientDrawable();
-    private Paint testPaint = new Paint();
+
 //    protected ButtonStickPressAdapter mStickAdapter;
 
     /**
@@ -26,16 +29,11 @@ public class TouchAreaStick extends TouchArea<OneStick> {
      */
     public TouchAreaStick(@NonNull OneStick data, @Nullable TouchAdapter adapter) {
         super(data, adapter != null ? adapter : new ButtonStickPressAdapter(data));
-
-        testPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        testPaint.setColor(Color.BLACK);
-        testPaint.setStrokeWidth(4);
-
     }
 
     private void updatePaint() {
         mRoundDraw.setCornerRadius(400);
-        mRoundDraw.setStroke((int) (mModel.getOuterRadius()/10), TestHelper.darkenColor(mModel.mainColor));
+        mRoundDraw.setStroke((int) (mModel.getOuterRadius()/10), TestHelper.darkenColor(mModel.mainColor));//描边宽度根据大小而变化，为外圆半径的十分之一
         mRoundDraw.setColor(mModel.mainColor);
     }
 

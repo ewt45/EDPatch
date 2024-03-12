@@ -117,7 +117,7 @@ public class ControlsFragment extends Fragment {
     @Override
     public void onDestroy() {
         Log.d(TAG, this+"onDestroy: ");
-        //TODO
+        //TODO 意外退出时，也应该保存配置
         super.onDestroy();
         touchAreaView=null;
         intentCallbackList=null;

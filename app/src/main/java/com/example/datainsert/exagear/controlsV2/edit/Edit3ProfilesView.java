@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -28,6 +27,7 @@ import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaView;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
+import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.example.datainsert.exagear.controlsV2.widget.RecyclerAdapter;
 import com.example.datainsert.exagear.RR;
 
@@ -109,22 +109,21 @@ public class Edit3ProfilesView extends LinearLayout {
         if (!createNew && refName == null)
             throw new RuntimeException("若为重命名操作，则必须提供配置的当前名称");
 
-        EditText editText = new EditText(c);
-        editText.setSingleLine(true);
+        LimitEditText editName = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_TEXT_SINGLE_LINE)
+                .setStringValue(refName!=null?refName:"");
 
         FrameLayout frameRoot = new FrameLayout(c);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-1, -2);
         params.setMargins(dp8, dp8, dp8, dp8);
-        frameRoot.addView(editText, params);
-        if (refName != null)
-            editText.setText(refName);
+        frameRoot.addView(editName, params);
         new AlertDialog.Builder(c)
                 .setTitle(getS(RR.ctr2_profile_editName))//配置名称
                 .setView(frameRoot)
                 .setNegativeButton(android.R.string.cancel, null)
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     TestHelper.saveCurrentEditProfileToFile();
-                    String finalName = ModelProvider.getNiceProfileName(editText.getText().toString());
+                    String finalName = ModelProvider.getNiceProfileName(editName.getStringValue());
                     ModelProvider.createNewProfile(finalName, refName, true); //新建
                     if (!createNew){
                         boolean b = new File(ModelProvider.profilesDir, refName).delete();//重命名也相当于新建一个，然后把旧的删了就行

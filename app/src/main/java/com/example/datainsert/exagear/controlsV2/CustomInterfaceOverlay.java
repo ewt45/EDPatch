@@ -56,6 +56,7 @@ public class CustomInterfaceOverlay implements XServerDisplayActivityInterfaceOv
             transaction.remove(oldFragment);
 
         transaction.add(containerViewId, fragment, Const.fragmentTag)
+                .addToBackStack(null)//还是加一个吧，否则失去焦点的时候直接退出acitivity了
                 .commit();
 
 

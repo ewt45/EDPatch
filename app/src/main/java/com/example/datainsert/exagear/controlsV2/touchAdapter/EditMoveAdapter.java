@@ -4,6 +4,7 @@ import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
 import android.util.Log;
 
+import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.TouchAreaView;
@@ -20,16 +21,14 @@ public class EditMoveAdapter implements TouchAdapter {
     private static final String TAG = "EditMoveAdapter";
     private final int mUnit = dp8;
     OnFocusListener mFocusListener;
-    TouchAreaView mView;
     TouchAreaModel mModel;
     boolean isPressing = false;
     //记录的时候初始按下时，modelLeft-fingerX，因为每次更新model都是直接赋值没法相对增减，所以要记录初始model值。
     //每次更新时只需加上最新的fingerX即可得到最新的modelLeft
     float firstFingerX, firstFingerY;
-    float firstModelX, firstModelY;
+    int firstModelX, firstModelY;
 
-    public EditMoveAdapter(TouchAreaView view, TouchAreaModel model, OnFocusListener focusListener) {
-        mView = view;
+    public EditMoveAdapter(TouchAreaModel model, OnFocusListener focusListener) {
         mModel = model;
         mFocusListener = focusListener;
     }
@@ -43,9 +42,9 @@ public class EditMoveAdapter implements TouchAdapter {
         if (mModel instanceof OneGestureArea)
             return;
 
-        mModel.setLeft((int) firstModelX + minMul4(finger.getX() - firstFingerX));
-        mModel.setTop((int) firstModelY + minMul4(finger.getY() - firstFingerY));
-        mView.invalidate();
+        mModel.setLeft((int) (firstModelX + finger.getX() - firstFingerX));
+        mModel.setTop((int) (firstModelY + finger.getY() - firstFingerY));
+        Const.getTouchView().invalidate();
 //        TestHelper.logTouchAreaRect(mModel);
     }
 
@@ -63,16 +62,12 @@ public class EditMoveAdapter implements TouchAdapter {
 
         isPressing = true;
 
-        firstModelX = minMul4(mModel.getLeft());
-        firstModelY = minMul4(mModel.getTop());
+        firstModelX = mModel.getLeft();
+        firstModelY = mModel.getTop();
         firstFingerX = finger.getX();
         firstFingerY = finger.getY();
 
         mFocusListener.onFocus(mModel);
-    }
-
-    private int minMul4(float a) {
-        return Math.floorDiv((int) a, mUnit) * mUnit;
     }
 
     public interface OnFocusListener {

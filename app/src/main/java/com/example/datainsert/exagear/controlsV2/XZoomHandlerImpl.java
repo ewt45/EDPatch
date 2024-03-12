@@ -16,15 +16,11 @@ import android.util.Log;
  * <br/> 应该实现的方法：start(float[] f1, float[] f2); update(float[] f1, float[] f2); setZoomFactor(double);
  * <br/> viewOfXServer的那几个函数要不要改成Controller的接口，比如getScaleStyle，setMatrix，setViewport之类的
  */
-public class XZoomController2 {
+public class XZoomHandlerImpl implements XZoomHandler {
     private static final String TAG = "XZoomController";
     private static final float MAX_ZOOM_FACTOR = 5.0f;
     private static final float ZOOM_SENSETIVITY_THRESHOLD = 1.005f;
     private final XServerViewHolder viewOfXServer;
-    private final PointF point1 = new PointF();
-    private final PointF point2 = new PointF();
-    private final Matrix matrixV2XWhenStart = new Matrix();
-    private final PointF pointCenterWhenStart = new PointF();
     /**
      * 实际显示的部分，对xserver的裁切矩形
      */
@@ -33,8 +29,7 @@ public class XZoomController2 {
      * 实际显示的部分，对xserver的裁切矩形
      */
     private double zoomFactorCurr = 1.0d;
-    private double zoomFactorWhenStart = zoomFactorCurr; //调用start()时的缩放比例，之后update时依据这个来调整
-    private float distanceStart; //start()时，两根手指的距离
+    private boolean isZoomed;
     /**
      * 用于确定位置的手指（锚点）x单位坐标。缩放过程中实时更新。(原anchorHost)
      */
@@ -43,10 +38,9 @@ public class XZoomController2 {
      * 用于确定位置的手指（锚点）x单位坐标。缩放矩阵开始改变之前，此位置确定下来，缩放过程中不再改变。(原anchorXServer)
      */
     private final PointF anchorWhenZoomStartInX = new PointF();
-    private boolean isZoomed;
     private float lastDistance;
 
-    public XZoomController2(XServerViewHolder viewOfXServer) {
+    public XZoomHandlerImpl(XServerViewHolder viewOfXServer) {
         this.viewOfXServer = viewOfXServer;
         int[] wh = viewOfXServer.getXScreenPixels();
         this.visibleRectangle = new RectF(0.0f, 0.0f, wh[0], wh[1]);
@@ -57,24 +51,8 @@ public class XZoomController2 {
      * 缩放开始。传入此时的两根手指的坐标(event中获取）
      * <br/> 函数内部会记录此时的缩放倍率，之后的update()都在此基础上调整
      */
+    @Override
     public void start(float x1, float y1, float x2, float y2) {
-        //TODO factor是自己内部维护，还是从matrix中获取？（内部维护，因为matrix中缩放的含义不同（有可能拉伸）
-//        //记录起始时两根手指坐标
-//        point1.set(x1, y1);
-//        point2.set(x2, y2);
-//
-//        //记录起始时两根手指中心位置
-//        distanceStart = GeometryHelpers.distance(x1, y1, x2, y2);
-//        matrixV2XWhenStart.set(viewOfXServer.getViewToXServerTransformationMatrix());
-//
-//        float[] pointNowCenter = new float[]{(x1 + x2) / 2, (y1 + y2) / 2};
-//        viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(pointNowCenter);
-//        pointCenterWhenStart.x = pointNowCenter[0];
-//        pointCenterWhenStart.y = pointNowCenter[1];
-//
-//        //记录起始时缩放倍率
-//        zoomFactorWhenStart = zoomFactorCurr;
-
         lastDistance = TestHelper.distance(x1, y1, x2, y2);
         //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
         setAnchorWhenStart(x1,y1);
@@ -84,6 +62,7 @@ public class XZoomController2 {
     /**
      * 缩放更新，传入传入此时的两根手指的坐标(event中获取）。函数内部会重新计算缩放倍率和当前应显示的画面区域，并将此区域提交给viewOfXServer
      */
+    @Override
     public void update(float x1, float y1, float x2, float y2) {
         float newDistance = TestHelper.distance(x1, y1, x2, y2);
         boolean isEarlierZoomed = isZoomed;
@@ -122,37 +101,12 @@ public class XZoomController2 {
 
         //最后更新两指间距离
         this.lastDistance = newDistance;
-
-
-//        //0. 定位中心点：两指的中心（如果用绝对位置，要换算到x的坐标，否则没有意义）
-//        //TODO 如果重复进入这里，即使手指位置没变，也会因为矩阵变了而导致中心变了，然后后面全都跟着变了（试试用起始时的矩阵？）
-//        // 不行啊这个概念搞不明白，要不还是用原来的吧
-//        float[] pointNowCenter = new float[]{(nowX1 + nowX2) / 2, (nowY1 + nowY2) / 2};
-//        viewOfXServer.getViewToXServerTransformationMatrix().mapPoints(pointNowCenter);
-//
-//        //1. 计算新的zoomfactor（以按下时的为基准）
-//        zoomFactorCurr = zoomFactorWhenStart * GeometryHelpers.distance(nowX1, nowY1, nowX2, nowY2) / distanceStart;
-//
-//        //2. 调整缩放倍率，并应用缩放
-//        if (zoomFactorCurr < ZOOM_SENSETIVITY_THRESHOLD)
-//            zoomFactorCurr = 1d;
-//        else if (zoomFactorCurr > MAX_ZOOM_FACTOR)
-//            zoomFactorCurr = MAX_ZOOM_FACTOR;
-//
-//        //新的可见窗口，左边到 新的中心点-新的可见宽度/2 ，上面到 新的中心点-新的可见高度/2
-//        int[] xFullWH = viewOfXServer.getXScreenPixels();
-//        float zoomedWidth = (float) (xFullWH[0] / zoomFactorCurr);
-//        float zoomedHeight = (float) (xFullWH[1] / zoomFactorCurr);
-//
-//
-//        applyZoomRect(pointCenterWhenStart.x + pointCenterWhenStart.x - pointNowCenter[0] - zoomedWidth / 2,
-//                pointCenterWhenStart.y + pointCenterWhenStart.y - pointNowCenter[1] - zoomedHeight / 2,
-//                zoomedWidth, zoomedHeight);
     }
 
     /**
      * 缩放结束。这个函数好像没什么用。
      */
+    @Override
     public void stop() {
 
     }
@@ -165,7 +119,7 @@ public class XZoomController2 {
     }
 
     public boolean isZoomed() {
-        return zoomFactorCurr != 1;
+        return isZoomed;
     }
 
     private void setAnchorWhenStart(float x, float y){
@@ -181,9 +135,11 @@ public class XZoomController2 {
         this.anchorLatestInX.set(xPos[0],xPos[1]);
     }
 
-
-
-
+    /**
+     * 传入的时候可见区域的起始坐标和宽高（相对完整区域）
+     * 接收一个可见区域，将其设置给view，
+     * <br/>重新生成矩阵并设置给view
+     */
     private void applyZoomRect(RectF newVisibleRect) {
         int[] viewWH = viewOfXServer.getAndroidViewPixels();
         Matrix TransMatrix = makeTransformationMatrix(viewWH[0], viewWH[1], newVisibleRect.left, newVisibleRect.top, newVisibleRect.width(), newVisibleRect.height(), viewOfXServer.getScaleStyle());
@@ -201,20 +157,8 @@ public class XZoomController2 {
         applyZoomRect(visibleRectangle);
     }
 
-    /**
-     * 传入的时候可见区域的起始坐标和宽高（相对完整区域）
-     * 接收一个可见区域，将其设置给view，
-     * <br/>重新生成矩阵并设置给view
-     */
-    private void applyZoomRect(float x, float y, float w, float h) {
-        int[] viewWH = viewOfXServer.getAndroidViewPixels();
-        Matrix TransMatrix = makeTransformationMatrix(viewWH[0], viewWH[1], x, y, w, h, viewOfXServer.getScaleStyle());
-        TransMatrix.invert(TransMatrix);
-        this.viewOfXServer.setViewToXServerTransformationMatrix(TransMatrix);
-        this.viewOfXServer.setXViewport(x, y, w, h);
-    }
 
-    private Matrix makeTransformationMatrix(float viewW, float viewH, float visibleLeft, float visibleTop, float visibleWidth, float visibleHeight, @XServerViewHolder.ScaleStyle int scaleStyle) {
+    private static Matrix makeTransformationMatrix(float viewW, float viewH, float visibleLeft, float visibleTop, float visibleWidth, float visibleHeight, @XServerViewHolder.ScaleStyle int scaleStyle) {
         //原makeTransformationDescription 函数内容
 
         float scaleX = viewW / visibleWidth;
@@ -233,11 +177,9 @@ public class XZoomController2 {
 
         //viewW和viewH，因为viewofxserver安卓视图一直是填充布局的，所以是个定值，
         //就是安卓屏幕宽/高 与 按比例等比（或拉伸）全屏后的宽高之差 。 如果不拉伸，乘以的scale能保证至少宽高有一个是铺满。缩放的话就是直接铺满
-        float widthDiff = viewW - (visibleWidth * scaleX);
-        float heightDiff = viewH - (visibleHeight * scaleY);
         if (scaleStyle == SCALE_FULL_WITH_RATIO) {
-            viewTranslateX = widthDiff / 2.0f;
-            viewTranslateY = heightDiff / 2.0f;
+            viewTranslateX = (viewW - (visibleWidth * scaleX)) / 2.0f;
+            viewTranslateY = (viewH - (visibleHeight * scaleY)) / 2.0f;
         }
 
         Log.d(TAG, String.format("makeTransformationMatrix: 可见区域：%f,%f,%f,%f. 矩阵变化：%f,%f,%f,%f,%f,%f"
@@ -249,15 +191,6 @@ public class XZoomController2 {
         matrix.postScale(scaleX, scaleY);
         matrix.postTranslate(viewTranslateX, viewTranslateY);
         return matrix;
-
-
-//        TransformationDescription makeTransformationDescription = makeTransformationDescription(
-//                viewW, viewH, visibleLeft, visibleTop, visibleRight-visibleLeft, visibleBottom-visibleTop, fitStyleHorizontal, fitStyleVertical);
-//        Matrix matrix = new Matrix();
-//        matrix.postTranslate(makeTransformationDescription.xServerTranslateX, makeTransformationDescription.xServerTranslateY);
-//        matrix.postScale(makeTransformationDescription.scaleX, makeTransformationDescription.scaleY);
-//        matrix.postTranslate(makeTransformationDescription.viewTranslateX, makeTransformationDescription.viewTranslateY);
-//        return matrix;
     }
 
     public interface ZoomTarget {

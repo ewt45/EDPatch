@@ -6,14 +6,12 @@ import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.even
 import android.content.Context;
 import android.view.View;
 
-import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.helpers.Assert;
-import com.eltechs.axs.widgets.viewOfXServer.XZoomController;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
-import com.example.datainsert.exagear.controlsV2.XZoomController2;
+import com.example.datainsert.exagear.controlsV2.XZoomHandler;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
@@ -33,7 +31,7 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
     transient private Finger finger2;
     transient private float[] lastCenterXY;
     transient private float lastDistance;
-    transient private XZoomController2 mZoomController;
+    transient private XZoomHandler mZoomController;
     @Override
     protected void onAttach() {
     }
@@ -56,6 +54,8 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
     @Override
     public void notifyBecomeInactive() {
         removeTouchListener(this);
+        mZoomController.stop();
+        mZoomController=null;
         finger1 = null;
         finger2 = null;
     }

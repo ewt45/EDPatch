@@ -29,7 +29,7 @@ public class TouchAreaDpad extends TouchAreaStick {
 
     private void updatePaint() {
         int darkenColor = TestHelper.darkenColor(mModel.mainColor);
-        int strokeWidth = dp8 / 2;
+        int strokeWidth = (int) (getModel().getOuterRadius()/10);
         int barWidth = mModel.getSize() / 3; //一个横条或者竖条的宽度
         mRectDraw.setCornerRadius(4);
         mRectDraw.setStroke(strokeWidth, darkenColor);

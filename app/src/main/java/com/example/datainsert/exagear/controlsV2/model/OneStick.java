@@ -1,5 +1,6 @@
 package com.example.datainsert.exagear.controlsV2.model;
 
+import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.controlsV2.Const.minStickAreaSize;
 
 import android.support.annotation.IntDef;
@@ -53,7 +54,7 @@ public class OneStick extends TouchAreaModel {
     }
 
     public void setSize(int newSize) {
-        this.size = Math.max(newSize, minStickAreaSize);
+        this.size = Math.max(TestHelper.makeMultipleOf(dp8/2,newSize), minStickAreaSize);
         this.width = this.size;
         this.height  = this.size;
     }

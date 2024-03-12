@@ -265,6 +265,7 @@ public class RR {
     public static int ctr2_other_saveExit=259;
     public static int ctr2_other_mouseSpeed=260;
     public static int ctr2_other_showTouchArea = 261;
+    public static int ctr2_editExitConfirm = 262;
 
 
 
@@ -535,7 +536,7 @@ public class RR {
         zhArray.put(ctr2_other_saveExit,"保存并退出编辑");
         zhArray.put(ctr2_other_mouseSpeed,"鼠标移动速度倍率");
         zhArray.put(ctr2_other_showTouchArea,"显示屏幕按键 (退出编辑时生效)");
-
+        zhArray.put(ctr2_editExitConfirm,"保存并退出编辑模式？");
 
         /*
 
@@ -816,6 +817,8 @@ public class RR {
         enArray.put(ctr2_other_saveExit,"Save and exit");
         enArray.put(ctr2_other_mouseSpeed,"Mouse movement speed multiplier");
         enArray.put(ctr2_other_showTouchArea,"Show buttons on screen \n(take effect after exit edit mode)");
+        enArray.put(ctr2_editExitConfirm,"Save and exit Edit Mode?");
+
         /*
 
 

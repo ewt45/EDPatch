@@ -2,6 +2,7 @@ package com.example.datainsert.exagear.controlsV2.gestureMachine.adapter;
 
 import com.eltechs.axs.GuestAppActionAdapters.ScrollDirections;
 import com.eltechs.axs.xserver.Pointer;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.Const;
 
 public class MouseScrollAdapter {

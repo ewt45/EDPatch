@@ -2,13 +2,20 @@ package com.example.datainsert.exagear.controlsV2.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.IntDef;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 
+import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 
@@ -17,13 +24,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 尝试拦截返回键，以解决填写文本时此视图抢夺焦点，导致TouchAreaView无法拦截返回事件，fragment直接退出的问题
+ * <br/> 全部
+ */
 @SuppressLint({"AppCompatCustomView"})
 public class LimitEditText extends EditText {
     public static final int TYPE_NUMBER_FLOAT = 1; //无符号，带小数点
     public static final int TYPE_NUMBER_INT = 2; //无符号，无小数点
     public static final int TYPE_GIVEN_OPTIONS = 3; //只能选择预先提供好的选项
     public static final int TYPE_TEXT_SINGLE_LINE = 4; //普通的一行文字
-    @InputType
+    public static final int TYPE_HEX_COLOR_ARGB = 5; //十六进制颜色的argb值，最多8位
+    @CustomInputType
     private int mType;
     private float[] mMinMax;
     private int[] mOptions;
@@ -33,6 +45,17 @@ public class LimitEditText extends EditText {
 
     public LimitEditText(Context context) {
         super(context);
+        //TODO 设置默认不获取focus，然后把Nestedscrollview去掉看看（是不是滚动视图获取焦点导致的bug）
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            setFocusedByDefault(false);
+        }
+        // 如果自身失去焦点，立马让touchAreaview获取焦点
+//        setOnFocusChangeListener((v, hasFocus) -> {
+//            if(!hasFocus) {
+//                Log.d("TAG", "LimitEditText: 让TouchAreaView获取焦点");
+//                Const.getTouchView().requireFocus();
+//            }
+//        });
         addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -46,30 +69,52 @@ public class LimitEditText extends EditText {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(mType==TYPE_HEX_COLOR_ARGB){
+                    for (int i = 0; i < s.length(); i++) {
+                        char c1 = s.charAt(i);
+                        if (!((c1 >= '0' && c1 <= '9') || (c1 >= 'a' && c1 <= 'f') || (c1 >= 'A' && c1 <= 'F'))) {
+                            s.delete(i, i + 1);
+                            return; //只要更改一处，就不往下走了，因为这次更改会再触发一次监听
+                        }
+                    }
+                }
                 if (mCallback != null)
                     mCallback.onUpdate(LimitEditText.this);
             }
         });
+
+        //用户正在输入时，代替TouchAreaView拦截返回键（在输入法显示时应该焦点优先在输入法，只有输入法隐藏了这里才会接收到）
+        setOnKeyListener((v, keyCode, event) -> {
+            if(keyCode==KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP){
+                Log.d("TAG", "onKey: edittext检测到返回键松开");
+                return true;
+            }else
+                return false;
+        });
     }
+
 
     /**
      * 设置允许输入的类型
      */
-    public LimitEditText setCustomInputType(@InputType int type) {
+    public LimitEditText setCustomInputType(@CustomInputType int type) {
         mType = type;
         if (type == TYPE_NUMBER_FLOAT) {
-            setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_DECIMAL);
+            setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         } else if (type == TYPE_NUMBER_INT) {
-            setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_VARIATION_NORMAL);
+            setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
         } else if (type == TYPE_GIVEN_OPTIONS) {
-            setInputType(android.text.InputType.TYPE_NULL);
+            setInputType(InputType.TYPE_NULL);
             setFocusable(false); //不允许focus可以解决第一次点击无效的问题
             setSingleLine(false); //选项文本允许多行
 //            setMaxLines(100);
             //在setSelectableOptions里创建PopupMenu吧
         }else if(type == TYPE_TEXT_SINGLE_LINE){
-            setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_NORMAL);
+            setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
             setSingleLine();
+        } else if(type == TYPE_HEX_COLOR_ARGB){
+            setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+            setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
         }
         return this;
     }
@@ -118,7 +163,7 @@ public class LimitEditText extends EditText {
         TestHelper.assertTrue(mType == TYPE_NUMBER_INT, "输入类型必须为int");
         String str = getText().toString();
         //TODO 应该检查文字是否太大，如果太大的话转换会报错
-        int value = str.length() == 0 ? 0 : Integer.parseInt(str);
+        int value = str.isEmpty() ? 0 : Integer.parseInt(str);
         if (mMinMax != null) {
             if (value < mMinMax[0])
                 value = (int) mMinMax[0];
@@ -210,7 +255,23 @@ public class LimitEditText extends EditText {
     }
 
     public String getStringValue(){
+        TestHelper.assertTrue(mType == TYPE_TEXT_SINGLE_LINE, "输入类型必须为text");
         return getText().toString();
+    }
+
+    public LimitEditText setHexColorARGBValue(int argb){
+        TestHelper.assertTrue(mType == TYPE_HEX_COLOR_ARGB, "输入类型必须为hex color");
+        setText(Integer.toHexString(argb));
+        return this;
+    }
+
+    public int getHexColorARGBValue(){
+        TestHelper.assertTrue(mType == TYPE_HEX_COLOR_ARGB, "输入类型必须为hex color");
+        StringBuilder builder = new StringBuilder(getText().toString().trim());
+        while (builder.length() < 8)
+            builder.insert(0, "f");
+        //int最大是0x7fffffff 阿这，加了alpha变8位, Integer.parseInt/ valueOf 没法转换了, 要用parseUnsignedInt 或者 Long.parseLong
+        return Integer.parseUnsignedInt(builder.toString(), 16);
     }
 
     /**
@@ -222,16 +283,14 @@ public class LimitEditText extends EditText {
     }
 
 
-
-
     public interface UpdateListener {
         void onUpdate(LimitEditText editText);
     }
 
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef(value = {TYPE_NUMBER_FLOAT, TYPE_NUMBER_INT, TYPE_GIVEN_OPTIONS, TYPE_TEXT_SINGLE_LINE})
-    public @interface InputType {
+    @IntDef(value = {TYPE_NUMBER_FLOAT, TYPE_NUMBER_INT, TYPE_GIVEN_OPTIONS, TYPE_TEXT_SINGLE_LINE,TYPE_HEX_COLOR_ARGB})
+    public @interface CustomInputType {
     }
 
 

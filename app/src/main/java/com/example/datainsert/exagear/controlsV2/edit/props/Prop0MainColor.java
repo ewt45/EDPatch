@@ -12,7 +12,6 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,12 +20,13 @@ import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
+import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.example.datainsert.exagear.controlsV2.widget.colorpicker.ColorPicker;
 import com.example.datainsert.exagear.QH;
 
 public class Prop0MainColor extends Prop<TouchAreaModel> {
     GradientDrawable mDrawable;
-    EditText mEdit;
+    LimitEditText mEdit;
     TextView mTvColorStyle;
     boolean isEditingEdit=false;
     int[] colorStyleInts = new int[]{Const.BtnColorStyle.STROKE, Const.BtnColorStyle.FILL};
@@ -42,7 +42,7 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
 
         String modelStr = Integer.toHexString(model.mainColor);
         if (!isEditingEdit && !mEdit.getText().toString().equals(modelStr))
-            mEdit.setText(modelStr);
+            mEdit.setHexColorARGBValue(model.mainColor);
 
         mTvColorStyle.setText(colorStyleNames[model.colorStyle]);
     }
@@ -107,26 +107,17 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
     @Override
     protected View createAltEditView(Context c) {
         //颜色 输入十六进制
-        mEdit = new EditText(c);
+        mEdit = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_HEX_COLOR_ARGB)
+                .setUpdateListener(editText -> {
+                    //用户输入->内容改变->设置到model，调用update-> update里又重新设置到edit，内容又改变？
+                    mHost.getModel().mainColor = editText.getHexColorARGBValue();
+                    isEditingEdit=true;
+                    onWidgetListener();
+                    isEditingEdit=false;
+                });
         mEdit.setMinWidth(dp8*8);
         mEdit.setMinimumWidth(dp8*8);
-        mEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        mEdit.setFilters(new InputFilter[]{new InputFilter.LengthFilter(8)});
-        mEdit.addTextChangedListener((QH.SimpleTextWatcher) s -> {
-            for (int i = 0; i < s.length(); i++) {
-                char c1 = s.charAt(i);
-                if (!((c1 >= '0' && c1 <= '9') || (c1 >= 'a' && c1 <= 'f') || (c1 >= 'A' && c1 <= 'F'))) {
-                    s.delete(i, i + 1);
-                    return; //只要更改一处，就不往下走了，因为这次更改会再触发一次监听
-                }
-            }
-            //用户输入->内容改变->设置到model，调用update-> update里又重新设置到edit，内容又改变？
-            mHost.getModel().mainColor = TestHelper.getColorHexFromStr(s.toString());
-            isEditingEdit=true;
-            onWidgetListener();
-            isEditingEdit=false;
-
-        });
         return mEdit;
     }
 }

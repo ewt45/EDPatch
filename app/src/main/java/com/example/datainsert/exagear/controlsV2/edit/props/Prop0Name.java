@@ -4,14 +4,14 @@ import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.EditText;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 
 public class Prop0Name extends Prop<TouchAreaModel>{
-    EditText editName;
+    LimitEditText editName;
     public Prop0Name(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
@@ -20,7 +20,7 @@ public class Prop0Name extends Prop<TouchAreaModel>{
     public void updateUIFromModel(TouchAreaModel model) {
         String name = model.getName();
         if(!editName.getText().toString().equals(name))
-            editName.setText(name);
+            editName.setStringValue(name);
     }
 
     @Override
@@ -30,12 +30,12 @@ public class Prop0Name extends Prop<TouchAreaModel>{
 
     @Override
     protected View createMainEditView(Context c) {
-        editName = new EditText(c);
-        editName.setSingleLine(true);
-        editName.addTextChangedListener((QH.SimpleTextWatcher) s -> {
-            mHost.getModel().setName(s.toString());
-            onWidgetListener();
-        });
+        editName = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_TEXT_SINGLE_LINE)
+                .setUpdateListener(editText -> {
+                    mHost.getModel().setName(editText.getStringValue());
+                    onWidgetListener();
+                });
         return editName;
     }
 
