@@ -18,6 +18,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -70,6 +72,23 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 //    }
 
 
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        XServerDisplayActivityConfigurationAware aware = Globals.getApplicationState();
+        if (aware != null)
+            mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
+
+        if (mUiOverlay != null) {
+            mKeyCodes2 = mUiOverlay.getControlsFactory().getKeyCodes2();
+            mKeyCodes3 = mUiOverlay.getControlsFactory().getKeyCodes3();
+        } else {
+            mKeyCodes2 = KeyCodes2.read(requireContext());
+            mKeyCodes3 = KeyCodes3.read(requireContext());
+        }
+        return buildUI();
+    }
 
 
     @NonNull

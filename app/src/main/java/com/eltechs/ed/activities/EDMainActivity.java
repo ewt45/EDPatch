@@ -30,6 +30,7 @@ import com.eltechs.ed.guestContainers.GuestContainer;
 import com.eltechs.ed.startupActions.StartGuest;
 import com.eltechs.ed.startupActions.WDesktop;
 import com.example.datainsert.exagear.FAB.FabMenu;
+import com.example.datainsert.exagear.FAB.dialogfragment.customcontrols.CustomControls;
 import com.example.datainsert.exagear.virgloverlay.OverlayBuildUI;
 
 import java.io.File;
@@ -269,7 +270,7 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
                     break;
             }
 
-//            fragment = new ControlsFragment();
+            fragment = new ControlsFragment();
 
             if (fragment != null) {
                 FragmentManager supportFragmentManager = EDMainActivity.this.getSupportFragmentManager();
