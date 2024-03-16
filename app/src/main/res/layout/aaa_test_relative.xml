@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#69CAF6">
+
+    <ImageView
+        android:tint="@color/black"
+        android:src="?android:textCheckMark"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:visibility="visible"
+        android:id="@+id/btn_left_top"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+    <Button
+        android:background="?android:selectableItemBackground"
+        android:id="@+id/btn_top"
+        android:layout_toEndOf="@id/btn_left_top"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+    <Button
+        android:id="@+id/btn_left"
+        android:layout_below="@id/btn_left_top"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+
+    <Button
+        android:id="@+id/btn_right"
+        android:layout_toEndOf="@id/btn_top"
+        android:layout_below="@id/btn_left_top"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+    <Button
+        android:id="@+id/btn_bottom"
+        android:layout_toEndOf="@id/btn_left"
+        android:layout_below="@id/btn_left"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+</RelativeLayout>

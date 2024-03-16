@@ -28,7 +28,7 @@ public class PointerListenersList {
             builder.append(pointerListener.getClass().getSimpleName());
             pointerListener.pointerButtonPressed(i);
         }
-        Log.d("TAG", builder.toString());
+//        Log.d("TAG", builder.toString());
     }
 
     public void sendPointerButtonReleased(int i) {

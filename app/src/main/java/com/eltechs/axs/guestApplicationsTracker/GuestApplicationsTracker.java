@@ -1,5 +1,7 @@
 package com.eltechs.axs.guestApplicationsTracker;
 
+import android.util.Log;
+
 import com.eltechs.axs.configuration.UBTLaunchConfiguration;
 import com.eltechs.axs.environmentService.AXSEnvironment;
 import com.eltechs.axs.guestApplicationsTracker.impl.GuestApplicationsCollection;
@@ -45,6 +47,7 @@ public class GuestApplicationsTracker {
         if (runUbt < 0) {
             return false;
         }
+        Log.d("TAG", "startGuestApplication: fork的进程id="+runUbt);
         this.guestApplicationsCollection.registerTranslator(runUbt);
         return true;
     }

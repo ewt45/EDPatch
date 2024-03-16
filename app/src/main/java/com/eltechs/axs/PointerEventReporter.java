@@ -23,7 +23,7 @@ public class PointerEventReporter implements PointerEventListener {
     private void sendCoordinates(float f, float f2) {
         float[] fArr = {f, f2};
         TransformationHelpers.mapPoints(this.host.getViewToXServerTransformationMatrix(), fArr);
-        Log.d(TAG, "sendCoordinates: 设置坐标："+fArr[0]+","+fArr[1]);
+//        Log.d(TAG, "sendCoordinates: 设置坐标："+fArr[0]+","+fArr[1]);
         this.xServerFacade.injectPointerMove((int) fArr[0], (int) fArr[1]);
     }
 

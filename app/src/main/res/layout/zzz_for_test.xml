@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <EditText
+                android:inputType="number"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -46,6 +47,13 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
             <Switch
                 android:text="自定义处理器核心"
                 android:layout_width="wrap_content"
@@ -114,6 +122,59 @@
                 android:checkMark="?android:attr/listChoiceIndicatorMultiple"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TabLayout
+                app:tabMinWidth="0dp"
+                app:tabMode="scrollable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Monday" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday" />
+
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wednesday" />
+            </android.support.design.widget.TabLayout>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="30sp"
+                        android:text="123456"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:textSize="30sp"
+                        android:text="123456"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:textSize="30sp"
+                        android:text="123456"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
 
     </LinearLayout>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadiusRatio="2.5"
+    android:shape="ring"
+    android:thickness="28dp"
+    android:useLevel="false">
+        <size
+            android:width="48dp"
+            android:height="48dp"/>
+        <gradient
+            android:gradientRadius="24dp"
+            android:type="radial"
+            android:startColor="#ad7997"
+            android:endColor="#00FFFFFF"/>
+
+</shape>
+
+<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    android:shape="ring"-->
+<!--    android:innerRadius="40dp"-->
+<!--    android:useLevel="false">-->
+<!--    <size-->
+<!--        android:width="48dp"-->
+<!--        android:height="48dp"/>-->
+<!--    <gradient-->
+<!--        android:type="radial"-->
+<!--        android:startColor="#ad7997"-->
+<!--        android:endColor="#00000000"/>-->
+
+<!--</shape>-->

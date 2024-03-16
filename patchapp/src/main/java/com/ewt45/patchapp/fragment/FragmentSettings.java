@@ -36,8 +36,6 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //设置 数据存到的文件名
-        getPreferenceManager().setSharedPreferencesName(MyApplication.PREFERENCE);
         setHasOptionsMenu(true); //隐藏右上角菜单。必须先设置为true，待会onCreateOptionsMenu才会被调用，在那里给每个menuitem设置隐藏。
 
     }
@@ -52,7 +50,8 @@ public class FragmentSettings extends PreferenceFragmentCompat {
     // xml中新建checkbox，widgetLayout设置一个空的布局。这里通过key获取对应preference，设置setOnPreferenceClickListener
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-
+        //设置 数据存到的文件名 (这个要放到onCreatePreferences才有效果。因为super.onCreate中会调用此函数，如果这个函数都调用完了再设置就晚了）
+        getPreferenceManager().setSharedPreferencesName(MyApplication.PREFERENCE);
         setPreferencesFromResource(R.xml.pref_settings, s);
         //通过key寻找preference findPreference(key)
         Preference delPatcherPref = findPreference("clear_patcher_apk");

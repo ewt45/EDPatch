@@ -1,24 +1,20 @@
 package com.ewt45.exagearsupportv7;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-import android.util.Log;
-
+import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.mutiWine.WineNameComparator;
 import com.example.datainsert.exagear.mutiWine.v2.HQParser;
 import com.example.datainsert.exagear.mutiWine.v2.HQWineInfo;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -35,6 +31,114 @@ import java.util.List;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+    @Test
+    public void 反射对速度的影响有多大() throws IllegalAccessException {
+        long time = System.currentTimeMillis();
+        Class<XKeyButton> keyClz = XKeyButton.class;
+        Field[] fields = keyClz.getFields();
+        List<XKeyButton.Info> list = new ArrayList<>();
+        for(Field field:fields){
+            list.add((XKeyButton.Info) field.get(null));
+        }
+        System.out.println("时间差："+(System.currentTimeMillis()-time));
+    }
+
+    @Test
+    public void 查看exagear对哪些安卓按键码做了映射() throws IOException {
+        File exaAssign;
+        List<String> exaAssignLines = Files.readAllLines(new File("E:\\tmp\\按键码\\akeymapassign.txt").toPath());
+        List<String> akeyConstLines = Files.readAllLines(new File("E:\\tmp\\按键码\\akeyconst.txt").toPath());
+        List<String> myAssignLines = Files.readAllLines(new File("E:\\tmp\\按键码\\mykeymapassign.txt").toPath());
+
+        List<String> pureMyAKey = new ArrayList<>();
+        String[] aKeyConsts = new String[300];
+
+        for(String line:akeyConstLines){
+            line = line.trim();
+            if(line.startsWith("public static final int KEYCODE_")){
+                line = line.substring("public static final int ".length(),line.indexOf(";"));
+                String[] splits = line.split("=");
+                aKeyConsts[Integer.parseInt(splits[1].trim())] = splits[0].trim();
+            }
+        }
+
+        for(String line:myAssignLines){
+            line = line.trim();
+            pureMyAKey.add(line.substring(line.indexOf(".")+1, line.lastIndexOf(",")));
+        }
+
+        for(String line:exaAssignLines){
+            line = line.trim();
+            if(line.startsWith("this.AKeycodeToXKeycodeMap[")){
+                String aKey = line.substring(line.indexOf("[")+1,line.indexOf("]"));
+                String keyName = aKeyConsts[Integer.parseInt(aKey)];
+                if(!pureMyAKey.contains(keyName))
+                    System.out.println(keyName);
+            }
+        }
+
+
+    }
+
+
+    @Test
+    public void 提取键盘视图中id的key名称() throws IOException {
+        List<String> lines =Files.readAllLines(new File("E:\\tmp\\keyboardview.txt").toPath());
+        List<String> keyIdNames = new ArrayList<>(); //用作id的名称（key_加名称）
+        List<String> keyTextNames = new ArrayList<>();//给用户看的名称
+        List<String> keycodes = new ArrayList<>();//x11按键码
+        for(String line:lines){
+            line = line.trim();
+            if(line.contains("android:id=")) {
+                int start = line.indexOf("/");
+                keyIdNames.add(line.substring(start+1,line.length()-1));
+            }else if(line.contains("android:text=")){
+                String textName = line.substring(line.indexOf("\""));
+                if(textName.contains("\"\\@\\n2\"")) textName = "\"@\\n2\"";
+                else if(textName.contains("\"|\\n\\\"")) textName = "\"|\\n\\\\\"";
+                else if(textName.contains("\"\\?\\n\\/\"")) textName = "\"?\\n/\"";
+                keyTextNames.add(textName);
+            } else if (line.contains("android:tag=")) {
+                keycodes.add(line.substring(line.indexOf("\"")+1,line.length()-1));
+            }
+        }
+//        FileUtils.writeLines(new File("E:\\tmp\\keyboardview_extractKeyName.txt"),keyIdNames);
+        List<String> outputList = new ArrayList<>();
+//        //在Key类中声明键盘上全部按键的变量 (格式：final public static Info key_esc = new Info(1,0,KeyEvent.KEYCODE_ESCAPE,"Esc");）
+//        for(int i=0; i<keyIdNames.size(); i++){
+//            String idName = keyIdNames.get(i);
+//            String textName = keyTextNames.get(i);
+//            String keycode = keycodes.get(i);
+//            outputList.add(String.format("final public static Info %s = new Info(%s,0,%s,%s);"
+//                    ,idName,keycode,"KeyEvent.KEYCODE_"+idName.replace("key_","").toUpperCase(Locale.ROOT),textName));
+//        }
+
+        //在AndridKeyReporter中填充 安卓Keycode作为索引，Key.Info作为元素的数组 （格式：aKeyIndexedArr[Key.key_esc.aKeyCode] = Key.key_esc;
+        for(int i=0; i<keyIdNames.size(); i++){
+            String idName = keyIdNames.get(i);
+            outputList.add(String.format("aKeyIndexedArr[Key.%s.aKeyCode] = Key.%s;",idName,idName));
+        }
+
+        FileUtils.writeLines(new File("E:\\tmp\\keyboardview_extractKeyName.txt"),outputList);
+
+    }
+
+
+
+    @Test
+    public void test_math_methods_angle(){
+        double angle = Math.atan2(1,2);//以pi为单位的
+        System.out.println(angle);
+    }
+    @Test
+    public void test_hex_color_string_to_int(){
+        int argb = 0xffffffff;
+
+        System.out.println(Integer.parseUnsignedInt("fffffafa",16));
+//        System.out.println(Integer.decode("0xffffffff"));
+        System.out.println((int)Long.parseLong("ffffffff",16));
+
+    }
 
     @Test
     public void test_index_of_wine_cmd(){

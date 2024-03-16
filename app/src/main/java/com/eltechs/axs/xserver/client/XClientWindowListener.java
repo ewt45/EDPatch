@@ -27,7 +27,7 @@ public class XClientWindowListener implements WindowListener {
     @Override // com.eltechs.axs.xserver.WindowListener
     public void onEvent(Window window, Event event) {
         if (isInterestedIn(event.getClass())) {
-            Log.d(TAG, String.format("onEvent: 窗口接收到事件：id=%d, class=%s, \t content=%s",event.getId(),Event.idToClassName(event.getId()),event));
+//            Log.d(TAG, String.format("onEvent: 窗口接收到事件：id=%d, class=%s, \t content=%s",event.getId(),Event.idToClassName(event.getId()),event));
             this.client.createEventSender().sendEvent(event);
         }
     }

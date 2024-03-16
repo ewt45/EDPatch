@@ -6,8 +6,8 @@ import static com.example.datainsert.exagear.controls.ControlsResolver.PREF_KEY_
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
 import com.eltechs.ed.R_original;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
+import com.example.datainsert.exagear.controlsV2.CustomInterfaceOverlay;
 import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controls.axs.gamesControls.FalloutInterfaceOverlay2;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +63,6 @@ public class DefaultControls extends Controls {
 
     @Override // com.eltechs.ed.controls.Controls
     public XServerDisplayActivityInterfaceOverlay create() {
-        return new FalloutInterfaceOverlay2();
+        return new CustomInterfaceOverlay();
     }
 }

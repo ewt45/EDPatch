@@ -16,7 +16,7 @@ invoke-static {p0}, Lcom/example/datainsert/winlator/all/OBBFinder;->extract_3_2
 
 # xserver左侧抽屉栏添加额外内容
 进入容器后，按手机返回键，可显示左侧抽屉栏。在里面添加一些额外功能。
-1. 下载smali压缩包并添加。
+1. 下载smali压缩包并添加。（适用于5.0的：https://wwk.lanzout.com/iZMKv1nf3utc）
 ## ~~pulseaudio~~,旋转屏幕
 1. 编辑smali。com.winlator.XServerDisplayActivity类，onCreate方法, 搜索字符串 setupUI 定位，在下一行添加。用于在侧栏显示更多选项。
      ```
@@ -82,6 +82,11 @@ invoke-static {p0}, Lcom/example/datainsert/winlator/all/OBBFinder;->extract_3_2
      return-object v0
    .end method
    ```
+
+## 绝对位置点击(5.0)
+显示在input control的弹窗中。现在已适配矩阵变化，无需拉伸全屏也可正确处理点击坐标。
+1. 同上面光标样式的第一步（com.winlator.XServerDisplayActivity类），如果已经编辑过可跳过。
+2. 添加smali https://wwk.lanzout.com/iXRWc1nf1b5c 如有同名则覆盖。该代码重新实现了TouchPadView
 
 
 # 自定义wine修复

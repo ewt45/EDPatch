@@ -243,7 +243,7 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
 //                        ? new MotionNotify(false, (int) System.currentTimeMillis(), rootWindow, eventWindow, childWindow, (short) (this.xServer.getScreenInfo().widthInPixels / 2), (short) (this.xServer.getScreenInfo().heightInPixels / 2) ,(short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask)
 //                        : new MotionNotify(false, (int) System.currentTimeMillis(), rootWindow, eventWindow, childWindow, (short) rootX, (short) rootY, (short) convertRootCoordsToWindow.x, (short) convertRootCoordsToWindow.y, keyButMask);
 
-        Log.d(TAG, String.format("pointerMoved: 新建motionnotify, rootX=%d, rootY=%d, eventX=%d, eventY=%d, mask=%s", motionNotify.getRootX(), motionNotify.getRootY(), motionNotify.getEventX(), motionNotify.getEventY(), motionNotify.getState()));
+//        Log.d(TAG, String.format("pointerMoved: 新建motionnotify, rootX=%d, rootY=%d, eventX=%d, eventY=%d, mask=%s", motionNotify.getRootX(), motionNotify.getRootY(), motionNotify.getEventX(), motionNotify.getEventY(), motionNotify.getState()));
 
 
         if (pointerGrabWindow != null) {
@@ -278,7 +278,7 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
             if (this.pointWindow != event && WindowHelpers.isAncestorOf(this.pointWindow, event)) {
                 child = WindowHelpers.getDirectChild(this.pointWindow, event);
             }
-            Log.d(TAG, "pointerButtonPressed: 发送了ButtonPress事件");
+//            Log.d(TAG, "pointerButtonPressed: 发送了ButtonPress事件");
             event.getEventListenersList().sendEventForEventName(new ButtonPress((byte) btnCode, (int) System.currentTimeMillis(), root, event, child, (short) rootX, (short) rootY, (short) eventXY.x, (short) eventXY.y, keyButMask), EventName.BUTTON_PRESS);
         }
     }

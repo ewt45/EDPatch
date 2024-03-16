@@ -1,12 +1,15 @@
 package com.example.datainsert.exagear.FAB.dialogfragment;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.system.ErrnoException;
 import android.system.Os;
@@ -22,7 +25,11 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.FabMenu;
+import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.ControlsFragment;
+import com.example.datainsert.exagear.controlsV2.XServerViewHolderImpl;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -47,15 +54,13 @@ public class AboutFab extends BaseFragment {
     private static boolean logcatStarted = false;
 
 
-
 //    static {
 //        System.loadLibrary("some-helper");
 //    }
 
     //    public native int startPulseaudio();
 //    public native int setEnv(String s);
-
-
+    boolean isHiddenOptionsShowing;
 
     @Override
     protected ViewGroup buildUI() {
@@ -76,36 +81,37 @@ public class AboutFab extends BaseFragment {
         String fulltext = "( ˡ ᴗ ˡ ) ";//⩊ ᴗ
 
 //            AnimationUtils.loadAnimation(requireContext(),R.anim.text_scale)
-        ScaleAnimation scale = new ScaleAnimation(0,1,0,1, Animation.RELATIVE_TO_SELF,0f,Animation.RELATIVE_TO_SELF,0.5f);
+        ScaleAnimation scale = new ScaleAnimation(0, 1, 0, 1, Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF, 0.5f);
         scale.setDuration(150);
         scale.setInterpolator(requireContext(), android.R.anim.overshoot_interpolator);
 
         LinearLayout linearFun = new LinearLayout(c);
-        linearFun.setPadding(40,40,40,40);
+        linearFun.setPadding(40, 40, 40, 40);
         linearFun.setOrientation(LinearLayout.HORIZONTAL);
         View.OnClickListener aniListener = new View.OnClickListener() {
-            private int animIndex = 0;
             private final int viewCount = fulltext.length() / 2;
+            private int animIndex = 0;
+
             @Override
             public void onClick(View v) {
                 //设置部分文字可见
-                for(int i=0; i<linearFun.getChildCount(); i++){
-                    linearFun.getChildAt(i).setVisibility(i<=animIndex ?View.VISIBLE : View.GONE);
+                for (int i = 0; i < linearFun.getChildCount(); i++) {
+                    linearFun.getChildAt(i).setVisibility(i <= animIndex ? View.VISIBLE : View.GONE);
                 }
                 //开始单个文字动画
-                Log.d(TAG, "onClick: 第几个视图开始动画："+animIndex+", 当前点击视图为"+(String) v.getTag());
+                Log.d(TAG, "onClick: 第几个视图开始动画：" + animIndex + ", 当前点击视图为" + (String) v.getTag());
                 linearFun.getChildAt(animIndex).startAnimation(scale);
 
-                animIndex = (animIndex+1)%viewCount;
-                if(animIndex==0)
+                animIndex = (animIndex + 1) % viewCount;
+                if (animIndex == 0)
                     showHiddenOptions(linearLayout);
             }
         };
 
         linearFun.setOnClickListener(aniListener);
-        for(int i=0; i+2<=fulltext.length(); i+=2){
+        for (int i = 0; i + 2 <= fulltext.length(); i += 2) {
             TextView tv = new TextView(requireContext());
-            tv.setText(fulltext.substring(i,i+2));
+            tv.setText(fulltext.substring(i, i + 2));
 //            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
             tv.setTypeface(Typeface.MONOSPACE);
             tv.setTag(String.valueOf(i));
@@ -114,6 +120,25 @@ public class AboutFab extends BaseFragment {
         }
 
         linearLayout.addView(linearFun);
+
+        if(QH.isTesting()){
+            Button btnControls2 = new Button(c);
+            btnControls2.setText("自定义操作2");
+            btnControls2.setOnClickListener(v -> {
+                requireActivity().getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN );
+                ActionBar actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
+                if (actionBar != null) actionBar.hide();
+
+                Const.init(requireActivity(), new XServerViewHolderImpl(null));
+                ControlsFragment fragment = new ControlsFragment()  ;
+                Bundle args = new Bundle();
+                args.putBoolean(ControlsFragment.ARGV_START_EDIT_ON_SHOW,true);
+                fragment.setArguments(args);
+                Const.initShowFragment(R.id.ed_main_fragment_container,fragment);
+                dismiss();
+            });
+            linearLayout.addView(btnControls2);
+        }
 
         return linearLayout;
 
@@ -135,14 +160,13 @@ public class AboutFab extends BaseFragment {
 
     }
 
-    boolean isHiddenOptionsShowing;
     /**
      * 点击几次颜文字后显示隐藏选项
      */
     private void showHiddenOptions(LinearLayout linearRoot) {
-        if(isHiddenOptionsShowing)
+        if (isHiddenOptionsShowing)
             return;
-        Context c = requireContext()    ;
+        Context c = requireContext();
         LinearLayout linearHidden = new LinearLayout(c);
         linearHidden.setOrientation(LinearLayout.VERTICAL);
 
@@ -151,34 +175,34 @@ public class AboutFab extends BaseFragment {
 
         Button btnSymPriExt = new Button(c);
         btnSymPriExt.setText("/storage/emulated/0");
-        btnSymPriExt.setOnClickListener(v-> createOrDelSymFile("/storage/emulated/0","a_primary_storage"));
+        btnSymPriExt.setOnClickListener(v -> createOrDelSymFile("/storage/emulated/0", "a_primary_storage"));
 
         Button btnSymOthExt = new Button(c);
         btnSymOthExt.setText("other storage device");
-        btnSymOthExt.setOnClickListener(v->{
-            PopupMenu popupMenu = new PopupMenu(c,v);
-            for(File filesDir:c.getExternalFilesDirs(null)){
-                if(filesDir.getAbsolutePath().startsWith("/storage/emulated/0"))
+        btnSymOthExt.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(c, v);
+            for (File filesDir : c.getExternalFilesDirs(null)) {
+                if (filesDir.getAbsolutePath().startsWith("/storage/emulated/0"))
                     continue;
-               try{
-                   String extDevPath = filesDir.getAbsolutePath().replace("/Android/data/"+c.getPackageName()+"/files","");
-                   popupMenu.getMenu().add(extDevPath).setOnMenuItemClickListener(item -> {
-                       createOrDelSymFile(item.getTitle().toString(),"a_"+item.getTitle().toString().replace("/","_"));
-                       return true;
-                   });
-               }catch ( Exception e){
-                   e.printStackTrace();
-               }
+                try {
+                    String extDevPath = filesDir.getAbsolutePath().replace("/Android/data/" + c.getPackageName() + "/files", "");
+                    popupMenu.getMenu().add(extDevPath).setOnMenuItemClickListener(item -> {
+                        createOrDelSymFile(item.getTitle().toString(), "a_" + item.getTitle().toString().replace("/", "_"));
+                        return true;
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-            if(popupMenu.getMenu().size()==0)
+            if (popupMenu.getMenu().size() == 0)
                 popupMenu.getMenu().add("none").setEnabled(false);
             popupMenu.show();
         });
 
         Button btnOpenDocTree = new Button(c);
         btnOpenDocTree.setText("选择文件夹");
-        btnOpenDocTree.setOnClickListener(v->{
+        btnOpenDocTree.setOnClickListener(v -> {
             // Choose a directory using the system's file picker.
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
             startActivityForResult(intent, 123);
@@ -191,11 +215,11 @@ public class AboutFab extends BaseFragment {
         isHiddenOptionsShowing = true;
     }
 
-    private void createOrDelSymFile(String androidPath,String symLinkDirName) {
+    private void createOrDelSymFile(String androidPath, String symLinkDirName) {
         Context c = requireContext();
 
         try {
-            File symFile = new File(c.getFilesDir(), "image/"+symLinkDirName);
+            File symFile = new File(c.getFilesDir(), "image/" + symLinkDirName);
             if (symFile.getCanonicalFile().exists()) {
                 symFile.delete();
                 Toast.makeText(c, "deleted", Toast.LENGTH_SHORT).show();
@@ -208,9 +232,9 @@ public class AboutFab extends BaseFragment {
                     e.printStackTrace();
                     isSuccess = false;
                 }
-                Toast.makeText(c, "z:/"+symLinkDirName+" created, " + (isSuccess ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, "z:/" + symLinkDirName + " created, " + (isSuccess ? "successful" : "failed"), Toast.LENGTH_SHORT).show();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -221,7 +245,7 @@ public class AboutFab extends BaseFragment {
      */
     @Override
     public void callWhenFirstStart(AppCompatActivity activity) {
-        boolean disableShowInfo = !QH.isTesting() && getPreference().getBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, false);
+        boolean disableShowInfo = getPreference().getBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, false);
         if (!disableShowInfo) {
             getPreference().edit().putBoolean(PREF_FIRST_LAUNCH_INFO_SHOWN, true).apply();
             Snackbar snackbar = Snackbar.make(FabMenu.getMainFrameView(activity), getS(RR.firstLaunch_snack), Snackbar.LENGTH_INDEFINITE);
@@ -232,7 +256,7 @@ public class AboutFab extends BaseFragment {
 //        FileTreePrinter.test();
 
         //尝试重定向logcat到文件中：
-        redirectLogcat();  
+        redirectLogcat();
     }
 
 
@@ -242,21 +266,21 @@ public class AboutFab extends BaseFragment {
      */
     private void redirectLogcat() {
 
-        if(!(appFirstLaunching || !logcatStarted))
+        if (!(appFirstLaunching || !logcatStarted))
             return;
         appFirstLaunching = false;
 
-        File logcatDir = new File(DriveD.getDriveDDir(),"logcat");
-        File logcatFile = new File(logcatDir,"logcat.txt");
-        if(!logcatDir.exists())
+        File logcatDir = new File(DriveD.getDriveDDir(), "logcat");
+        File logcatFile = new File(logcatDir, "logcat.txt");
+        if (!logcatDir.exists())
             return;
-        if(logcatFile.exists() && !logcatFile.delete())
+        if (logcatFile.exists() && !logcatFile.delete())
             return;
         try {
             System.out.println("callWhenFirstStart: 不执行吗？");
-            Runtime.getRuntime().exec("logcat -f "+logcatFile.getAbsolutePath()+" *:V" );// "*:S",
+            Runtime.getRuntime().exec("logcat -f " + logcatFile.getAbsolutePath() + " *:V");// "*:S",
 //            Process process = Runtime.getRuntime().exec(new String[]{"killall","-9","logat;","/system/bin/logat","-c;","/system/bin/logcat","-f",filePath });
-            logcatStarted=true;
+            logcatStarted = true;
         } catch (IOException e) {
             e.printStackTrace();
         }

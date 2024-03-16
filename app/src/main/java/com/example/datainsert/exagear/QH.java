@@ -1,10 +1,10 @@
 package com.example.datainsert.exagear;
 
 import static android.content.pm.ApplicationInfo.FLAG_TEST_ONLY;
+import static android.view.View.NO_ID;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.widget.LinearLayout.HORIZONTAL;
-
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
 import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
@@ -19,6 +19,7 @@ import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
@@ -28,6 +29,7 @@ import android.text.TextWatcher;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,12 +37,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 
 import org.apache.commons.io.FileUtils;
 
@@ -296,8 +300,9 @@ public class QH {
 
     /**
      * 通过反射获取某个类的私有成员变量
-     * @param clz 类名
-     * @param clzInst 类的实例。static变量的话可为null
+     *
+     * @param clz       类名
+     * @param clzInst   类的实例。static变量的话可为null
      * @param fieldName 变量名
      * @return 变量实例
      */
@@ -314,11 +319,11 @@ public class QH {
         return fieldInst;
     }
 
-    public static Object reflectPrivateMethod(Class<?> clz, String methodName, Class<?>[] clzs, Object inst, Object... params){
+    public static Object reflectPrivateMethod(Class<?> clz, String methodName, Class<?>[] clzs, Object inst, Object... params) {
         try {
             Method method = clz.getDeclaredMethod(methodName, clzs);
             method.setAccessible(true);
-            Object result = method.invoke(inst,params);
+            Object result = method.invoke(inst, params);
             method.setAccessible(false);
             return result;
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
@@ -456,6 +461,22 @@ public class QH {
         return scrollView;
     }
 
+    /**
+     * /exa的库里还没有 TabLayout.BaseOnTabSelectedListener,只有OnTabSelectedListener。改依赖版本又没有用。试试反射吧
+     */
+    public static void addTabLayoutListener(TabLayout tabToolbar, TabLayout.OnTabSelectedListener listener) {
+        if(QH.isTesting()){
+            tabToolbar.addOnTabSelectedListener(listener);
+        }else{
+            try {
+                TabLayout.class.getDeclaredMethod("addOnTabSelectedListener", TabLayout.OnTabSelectedListener.class)
+                        .invoke(tabToolbar, listener);
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
 
     public interface SimpleTextWatcher extends TextWatcher {
 
@@ -509,65 +530,236 @@ public class QH {
      * 常见的LinearLayout.LayoutParams构建
      */
     public static class LPLinear {
-         int w=-1;
-        int h=-2;
-        float weight=0;
-        int[] margins = {0,0,0,0};
-        int gravity=-111;
+        int w = -1;
+        int h = -2;
+        float weight = 0;
+        int[] margins = {0, 0, 0, 0};
+        int gravity = -111;
 
         /**
          * 宽为match，高为rap
          */
-        public static LPLinear one(){
+        public static LPLinear one() {
             return new LPLinear();
         }
-        public static LPLinear one(int w, int h){
-            LPLinear linear= new LPLinear();
-            linear.w=w;
-            linear.h=h;
+
+        public static LPLinear one(int w, int h) {
+            LPLinear linear = new LPLinear();
+            linear.w = w;
+            linear.h = h;
             return linear;
         }
-        public LPLinear gravity(int pg){
+
+        public LPLinear gravity(int pg) {
             gravity = pg;
             return this;
         }
 
-        public LPLinear weight(float pw){
-            weight=pw;
+        public LPLinear weight(float pw) {
+            weight = pw;
             return this;
         }
 
-        public LPLinear weight(){
-            weight=1;
+        public LPLinear weight() {
+            weight = 1;
             return this;
         }
 
         /**
          * 顶部margin设为8dp
          */
-        public LPLinear top(){
+        public LPLinear top() {
             margins[1] = margin8Dp();
             return this;
         }
-        public LPLinear top(int margin){
+
+        public LPLinear top(int margin) {
             margins[1] = margin;
             return this;
         }
-        public LPLinear left(){
+
+        public LPLinear bottom() {
+            margins[3] = margin8Dp();
+            return this;
+        }
+
+        public LPLinear left() {
             margins[0] = margin8Dp();
             return this;
         }
-        public LPLinear left(int margin){
+
+        public LPLinear left(int margin) {
             margins[0] = margin;
             return this;
         }
-        public LinearLayout.LayoutParams to(){
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w,h,weight);
+
+        public LPLinear right() {
+            margins[2] = margin8Dp();
+            return this;
+        }
+
+        public LPLinear margin(int left, int top, int right, int bottom) {
+            margins = new int[]{left, top, right, bottom};
+            return this;
+        }
+
+        public LinearLayout.LayoutParams to() {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(w, h, weight);
             params.weight = weight;
-            if(gravity!=-111)
+            if (gravity != -111)
                 params.gravity = gravity;
-            params.setMargins(margins[0],margins[1],margins[2],margins[3]);
+            params.setMargins(margins[0], margins[1], margins[2], margins[3]);
             return params;
         }
+    }
+
+    /**
+     * 构建常用的RelativeLayout.LayoutParams
+     */
+    public static class LPRelative {
+        RelativeLayout.LayoutParams lp;
+
+        /**
+         * 新建一个宽高 -2 -2的param
+         */
+        public static LPRelative one() {
+            return one(-2, -2);
+        }
+
+        public static LPRelative one(int w, int h) {
+            LPRelative lpRelative = new LPRelative();
+            lpRelative.lp = new RelativeLayout.LayoutParams(w, h);
+            return lpRelative;
+        }
+
+        public LPRelative alignParentWidth() {
+            lp.alignWithParent = true;
+            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            return this;
+        }
+        public LPRelative centerInParent(){
+            lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+            return this;
+        }
+
+        public LPRelative below(View whichView) {
+            if(whichView.getId()==NO_ID)
+                whichView.setId(View.generateViewId());
+            lp.addRule(RelativeLayout.BELOW, whichView.getId());
+            return this;
+        }
+        public LPRelative leftOf(View whichView) {
+            if(whichView.getId()==NO_ID)
+                whichView.setId(View.generateViewId());
+            lp.addRule(RelativeLayout.LEFT_OF, whichView.getId());
+            return this;
+        }
+
+        public LPRelative centerVertical() {
+            lp.addRule(RelativeLayout.CENTER_VERTICAL);
+            return this;
+        }
+
+        public RelativeLayout.LayoutParams to() {
+            RelativeLayout.LayoutParams tmpLp = lp;
+            lp = null;
+            return tmpLp;
+        }
+
+        public LPRelative top() {
+            lp.topMargin = margin8Dp();
+            return this;
+        }
+
+        public LPRelative left() {
+            lp.leftMargin = margin8Dp();
+            return this;
+        }
+
+        public LPRelative alignParentTop() {
+            lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+            return this;
+        }
+
+        public LPRelative right() {
+            lp.rightMargin = margin8Dp();
+            return this;
+        }
+    }
+
+    public static class TV {
+        TextView textView;
+
+        public TV(Context c) {
+            textView = new TextView(c);
+        }
+
+        public static TV one(Context c) {
+            return new TV(c);
+        }
+
+        public TV text(String str) {
+            textView.setText(str);
+            return this;
+        }
+        //加粗
+        public TV bold(){
+            textView.getPaint().setFakeBoldText(true);
+            return this;
+        }
+
+        /**
+         * 注意是文字居中，而不是layoutparam的居中
+         */
+        public TV textGravity(int gravity){
+            textView.setGravity(gravity);
+            return this;
+        }
+
+        /**
+         * 文字大小设置为16sp，默认的话更小一些
+         */
+        public TV text16Sp() {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            return this;
+        }
+
+        public TV text14Sp() {
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            return this;
+        }
+
+        /**
+         * 颜色使用textColorPrimary 而非默认的灰色
+         */
+        public TV solidColor() {
+            textView.setTextColor(RR.attr.textColorPrimary(textView.getContext()));
+            return this;
+        }
+
+        /**
+         * 用于当做文字按钮。设置波纹背景。调整宽高，字体实色
+         */
+        public TV button() {
+            solidColor();
+            GradientDrawable contentDrawable = new GradientDrawable();
+            contentDrawable.setColor(0);
+            GradientDrawable maskDrawable = new GradientDrawable();
+            maskDrawable.setCornerRadius(10f);
+            maskDrawable.setColor(-1);
+            //contentdrawable和maskdrawable用来限制波纹边界
+            ViewCompat.setBackground(textView, new RippleDrawable(ColorStateList.valueOf(Color.GRAY), contentDrawable, maskDrawable));
+            textView.setPadding(margin8Dp(), margin8Dp(), margin8Dp(), margin8Dp());
+            return this;
+        }
+
+        public TextView to() {
+            TextView tmp = textView;
+            textView = null;
+            return tmp;
+        }
+
+
     }
 }

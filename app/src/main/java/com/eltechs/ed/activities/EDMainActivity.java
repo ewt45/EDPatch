@@ -1,9 +1,7 @@
 package com.eltechs.ed.activities;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,18 +9,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.eltechs.axs.AppConfig;
-import com.eltechs.axs.RateAppDialog;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
-import com.eltechs.axs.applicationState.SelectedExecutableFileAware;
 import com.eltechs.axs.helpers.AndroidHelpers;
-import com.eltechs.axs.helpers.UiThread;
 import com.eltechs.ed.ContainerPackage;
-import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.InstallRecipe;
 import com.eltechs.ed.R;
 import com.eltechs.ed.XDGLink;
@@ -277,7 +270,7 @@ public class EDMainActivity<StateClass extends ApplicationStateBase<StateClass>>
                     break;
             }
 
-            fragment = new CustomControls();
+            fragment = new ControlsFragment();
 
             if (fragment != null) {
                 FragmentManager supportFragmentManager = EDMainActivity.this.getSupportFragmentManager();

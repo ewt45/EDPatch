@@ -61,7 +61,7 @@ public class FuncFAB implements Func {
      */
         return
                 0x3 //自定义d盘的版本号
-                        | 0x3 << 4 //自定义按键的版本号
+                        | 0x4 << 4 //自定义按键的版本号
                         | 0x3 << 8 //pulseaudio
                         | 0x1 << 12 //Xegw
                         | 0x1 << 16 //VirglOverlay
@@ -287,11 +287,15 @@ public class FuncFAB implements Func {
             PatcherFile.copy(TYPE_SMALI, new String[]{
                     "/com/eltechs/ed/controls/DefaultControls.smali", //覆盖原有的默认操作模式
                     //仅供测试用
+                    "/com/example/datainsert/exagear/controlsV2"
 //                    "/com/eltechs/axs/xserver/Pointer.smali",
 //                    "/com/eltechs/axs/xserver/ViewFacade.smali",
 //                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
 //                    "/com/eltechs/axs/xserver/client/XClientWindowListener.smali"
 //                    "/com/eltechs/axs/finiteStateMachine/FiniteStateMachine.smali"
+            });
+            PatcherFile.copy(TYPE_ASSETS,new String[]{
+                    "/controls"
             });
             //糟了，现在xegw也需要改Pointer.smali，所以只能检测一下非xegw才复制这个
             if (!new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXegw.so").exists()

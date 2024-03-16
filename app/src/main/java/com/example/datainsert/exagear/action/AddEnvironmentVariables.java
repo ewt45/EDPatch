@@ -169,7 +169,8 @@ public class AddEnvironmentVariables<StateClass extends UBTLaunchConfigurationAw
 
         //添加实时输入
         if (QH.isTesting()) {
-            wineCmd = wineCmd.substring(0, wineCmd.length() - 1) + " & /opt/greadlines.sh\"";//taskset -apc 4-7 $(pidof wine)
+//            wineCmd = wineCmd.substring(0, wineCmd.length() - 1) +" & sh\"";
+//            wineCmd = wineCmd.substring(0, wineCmd.length() - 1) + " & /opt/greadlines.sh\"";//taskset -apc 4-7 $(pidof wine)
             //设置一下cwd（不知道为啥变到d盘去了）
 //            ubtConfig.setGuestExecutablePath(ubtConfig.getFsRoot());
         }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp">
+        <shape
+            android:innerRadius="18dp"
+            android:shape="oval"
+            android:thickness="3dp"
+            android:useLevel="false">
+            <size
+                android:width="48dp"
+                android:height="48dp" />
+            <gradient android:type="linear"
+                android:startColor="#27282c"
+                android:endColor="#29302e"
+                android:angle="90"/>
+        </shape>
+    </item>
+
+<!--    <item-->
+<!--        android:bottom="4dp"-->
+<!--        android:left="4dp"-->
+<!--        android:right="4dp"-->
+<!--        android:top="4dp">-->
+<!--        &lt;!&ndash;                android:innerRadius="22dp"&ndash;&gt;-->
+<!--        &lt;!&ndash;                android:thickness="2dp"&ndash;&gt;-->
+<!--        &lt;!&ndash;                此时刚好套在外面-->
+<!--        先确定shape的size，比如宽高都是48dp，-->
+<!--        那么外半径就是24dp，即内半径+厚度=24dp。假如我想让厚度（thickness）是3，那么内半径（innerRadius）就是21-->
+<!--        还有gradient的gradientRadius也设成外半径-->
+
+<!--        &ndash;&gt;-->
+<!--        <shape-->
+<!--            android:innerRadius="21dp"-->
+<!--            android:shape="ring"-->
+<!--            android:thickness="3dp"-->
+<!--            android:useLevel="false">-->
+<!--            <size-->
+<!--                android:width="48dp"-->
+<!--                android:height="48dp" />-->
+<!--            <gradient-->
+<!--                android:centerColor="#FFFFFF"-->
+<!--                android:endColor="#00FFFFFF"-->
+<!--                android:gradientRadius="30dp"-->
+<!--                android:startColor="#FFFFFF"-->
+<!--                android:type="radial" />-->
+
+<!--        </shape>-->
+<!--    </item>-->
+
+    <item
+        android:bottom="4dp"
+        android:left="4dp"
+        android:right="4dp"
+        android:top="4dp">
+        <shape
+            android:innerRadius="21dp"
+            android:shape="ring"
+            android:thickness="3dp"
+            android:useLevel="false">
+            <size
+                android:width="48dp"
+                android:height="48dp" />
+            <gradient
+                android:centerX="0.53"
+                android:centerY="0.53"
+                android:centerColor="#00000000"
+                android:endColor="#FFFFFF"
+                android:gradientRadius="31dp"
+                android:startColor="#00000000"
+                android:type="radial" />
+        </shape>
+    </item>
+</layer-list>

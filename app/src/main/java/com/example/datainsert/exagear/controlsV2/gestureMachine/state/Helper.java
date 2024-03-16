@@ -1,0 +1,21 @@
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
+
+import android.content.Context;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.RR;
+
+class Helper {
+    public static View createEmptyPropEditView(Context c) {
+        LinearLayout linearRoot = new LinearLayout(c);
+        linearRoot.setOrientation(LinearLayout.HORIZONTAL);
+        TextView tv = QH.getTitleTextView(c, RR.getS(RR.global_empty));//空
+        tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        linearRoot.addView(tv,QH.LPLinear.one(-1,-2).gravity(Gravity.CENTER).left().right().top().bottom().to());
+        return linearRoot;
+    }
+}

@@ -72,6 +72,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
 //    }
 
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,6 +89,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         }
         return buildUI();
     }
+
 
     @NonNull
     @Override
@@ -124,7 +126,6 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
             getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
             getDialog().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         }
-
 
         //然后弹出输入法
 //        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
