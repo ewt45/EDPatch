@@ -44,7 +44,7 @@ public class EditConfigWindow extends RelativeLayout {
     private static final String TAG = "EditConfigWindow";
     public final int mMaxWidth, mMaxHeight;
     private final LinearLayout mLinearTitle;
-    private final FrameLayout mPager; //TODO 这个也改成relative？
+    private final RelativeLayout mPager;
     private final List<View> mTitles = new ArrayList<>();
     private final List<View> mSubViews = new ArrayList<>();
     private final ImageView mIconView;//最小化时只显示这个图标
@@ -104,7 +104,7 @@ public class EditConfigWindow extends RelativeLayout {
         mLinearTitle.addView(new View(c));
 
         //pager
-        mPager = new FrameLayout(c);
+        mPager = new RelativeLayout(c);
         mPager.setMinimumWidth(QH.px(c, 150));
         mPager.setLayoutTransition(new LayoutTransition());
 
@@ -213,7 +213,7 @@ public class EditConfigWindow extends RelativeLayout {
         mSubViews.add(content);
         mTitles.add(titleView);
         mPager.removeAllViews();
-        mPager.addView(content, new ViewGroup.LayoutParams(-1, -2));
+        mPager.addView(content, QH.LPRelative.one().alignParentWidth().to());
 
         changeHomeButtonIcon();
     }
@@ -229,7 +229,7 @@ public class EditConfigWindow extends RelativeLayout {
 
         mPager.removeAllViews();
         View targetSubView = mSubViews.get(mSubViews.size() - 1);
-        mPager.addView(targetSubView);
+        mPager.addView(targetSubView,QH.LPRelative.one().alignParentWidth().to());
         if (targetSubView instanceof OnReEnterListener)
             ((OnReEnterListener) targetSubView).onReEnter();
         mLinearTitle.removeViewAt(1);

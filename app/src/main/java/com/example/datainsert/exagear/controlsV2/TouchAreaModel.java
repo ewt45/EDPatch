@@ -89,7 +89,7 @@ public abstract class TouchAreaModel {
                 i--;
             }
 
-        if (keycodes.size() == 0)
+        if (keycodes.isEmpty())
             keycodes.add(0);
 
         if (shouldUpdateName)
@@ -103,10 +103,10 @@ public abstract class TouchAreaModel {
     public String getKeycodesString() {
         StringBuilder builder = new StringBuilder();
         for (Integer key : keycodes)
-            builder.append(Const.keyNames[key]).append(", ");
+            builder.append(Const.getKeyOrPointerButtonName(key)).append(", ");
         if (builder.length() > 2)
             builder.delete(builder.length() - 2, builder.length());
-        return builder.toString();
+        return builder.toString().replace('\n',' ');
     }
 
     /**

@@ -5,8 +5,8 @@ import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateNeutral;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateWaitForNeutral;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateNeutral;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateWaitForNeutral;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,9 +17,8 @@ public class OneGestureArea extends TouchAreaModel {
     public static final int IDX_TRAN_EVENT = 1;
     public static final int IDX_TRAN_POSTSTATE = 2;
     public static final int IDX_TRAN_ACTION_START = 3;
-    //TODO statemachine的table和defaultState啥的都放这里
-    private List<FSMState2> allStateList = new ArrayList<>();
-    private List<List<Integer>> transitionList = new ArrayList<>(); //每一项是一个转换。0是前状态，1是事件，2是后状态，3往后都是附加操作
+    private final List<FSMState2> allStateList = new ArrayList<>();
+    private final List<List<Integer>> transitionList = new ArrayList<>(); //每一项是一个转换。0是前状态，1是事件，2是后状态，3往后都是附加操作
     transient private StateWaitForNeutral defaultState;
     transient private StateNeutral initState;
     transient private List<FSMState2> unModifiableAllStateList;

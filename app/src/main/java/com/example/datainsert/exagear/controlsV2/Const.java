@@ -12,19 +12,18 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
+import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.controlsV2.edit.Edit1KeyView;
 import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.GestureContext2;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
-import com.example.datainsert.exagear.controlsV2.widget.KeyOnBoardView;
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.File;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.ref.WeakReference;
 
 public class Const {
     public static boolean initiated=false;
@@ -39,7 +38,7 @@ public class Const {
     /**
      * 经过测试，12f（安卓像素）比较合适
      */
-    public static float fingerTapMaxMoveInches = 0.2f;
+    public static float fingerTapMaxMovePixels = 12f;
     public static Edit1KeyView editKeyView = null;
     private static TouchAreaView touchAreaView = null;
     public static XServerViewHolder xServerViewHolder = null;
@@ -51,15 +50,9 @@ public class Const {
     public static int minStickAreaSize;
     public static float stickInnerOuterRatio = 2/3f; //摇杆的内圆与外圆半径之比
     public static float stickInnerMaxOffOuterRadiusRatio = 1; //摇杆内圆允许移动的距离（到内圆圆心）与外圆半径之比
+    public static double stickMoveThreshold = 20; //摇杆按下并移动时，若手指距离中心小于此距离，则算作不移动
 
     public static int defaultBgColor = 0xffc2e2ff;
-    public static int keycodeMaxCount = 256 + 7; //还有 7个鼠标按键
-    /**
-     * 由于 键盘keycode和鼠标的buttoncode混在一起用了，所以需要用个mask隔开一下，规定大于256的就是鼠标按键，减去256是实际buttoncode
-     * <br/> 比如左键就是256 | 1 = 257;
-     */
-    public static int keycodePointerMask = 256;
-    public static String[] keyNames = null;
 
     public static String defaultProfileName = "default"; //没有任何配置时，默认配置名称
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
@@ -80,9 +73,6 @@ public class Const {
         minTouchSize = QH.px(c, 32);
         minBtnAreaSize = QH.px(c, 48);
         minStickAreaSize = minBtnAreaSize;
-
-        if (keyNames == null)
-            keyNames = KeyOnBoardView.initXKeyCodesAndNames(c, keycodeMaxCount);
 
         ModelProvider.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
         ModelProvider.profilesDir = new File(ModelProvider.workDir, "profiles");
@@ -284,6 +274,18 @@ public class Const {
         public static void addImpl(int code,Class<?> impl){
             implList.put(code,impl);
         }
+    }
+
+    /**
+     * 获取x keycode按键码对应名称。若keycode大于 {@link XKeyButton#POINTER_MASK} 则认为是鼠标按键
+     */
+    public static String getKeyOrPointerButtonName(int keycode){
+        String name = XKeyButton.xKeyNameArr[keycode];
+//        if((keycode & XKeyButton.POINTER_MASK) == XKeyButton.POINTER_MASK)
+//            name = XPointerButton.xKeyNamesArr[keycode - XKeyButton.POINTER_MASK];
+//        else
+//            name = XKeyButton.xKeyNameArr[keycode];
+        return name == null? "None" : name;
     }
 
 

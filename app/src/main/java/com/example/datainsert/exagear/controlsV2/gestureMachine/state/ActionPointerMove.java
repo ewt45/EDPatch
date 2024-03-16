@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import android.content.Context;
 import android.view.View;
@@ -50,7 +50,7 @@ public class ActionPointerMove extends FSMAction2 {
                 .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
                 .setSelectedValue(mFingerIndex)
                 .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
-        editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
+        editFingerIndex.setEnabled(mFingerXYType != FSMR.value.手指位置_最后移动);
 
         LimitEditText editFingerXYType = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
@@ -58,7 +58,7 @@ public class ActionPointerMove extends FSMAction2 {
                 .setSelectedValue(mFingerXYType)
                 .setUpdateListener(editText -> {
                     mFingerXYType = editText.getSelectedValue();
-                    editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
+                    editFingerIndex.setEnabled(mFingerXYType != FSMR.value.手指位置_最后移动);
                 });
 
         return createEditViewQuickly(c,

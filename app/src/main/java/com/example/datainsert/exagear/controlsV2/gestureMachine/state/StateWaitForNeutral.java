@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.event.完成;
 

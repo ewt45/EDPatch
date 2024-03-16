@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import static com.example.datainsert.exagear.RR.ctr2_stateProp_countDown;
 import static com.example.datainsert.exagear.RR.ctr2_stateProp_fastMoveThres;

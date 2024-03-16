@@ -22,8 +22,6 @@ public class OptionsProvider {
      * 初始时必须将全部OPTION放入map中，没有的就放EMPTY
      */
     private static final Map<Integer, AbstractOption> optionsLoader = new HashMap<>();
-    //TODO 要不直接存实例吧，然后名字应该实时获取，因为有的涉及到显示隐藏的
-
 
     static {
 //        optionsLoader.put(OPTION_EMPTY, EMPTY_OPTION.class);

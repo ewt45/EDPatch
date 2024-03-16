@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.event.手指数量不变;
 import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.event.新手指按下;

@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import static com.example.datainsert.exagear.controlsV2.TestHelper.getTextButton;
 
@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
@@ -41,7 +42,7 @@ public class ActionButtonClick extends FSMAction2 {
 
     @Override
     public View createPropEditView(Context c) {
-        TextView tvKeycodes = getTextButton(c, Const.keyNames[mKeycode]);
+        TextView tvKeycodes = getTextButton(c, Const.getKeyOrPointerButtonName(mKeycode).replace('\n',' '));
         tvKeycodes.setOnClickListener(v -> {
             KeyOnBoardView keyOnBoardView = new KeyOnBoardView(c);
             keyOnBoardView.setInitSelectedKeys(Collections.singletonList(mKeycode));
@@ -51,7 +52,7 @@ public class ActionButtonClick extends FSMAction2 {
                     .setNegativeButton(android.R.string.cancel,null)
                     .setPositiveButton(android.R.string.ok,(dialog, which) -> {
                         mKeycode = keyOnBoardView.getSelectedKeys().get(0);
-                        tvKeycodes.setText(Const.keyNames[mKeycode]);
+                        tvKeycodes.setText(Const.getKeyOrPointerButtonName(mKeycode).replace('\n',' '));
                     })
                     .show();
         });

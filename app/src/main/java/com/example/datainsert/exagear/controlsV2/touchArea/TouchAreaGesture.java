@@ -1,8 +1,6 @@
 package com.example.datainsert.exagear.controlsV2.touchArea;
 
 import android.graphics.Canvas;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -16,28 +14,28 @@ import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
+import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.GestureContext2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.GestureMachine;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.ActionButtonClick;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.ActionPointerMove;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.ActionRunOption;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.State1FingerMoveToMouseMove;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.State2FingersZoom;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateCheckFingerNearToPointer;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateCountDownMeasureSpeed;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateCountDownWaitFingerNumChange;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateFingerMoveToMouseScroll;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateNeutral;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateWaitForNeutral;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionButtonClick;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionPointerMove;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionRunOption;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.State1FingerMoveToMouseMove;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.State2FingersZoom;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateCheckFingerNearToPointer;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateCountDownMeasureSpeed;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateCountDownWaitFingerNumChange;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateFingerMoveToMouseScroll;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateNeutral;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateWaitForNeutral;
 import com.example.datainsert.exagear.controlsV2.model.OneGestureArea;
 import com.example.datainsert.exagear.controlsV2.options.OptionsProvider;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.GestureDistributeAdapter;
 import com.example.datainsert.exagear.controlsV2.widget.TransitionHistoryView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -115,18 +113,24 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
 
 
         //一指左键拖拽前同步鼠标到手指位置
+        ActionPointerMove actionMouseMoveToFingerDown = new ActionPointerMove();
+        actionMouseMoveToFingerDown.setNiceName("鼠标移动到手指初始按下位置");
+        actionMouseMoveToFingerDown.mFingerXYType = FSMR.value.手指位置_初始按下;
+        actionMouseMoveToFingerDown.mFingerIndex = 0;
+
         ActionPointerMove actionMouseMoveToFinger = new ActionPointerMove();
         actionMouseMoveToFinger.setNiceName("鼠标移动到手指位置");
         actionMouseMoveToFinger.mFingerIndex = FSMR.value.手指位置_最后移动;
+
         //左键按下和松开
         ActionButtonClick actionPressLeftMouse = new ActionButtonClick();
         actionPressLeftMouse.mDoPress = true;
         actionPressLeftMouse.mDoRelease = false;
-        actionPressLeftMouse.mKeycode = Const.keycodePointerMask | Pointer.BUTTON_LEFT;
+        actionPressLeftMouse.mKeycode = XKeyButton.POINTER_MASK | Pointer.BUTTON_LEFT;
         ActionButtonClick stateReleaseLeftMouse = new ActionButtonClick();
         stateReleaseLeftMouse.mDoPress = false;
         stateReleaseLeftMouse.mDoRelease = true;
-        stateReleaseLeftMouse.mKeycode = Const.keycodePointerMask | Pointer.BUTTON_LEFT;
+        stateReleaseLeftMouse.mKeycode = XKeyButton.POINTER_MASK | Pointer.BUTTON_LEFT;
         //一指左键拖拽移动
         State1FingerMoveToMouseMove state1FingerMoveToMouseMove = new State1FingerMoveToMouseMove();
 
@@ -138,7 +142,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
         ActionButtonClick actionLeftClick = new ActionButtonClick();
         actionLeftClick.mDoPress = true;
         actionLeftClick.mDoRelease = true;
-        actionLeftClick.mKeycode = Const.keycodePointerMask | Pointer.BUTTON_LEFT;
+        actionLeftClick.mKeycode = XKeyButton.POINTER_MASK | Pointer.BUTTON_LEFT;
 
         //第一次左键单击后，短时间内检查是否有第二次左键单击形成双击，如果有则第二次点击时不移动鼠标位置，防止微小的鼠标移动导致系统不识别双击
         StateCountDownWaitFingerNumChange stateWaitDoubleTapCountDown = new StateCountDownWaitFingerNumChange();
@@ -160,7 +164,7 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
         actionRightClick.setNiceName("右键");
         actionRightClick.mDoPress = true;
         actionRightClick.mDoRelease = true;
-        actionRightClick.mKeycode = Const.keycodePointerMask | Pointer.BUTTON_RIGHT;
+        actionRightClick.mKeycode = XKeyButton.POINTER_MASK | Pointer.BUTTON_RIGHT;
         //        GestureState1FingerToZoomMove gestureState1FingerToZoomMove = new GestureState1FingerToZoomMove(gestureContext);
 //        GestureState2FingersToZoom gestureState2FingersToZoom = new GestureState2FingersToZoom(gestureContext);
 
@@ -248,10 +252,10 @@ public class TouchAreaGesture extends TouchArea<OneGestureArea> implements Gestu
         //1指长按后松开，右键点击
         machine.addTransition(stateWait1FActionAfterLongPress, FSMR.event.某手指_未移动并松开, stateWaitForNeutral, actionMouseMoveToFinger, actionRightClick);
 
-        //TODO 一指长按拖拽时，鼠标初始移动到的是手指当前位置而非初始按下位置，导致想拖动标题栏时，可能鼠标初始移动到了标题栏下面
+        //一指长按拖拽时，鼠标初始移动到的是手指当前位置而非初始按下位置，导致想拖动标题栏时，可能鼠标初始移动到了标题栏下面
         //1指长按后移动，左键拖拽
 //        machine.addTransition(stateWait1FActionAfterLongPress, StateCountDownMeasureSpeed.SLOW_MOVE, actionPressLeftMouse);//由于不会超时，所以不会产生slow_move事件
-        machine.addTransition(stateWait1FActionAfterLongPress, FSMR.event.手指_移动_快速, state1FingerMoveToMouseMove, actionMouseMoveToFinger, actionPressLeftMouse);
+        machine.addTransition(stateWait1FActionAfterLongPress, FSMR.event.手指_移动_快速, state1FingerMoveToMouseMove, actionMouseMoveToFingerDown, actionPressLeftMouse);
         machine.addTransition(state1FingerMoveToMouseMove, FSMR.event.某手指松开, stateWaitForNeutral, stateReleaseLeftMouse);
 
         //第一次左键单击后，短时间内检查是否有第二次左键单击形成双击，如果有则第二次点击时不移动鼠标位置，防止微小的鼠标移动导致系统不识别双击

@@ -2,10 +2,9 @@ package com.example.datainsert.exagear.controlsV2.gestureMachine;
 
 import android.util.Log;
 
-import com.eltechs.axs.helpers.Assert;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateNeutral;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.State.StateWaitForNeutral;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateNeutral;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateWaitForNeutral;
 import com.example.datainsert.exagear.controlsV2.model.OneGestureArea;
 import com.example.datainsert.exagear.QH;
 

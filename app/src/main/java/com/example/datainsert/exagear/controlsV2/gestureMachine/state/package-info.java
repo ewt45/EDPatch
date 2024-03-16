@@ -10,4 +10,4 @@
  * <br/><br/> State发送转移事件时，可能会执行附带的动作（Action），action在初始化时和其他State一同传入状态机，执行时调用run方法，不发送事件。tag的isAction为true
  *
  */
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;

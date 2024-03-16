@@ -67,10 +67,10 @@ public class Prop2Key extends Prop<TouchAreaModel> {
         tvKeycodes.setOnClickListener(v -> {
             //进入编辑界面和修改按键后，将所选按键显示到按钮上
             OneStick model = (OneStick) mHost.getModel();
-            btnLeft.setText(Const.keyNames[model.getKeycodeAt(OneStick.KEY_LEFT)]);
-            btnTop.setText(Const.keyNames[model.getKeycodeAt(OneStick.KEY_TOP)]);
-            btnRight.setText(Const.keyNames[model.getKeycodeAt(OneStick.KEY_RIGHT)]);
-            btnBottom.setText(Const.keyNames[model.getKeycodeAt(OneStick.KEY_BOTTOM)]);
+            btnLeft.setText(Const.getKeyOrPointerButtonName(model.getKeycodeAt(OneStick.KEY_LEFT)));
+            btnTop.setText(Const.getKeyOrPointerButtonName(model.getKeycodeAt(OneStick.KEY_TOP)));
+            btnRight.setText(Const.getKeyOrPointerButtonName(model.getKeycodeAt(OneStick.KEY_RIGHT)));
+            btnBottom.setText(Const.getKeyOrPointerButtonName(model.getKeycodeAt(OneStick.KEY_BOTTOM)));
             Const.getEditWindow().toNextView(linearRoot, RR.getS(RR.global_keycode));
         });
         return tvKeycodes;
@@ -91,7 +91,7 @@ public class Prop2Key extends Prop<TouchAreaModel> {
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                     int newKey = keyOnBoardView.getSelectedKeys().get(0);
                     model.setKeycodeAt(newKey, direction);
-                    btn.setText(Const.keyNames[newKey]);
+                    btn.setText(Const.getKeyOrPointerButtonName(newKey));
                     updateUIFromModel(model);
                     onWidgetListener();
                 })

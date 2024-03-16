@@ -56,6 +56,11 @@ public class Edit4OtherView extends LinearLayout {
             Const.getTouchView().invalidate();
         });
 
+        //java 垃圾回收
+        Button btnGc = new Button(c);
+        btnGc.setText("Java Garbage Collection");
+        btnGc.setOnClickListener(v-> System.gc());
+
         LinearLayout linearSaves = new LinearLayout(c);
         linearSaves.setOrientation(HORIZONTAL);
         linearSaves.setVerticalGravity(Gravity.CENTER);
@@ -66,6 +71,7 @@ public class Edit4OtherView extends LinearLayout {
         addView(QH.getOneLineWithTitle(c,/*鼠标移动速度倍率*/getS(RR.ctr2_other_mouseSpeed),editMsMvSpd,true), QH.LPLinear.one(-1, -2).top().left().right().to());
         addView(switchShowArea,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
+//        addView(btnGc,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(new View(c),QH.LPLinear.one(-1,-2).bottom().to());
     }
 

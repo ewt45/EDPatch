@@ -28,7 +28,7 @@ import android.widget.FrameLayout;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.axs.AndroidKeyReporter;
-import com.example.datainsert.exagear.controlsV2.axs.Key;
+import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
@@ -123,28 +123,17 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
                 return true;
             } else if (keyCode == KEYCODE_BUTTON_L1 || keyCode == KEYCODE_BUTTON_L2) {
                 if(action == ACTION_DOWN)
-                    Const.getXServerHolder().injectKeyPress(Key.key_left_shift.xKeyCode);
+                    Const.getXServerHolder().injectKeyPress(XKeyButton.key_left_shift.xKeyCode);
                 else if(action == ACTION_UP)
-                    Const.getXServerHolder().injectKeyRelease(Key.key_left_shift.xKeyCode);
+                    Const.getXServerHolder().injectKeyRelease(XKeyButton.key_left_shift.xKeyCode);
                 return true;
             } else if (keyCode == KEYCODE_BUTTON_R1 || keyCode == KEYCODE_BUTTON_R2) {
                 if(action == ACTION_DOWN)
-                    Const.getXServerHolder().injectKeyPress(Key.key_left_ctrl.xKeyCode);
+                    Const.getXServerHolder().injectKeyPress(XKeyButton.key_left_ctrl.xKeyCode);
                 else if(action == ACTION_UP)
-                    Const.getXServerHolder().injectKeyRelease(Key.key_left_ctrl.xKeyCode);
+                    Const.getXServerHolder().injectKeyRelease(XKeyButton.key_left_ctrl.xKeyCode);
                 return true;
             }
-//            else if (keyCode != KEYCODE_UNKNOWN) {
-//                if (keyEvent.getAction() == ACTION_DOWN) {
-//                    return mKeyboard.handleKeyDown(keyCode, keyEvent);
-//                }
-//                if (keyEvent.getAction() == ACTION_UP) {
-//                    return mKeyboard.handleKeyUp(keyCode, keyEvent);
-//                }
-//                return false;
-//            } else if (keyEvent.getAction() == ACTION_MULTIPLE) {
-//                return mKeyboard.handleUnicodeKeyType(keyEvent);
-//            }
             else if(keyCode != KEYCODE_UNKNOWN || action == ACTION_MULTIPLE){
                 return AndroidKeyReporter.handleAKeyEvent(
                         action,keyCode,keyEvent.getUnicodeChar(),keyEvent.getCharacters());

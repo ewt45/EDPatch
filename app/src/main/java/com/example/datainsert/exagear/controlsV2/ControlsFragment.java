@@ -13,6 +13,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
@@ -53,20 +54,21 @@ public class ControlsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
-        XServerDisplayActivityConfigurationAware aware = Globals.getApplicationState();
-//        if (aware != null)
-//            mUiOverlay = ((FalloutInterfaceOverlay2) aware.getXServerDisplayActivityInterfaceOverlay());
-//
-//        if (mUiOverlay != null) {
-//            mKeyCodes2 = mUiOverlay.getControlsFactory().getKeyCodes2();
-//            mKeyCodes3 = mUiOverlay.getControlsFactory().getKeyCodes3();
-//        } else {
-//            mKeyCodes2 = KeyCodes2.read(requireContext());
-//            mKeyCodes3 = KeyCodes3.read(requireContext());
-//        }
+        //为什么全屏改小窗时，走到这里但是holder还是null？
+        //当全屏切小窗时，会走到activity的onStart此时fragment的onCreateView被重新调用，
+        // 但由于InterfaceOverlay.attach是在onResume才被创建，所以此时还没调用Const.init()初始化
+        return new FrameLayout(requireContext());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, this+"onResume: ");
 
         Context c = requireContext();
 
+        //在resume中新建TouchAreaView，此时保证holder不为null
+        assert Const.isInitiated();
         if(touchAreaView==null){
             touchAreaView = new TouchAreaView(c);
             Const.setTouchView(touchAreaView);
@@ -80,20 +82,24 @@ public class ControlsFragment extends Fragment {
             if (requireActivity() instanceof EDMainActivity)
                 touchAreaView.setBackgroundResource(R.drawable.someimg);
         }
-        return touchAreaView;
-//        return QH.wrapAsDialogScrollView(buildUI());
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, this+"onResume: ");
+        //将touchView放入容器视图中。
+        assert touchAreaView!=null;
+        if(touchAreaView.getParent()!=null)
+            ((ViewGroup)touchAreaView.getParent()).removeView(touchAreaView);
+        ViewGroup rootView = getRootView();
+        rootView.removeAllViews();
+        rootView.addView(touchAreaView);
 
         if (Const.getTouchView() != touchAreaView)
             Const.setTouchView(touchAreaView);
         //必须要在resume这里调用一下requestFocus，否则返回键拦截不到会直接退出Fragment
         touchAreaView.requireFocus();
         touchAreaView.invalidate();
+    }
+
+    private ViewGroup getRootView(){
+        return (ViewGroup) getView();
     }
 
     @Override

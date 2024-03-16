@@ -2,9 +2,20 @@ package com.example.datainsert.exagear.controlsV2.axs;
 
 import android.view.KeyEvent;
 
-import com.eltechs.axs.KeyCodesX;
+import java.lang.reflect.Field;
+import java.util.Objects;
 
-public class Key {
+public class XKeyButton {
+    /** 以安卓的KeyCode为索引,对应元素是 Key.Info的数组，用于处理安卓输入法输入的文字/按键 */
+    public static Info[] aKeyIndexedArr = new Info[KeyEvent.getMaxKeyCode()+1];
+    /** 记录x keycode对应的显示名称*/
+    public static String[] xKeyNameArr = new String[0x300+7];
+    public static final int POINTER_LEFT = 1;
+    public static final int POINTER_CENTER = 2;
+    public static final int POINTER_RIGHT = 3;
+    public static final int POINTER_SCROLL_UP = 4;
+    public static final int POINTER_SCROLL_DOWN = 5;
+
     final public static Info key_esc = new Info(1,0,KeyEvent.KEYCODE_ESCAPE,"Esc");
     final public static Info key_f1 = new Info(59,0,KeyEvent.KEYCODE_F1,"F1");
     final public static Info key_f2 = new Info(60,0,KeyEvent.KEYCODE_F2,"F2");
@@ -25,7 +36,7 @@ public class Key {
     final public static Info key_4 = new Info(5,0,KeyEvent.KEYCODE_4,"$\n4");
     final public static Info key_5 = new Info(6,0,KeyEvent.KEYCODE_5,"%\n5");
     final public static Info key_6 = new Info(7,0,KeyEvent.KEYCODE_6,"^\n6");
-    final public static Info key_7 = new Info(8,0,KeyEvent.KEYCODE_7,"&amp;\n7");
+    final public static Info key_7 = new Info(8,0,KeyEvent.KEYCODE_7,"&\n7");
     final public static Info key_8 = new Info(9,0,KeyEvent.KEYCODE_8,"*\n8");
     final public static Info key_9 = new Info(10,0,KeyEvent.KEYCODE_9,"(\n9");
     final public static Info key_0 = new Info(11,0,KeyEvent.KEYCODE_0,")\n0");
@@ -57,7 +68,7 @@ public class Key {
     final public static Info key_k = new Info(37,0,KeyEvent.KEYCODE_K,"K");
     final public static Info key_l = new Info(38,0,KeyEvent.KEYCODE_L,"L");
     final public static Info key_semicolon = new Info(39,0,KeyEvent.KEYCODE_SEMICOLON,":\n;");
-    final public static Info key_apostrophe = new Info(40,0,KeyEvent.KEYCODE_APOSTROPHE,"&quot;\n'");
+    final public static Info key_apostrophe = new Info(40,0,KeyEvent.KEYCODE_APOSTROPHE,"\"\n'");
     final public static Info key_enter = new Info(28,0,KeyEvent.KEYCODE_ENTER,"Enter ⏎");
     final public static Info key_left_shift = new Info(42,0,KeyEvent.KEYCODE_SHIFT_LEFT,"Shift");
     final public static Info key_z = new Info(44,0,KeyEvent.KEYCODE_Z,"Z");
@@ -67,7 +78,7 @@ public class Key {
     final public static Info key_b = new Info(48,0,KeyEvent.KEYCODE_B,"B");
     final public static Info key_n = new Info(49,0,KeyEvent.KEYCODE_N,"N");
     final public static Info key_m = new Info(50,0,KeyEvent.KEYCODE_M,"M");
-    final public static Info key_comma = new Info(51,0,KeyEvent.KEYCODE_COMMA,"&lt;\n,");
+    final public static Info key_comma = new Info(51,0,KeyEvent.KEYCODE_COMMA,"<\n,");
     final public static Info key_dot = new Info(52,0,KeyEvent.KEYCODE_PERIOD,">\n.");
     final public static Info key_slash = new Info(53,0,KeyEvent.KEYCODE_SLASH,"?\n/");
     final public static Info key_right_shift = new Info(54,0,KeyEvent.KEYCODE_SHIFT_RIGHT,"Shift");
@@ -109,18 +120,56 @@ public class Key {
     final public static Info key_keypad_dot = new Info(83,0,KeyEvent.KEYCODE_NUMPAD_DOT,".");
     final public static Info key_keypad_plus = new Info(78,0,KeyEvent.KEYCODE_NUMPAD_ADD,"+");
     final public static Info key_keypad_enter = new Info(96,0,KeyEvent.KEYCODE_NUMPAD_ENTER,"Enter");
-//    final public static Info key_pointer_left = new Info(257,0,KeyEvent.KEYCODELE,"🖱️\nLeft");
-//    final public static Info key_pointer_scroll_up = new Info(260,0,KeyEvent.KEYCODE_POINTER_SCROLL_UP,"Scroll\nUp");
-//    final public static Info key_pointer_scroll_down = new Info(261,0,KeyEvent.KEYCODE_POINTER_SCROLL_DOWN,"Scroll\nDown");
-//    final public static Info key_pointer_right = new Info(259,0,KeyEvent.KEYCODE_POINTER_RIGHT,"🖱️\nRight");
-//    final public static Info key_pointer_body_stub = new Info(0,0,KeyEvent.KEYCODE_POINTER_BODY_STUB,"🖱️");
+
+    final public static Info key_max = new Info(0x2ff,0,KeyEvent.KEYCODE_UNKNOWN,"最后一个按键"); //仅用作记录xkeycode的最大值
+    /**
+     * 由于 键盘keycode和鼠标的buttoncode混在一起用了，所以需要用个mask隔开一下，规定大于0x300的就是鼠标按键，减去0x300是实际buttoncode
+     * <br/> 比如左键就是0x300 | 1 = 0x301;
+     * <br/> pointermask只要保证大于 <a href="https://elixir.bootlin.com/linux/v6.8/source/include/uapi/linux/input-event-codes.h#L808">KEY_MAX</a> 就可以了
+     * <br/> 由于需要借助key_max，所以必须声明到它下面
+     */
+    public static final int POINTER_MASK = key_max.xKeyCode+1; //0x300
+    final public static Info pointer_left = new Info(POINTER_MASK|POINTER_LEFT,0,KeyEvent.KEYCODE_UNKNOWN,"🖱️\nLeft");
+    final public static Info pointer_right = new Info(POINTER_MASK|POINTER_RIGHT,0,KeyEvent.KEYCODE_UNKNOWN,"🖱️\nRight");
+    final public static Info pointer_center = new Info(POINTER_MASK|POINTER_CENTER,0,KeyEvent.KEYCODE_UNKNOWN,"️🖱️\nCenter");
+    final public static Info pointer_scroll_up = new Info(POINTER_MASK|POINTER_SCROLL_UP,0,KeyEvent.KEYCODE_UNKNOWN,"Scroll\nUp");
+    final public static Info pointer_scroll_down = new Info(POINTER_MASK|POINTER_SCROLL_DOWN,0,KeyEvent.KEYCODE_UNKNOWN,"Scroll\nDown");
+    final public static Info pointer_body_stub = new Info(0,0,KeyEvent.KEYCODE_UNKNOWN,"🖱️");
 
 
+    //static块必须在这些变量之后声明，否则反射获取到的都是null
+    static{
+        Field[] keyFields = XKeyButton.class.getFields();
+        //直接反射填充akey映射数组，和xkeycode对应名字吧
+        try {
+            for(Field field:keyFields){
+                Object obj = field.get(null);
+                if(!(obj instanceof Info))
+                    continue;
+                Info info = (Info) Objects.requireNonNull(obj);
+                aKeyIndexedArr[info.aKeyCode] = info;
+                xKeyNameArr[info.xKeyCode] = info.name;
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
+        //确保这些没有对应的按键名称
+        xKeyNameArr[0] = null;
+        xKeyNameArr[POINTER_MASK] = null;
 
-
-
-
+        //TODO 1. 没有做unicode的映射 2.exa的akeycode映射里没有手柄映射，那它是怎么支持手柄的，难道在unicodeMap里映射的？
+        aKeyIndexedArr[KeyEvent.KEYCODE_UNKNOWN] = null; //确保未知按键没有映射
+        //一些Key.Info里没记录的
+        aKeyIndexedArr[KeyEvent.KEYCODE_AT] = XKeyButton.key_2;
+        aKeyIndexedArr[KeyEvent.KEYCODE_POUND] = XKeyButton.key_3;
+        aKeyIndexedArr[KeyEvent.KEYCODE_STAR] = XKeyButton.key_8;
+        aKeyIndexedArr[KeyEvent.KEYCODE_PLUS] = XKeyButton.key_equal;
+        //（根据exa中的按键映射来查缺补漏一下）
+        aKeyIndexedArr[KeyEvent.KEYCODE_BACK] = XKeyButton.key_esc; //back理论上应该不会进入这里吧，因为被我拦截下来用于显示菜单了
+        aKeyIndexedArr[KeyEvent.KEYCODE_MOVE_HOME] = XKeyButton.key_home;
+        aKeyIndexedArr[KeyEvent.KEYCODE_COMMA] = XKeyButton.key_comma;
+    }
 
     public static class Info{
         public int xKeyCode;

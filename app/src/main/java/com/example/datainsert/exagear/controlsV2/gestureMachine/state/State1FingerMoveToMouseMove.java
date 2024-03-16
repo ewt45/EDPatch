@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import android.content.Context;
 import android.view.View;
@@ -78,7 +78,7 @@ public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapt
 
     @Override
     public void notifyReleased(Finger finger, List<Finger> list) {
-        //TODO 松手和和新手指按下时，也应该先同步一下当前观测的手指的位置，再退出。尝试用于解决点击底部没反应的问题？但是是否会带来副作用（比如现在是鼠标和手指位置同步，如果要用相对偏移的话呢？）
+        //松手和和新手指按下时，也应该先同步一下当前观测的手指的位置，再退出。尝试用于解决点击底部没反应的问题？但是是否会带来副作用（比如现在是鼠标和手指位置同步，如果要用相对偏移的话呢？）
         notifyMoved(finger,list);
         sendEvent(FSMR.event.某手指松开);
     }

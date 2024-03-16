@@ -26,23 +26,5 @@ public abstract class XServerViewHolderStub implements XServerViewHolder {
         return mMatrix;
     }
 
-    @Override
-    public void pressKeyOrPointer(int keycode) {
 
-    }
-
-    @Override
-    public void pressKeyOrPointer(List<Integer> keycodes) {
-
-    }
-
-    @Override
-    public void releaseKeyOrPointer(int keycode) {
-
-    }
-
-    @Override
-    public void releaseKeyOrPointer(List<Integer> keycodes) {
-
-    }
 }

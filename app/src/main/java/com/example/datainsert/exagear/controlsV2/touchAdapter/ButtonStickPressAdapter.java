@@ -29,7 +29,7 @@ public class ButtonStickPressAdapter implements TouchAdapter {
     public int nowFingerAt = FINGER_AT_CENTER;
     @FingerAt
     protected int lastFingerAt = FINGER_AT_CENTER;
-    protected float fingerFirstDownX = 0; //TODO 需要把startCenterX改为downX，原先用这个的现在用outerCenterX（dpad会不会有影响）
+    protected float fingerFirstDownX = 0;
     protected float fingerFirstDownY = 0;
     protected float outerCenterX = 0;
     protected float outerCenterY = 0;
@@ -47,7 +47,6 @@ public class ButtonStickPressAdapter implements TouchAdapter {
      * <br/> mFinger不为null时，认为是正在按下，应该计算实际位置，否则按model的原始位置来
      */
     public void updatePressPos() {
-        //TODO 当移动过小时忽略？
         boolean isTouching = mFinger != null;
 //                !isEditing() &&
 //                 activeFingers.size() > 0
@@ -64,18 +63,24 @@ public class ButtonStickPressAdapter implements TouchAdapter {
             float xDiffUnlimited = mFinger.getX() - outerCenterX;
             float yDiffUnlimited = mFinger.getY() - outerCenterY;
 
+            double unlimitedDist = Math.hypot(xDiffUnlimited,yDiffUnlimited);
+
             //内圆中心点 当前位置 (不能超过允许的最大移动范围）
-            double maxAndUnlimitedRadiusRatio = mModel.getInnerMaxOffsetFromOuterCenter() / Math.hypot(xDiffUnlimited, yDiffUnlimited);
-            float xDiffLimited = (float) (xDiffUnlimited * (maxAndUnlimitedRadiusRatio < 1 ? maxAndUnlimitedRadiusRatio : 1));
-            float yDiffLimited = (float) (yDiffUnlimited * (maxAndUnlimitedRadiusRatio < 1 ? maxAndUnlimitedRadiusRatio : 1));
+            double maxAndUnlimitedDistRatio = mModel.getInnerMaxOffsetFromOuterCenter() / unlimitedDist;
+            float xDiffLimited = (float) (xDiffUnlimited * (maxAndUnlimitedDistRatio < 1 ? maxAndUnlimitedDistRatio : 1));
+            float yDiffLimited = (float) (yDiffUnlimited * (maxAndUnlimitedDistRatio < 1 ? maxAndUnlimitedDistRatio : 1));
 
             innerCenterX = outerCenterX + xDiffLimited;
             innerCenterY = outerCenterY + yDiffLimited;
 
             //先判断是否在0-3/8π范围内，确定上下，然后再判断是否在1/8π-1/2π范围内，叠加左右
             float tanCurrent = Math.abs(xDiffLimited / yDiffLimited);
+            //当移动过小时忽略
+            if(unlimitedDist < Const.stickMoveThreshold){
+                nowFingerAt = FINGER_AT_CENTER;
+            }
             //不允许斜向
-            if (mModel.direction == OneStick.WAY_4) {
+            else if (mModel.direction == OneStick.WAY_4) {
                 if (tanCurrent <= 1 && yDiffLimited < 0) {
                     nowFingerAt |= FINGER_AT_TOP;
                 } else if (tanCurrent <= 1) {

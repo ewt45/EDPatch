@@ -1,9 +1,13 @@
 package com.example.datainsert.exagear.controlsV2;
 
+import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_SCROLL_DOWN;
+import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_SCROLL_UP;
+
 import android.graphics.Matrix;
 import android.support.annotation.IntDef;
 
 import com.eltechs.axs.geom.Point;
+import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 
 import java.util.List;
 
@@ -37,11 +41,11 @@ public interface XServerViewHolder {
      * pressKeyOrPointer 这几个改到接口作为default，因为这个pointer还是key的区分是我自己定义的，不属于通用规则，子类不应该管这些的实现
      */
     default void pressKeyOrPointer(int keycode) {
-        if ((keycode & Const.keycodePointerMask) == 0)
+        if ((keycode & XKeyButton.POINTER_MASK) == 0)
             injectKeyPress(keycode); //+8在impl里加吧
         else {
-            int buttonCode = keycode - Const.keycodePointerMask;
-            if (buttonCode == 4 || buttonCode == 5)
+            int buttonCode = keycode - XKeyButton.POINTER_MASK;
+            if (buttonCode == POINTER_SCROLL_UP || buttonCode == POINTER_SCROLL_DOWN)
                 XServerViewHolder_MouseWheelInjector.getByCode(buttonCode).start();
             else
                 injectPointerButtonPress(buttonCode);
@@ -49,11 +53,11 @@ public interface XServerViewHolder {
     }
 
     default void releaseKeyOrPointer(int keycode) {
-        if ((keycode & Const.keycodePointerMask) == 0)
+        if ((keycode & XKeyButton.POINTER_MASK) == 0)
             injectKeyRelease(keycode); //+8在impl里加吧
         else {
-            int buttonCode = keycode - Const.keycodePointerMask;
-            if (buttonCode == 4 || buttonCode == 5)
+            int buttonCode = keycode - XKeyButton.POINTER_MASK;
+            if (buttonCode == POINTER_SCROLL_UP || buttonCode == POINTER_SCROLL_DOWN)
                 XServerViewHolder_MouseWheelInjector.getByCode(buttonCode).stop();
             else
                 injectPointerButtonRelease(buttonCode);

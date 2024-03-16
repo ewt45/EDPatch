@@ -7,17 +7,15 @@ import static org.junit.Assert.*;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-import android.view.KeyEvent;
-
-import com.eltechs.axs.KeyEventReporter;
+import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.mutiWine.WineNameComparator;
 import com.example.datainsert.exagear.mutiWine.v2.HQParser;
 import com.example.datainsert.exagear.mutiWine.v2.HQWineInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,8 +24,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-import java.util.function.Consumer;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -35,6 +31,17 @@ import java.util.function.Consumer;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class ExampleUnitTest {
+    @Test
+    public void 反射对速度的影响有多大() throws IllegalAccessException {
+        long time = System.currentTimeMillis();
+        Class<XKeyButton> keyClz = XKeyButton.class;
+        Field[] fields = keyClz.getFields();
+        List<XKeyButton.Info> list = new ArrayList<>();
+        for(Field field:fields){
+            list.add((XKeyButton.Info) field.get(null));
+        }
+        System.out.println("时间差："+(System.currentTimeMillis()-time));
+    }
 
     @Test
     public void 查看exagear对哪些安卓按键码做了映射() throws IOException {

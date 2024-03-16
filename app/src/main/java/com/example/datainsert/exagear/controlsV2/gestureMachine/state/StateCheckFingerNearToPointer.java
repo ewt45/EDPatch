@@ -1,10 +1,9 @@
-package com.example.datainsert.exagear.controlsV2.gestureMachine.State;
+package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import static com.example.datainsert.exagear.RR.getS;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 
 import com.eltechs.axs.GeometryHelpers;
@@ -69,7 +68,7 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
                 .setSelectableOptions(FSMR.value.观测手指序号_全部可用选项)
                 .setSelectedValue(mFingerIndex)
                 .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
-        editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
+        editFingerIndex.setEnabled(mFingerXYType != FSMR.value.手指位置_最后移动);
 
         LimitEditText editFingerXYType = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
@@ -77,7 +76,7 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
                 .setSelectedValue(mFingerXYType)
                 .setUpdateListener(editText -> {
                     mFingerXYType = editText.getSelectedValue();
-                    editFingerIndex.setEnabled(mFingerXYType == FSMR.value.手指位置_最后移动);
+                    editFingerIndex.setEnabled(mFingerXYType != FSMR.value.手指位置_最后移动);
                 });
 
         LimitEditText editThreshold = new LimitEditText(c)
