@@ -13,7 +13,6 @@ import java.util.List;
 
 public class GestureContext2 {
     private final XServerViewHolder host;
-    private final AndroidPointReporter pointerEventReporter;
     private final TouchAreaGesture touchArea;
     private final GestureDistributeAdapter gestureTouchAdapter;
 //    private KeyEventReporter keyboardReporter;
@@ -21,7 +20,6 @@ public class GestureContext2 {
 
     public GestureContext2(TouchAreaGesture touchArea, GestureDistributeAdapter gestureTouchAdapter) {
         this.host = Const.getXServerHolder();
-        this.pointerEventReporter = new AndroidPointReporter();
 //        if (host != null)
 //            this.keyboardReporter = new KeyEventReporter(host.getXServerFacade());
         this.touchArea = touchArea;
@@ -71,9 +69,6 @@ public class GestureContext2 {
         return this.touchArea;
     }
 
-    public AndroidPointReporter getPointerReporter() {
-        return this.pointerEventReporter;
-    }
 
 //    public KeyEventReporter getKeyboardReporter() {
 //        return this.keyboardReporter;

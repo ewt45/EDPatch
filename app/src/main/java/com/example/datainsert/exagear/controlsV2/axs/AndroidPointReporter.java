@@ -4,44 +4,44 @@ import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
 
+/**
+ * 来自exa的PointerEventReporter。
+ * <br/>函数改为静态调用。
+ * <br/> 相对移动鼠标的函数中需要用到当前屏幕宽高，所以在Const.init中初始化（是否足够？xserver改变宽高时一定调用Const.init吗）
+ */
 public class AndroidPointReporter {
     private static final String TAG = "PointerEventReporter";
-    final XServerViewHolder host;
-    final int maxDivisor = 20;
-    final float maximalDelta;
-//    private final ViewFacade xServerFacade;
 
     public AndroidPointReporter() {
-        this.host = Const.getXServerHolder();
-        int[] xWH = host.getXScreenPixels();
-        this.maximalDelta =  1.0f * Math.min(xWH[0], xWH[1]) / this.maxDivisor;
+
     }
 
-    private void sendCoordinates(float f, float f2) {
+    private static void sendCoordinates(float f, float f2) {
+        XServerViewHolder holder = Const.getXServerHolder();
         float[] fArr = {f, f2};
-        TransformationHelpers.mapPoints(this.host.getViewToXServerTransformationMatrix(), fArr);
+        TransformationHelpers.mapPoints(holder.getViewToXServerTransformationMatrix(), fArr);
 //        Log.d(TAG, "sendCoordinates: 设置坐标："+fArr[0]+","+fArr[1]);
-        host.injectPointerMove((int) fArr[0], (int) fArr[1]);
+        holder.injectPointerMove((int) fArr[0], (int) fArr[1]);
     }
 
-    public void pointerEntered(float f, float f2) {
+    public static void pointerEntered(float f, float f2) {
         sendCoordinates(f, f2);
     }
 
-    public void pointerExited(float f, float f2) {
+    public static void pointerExited(float f, float f2) {
         sendCoordinates(f, f2);
     }
 
-    public void pointerMove(float f, float f2) {
+    public static void pointerMove(float f, float f2) {
         sendCoordinates(f, f2);
     }
 
-    public void clickAtPoint(float f, float f2, int i, int i2) {
+    public static void clickAtPoint(float f, float f2, int i, int i2) {
         pointerMove(f, f2);
         click(i, i2);
     }
 
-    public void click(int i, int i2) {
+    public static void click(int i, int i2) {
         try {
             Thread.sleep(i2, 0);
         } catch (InterruptedException ignored) {
@@ -54,27 +54,27 @@ public class AndroidPointReporter {
         buttonReleased(i);
     }
 
-    public void pointerMoveDelta(float dx, float dy) {
-        int min = Math.min((int) Math.max(Math.abs(dx / this.maximalDelta), Math.abs(dy / this.maximalDelta)), this.maxDivisor);
+    public static void pointerMoveDelta(float dx, float dy) {
+        int min = Math.min((int) Math.max(Math.abs(dx / Const.maxPointerDeltaDistInOneEvent), Math.abs(dy / Const.maxPointerDeltaDistInOneEvent)), Const.maxDivisor);
         float f4 = dx / (float) min;
         float f5 = dy / (float) min;
-        host.injectPointerDelta((int) f4, (int) f5, min);
-        host.injectPointerDelta((int) (dx - (f4 * (float) min)), (int) (dy - (f5 * (float) min)));
+        Const.getXServerHolder().injectPointerDelta((int) f4, (int) f5, min);
+        Const.getXServerHolder().injectPointerDelta((int) (dx - (f4 * (float) min)), (int) (dy - (f5 * (float) min)));
     }
 
-    public void buttonPressed(int i) {
-        host.injectPointerButtonPress(i);
+    public static void buttonPressed(int i) {
+        Const.getXServerHolder().injectPointerButtonPress(i);
     }
 
-    public void buttonReleased(int i) {
-        host.injectPointerButtonRelease(i);
+    public static void buttonReleased(int i) {
+        Const.getXServerHolder().injectPointerButtonRelease(i);
     }
 
-    public void wheelScrolledUp() {
-        this.host.injectPointerWheelUp(1);
+    public static void wheelScrolledUp() {
+        Const.getXServerHolder().injectPointerWheelUp(1);
     }
 
-    public void wheelScrolledDown() {
-        this.host.injectPointerWheelDown(1);
+    public static void wheelScrolledDown() {
+        Const.getXServerHolder().injectPointerWheelDown(1);
     }
 }

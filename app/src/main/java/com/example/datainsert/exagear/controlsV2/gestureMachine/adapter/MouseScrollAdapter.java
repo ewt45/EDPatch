@@ -14,10 +14,8 @@ public class MouseScrollAdapter {
 //        directionToButtonCodeY.put(ScrollDirections.DirectionY.DOWN, Pointer.BUTTON_SCROLL_DOWN);
 //    }
 
-    private final AndroidPointReporter per;
 
     public MouseScrollAdapter() {
-        this.per = Const.getGestureContext().getPointerReporter();
     }
 
     public void notifyStart() {
@@ -39,8 +37,8 @@ public class MouseScrollAdapter {
                 pointerButton = Pointer.BUTTON_SCROLL_DOWN;
             else pointerButton = 0;
             if (pointerButton != 0) {
-                this.per.buttonPressed(pointerButton);
-                this.per.buttonReleased(pointerButton);
+                AndroidPointReporter.buttonPressed(pointerButton);
+                AndroidPointReporter.buttonReleased(pointerButton);
             }
         }
     }

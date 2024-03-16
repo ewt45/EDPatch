@@ -6,6 +6,7 @@ import android.view.View;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
@@ -40,7 +41,7 @@ public class ActionPointerMove extends FSMAction2 {
             mFingerXYType = FSMR.value.手指位置_最后移动;
 
         float[] fingerXY = getContext().getFingerXYByType(mFingerXYType, mFingerIndex);
-        getContext().getPointerReporter().pointerMove(fingerXY[0], fingerXY[1]);
+        AndroidPointReporter.pointerMove(fingerXY[0], fingerXY[1]);
     }
 
     @Override

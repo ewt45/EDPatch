@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.adapter;
 
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 
 public class MouseMoveSimpleAdapter extends MouseMoveAdapter {
 
@@ -15,7 +16,7 @@ public class MouseMoveSimpleAdapter extends MouseMoveAdapter {
         float speed = Const.getActiveProfile().getMouseMoveSpeed();
         float nowXApplySpeed = startX + (x - startX) * speed;
         float nowYApplySpeed = startY + (y - startY) * speed;
-        getPointReporter().pointerMove(nowXApplySpeed, nowYApplySpeed);
+        AndroidPointReporter.pointerMove(nowXApplySpeed, nowYApplySpeed);
     }
 
     @Override

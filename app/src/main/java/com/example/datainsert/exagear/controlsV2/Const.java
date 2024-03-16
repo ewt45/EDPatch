@@ -35,11 +35,13 @@ public class Const {
 //    public static final SparseArray<Class<? extends TouchAreaModel>> modelTypeArray = new SparseArray<>();
     public static float fingerStandingMaxMoveInches = 0.03f;
     public static int fingerTapMaxMs = 300;
-    /**
-     * 经过测试，12f（安卓像素）比较合适
-     */
+    /**经过测试，12f（安卓像素）比较合适*/
     public static float fingerTapMaxMovePixels = 12f;
     public static Edit1KeyView editKeyView = null;
+    /** 用于计算 {@link #maxPointerDeltaDistInOneEvent} 应为几分之一*/
+    public final static int maxDivisor = 20;
+    /**一次最远只能移动屏幕宽/高的20分之一 */
+    public static float maxPointerDeltaDistInOneEvent;
     private static TouchAreaView touchAreaView = null;
     public static XServerViewHolder xServerViewHolder = null;
     public static FragmentActivity activityRef = null;
@@ -73,6 +75,8 @@ public class Const {
         minTouchSize = QH.px(c, 32);
         minBtnAreaSize = QH.px(c, 48);
         minStickAreaSize = minBtnAreaSize;
+        int[] xWH = holder.getXScreenPixels();
+        maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
 
         ModelProvider.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
         ModelProvider.profilesDir = new File(ModelProvider.workDir, "profiles");

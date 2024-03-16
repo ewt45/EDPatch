@@ -1,6 +1,6 @@
 package com.example.datainsert.exagear.controlsV2;
 
-import static android.support.v4.view.InputDeviceCompat.SOURCE_STYLUS;
+import static android.view.InputDevice.SOURCE_STYLUS;
 import static android.view.InputDevice.SOURCE_MOUSE;
 import static android.view.InputDevice.SOURCE_TOUCHSCREEN;
 import static android.view.KeyEvent.ACTION_DOWN;
@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.axs.AndroidKeyReporter;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidMouseReporter;
 import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
@@ -42,7 +43,7 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
     private final Finger[] userFingers = new Finger[MAX_FINGERS];
     private final Paint mFramePaint = new Paint();
 //    private final Keyboard mKeyboard;
-    Mouse mMouse = new Mouse();
+    AndroidMouseReporter mMouse = new AndroidMouseReporter();
     //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
     private OneProfile mProfile;
     private EditConfigWindow mEditWindow; //编辑模式下的编辑视图根窗口
@@ -104,8 +105,9 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
                 } else if (action == ACTION_UP) {
                     Const.getXServerHolder().injectPointerButtonRelease(3);
                 }
+                return true;
             }
-            return true;
+            return false;
         } else if (keyCode == KEYCODE_MENU && keyEvent.getAction() == ACTION_UP) {
             handleShowAllOptions();
             return true;
@@ -158,9 +160,9 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
 
     @Override // android.view.View
     public boolean onGenericMotionEvent(MotionEvent motionEvent) {
-        int source = motionEvent.getSource() & SOURCE_TOUCHSCREEN;
-        boolean isStylus = (motionEvent.getSource() & SOURCE_STYLUS) == SOURCE_STYLUS;
-        boolean isMouse = (motionEvent.getSource() & SOURCE_MOUSE) == SOURCE_MOUSE;
+        //TODO 摇杆的移动好像会进到这里
+        boolean isStylus = motionEvent.isFromSource(SOURCE_STYLUS);
+        boolean isMouse = motionEvent.isFromSource(SOURCE_MOUSE);
         return isStylus || isMouse
                 ? this.mMouse.handleMouseEvent(motionEvent)
                 : super.onGenericMotionEvent(motionEvent);
