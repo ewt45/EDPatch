@@ -26,6 +26,8 @@ import com.eltechs.axs.helpers.Assert;
 //import com.eltechs.axs.helpers.GAHelpers;
 import com.eltechs.axs.helpers.UiThread;
 import com.example.datainsert.exagear.obb.SelectObbFragment;
+import com.termux.x11.CmdEntryPoint;
+import com.termux.x11.MainActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -49,7 +51,7 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
     private String progressDescription = null;
     private String progressFileName = null;
     private boolean isUpdateProgress = false;
-    private Class<? extends FrameworkActivity> mainActivityClass = XServerDisplayActivity.class;
+    private Class<? extends FrameworkActivity> mainActivityClass = MainActivity.class;
 
     /* JADX INFO: Access modifiers changed from: protected */
     protected StartupActivity(Class<StateClass> cls) {
@@ -79,6 +81,7 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
         intent.putExtra(SHUTDOWN_REQUEST_FLAG, restartAXSAfterShutdown ? RESTART_AFTER_SHUTDOWN_FLAG_VALUE : "");
         context.startActivity(intent);
         shutdownInProgress = true;
+        CmdEntryPoint.sendStopSignalInAppProcess();
     }
 
     @Override // android.app.Activity

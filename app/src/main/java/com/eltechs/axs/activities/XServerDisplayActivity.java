@@ -59,7 +59,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         }
     };
     private View uiOverlayView;
-    private ViewOfXServer viewOfXServer;
+    protected ViewOfXServer viewOfXServer;
 
     /* JADX WARN: Multi-variable type inference failed */
     /* JADX WARN: Removed duplicated region for block: B:11:0x005c  */

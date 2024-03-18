@@ -43,6 +43,21 @@
         </activity>
 
         <activity
+            android:theme="@style/ThemeDefaultFullscreen"
+            android:name="com.termux.x11.MainActivity"
+            android:screenOrientation="sensorLandscape" />
+        <service
+            android:name="com.termux.x11.CmdEntryPoint"
+            android:exported="true"
+            android:process=":xserver">
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </service>
+
+
+        <activity
             android:name="com.eltechs.ed.activities.EDStartupActivity"
             android:exported="true"
             android:label="模拟ED启动"

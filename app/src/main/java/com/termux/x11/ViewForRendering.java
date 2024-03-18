@@ -1,9 +1,17 @@
 package com.termux.x11;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
 
+import com.eltechs.axs.Globals;
 import com.eltechs.axs.KeyCodesX;
+import com.eltechs.axs.applicationState.EnvironmentAware;
+import com.eltechs.axs.environmentService.AXSEnvironment;
+import com.eltechs.axs.environmentService.components.XServerComponent;
+import com.eltechs.axs.helpers.Assert;
+import com.eltechs.axs.xserver.ScreenInfo;
+import com.eltechs.axs.xserver.ViewFacade;
 
 public class ViewForRendering extends LorieView {
     /**
@@ -30,7 +38,28 @@ public class ViewForRendering extends LorieView {
     public ViewForRendering(Context context) {
         super(context);
         mInstance = this;
+        AXSEnvironment environment = ((EnvironmentAware) Globals.getApplicationState()).getEnvironment();
+        XServerComponent xServerComponent = environment.getComponent(XServerComponent.class);
+        assert xServerComponent!=null;
+        p  = new Point(xServerComponent.getScreenInfo().widthInPixels,xServerComponent.getScreenInfo().heightInPixels);
     }
+   final Point p;
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        int width = getMeasuredWidth();
+//        int height = getMeasuredHeight();
+//        if ((width < height && p.x > p.y) || (width > height && p.x < p.y))
+//            //noinspection SuspiciousNameCombination
+//            p.set(p.y, p.x);
+//        if (width > height * p.x / p.y)
+//            width = height * p.x / p.y;
+//        else
+//            height = width * p.y / p.x;
+//
+//        getHolder().setFixedSize(p.x, p.y);
+//        setMeasuredDimension(width, height);
+//    }
 
     public static void keyEvent(int keycode, int keySym, boolean down) {
         if (mInstance == null)

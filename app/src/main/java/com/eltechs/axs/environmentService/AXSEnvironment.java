@@ -8,6 +8,8 @@ import com.eltechs.axs.environmentService.components.DirectSoundServerComponent;
 import com.eltechs.axs.environmentService.components.GuestApplicationsTrackerComponent;
 import com.eltechs.axs.environmentService.components.NativeLibsConfiguration;
 import com.eltechs.axs.helpers.Assert;
+import com.termux.x11.CmdEntryPoint;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -39,9 +41,8 @@ public class AXSEnvironment implements Iterable<EnvironmentComponent> {
     }
 
     public <T extends EnvironmentComponent> T getComponent(Class<T> cls) {
-        Iterator<EnvironmentComponent> it = this.components.iterator();
-        while (it.hasNext()) {
-            T t = (T) it.next();
+        for (EnvironmentComponent component : this.components) {
+            T t = (T) component;
             if (t.getClass() == cls) {
                 return t;
             }
@@ -62,6 +63,7 @@ public class AXSEnvironment implements Iterable<EnvironmentComponent> {
         this.startupCallback = startupCallback;
         this.trayConfiguration = trayConfiguration;
         this.applicationContext.startService(new Intent(this.applicationContext, AXSEnvironmentService.class));
+        CmdEntryPoint.sendStartSignalInAppProcess();
     }
 
     private AXSEnvironmentService getService() {

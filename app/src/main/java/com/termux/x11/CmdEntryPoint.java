@@ -10,8 +10,10 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.Handler;
@@ -29,9 +31,15 @@ import android.view.Surface;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.eltechs.axs.AppConfig;
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.SwitchToAxsFromSystemTrayActivity;
+import com.eltechs.axs.applicationState.ApplicationStateBase;
+import com.eltechs.axs.applicationState.ApplicationStateObject;
+import com.eltechs.axs.applicationState.DroidApplicationContextAware;
 import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.eltechs.axs.configuration.startup.StartupActionsCollection;
+import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.R;
 import com.example.datainsert.exagear.FAB.dialogfragment.BaseFragment;
 import com.example.datainsert.exagear.QH;
@@ -39,9 +47,11 @@ import com.example.datainsert.exagear.RR;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -79,7 +89,7 @@ public class CmdEntryPoint extends Service {
     static {
         try {
             System.loadLibrary("Xlorie");
-//            System.loadLibrary("some-helper");
+            System.loadLibrary("some-helper");
         } catch (UnsatisfiedLinkError e) {
             e.printStackTrace();
         }
@@ -97,6 +107,7 @@ public class CmdEntryPoint extends Service {
     Messenger mMessenger;
 
     private native static void redirectStdErr();
+    private native static void testEnv();
 
     public static void wrapStart(Context context) {
         //启动容器的准备过程 运行一次cmd
@@ -110,7 +121,16 @@ public class CmdEntryPoint extends Service {
         try {
             String env_tmpdir = String.format("%s/image/tmp", context.getFilesDir().getAbsolutePath());
             Os.setenv("TMPDIR", env_tmpdir, true);
-        } catch (ErrnoException e) {
+            //设置宽高？
+//            String xdroidNum =  new File(context.getFilesDir(),"image/home/xdroid").getCanonicalFile().getName().replace("xdroid_","");
+//            Log.d(TAG, "wrapStart: 当前启动的容器序号："+xdroidNum);
+//            String scrSize = context.getSharedPreferences(String.format("%s.CONTAINER_CONFIG_%s", context.getPackageName(),xdroidNum ),Context.MODE_PRIVATE).getString("SCREEN_SIZE","1280,1024");//.split(",");
+//            if(scrSize==null || "default".equals(scrSize))
+//                scrSize="1280,1024";
+//            String[] resSplit  = scrSize.split(",");
+//            Os.setenv("INIT_WIDTH",resSplit[0],true);
+//            Os.setenv("INIT_HEIGHT",resSplit[1],true);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -195,10 +215,16 @@ public class CmdEntryPoint extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         //如果service是在activity bindService时创建的，那么activity小窗（destroy）的时候也会重走onCreate
         //如果先startService，再bind，activity重建时不会带着service一起重建
         Log.e(TAG, "onCreate: pid=" + Process.myPid());
+        //到底还是需要用到全局context，设置一个吧 也不好，需要用到包名。先只设置RR的locale吧
+        RR.locale = getResources().getConfiguration().locale.getLanguage();
+//        if (Globals.getApplicationState() == null) {
+//            Globals.setApplicationState(new ApplicationStateObject<>(EDApplicationState.class));
+//            ((DroidApplicationContextAware) Globals.getApplicationState()).setAndroidApplicationContext(getApplicationContext());
+//        }
+
         wrapStart(this);
 
         //显示前台通知，防止切后台后，service被杀
@@ -233,6 +259,7 @@ public class CmdEntryPoint extends Service {
         this.mMessenger = null;
         //关闭前台通知
         stopForeground(true);
+        Globals.clearState();
         Process.killProcess(Process.myPid());
     }
 

@@ -3,6 +3,7 @@ package com.eltechs.axs.xserver;
 import com.eltechs.axs.helpers.ArithHelpers;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.xserver.impl.masks.Mask;
+import com.termux.x11.ViewForRendering;
 
 /* loaded from: classes.dex */
 public class Keyboard {
@@ -91,17 +92,11 @@ public class Keyboard {
     }
 
     public void keyPressed(byte b, int i) {
-        if (!this.keymapStateMask.isKeycodePressed(b) || getModifierForKeycode(b) == null) {
-            this.keymapStateMask.setKeycode(b);
-            this.keylisteners.sendKeyPressed(b, i, updateModifiersMaskForKeyPressed(b));
-        }
+        ViewForRendering.keyEvent(b,i,true);
     }
 
     public void keyReleased(byte b, int i) {
-        if (this.keymapStateMask.isKeycodePressed(b)) {
-            this.keymapStateMask.clearKeycode(b);
-            this.keylisteners.sendKeyReleased(b, i, updateModifiersMaskForKeyReleased(b));
-        }
+        ViewForRendering.keyEvent(b,i,false);
     }
 
     public Mask<KeyButNames> getModifiersMask() {

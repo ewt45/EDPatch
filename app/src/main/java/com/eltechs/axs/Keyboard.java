@@ -12,6 +12,8 @@ import com.eltechs.axs.xserver.KeyboardModel;
 
 import org.apache.commons.compress.archivers.tar.TarConstants;
 
+import java.util.Locale;
+
 public class Keyboard {
     private final String TAG ="Keyboard";
     private final KeyCodesX[] AKeycodeToXKeycodeMap = new KeyCodesX[KeyEvent.getMaxKeyCode() + 1];
@@ -148,26 +150,30 @@ public class Keyboard {
     }
 
 
-    public boolean handleKeyDown(int i, KeyEvent keyEvent) {
-        KeyCodesX convertAKeycodeToXKeycode = convertAKeycodeToXKeycode(i);
-        if (convertAKeycodeToXKeycode == null) {
+    public boolean handleKeyDown(int keycode, KeyEvent keyEvent) {
+        KeyCodesX xKeycodeX = convertAKeycodeToXKeycode(keycode);
+        if (xKeycodeX == null) {
             return false;
         }
-        XKey convertUnicodeToXKey = convertUnicodeToXKey(keyEvent.getUnicodeChar());
-        this.reporter.reportKeyPressWithSym(convertAKeycodeToXKeycode, convertUnicodeToXKey != null ? convertUnicodeToXKey.keysym : 0);
+        //unicode+0x01000000和不加有什么区别？
+        int unicode = keyEvent.getUnicodeChar();
+        Log.d(TAG, String.format("handleKeyDown: axs.Keyboard 发送%s, xKeycode=%s, xKeySym=%d",
+                unicode != 0 ? "unicode字符, keycode被忽略。" : "x keycode, unicode被忽略。", xKeycodeX, unicode));
+        this.reporter.reportKeyPressWithSym(xKeycodeX, unicode);
         return true;
     }
 
     public boolean handleKeyUp(int i, KeyEvent keyEvent) {
-        KeyCodesX convertAKeycodeToXKeycode = convertAKeycodeToXKeycode(i);
-        if (convertAKeycodeToXKeycode == null) {
+        KeyCodesX xKeycodeX = convertAKeycodeToXKeycode(i);
+        if (xKeycodeX == null) {
             return false;
         }
-        XKey convertUnicodeToXKey = convertUnicodeToXKey(keyEvent.getUnicodeChar());
-        this.reporter.reportKeyReleaseWithSym(convertAKeycodeToXKeycode, convertUnicodeToXKey != null ? convertUnicodeToXKey.keysym : 0);
+        int unicode = keyEvent.getUnicodeChar();
+        Log.d(TAG, String.format( "handleKeyUp: axs.Keyboard 发送%s, xKeycode=%s, xKeySym=%d",
+                unicode == 0 ? "unicode字符, keycode被忽略。" : "x keycode, unicode被忽略。", xKeycodeX, unicode));
+        this.reporter.reportKeyReleaseWithSym(xKeycodeX, unicode);
         return true;
     }
-
 
     /**
      * onkey接收到unicode字符后处理并输入
@@ -175,18 +181,15 @@ public class Keyboard {
     public boolean handleUnicodeKeyType(KeyEvent keyEvent) {
         String characters = keyEvent.getCharacters();
         boolean z = false;
-        //输入可能不止一个字符，循环输入
         for (int i = 0; i < characters.codePointCount(0, characters.length()); i++) {
-            XKey xKey = convertUnicodeToXKey2(characters.codePointAt(characters.offsetByCodePoints(0, i)));
-
-            //如果初始化时设置了字符对应的xKey（没设置的默认就是0）
-            if (xKey != null && xKey.keycode != KeyCodesX.KEY_NONE) {
-                this.reporter.reportKeyWithSym(xKey.keycode, xKey.keysym);
+            int unicode = characters.codePointAt(characters.offsetByCodePoints(0, i));
+            if (unicode != 0) {
+                Log.d(TAG, "handleUnicodeKeyType: axs.Keyboard 发送unicode字符=" + (char) unicode + " keysym=" + unicode);
+                this.reporter.reportKeyWithSym(KeyCodesX.KEY_NONE, unicode);
                 z = true;
             }
         }
         return z;
-
     }
 
     private KeyCodesX convertAKeycodeToXKeycode(int i) {

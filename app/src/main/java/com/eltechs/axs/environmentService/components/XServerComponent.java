@@ -26,7 +26,7 @@ import java.io.IOException;
 
 /* loaded from: classes.dex */
 public class XServerComponent extends EnvironmentComponent {
-    private FairEpollConnector<XClient> connector;
+    //    private FairEpollConnector<XClient> connector;
     private DesktopExperience desktopExperience;
     private final int displayNumber;
     private final ScreenInfo screenInfo;
@@ -41,7 +41,7 @@ public class XServerComponent extends EnvironmentComponent {
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent
     public void start() throws IOException {
-        Assert.state(this.connector == null, "X-server component is already started.");
+//        Assert.state(this.connector == null, "X-server component is already started.");
         this.xServer = createXServer(this.screenInfo, createKeyboardModel());
         this.desktopExperience = new DesktopExperienceImpl();
         this.desktopExperience.attachToXServer(this.xServer);
@@ -50,15 +50,15 @@ public class XServerComponent extends EnvironmentComponent {
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent
     public void stop() {
-        Assert.state(this.connector != null, "X-server component is not yet started.");
-        try {
-            this.connector.stop();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        Assert.state(this.connector != null, "X-server component is not yet started.");
+//        try {
+//            this.connector.stop();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
         this.xServer = null;
         this.desktopExperience = null;
-        this.connector = null;
+//        this.connector = null;
     }
 
     public ScreenInfo getScreenInfo() {
@@ -70,7 +70,7 @@ public class XServerComponent extends EnvironmentComponent {
     }
 
     public XServer getXServer() {
-        Assert.state(this.connector != null, "X-server component is not yet started.");
+//        Assert.state(this.connector != null, "X-server component is not yet started.");
         return this.xServer;
     }
 
@@ -81,9 +81,9 @@ public class XServerComponent extends EnvironmentComponent {
     }
 
     private void startXConnector(XServer xServer) throws IOException {
-        this.connector = FairEpollConnector.listenOnSpecifiedUnixSocket(this.socketConf, new XClientConnectionHandler(xServer), RootXRequestHandlerConfigurer.createRequestHandler(xServer));
-        this.connector.setInitialInputBufferCapacity(262144);
-        this.connector.start();
+//        this.connector = FairEpollConnector.listenOnSpecifiedUnixSocket(this.socketConf, new XClientConnectionHandler(xServer), RootXRequestHandlerConfigurer.createRequestHandler(xServer));
+//        this.connector.setInitialInputBufferCapacity(262144);
+//        this.connector.start();
     }
 
     private static KeyboardModel createKeyboardModel() {

@@ -63,12 +63,13 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
         this.guestApplicationTerminationListener = new GuestApplicationsLifecycleAdapter() { // from class: com.eltechs.axs.configuration.startup.actions.WaitForXClientConnection.2
             @Override // com.eltechs.axs.guestApplicationsTracker.GuestApplicationsLifecycleAdapter, com.eltechs.axs.guestApplicationsTracker.GuestApplicationsLifecycleListener
             public void translatorExited(Translator translator) {
-                if (guestApplicationsTrackerComponent.haveGuestApplications()) {
-                    return;
+                if (!guestApplicationsTrackerComponent.haveGuestApplications()) {
+                    guestApplicationsTerminated();
                 }
-                guestApplicationsTerminated();
             }
         };
+
+
         LocksManager.XLock lock = xServerComponent.getXServer().getLocksManager().lock(LocksManager.Subsystem.WINDOWS_MANAGER);
         try {
             if (!this.hideXServerImage) {
@@ -77,6 +78,7 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
             guestApplicationsTrackerComponent.addListener(this.guestApplicationTerminationListener);
             lock.close();
             if (guestApplicationsTrackerComponent.haveGuestApplications()) {
+                startedDrawing();
                 return;
             }
             guestApplicationsTerminated();
@@ -95,7 +97,8 @@ public class WaitForXClientConnection<StateClass extends EnvironmentAware> exten
         AppConfig appConfig = AppConfig.getInstance(getAppContext());
         if (!appConfig.isXServerFirstConnectDone()) {
             appConfig.setXServerFirstConnectDone(true);
-            FAHelper.logXServerFirstConnectEvent(getAppContext());
+            //注释掉了。xegw移植是直接替换整个smali了，hugo的apk里不能调用这个方法否则报错
+//            FAHelper.logXServerFirstConnectEvent(getAppContext());
         }
         appConfig.setGuestLaunchesCount(appConfig.getGuestLaunchesCount() + 1);
         this.receivedEvent = true;

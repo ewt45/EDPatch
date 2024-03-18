@@ -2,8 +2,11 @@ package com.eltechs.axs.widgets.viewOfXServer;
 
 import android.content.Context;
 import android.graphics.Matrix;
-import android.opengl.GLSurfaceView;
+import android.graphics.SurfaceTexture;
 import android.util.Log;
+import android.view.Surface;
+import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -12,218 +15,81 @@ import android.widget.FrameLayout;
 import com.eltechs.axs.configuration.XServerViewConfiguration;
 import com.eltechs.axs.geom.RectangleF;
 import com.eltechs.axs.helpers.Assert;
-import com.eltechs.axs.helpers.UiThread;
-import com.eltechs.axs.xserver.PointerListener;
+import com.termux.x11.ViewForRendering;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
-import com.eltechs.axs.xserver.Window;
-import com.eltechs.axs.xserver.WindowAttributeNames;
-import com.eltechs.axs.xserver.WindowChangeListener;
-import com.eltechs.axs.xserver.WindowContentModificationListener;
-import com.eltechs.axs.xserver.WindowLifecycleListener;
 import com.eltechs.axs.xserver.XServer;
-import com.eltechs.axs.xserver.impl.masks.Mask;
-import com.example.datainsert.exagear.QH;
 
 /* loaded from: classes.dex */
-public class ViewOfXServer extends GLSurfaceView {
+public class ViewOfXServer extends FrameLayout {
+    private final static String TAG = "ViewOfXServer";
+    private static boolean isFirstStart = true;
     private final XServerViewConfiguration configuration;
-    private final WindowContentModificationListener contentModificationListener;
-    private final PointerListener pointerListener;
-    private final AXSRendererGL renderer;
-    private Matrix transformationViewToXServer;
-    private final WindowChangeListener windowChangeListener;
-    private final WindowLifecycleListener windowLifecycleListener;
+
     private final ViewFacade xServerFacade;
+
+    //    private final WindowChangeListener windowChangeListener;
+//    private final WindowLifecycleListener windowLifecycleListener;
+//    private final WindowContentModificationListener contentModificationListener;
+//    private final PointerListener pointerListener;
+//    private final AXSRendererGL renderer = null;
+    private final ViewForRendering viewForRendering;
+
+    private Matrix transformationViewToXServer;
     private XZoomController zoomController;
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowGeometryChanged(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.5
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowGeometryChanged(window);
-            }
-        });
-        requestRender();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowAttributesChanged(final Window window, final Mask<WindowAttributeNames> mask) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.6
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowAttributesChanged(window, mask);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowMapped(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.7
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowMapped(window);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowUnmapped(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.8
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowUnmapped(window);
-            }
-        });
-        requestRender();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowZOrderChanged(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.9
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.windowZOrderChanged(window);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowContentChanged(final Window window, final int i, final int i2, final int i3, final int i4) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.10
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.contentChanged(window, i, i2, i3, i4);
-            }
-        });
-        requestRender();
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueWindowBufferReplaced(final Window window) {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.11
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.frontBufferReplaced(window);
-            }
-        });
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    private void queueCursorPositionChanged() {
-        queueEvent(new Runnable() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.12
-            @Override // java.lang.Runnable
-            public void run() {
-                ViewOfXServer.this.renderer.cursorChanged();
-            }
-        });
-        requestRender();
-    }
 
     public ViewOfXServer(Context context, XServer xServer, ViewFacade viewFacade, XServerViewConfiguration xServerViewConfiguration) {
         super(context);
-        this.windowLifecycleListener = new WindowLifecycleListener() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.1
-            @Override // com.eltechs.axs.xserver.WindowLifecycleListener
-            public void windowCreated(Window window) {
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowLifecycleListener
-            public void windowDestroyed(Window window) {
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowLifecycleListener
-            public void windowReparented(Window window, Window window2) {
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowLifecycleListener
-            public void windowMapped(Window window) {
-                ViewOfXServer.this.queueWindowMapped(window);
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowLifecycleListener
-            public void windowUnmapped(Window window) {
-                ViewOfXServer.this.queueWindowUnmapped(window);
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowLifecycleListener
-            public void windowZOrderChange(Window window) {
-                ViewOfXServer.this.queueWindowZOrderChanged(window);
-            }
-        };
-        this.contentModificationListener = new WindowContentModificationListener() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.2
-            @Override // com.eltechs.axs.xserver.WindowContentModificationListener
-            public void contentChanged(Window window, int i, int i2, int i3, int i4) {
-                ViewOfXServer.this.queueWindowContentChanged(window, i, i2, i3, i4);
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowContentModificationListener
-            public void frontBufferReplaced(Window window) {
-                ViewOfXServer.this.queueWindowBufferReplaced(window);
-            }
-        };
-        this.pointerListener = new PointerListener() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.3
-            @Override // com.eltechs.axs.xserver.PointerListener
-            public void pointerButtonPressed(int i) {
-            }
-
-            @Override // com.eltechs.axs.xserver.PointerListener
-            public void pointerButtonReleased(int i) {
-            }
-
-            @Override // com.eltechs.axs.xserver.PointerListener
-            public void pointerMoved(int i, int i2) {
-                ViewOfXServer.this.queueCursorPositionChanged();
-            }
-
-            @Override // com.eltechs.axs.xserver.PointerListener
-            public void pointerWarped(int i, int i2) {
-                ViewOfXServer.this.queueCursorPositionChanged();
-            }
-        };
-        this.windowChangeListener = new WindowChangeListener() { // from class: com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer.4
-            @Override // com.eltechs.axs.xserver.WindowChangeListener
-            public void geometryChanged(Window window) {
-                ViewOfXServer.this.queueWindowGeometryChanged(window);
-            }
-
-            @Override // com.eltechs.axs.xserver.WindowChangeListener
-            public void attributesChanged(Window window, Mask<WindowAttributeNames> mask) {
-                ViewOfXServer.this.queueWindowAttributesChanged(window, mask);
-            }
-        };
-        setEGLContextClientVersion(2);
-        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        getHolder().setFormat(1);
+//        getHolder().setFormat(PixelFormat.RGBA_8888);
         this.configuration = xServerViewConfiguration;
         if (viewFacade == null) {
             this.xServerFacade = new ViewFacade(xServer);
         } else {
             this.xServerFacade = viewFacade;
         }
-        this.renderer = new AXSRendererGL(this, this.xServerFacade);
-        setRenderer(this.renderer);
-        setRenderMode(RENDERMODE_WHEN_DIRTY);
+//        this.renderer = new AXSRendererGL(this, this.xServerFacade);
+//        setRenderer(this.renderer);
+//        setRenderMode(RENDERMODE_WHEN_DIRTY);
         this.transformationViewToXServer = new Matrix();
         this.zoomController = new XZoomController(this, xServer.getScreenInfo());
         setFocusable(true);
         setFocusableInTouchMode(true);
+        //设置surfaceholder的callback
+        viewForRendering = new ViewForRendering(context);
+        addView(viewForRendering);
+
+        //按照termux x11的方式启动xserver
+//        Log.d(TAG, "ViewOfXServer: 与termux-x11 xserver连接");
+
+
+        //试试换成TextureView
+//        RealXServer.addCallback(viewForRendering);
     }
+
+    /**
+     * 获取surfaceview。用于activity将surface传给xserver
+     *
+     * @return surfaceview
+     */
+    public ViewForRendering getViewForRendering() {
+        return viewForRendering;
+    }
+
 
     public Matrix getViewToXServerTransformationMatrix() {
         Assert.notNull(this.transformationViewToXServer, "transformation matrix is not set");
         return this.transformationViewToXServer;
     }
 
+    public void setViewToXServerTransformationMatrix(Matrix matrix) {
+        Assert.notNull(this.transformationViewToXServer, "transformation matrix is not set");
+        this.transformationViewToXServer = matrix;
+    }
+
     public Matrix getXServerToViewTransformationMatrix() {
         Matrix matrix = new Matrix();
         getViewToXServerTransformationMatrix().invert(matrix);
         return matrix;
-    }
-
-    public void setViewToXServerTransformationMatrix(Matrix matrix) {
-        Assert.notNull(this.transformationViewToXServer, "transformation matrix is not set");
-        this.transformationViewToXServer = matrix;
     }
 
     @Override // android.view.View
@@ -235,32 +101,40 @@ public class ViewOfXServer extends GLSurfaceView {
         return baseInputConnection;
     }
 
-    @Override // android.opengl.GLSurfaceView
+    //        @Override // android.opengl.GLSurfaceView
     public void onResume() {
-        super.onResume();
+//        super.onResume();
+//        Log.d(TAG, "onResume: 调用了invalidate");
+
+        //重建时重新设置ViewForRendering
+//        xegwConnection.setLorieView(viewForRendering);
+//        xegwConnection.onConnect();
+
     }
 
-    @Override // android.opengl.GLSurfaceView
+
+    //        @Override // android.opengl.GLSurfaceView
     public void onPause() {
-        this.renderer.onPause();
-        super.onPause();
+//        this.renderer.onPause();
+//        super.onPause();
+//        RealXServer.stop();
     }
 
     @Override // android.opengl.GLSurfaceView, android.view.SurfaceView, android.view.View
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        this.xServerFacade.addWindowLifecycleListener(this.windowLifecycleListener);
-        this.xServerFacade.addWindowContentModificationListner(this.contentModificationListener);
-        this.xServerFacade.addWindowChangeListener(this.windowChangeListener);
-        this.xServerFacade.addPointerListener(this.pointerListener);
+//        this.xServerFacade.addWindowLifecycleListener(this.windowLifecycleListener);
+//        this.xServerFacade.addWindowContentModificationListner(this.contentModificationListener);
+//        this.xServerFacade.addWindowChangeListener(this.windowChangeListener);
+//        this.xServerFacade.addPointerListener(this.pointerListener);
     }
 
     @Override // android.opengl.GLSurfaceView, android.view.SurfaceView, android.view.View
     protected void onDetachedFromWindow() {
-        this.xServerFacade.removeWindowLifecycleListener(this.windowLifecycleListener);
-        this.xServerFacade.removeWindowContentModificationListner(this.contentModificationListener);
-        this.xServerFacade.removeWindowChangeListener(this.windowChangeListener);
-        this.xServerFacade.removePointerListener(this.pointerListener);
+//        this.xServerFacade.removeWindowLifecycleListener(this.windowLifecycleListener);
+//        this.xServerFacade.removeWindowContentModificationListner(this.contentModificationListener);
+//        this.xServerFacade.removeWindowChangeListener(this.windowChangeListener);
+//        this.xServerFacade.removePointerListener(this.pointerListener);
         super.onDetachedFromWindow();
     }
 
@@ -268,21 +142,101 @@ public class ViewOfXServer extends GLSurfaceView {
         ScreenInfo screenInfo = this.xServerFacade.getScreenInfo();
         TransformationHelpers.makeTransformationMatrix(getWidth(), getHeight(), 0.0f, 0.0f, screenInfo.widthInPixels, screenInfo.heightInPixels, this.configuration.getFitStyleHorizontal(), this.configuration.getFitStyleVertical()).invert(this.transformationViewToXServer);
         this.zoomController = new XZoomController(this, this.xServerFacade.getScreenInfo());
+//        this.zoomController.reInit(screenInfo);
     }
 
     @Override // android.view.View
-    protected void onSizeChanged(int i, int i2, int i3, int i4) {
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        //现在因为要通过调整安卓布局大小来实现缩放，所以要一直调用onSizeChanged，如果半道new一个的话，会出现成员变量还没初始化的情况。
+        //只应该在初始时调用一次吧
+//        if (oldw == 0 && oldh == 0) {
+        Log.d(TAG, String.format("onSizeChanged: 布局变化，新建缩放控制器.w=%d,h=%d,getWidth=%d,getHeight=%d", w, h, getWidth(), getHeight()));
         reinitRenderTransformation();
+        //setXViewport不行，缩放一下行吗
+        //草，还必须post，这个时刻难道还有啥没更新完？
+        post(() -> {
+            setXViewport(new RectangleF(0, 0, xServerFacade.getScreenInfo().widthInPixels, xServerFacade.getScreenInfo().heightInPixels));
+        });
+//        setXViewport(new RectangleF(50,50,xServerFacade.getScreenInfo().widthInPixels-50,xServerFacade.getScreenInfo().heightInPixels-50));
+//        setXViewport(new RectangleF(0,0,xServerFacade.getScreenInfo().widthInPixels,xServerFacade.getScreenInfo().heightInPixels));
+
+//        }
     }
 
     public ViewFacade getXServerFacade() {
         return this.xServerFacade;
     }
 
-    public synchronized void setXViewport(RectangleF rectangleF) {
-        this.renderer.setXViewport(rectangleF);
-        requestRender();
+    /**
+     * 这里可以设置缩放
+     *
+     * @param newVisibleRectF
+     */
+    public void setXViewport(RectangleF newVisibleRectF) {
+
+        //获取ViewForRendering应该摆放的位置
+        TransformationDescription trDesc = TransformationHelpers.makeTransformationDescription(
+                getWidth(), getHeight(),
+                newVisibleRectF.x, newVisibleRectF.y, newVisibleRectF.width, newVisibleRectF.height,
+                configuration.getFitStyleHorizontal(), configuration.getFitStyleVertical());
+
+//        if (viewForRendering.getLayoutParams() == null) {
+//            return;
+//        }
+        FrameLayout.LayoutParams layoutParams = (LayoutParams) viewForRendering.getLayoutParams();
+
+
+        /*
+        margin计算：
+        距离左侧偏移，就是显示根据viewTranslateX，偏移到正中央或者左右对齐或者拉伸，
+        然后再放大scaleX倍，
+        然后再根据xserverTranslateX偏移,因为已经放大了，倍率正好是view/visibleRect，所以再偏移xserverTranslateX*scaleX就行了
+
+        宽高计算：
+        宽度，首先通过裁切矩形宽 * scaleX（安卓宽除以裁切宽），达到全屏，然后再 * xserver完整宽/裁切矩形宽
+         */
+
+        int marginLeft = (int) (trDesc.viewTranslateX + trDesc.xServerTranslateX * trDesc.scaleX);
+        int marginTop = (int) (trDesc.viewTranslateY + trDesc.xServerTranslateY * trDesc.scaleY);
+//        layoutParams.width = (int) (newVisibleRectF.width * trDesc.scaleX * (xServerFacade.getScreenInfo().widthInPixels / newVisibleRectF.width));
+//        layoutParams.height = (int) (newVisibleRectF.height * trDesc.scaleY * (xServerFacade.getScreenInfo().heightInPixels / newVisibleRectF.height));
+
+
+//        //如果通过scale，width和height会变吗
+//        viewForRendering.setScaleX((newVisibleRectF.width * trDesc.scaleX * (xServerFacade.getScreenInfo().widthInPixels / newVisibleRectF.width))/layoutParams.width);
+//        viewForRendering.setScaleY((newVisibleRectF.height * trDesc.scaleY * (xServerFacade.getScreenInfo().heightInPixels / newVisibleRectF.height))/layoutParams.height);
+
+//        layoutParams.setMargins(marginLeft, marginTop, 0, 0);
+//        viewForRendering.setLayoutParams(layoutParams);
+
+//        float stretchX = trDesc.scaleX * newVisibleRectF.width / getWidth();
+//        float stretchY = trDesc.scaleY * newVisibleRectF.height / getHeight();
+//        Log.d(TAG, "setXViewport: 拉伸系数=" + stretchX);
+
+        Log.d(TAG, String.format("setXViewport: 设置缩放，修改layoutparams为：topMargin=%d, leftMargin=%d, width=%d, height =%d, 裁切矩形=%s, trDesc=%s", layoutParams.topMargin, layoutParams.leftMargin, layoutParams.width, layoutParams.height, newVisibleRectF, trDesc));
+
+        //用动画，貌似缩放不会抖动了（在某次Xegw更新 限制帧率之后 又或者用了gles之后，缩放就会抖动）
+        //xserver全宽 除以 可见矩形宽，是缩放x，不过还要注意一下拉伸系数
+
+
+        viewForRendering.setPivotX(0);
+        viewForRendering.setPivotY(0);
+
+        viewForRendering.animate()
+
+                .scaleX(trDesc.scaleX * xServerFacade.getScreenInfo().widthInPixels / getWidth())
+                .scaleY(trDesc.scaleY * xServerFacade.getScreenInfo().heightInPixels / getHeight())
+//                .scaleX(xServerFacade.)
+                .x(marginLeft)
+                .y(marginTop)
+                .setDuration(0).start();
+
+
+//        this.renderer.setXViewport(newVisibleRectF);
+//        requestRender();
+
     }
+
 
     public XZoomController getZoomController() {
         Assert.state(this.zoomController != null, "Zoom controller is not initialized");
@@ -315,14 +269,39 @@ public class ViewOfXServer extends GLSurfaceView {
     }
 
     public void freezeRenderer() {
-        if (this.renderer != null) {
-            this.renderer.freeze();
-        }
+        Log.d(TAG, "freezeRenderer: stub!");
+//        if (this.renderer != null) {
+//            this.renderer.freeze();
+//        }
     }
 
     public void unfreezeRenderer() {
-        if (this.renderer != null) {
-            this.renderer.unFreeze();
-        }
+        Log.d(TAG, "unfreezeRenderer: stub!");
+//        if (this.renderer != null) {
+//            this.renderer.unFreeze();
+//        }
     }
+
+
+    public void test() {
+        SurfaceTexture texture = new SurfaceTexture(1);
+        SurfaceView surfaceView = new SurfaceView(getContext());
+        Surface surface = new Surface(texture);
+        TextureView textureView = new TextureView(getContext());
+//        textureView.tra
+        SurfaceTexture.OnFrameAvailableListener listener = new SurfaceTexture.OnFrameAvailableListener() {
+            @Override
+            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+                Log.d(TAG, "onFrameAvailable: ");
+            }
+        };
+
+        texture.setOnFrameAvailableListener(listener);
+
+        texture.attachToGLContext(2);
+        texture.release();
+        surface.release();
+
+    }
+
 }

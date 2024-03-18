@@ -22,7 +22,6 @@ import android.widget.PopupWindow;
 
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.helpers.UiThread;
-import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 
 import java.lang.ref.WeakReference;
 
@@ -160,28 +159,28 @@ public class MainActivity extends XServerDisplayActivity {
      * activity重建时lorieview会变化，需要重新设置
      */
     public void updateLorieView(){
-//        //不知道为什么 小窗的时候，别人的viewForXServer是null
-//        if(viewOfXServer==null || viewOfXServer.getViewForRendering() == null){
-//            Log.d(TAG, "updateLorieView: 无法获取viewOfXServer或ViewForRendering，半秒后重试");
-//            handler.postDelayed(()->{updateLorieView();},500);
-//            return;
-//        }
-//        mLorieView = viewOfXServer.getViewForRendering();
-//        mLorieView.setCallback((sfc, surfaceWidth, surfaceHeight, screenWidth, screenHeight) -> {
-//            int framerate = (int) ((mLorieView.getDisplay() != null) ? mLorieView.getDisplay().getRefreshRate() : 30);
-//            LorieView.sendWindowChange(screenWidth, screenHeight, framerate);
-//
-//            if (bound) {
-//                Message msg = Message.obtain(null, CmdEntryPoint.MSG_CALL_WINDOW_CHANGED, 0, 0);
-//                msg.obj = sfc;
-//                try {
-//                    mService.send(msg);
-//                    //                mCmd.windowChanged(sfc); 改为在service端调用
-//                } catch (RemoteException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        //不知道为什么 小窗的时候，别人的viewForXServer是null
+        if(viewOfXServer==null || viewOfXServer.getViewForRendering() == null){
+            Log.d(TAG, "updateLorieView: 无法获取viewOfXServer或ViewForRendering，半秒后重试");
+            handler.postDelayed(()->{updateLorieView();},500);
+            return;
+        }
+        mLorieView = viewOfXServer.getViewForRendering();
+        mLorieView.setCallback((sfc, surfaceWidth, surfaceHeight, screenWidth, screenHeight) -> {
+            int framerate = (int) ((mLorieView.getDisplay() != null) ? mLorieView.getDisplay().getRefreshRate() : 30);
+            LorieView.sendWindowChange(screenWidth, screenHeight, framerate);
+
+            if (bound) {
+                Message msg = Message.obtain(null, CmdEntryPoint.MSG_CALL_WINDOW_CHANGED, 0, 0);
+                msg.obj = sfc;
+                try {
+                    mService.send(msg);
+                    //                mCmd.windowChanged(sfc); 改为在service端调用
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
