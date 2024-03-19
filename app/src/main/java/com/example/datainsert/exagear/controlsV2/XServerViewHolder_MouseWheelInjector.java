@@ -44,19 +44,18 @@ class XServerViewHolder_MouseWheelInjector implements Runnable {
 
     public void stop() {
         isPressing = false;
+        handler.removeCallbacks(this); //应该立刻移除回调。否则在时间间隔内，如果又置为true的话可能导致问题
     }
 
     @Override
     public void run() {
-        if (!isPressing)
+        if (!isPressing){
             return;
+        }
 
         XServerViewHolder holder = Const.getXServerHolder();
         holder.injectPointerButtonPress(pointerButton);
         holder.injectPointerButtonRelease(pointerButton);
-        //这样的实现，是每按下一次，最少会执行两次，但第二次如果发现已经松开就会不发送事件。
-        // 但是也有缺陷：因为共用的一个对象，如果快速按下两次，那么第一次的第二个可能会在第二次按下时到时间执行，
-        // 然后一看哎现在正好按着呢就发送事件了，结果多发送了一次事件
         handler.postDelayed(this, isFirstPressing?firstIntervalMs:intervalMs);
         isFirstPressing=false;
     }
