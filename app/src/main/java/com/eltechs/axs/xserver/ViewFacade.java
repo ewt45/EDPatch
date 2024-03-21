@@ -6,6 +6,8 @@ import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.xserver.helpers.WindowHelpers;
+import com.termux.x11.ViewForRendering;
+import com.termux.x11.input.InputStub;
 
 import java.util.ArrayList;
 
@@ -357,7 +359,8 @@ public class ViewFacade {
         try {
             EventsInjector eventsInjector = this.xServer.getEventsInjector();
             for (int i4 = 0; i4 < times; i4++) {
-                eventsInjector.injectPointerMove(this.xServer.getPointer().getX() + i, this.xServer.getPointer().getY() + i2);
+                ViewForRendering.mouseEvent(i,i2, InputStub.BUTTON_UNDEFINED,false,true);
+//                eventsInjector.injectPointerMove(this.xServer.getPointer().getX() + i, this.xServer.getPointer().getY() + i2);
             }
             if (lockForInputDevicesManipulation != null) {
                 lockForInputDevicesManipulation.close();

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.eltechs.axs.helpers.ArithHelpers;
 import com.termux.x11.ViewForRendering;
 import com.eltechs.axs.xserver.impl.masks.Mask;
+import com.termux.x11.input.InputStub;
 
 public class Pointer {
     public static final int BUTTON_LEFT = 1;
@@ -87,7 +88,7 @@ public class Pointer {
         //第一版xegw的写法
 //        RealXServer.motion(x, y);
 
-        ViewForRendering.mouseEvent(x,y,0,false,false);
+        ViewForRendering.mouseEvent(x,y, InputStub.BUTTON_UNDEFINED,false,false);
 //        ViewForRendering.mouseEvent(deltaX,deltaY,0,false,true); //tx11还没实现
 //        Log.d(TAG, String.format("鼠标移动到( %d , %d )",x,y));
     }

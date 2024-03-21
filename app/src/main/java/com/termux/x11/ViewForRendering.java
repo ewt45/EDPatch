@@ -1,5 +1,8 @@
 package com.termux.x11;
 
+import static com.termux.x11.input.InputStub.BUTTON_SCROLL;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
@@ -10,8 +13,13 @@ import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.environmentService.AXSEnvironment;
 import com.eltechs.axs.environmentService.components.XServerComponent;
 import com.eltechs.axs.helpers.Assert;
+import com.eltechs.axs.proto.output.replies.Str;
+import com.eltechs.axs.xserver.Pointer;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
+import com.termux.x11.input.InputStub;
+
+import java.nio.charset.Charset;
 
 public class ViewForRendering extends LorieView {
     /**
@@ -44,22 +52,6 @@ public class ViewForRendering extends LorieView {
         p  = new Point(xServerComponent.getScreenInfo().widthInPixels,xServerComponent.getScreenInfo().heightInPixels);
     }
    final Point p;
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//        int width = getMeasuredWidth();
-//        int height = getMeasuredHeight();
-//        if ((width < height && p.x > p.y) || (width > height && p.x < p.y))
-//            //noinspection SuspiciousNameCombination
-//            p.set(p.y, p.x);
-//        if (width > height * p.x / p.y)
-//            width = height * p.x / p.y;
-//        else
-//            height = width * p.y / p.x;
-//
-//        getHolder().setFixedSize(p.x, p.y);
-//        setMeasuredDimension(width, height);
-//    }
 
     public static void keyEvent(int keycode, int keySym, boolean down) {
         if (mInstance == null)
@@ -93,32 +85,32 @@ public class ViewForRendering extends LorieView {
         if (!down)
             return;
 
-        //不知道为什么括号没法输入。只能shift + 9/0了
-        if (keySym == 0x28 || keySym == 0x29) {
-            KeyCodesX parenKeyCode = keySym == 0x28 ? KeyCodesX.KEY_9 : KeyCodesX.KEY_0;
-            keyEvent(KeyCodesX.KEY_SHIFT_LEFT.getValue(), 0, true);
-            keyEvent(parenKeyCode.getValue(), 0, true);
-            keyEvent(parenKeyCode.getValue(), 0, false);
-            keyEvent(KeyCodesX.KEY_SHIFT_LEFT.getValue(), 0, false);
-            return;
-        }
+//        //不知道为什么括号没法输入。只能shift + 9/0了 (最新tx11好像没这问题了）
+//        if (keySym == 0x28 || keySym == 0x29) {
+//            KeyCodesX parenKeyCode = keySym == 0x28 ? KeyCodesX.KEY_9 : KeyCodesX.KEY_0;
+//            keyEvent(KeyCodesX.KEY_SHIFT_LEFT.getValue(), 0, true);
+//            keyEvent(parenKeyCode.getValue(), 0, true);
+//            keyEvent(parenKeyCode.getValue(), 0, false);
+//            keyEvent(KeyCodesX.KEY_SHIFT_LEFT.getValue(), 0, false);
+//            return;
+//        }
 
         //回车 应该是return 0xff0d .但是从keyevent获取到的unicode是0x0a linefeed，手动改一下
         if (keySym == 0x0a)
             keySym = 0x0d;
 
+        //虽然现在tx11都不用这个改用sendTextEvent，但是传字节数组的话需要转为字节数组，精度不够（但是精度不够好像也不会引起什么问题？）
         mInstance.sendUnicodeEvent(keySym);
-
     }
 
     public static void mouseEvent(int xPos, int yPos, int keycode, boolean isPress, boolean relative) {
         if (mInstance == null)
             return;
         //？？？滚轮上下都是BUTTON_SCROLL==4，然后负数是上正数是下
-        if (keycode == 5 || keycode == 4) {
+        if (keycode == Pointer.BUTTON_SCROLL_DOWN || keycode == Pointer.BUTTON_SCROLL_UP) {
             xPos = 0; //横向滚动 exa好像不支持
-            yPos = keycode == 4 ? -30 : 30;
-            keycode = 4;
+            yPos = keycode == Pointer.BUTTON_SCROLL_UP ? -60 : 60; //60正好
+            keycode = BUTTON_SCROLL;
         }
 
         mInstance.sendMouseEvent(xPos, yPos, keycode, isPress, relative);
@@ -138,144 +130,3 @@ public class ViewForRendering extends LorieView {
         mInstance = null;
     }
 }
-
-
-
-/*
-第一版xegw。单独拉出来的surfaceview
- */
-
-//public class ViewForRendering extends SurfaceView {
-//    private static final String TAG = "ViewForRendering";
-//    int xserverWidth;
-//    int xserverHeight;
-//
-//    public static boolean isServerStart;
-//    public ViewForRendering(Context context) {
-//        super(context);
-//        Log.d(TAG, "ViewForRendering: 构造函数");
-//        EnvironmentAware environmentAware = Globals.getApplicationState();
-//        XServerComponent component = environmentAware.getEnvironment().getComponent(XServerComponent.class);
-//        xserverWidth = component.getScreenInfo().widthInPixels;
-//        xserverHeight = component.getScreenInfo().heightInPixels;
-//
-////        getHolder().setFormat(PixelFormat.RGBA_8888);
-//        getHolder().addCallback(new SurfaceHolder.Callback() {
-//            @Override
-//            public void surfaceCreated(SurfaceHolder holder) {
-//                Log.d(TAG, "surfaceCreated: ");
-//                if(!isServerStart){
-//                    Log.e(TAG, "surfaceCreated: 开始执行RealXServer.start();");
-//                    RealXServer.start();
-//                    isServerStart = true;
-//                }
-//                windowChanged(holder.getSurface(), 0, 0);
-//            }
-//
-//            @Override
-//            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height){
-//                if(width!=0 && height!=0){
-//                    Log.e(TAG, "surfaceChanged: ");
-////                windowChanged(null,xserverWidth,xserverHeight);
-//                    windowChanged(holder.getSurface(),xserverWidth,xserverHeight);
-////                setWillNotDraw(false);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void surfaceDestroyed(SurfaceHolder holder) {
-//                Log.d(TAG, "surfaceDestroyed: ");
-//
-//                windowChanged(null,0,0);
-////                if(isServerStart){
-////                    Log.e(TAG, "surfaceDestroyed: 开始执行RealXServer.stop();");
-////                    RealXServer.stop();
-////                    isServerStart = false;
-////                }
-//            }
-//        });
-//
-////            isFirstStart = false;//试试只调用一次？目前第二次调用会闪退
-//    }
-//
-//    @Override
-//    protected void onAttachedToWindow() {
-//        super.onAttachedToWindow();
-////        postDelayed(()->{
-////            if(!isServerStart){
-////                Log.e(TAG, "onAttachedToWindow: 开始执行RealXServer.start();");
-////                RealXServer.start();
-////                isServerStart = true;
-////            }
-////        },3000);
-//    }
-//
-//    @Override
-//    protected void onDetachedFromWindow() {
-//        super.onDetachedFromWindow();
-////        if(isServerStart){
-////            Log.e(TAG, "onDetachedFromWindow: 开始执行RealXServer.stop();");
-////            RealXServer.stop();
-////            isServerStart=false;
-////        }
-//    }
-//
-//    long lastOperate=0;
-//    private void postStartStopXServer(boolean start){
-//
-//    }
-//
-//}
-
-/*
-学习surfaceview的时候。非正式用途
- */
-
-//public class ViewForRendering extends TextureView implements TextureView.SurfaceTextureListener{
-//    private static final String TAG = "ViewForRendering";
-//    int xserverWidth;
-//    int xserverHeight;
-//    Surface mSurface;
-//    public ViewForRendering(Context context) {
-//        super(context);
-////        getHolder().setFormat(PixelFormat.RGBA_8888);
-//
-////        getHolder().setFormat(PixelFormat.TRANSPARENT);
-////        setWillNotDraw(true);
-//
-//
-//        EnvironmentAware environmentAware = Globals.getApplicationState();
-//        XServerComponent component = environmentAware.getEnvironment().getComponent(XServerComponent.class);
-//        xserverWidth = component.getScreenInfo().widthInPixels;
-//        xserverHeight = component.getScreenInfo().heightInPixels;
-//        this.setSurfaceTextureListener(this);
-//
-//    }
-//
-//    @Override
-//    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-//        Log.d(TAG, "onSurfaceTextureAvailable: ");
-//        if(mSurface!=null)
-//            mSurface.release();
-//        surface.attachToGLContext(234);
-//        mSurface = new Surface(surface);
-//        RealXServer.windowChanged(mSurface,xserverWidth,xserverHeight);
-//    }
-//
-//    @Override
-//    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-//        Log.d(TAG, "onSurfaceTextureSizeChanged: ");
-//        RealXServer.windowChanged(mSurface,xserverWidth,xserverHeight);
-//    }
-//
-//    @Override
-//    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-//        return true;
-//    }
-//
-//    @Override
-//    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-//        Log.d(TAG, "onSurfaceTextureUpdated: ");
-//    }
-//}

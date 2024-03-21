@@ -47,7 +47,7 @@
             android:name="com.termux.x11.MainActivity"
             android:screenOrientation="sensorLandscape" />
         <service
-            android:name="com.termux.x11.CmdEntryPoint"
+            android:name="com.termux.x11.XegwConnectService"
             android:exported="true"
             android:process=":xserver">
             <intent-filter>

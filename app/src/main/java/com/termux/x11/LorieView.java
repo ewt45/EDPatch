@@ -1,29 +1,46 @@
 package com.termux.x11;
 
+import static com.termux.x11.input.InputStub.BUTTON_SCROLL;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.support.annotation.NonNull;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import android.support.annotation.Keep;
+import android.support.annotation.NonNull;
+
+import com.termux.x11.input.InputStub;
+
 import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.environmentService.components.XServerComponent;
-import com.eltechs.axs.helpers.UiThread;
+import com.eltechs.axs.xserver.ScreenInfo;
 
-@SuppressLint("WrongConstant")
-public class LorieView extends SurfaceView  {
-    private static final String TAG = "LorieView";
-    int xserverWidth;
-    int xserverHeight;
-    interface Callback {
+import java.nio.charset.StandardCharsets;
+import java.util.regex.PatternSyntaxException;
+
+@Keep @SuppressLint("WrongConstant")
+@SuppressWarnings("deprecation")
+public class LorieView extends SurfaceView {//implements InputStub {
+    public interface Callback {
         void changed(Surface sfc, int surfaceWidth, int surfaceHeight, int screenWidth, int screenHeight);
     }
 
@@ -31,11 +48,11 @@ public class LorieView extends SurfaceView  {
         int BGRA_8888 = 5; // Stands for HAL_PIXEL_FORMAT_BGRA_8888
     }
 
-    /**
-     * 原来这个不是surfaceCallback。。。。应该类似于RealXServer.windowChanged？
-     */
+    private ClipboardManager clipboard;
+    private long lastClipboardTimestamp = System.currentTimeMillis();
+    private static boolean clipboardSyncEnabled = false;
     private Callback mCallback;
-    private final Point p = new Point();
+    private final Point p = new Point();//记录xserver的宽高
     private final SurfaceHolder.Callback mSurfaceCallback = new SurfaceHolder.Callback() {
         @Override public void surfaceCreated(@NonNull SurfaceHolder holder) {
             holder.setFormat(PixelFormat.BGRA_8888);
@@ -45,13 +62,12 @@ public class LorieView extends SurfaceView  {
             width = getMeasuredWidth();
             height = getMeasuredHeight();
 
-            Log.d("SurfaceChangedListener", "Surface was changed: measured " + width + "x" + height+", xserver "+xserverWidth+"x"+xserverHeight);
+            Log.d("SurfaceChangedListener", "Surface was changed: " + width + "x" + height);
             if (mCallback == null)
                 return;
 
-//            getDimensionsFromSettings();
-//            mCallback.changed(holder.getSurface(), width, height, p.x, p.y);
-            mCallback.changed(holder.getSurface(),width,height,xserverWidth,xserverHeight);
+            getDimensionsFromSettings();
+            mCallback.changed(holder.getSurface(), width, height, p.x, p.y);
         }
 
         @Override public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
@@ -60,21 +76,15 @@ public class LorieView extends SurfaceView  {
         }
     };
 
-    public LorieView(Context context) {super(context); init(); }
-    public LorieView(Context context, AttributeSet attrs) {super(context, attrs); init(); }
-    public LorieView(Context context, AttributeSet attrs, int defStyleAttr) {super(context, attrs, defStyleAttr); init(); }
+    public LorieView(Context context) { super(context); init(); }
+    public LorieView(Context context, AttributeSet attrs) { super(context, attrs); init(); }
+    public LorieView(Context context, AttributeSet attrs, int defStyleAttr) { super(context, attrs, defStyleAttr); init(); }
     @SuppressWarnings("unused")
-    public LorieView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {super(context, attrs, defStyleAttr, defStyleRes); init(); }
+    public LorieView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) { super(context, attrs, defStyleAttr, defStyleRes); init(); }
 
     private void init() {
-        Log.d(TAG, "init: ");
-        EnvironmentAware environmentAware = Globals.getApplicationState();
-        assert environmentAware != null;
-        XServerComponent component = environmentAware.getEnvironment().getComponent(XServerComponent.class);
-        xserverWidth = component.getScreenInfo().widthInPixels;
-        xserverHeight = component.getScreenInfo().heightInPixels;
-
         getHolder().addCallback(mSurfaceCallback);
+        clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
     }
 
     public void setCallback(Callback callback) {
@@ -82,9 +92,6 @@ public class LorieView extends SurfaceView  {
         triggerCallback();
     }
 
-    /**
-     * 重新设置callback并调用triggerCallback
-     */
     public void regenerate() {
         Callback callback = mCallback;
         mCallback = null;
@@ -98,21 +105,77 @@ public class LorieView extends SurfaceView  {
 //        setFocusable(true);
 //        setFocusableInTouchMode(true);
 //        requestFocus();
-        Log.d(TAG, "triggerCallback: ");
+
+        setBackground(new ColorDrawable(Color.TRANSPARENT) {
+            public boolean isStateful() {
+                return true;
+            }
+            public boolean hasFocusStateSpecified() {
+                return true;
+            }
+        });
+
         Rect r = getHolder().getSurfaceFrame();
-        UiThread.post(() -> mSurfaceCallback.surfaceChanged(getHolder(), PixelFormat.BGRA_8888, r.width(), r.height()));
+        getActivity().runOnUiThread(() -> mSurfaceCallback.surfaceChanged(getHolder(), PixelFormat.BGRA_8888, r.width(), r.height()));
     }
 
+    private Activity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
 
-    /*
-    有两个设置大小的函数，不管了吧
-    getHolder().setSizeFromLayout();
-    getHolder().setFixedSize(p.x, p.y);
-     */
+        throw new NullPointerException();
+    }
+    /** 获取xserver的宽高，存入p中 */
+    void getDimensionsFromSettings() {
+        EnvironmentAware environmentAware = Globals.getApplicationState();
+        ScreenInfo screenInfo =  environmentAware.getEnvironment().getComponent(XServerComponent.class).getScreenInfo();
+        p.set(screenInfo.widthInPixels,screenInfo.heightInPixels);
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+//        int width = getMeasuredWidth();
+//        int height = getMeasuredHeight();
+//        int w = width;
+//        int h = height;
+//        switch(preferences.getString("displayResolutionMode", "native")) {
+//            case "scaled": {
+//                int scale = preferences.getInt("displayScale", 100);
+//                w = width * 100 / scale;
+//                h = height * 100 / scale;
+//                break;
+//            }
+//            case "exact": {
+//                String[] resolution = preferences.getString("displayResolutionExact", "1280x1024").split("x");
+//                w = Integer.parseInt(resolution[0]);
+//                h = Integer.parseInt(resolution[1]);
+//                break;
+//            }
+//            case "custom": {
+//                try {
+//                    String[] resolution = preferences.getString("displayResolutionCustom", "1280x1024").split("x");
+//                    w = Integer.parseInt(resolution[0]);
+//                    h = Integer.parseInt(resolution[1]);
+//                } catch (NumberFormatException | PatternSyntaxException ignored) {
+//                    w = 1280;
+//                    h = 1024;
+//                }
+//                break;
+//            }
+//        }
+//
+//        if ((width < height && w > h) || (width > height && w < h))
+//            p.set(h, w);
+//        else
+//            p.set(w, h);
+    }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
 //        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 //        if (preferences.getBoolean("displayStretch", false)
 //                || "native".equals(preferences.getString("displayResolutionMode", "native"))
@@ -120,15 +183,15 @@ public class LorieView extends SurfaceView  {
 //            getHolder().setSizeFromLayout();
 //            return;
 //        }
-//
-//        getDimensionsFromSettings();
-//
-//        if (p.x <= 0 || p.y <= 0)
-//            return;
-//
-//        int width = getMeasuredWidth();
-//        int height = getMeasuredHeight();
-//
+
+        getDimensionsFromSettings();
+
+        if (p.x <= 0 || p.y <= 0)
+            return;
+
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+
 //        if ((width < height && p.x > p.y) || (width > height && p.x < p.y))
 //            //noinspection SuspiciousNameCombination
 //            p.set(p.y, p.x);
@@ -137,21 +200,97 @@ public class LorieView extends SurfaceView  {
 //            width = height * p.x / p.y;
 //        else
 //            height = width * p.y / p.x;
-//
-//        getHolder().setFixedSize(p.x, p.y);
-//        setMeasuredDimension(width, height);
+
+        getHolder().setFixedSize(p.x, p.y);
+        setMeasuredDimension(width, height);
+
+        // In the case if old fixed surface size equals new fixed surface size surfaceChanged will not be called.
+        // We should force it.
+        regenerate();
+    }
+
+//    @Override
+    public void sendMouseWheelEvent(float deltaX, float deltaY) {
+        sendMouseEvent(deltaX, deltaY, BUTTON_SCROLL, false, true);
+    }
+
+//    @Override
+//    public boolean dispatchKeyEventPreIme(KeyEvent event) {
+//        Activity a = getActivity();
+//        return (a instanceof MainActivity) && ((MainActivity) a).handleKey(event);
 //    }
+
+    ClipboardManager.OnPrimaryClipChangedListener clipboardListener = this::handleClipboardChange;
+
+    static void setClipboardSyncEnabled(boolean enabled) {
+        Log.d("LorieView", "setClipboardSyncEnabled: 暂时禁用");
+//        clipboardSyncEnabled = enabled;
+//        setClipboardSyncEnabled(enabled, enabled);
+    }
 
     // It is used in native code
     void setClipboardText(String text) {
-        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText("X11 clipboard", text));
+
+        // Android does not send PrimaryClipChanged event to the window which posted event
+        // But in the case we are owning focus and clipboard is unchanged it will be replaced by the same value on X server side.
+        // Not cool in the case if user installed some clipboard manager, clipboard content will be doubled.
+        lastClipboardTimestamp = System.currentTimeMillis() + 150;
     }
+
+    // It is used in native code
+    void requestClipboard() {
+        if (!clipboardSyncEnabled) {
+            sendClipboardEvent("".getBytes(StandardCharsets.UTF_8));
+            return;
+        }
+
+        CharSequence clip = clipboard.getText();
+        if (clip != null) {
+            String text = String.valueOf(clipboard.getText());
+            sendClipboardEvent(text.getBytes(StandardCharsets.UTF_8));
+            Log.d("CLIP", "sending clipboard contents: " + text);
+        }
+    }
+
+    public void handleClipboardChange() {
+        checkForClipboardChange();
+    }
+
+    @SuppressLint("NewApi")
+    public void checkForClipboardChange() {
+        ClipDescription desc = clipboard.getPrimaryClipDescription();
+        if (clipboardSyncEnabled && desc != null &&
+                lastClipboardTimestamp < desc.getTimestamp() &&
+                desc.getMimeTypeCount() == 1 &&
+                desc.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+            lastClipboardTimestamp = desc.getTimestamp();
+            sendClipboardAnnounce();
+            Log.d("CLIP", "sending clipboard announce");
+        }
+    }
+
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus)
+//            regenerate();
+//
+//        requestFocus();
+//
+//        if (clipboardSyncEnabled && hasFocus) {
+//            clipboard.addPrimaryClipChangedListener(clipboardListener);
+//            checkForClipboardChange();
+//        } else
+//            clipboard.removePrimaryClipChangedListener(clipboardListener);
+//    }
 
     static native void connect(int fd);
     native void handleXEvents();
     static native void startLogcat(int fd);
-    static native void setClipboardSyncEnabled(boolean enabled);
+    static native void setClipboardSyncEnabled(boolean enabled, boolean ignored);
+    public native void sendClipboardAnnounce();
+    public native void sendClipboardEvent(byte[] text);
     static native void sendWindowChange(int width, int height, int framerate);
     public native void sendMouseEvent(float x, float y, int whichButton, boolean buttonDown, boolean relative);
     public native void sendTouchEvent(int action, int id, int x, int y);

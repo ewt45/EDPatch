@@ -1,6 +1,6 @@
 package com.termux.x11;
 
-import static com.termux.x11.CmdEntryPoint.PREF_KEY_LEGACY_DRAW;
+import static com.termux.x11.XegwConnectService.PREF_KEY_LEGACY_DRAW;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +33,7 @@ class DialogOptions {
 
         //https://4pda.to/forum/index.php?showtopic=992239&st=25880#entry121709333
         TextView tv1 = new TextView(c);
-        tv1.setText(RR.getS(RR.xegw_info));
+        tv1.setText(RR.getS(RR.xegw_info)); //TODO 说一下仅支持安卓8.0及以上
         linearRoot.addView(tv1);
 
 //        CheckBox checkLegacyDraw = new CheckBox(c);

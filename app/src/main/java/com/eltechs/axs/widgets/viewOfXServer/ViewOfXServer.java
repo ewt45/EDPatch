@@ -56,6 +56,7 @@ public class ViewOfXServer extends FrameLayout {
         setFocusableInTouchMode(true);
         //设置surfaceholder的callback
         viewForRendering = new ViewForRendering(context);
+
         addView(viewForRendering);
 
         //按照termux x11的方式启动xserver
@@ -230,8 +231,12 @@ public class ViewOfXServer extends FrameLayout {
                 .x(marginLeft)
                 .y(marginTop)
                 .setDuration(0).start();
+        Log.d("缩放", "setXViewport: scaleXY="+
+                (trDesc.scaleX * xServerFacade.getScreenInfo().widthInPixels / getWidth())+", "
+                +(trDesc.scaleY * xServerFacade.getScreenInfo().heightInPixels / getHeight())+", rectFrame="+viewForRendering.getHolder().getSurfaceFrame());
 
-
+//        viewForRendering.getHolder().setFixedSize(xServerFacade.getScreenInfo().widthInPixels,xServerFacade.getScreenInfo().heightInPixels);
+//        viewForRendering.regenerate();
 //        this.renderer.setXViewport(newVisibleRectF);
 //        requestRender();
 

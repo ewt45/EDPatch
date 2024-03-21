@@ -1,5 +1,10 @@
 package com.example.datainsert.exagear.controlsV2.axs;
 
+import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.Log;
+
 import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
@@ -55,11 +60,18 @@ public class AndroidPointReporter {
     }
 
     public static void pointerMoveDelta(float dx, float dy) {
-        int min = Math.min((int) Math.max(Math.abs(dx / Const.maxPointerDeltaDistInOneEvent), Math.abs(dy / Const.maxPointerDeltaDistInOneEvent)), Const.maxDivisor);
-        float f4 = dx / (float) min;
-        float f5 = dy / (float) min;
-        Const.getXServerHolder().injectPointerDelta((int) f4, (int) f5, min);
-        Const.getXServerHolder().injectPointerDelta((int) (dx - (f4 * (float) min)), (int) (dy - (f5 * (float) min)));
+        XServerViewHolder holder = Const.getXServerHolder();
+        float[] p = {0,0,dx,dy}; //与map单个点不同，如果要转换距离，需要map两个点然后计算两者map之后之差
+        Matrix matrix = holder.getViewToXServerTransformationMatrix();
+        matrix.mapPoints(p);
+        float xDx = p[2]-p[0], xDy = p[3]-p[1];
+        Log.d("MouseMoveAdapter", "moveTo: view偏移量："+dx+","+dy+", xserver偏移量："+xDx+","+xDy );
+        holder.injectPointerDelta(xDx,xDy);
+//        int min = Math.min((int) Math.max(Math.abs(dx / Const.maxPointerDeltaDistInOneEvent), Math.abs(dy / Const.maxPointerDeltaDistInOneEvent)), Const.maxDivisor);
+//        float f4 = dx / (float) min;
+//        float f5 = dy / (float) min;
+//        Const.getXServerHolder().injectPointerDelta((int) f4, (int) f5, min);
+//        Const.getXServerHolder().injectPointerDelta((int) (dx - (f4 * (float) min)), (int) (dy - (f5 * (float) min)));
     }
 
     public static void buttonPressed(int i) {
