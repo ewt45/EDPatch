@@ -102,6 +102,7 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
             mKeyBtnArray.put(info.xKeyCode,check);
             check.setTag(info.xKeyCode);
             check.setButtonDrawable(null);
+            //TODO 1:背景Drawable改为代码创建。2:exa的apk中文字仍然是靠左对齐
             check.setBackground(TestHelper.getAssetsDrawable(getContext(), "controls/keyboard_key_toggle.xml"));
             check.setTextAlignment(TEXT_ALIGNMENT_CENTER);
             check.setTextColor(0xFFF3F3F3);

@@ -44,6 +44,7 @@ import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.FrameworkActivity;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ExagearImageAware;
+import com.eltechs.ed.EDApplicationState;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 
 import org.apache.commons.io.FileUtils;
@@ -155,7 +156,8 @@ public class QH {
      * 获取当前acitivity，若在activity的onCreate阶段 获取到的是null
      */
     public static FrameworkActivity getCurrentActivity() {
-        return ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity();
+        ApplicationStateBase<EDApplicationState> state = Globals.getApplicationState();
+        return state==null?null:state.getCurrentActivity();
     }
 
     /**
