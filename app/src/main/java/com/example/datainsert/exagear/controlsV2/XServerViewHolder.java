@@ -1,10 +1,14 @@
 package com.example.datainsert.exagear.controlsV2;
 
+import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_CENTER;
+import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_LEFT;
+import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_RIGHT;
 import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_SCROLL_DOWN;
 import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.POINTER_SCROLL_UP;
 
 import android.graphics.Matrix;
 import android.support.annotation.IntDef;
+import android.util.Log;
 
 import com.eltechs.axs.geom.Point;
 import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
@@ -47,8 +51,10 @@ public interface XServerViewHolder {
             int buttonCode = keycode - XKeyButton.POINTER_MASK;
             if (buttonCode == POINTER_SCROLL_UP || buttonCode == POINTER_SCROLL_DOWN)
                 XServerViewHolder_MouseWheelInjector.getByCode(buttonCode).start();
-            else
+            else if(buttonCode == POINTER_LEFT || buttonCode == POINTER_RIGHT || buttonCode == POINTER_CENTER)
                 injectPointerButtonPress(buttonCode);
+            else
+                Log.w("KEY", "pressKeyOrPointer: 输入鼠标按键码无法识别："+buttonCode);
         }
     }
 
