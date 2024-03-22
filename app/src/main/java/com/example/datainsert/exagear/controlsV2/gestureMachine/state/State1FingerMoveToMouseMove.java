@@ -1,6 +1,9 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
 import android.content.Context;
+import android.graphics.Matrix;
+import android.graphics.PointF;
+import android.util.Log;
 import android.view.View;
 
 import com.eltechs.axs.GeometryHelpers;
@@ -9,10 +12,13 @@ import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
+import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
+import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.MouseMoveAdapter;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.MouseMoveRelativeAdapter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.MouseMoveSimpleAdapter;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
@@ -40,12 +46,13 @@ public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapt
     transient private MouseMoveAdapter moveAdapter;
 
     protected void onAttach() {
-        if(mMouseMoveType == FSMR.value.鼠标移动逻辑_普通)
-            moveAdapter = new MouseMoveSimpleAdapter();
-        else  if(mMouseMoveType == FSMR.value.鼠标移动逻辑_视角转动)
-            moveAdapter = Const.Extension.getImpl(Const.Extension.MOUSE_MOVE_CAMERA_RELATIVE);
-        else
-            throw new RuntimeException("未识别的鼠标移动逻辑："+mMouseMoveType);
+//        if(mMouseMoveType == FSMR.value.鼠标移动逻辑_普通)
+        moveAdapter = new MouseMoveRelativeAdapter();
+//        else  if(mMouseMoveType == FSMR.value.鼠标移动逻辑_视角转动)
+//            moveAdapter = Const.Extension.getImpl(Const.Extension.MOUSE_MOVE_CAMERA_RELATIVE);
+//        else
+//            throw new RuntimeException("未识别的鼠标移动逻辑："+mMouseMoveType);
+
     }
 
     @Override
