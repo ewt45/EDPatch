@@ -65,8 +65,10 @@ public interface XServerViewHolder {
             int buttonCode = keycode - XKeyButton.POINTER_MASK;
             if (buttonCode == POINTER_SCROLL_UP || buttonCode == POINTER_SCROLL_DOWN)
                 XServerViewHolder_MouseWheelInjector.getByCode(buttonCode).stop();
-            else
+            else if(buttonCode == POINTER_LEFT || buttonCode == POINTER_RIGHT || buttonCode == POINTER_CENTER)
                 injectPointerButtonRelease(buttonCode);
+            else
+                Log.w("KEY", "releaseKeyOrPointer: 输入鼠标按键码无法识别："+buttonCode);
         }
     }
 

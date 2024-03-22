@@ -86,7 +86,7 @@ public class MainActivity extends XServerDisplayActivity<EDApplicationState> imp
     static final String ACTION_STOP = "com.eltechs.ed.ACTION_STOP";
     static final String REQUEST_LAUNCH_EXTERNAL_DISPLAY = "request_launch_external_display";
 
-    public static Handler handler = new Handler();
+    public Handler handler = new Handler();
     FrameLayout frm;
 //    private TouchInputHandler mInputHandler;
     private ICmdEntryInterface service = null;
@@ -465,7 +465,7 @@ public class MainActivity extends XServerDisplayActivity<EDApplicationState> imp
     }
 
     void tryConnect() {
-        if (mClientConnected)
+        if (mClientConnected || QH.getCurrentActivity() != this)
             return;
         try {
             Log.v("LorieBroadcastReceiver", "Extracting X connection socket.");

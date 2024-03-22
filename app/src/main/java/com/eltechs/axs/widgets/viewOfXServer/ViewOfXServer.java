@@ -11,10 +11,13 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.eltechs.axs.configuration.XServerViewConfiguration;
 import com.eltechs.axs.geom.RectangleF;
 import com.eltechs.axs.helpers.Assert;
+import com.termux.x11.CmdEntryPoint;
+import com.termux.x11.LorieView;
 import com.termux.x11.ViewForRendering;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
@@ -148,6 +151,7 @@ public class ViewOfXServer extends FrameLayout {
 
     @Override // android.view.View
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         //现在因为要通过调整安卓布局大小来实现缩放，所以要一直调用onSizeChanged，如果半道new一个的话，会出现成员变量还没初始化的情况。
         //只应该在初始时调用一次吧
 //        if (oldw == 0 && oldh == 0) {
@@ -155,13 +159,17 @@ public class ViewOfXServer extends FrameLayout {
         reinitRenderTransformation();
         //setXViewport不行，缩放一下行吗
         //草，还必须post，这个时刻难道还有啥没更新完？
-        post(() -> {
+        initXViewportAfterConnected(() -> {
             setXViewport(new RectangleF(0, 0, xServerFacade.getScreenInfo().widthInPixels, xServerFacade.getScreenInfo().heightInPixels));
         });
-//        setXViewport(new RectangleF(50,50,xServerFacade.getScreenInfo().widthInPixels-50,xServerFacade.getScreenInfo().heightInPixels-50));
-//        setXViewport(new RectangleF(0,0,xServerFacade.getScreenInfo().widthInPixels,xServerFacade.getScreenInfo().heightInPixels));
+    }
 
-//        }
+    /**
+     * 保证在connected之后再设置缩放，看看还会不会出现拉伸问题？（好像可以了，xegw2.2时的post貌似也是这个原因）
+     */
+    private void initXViewportAfterConnected(Runnable r){
+        if(CmdEntryPoint.connected()) post(r);
+        else postDelayed(()-> initXViewportAfterConnected(r),500);
     }
 
     public ViewFacade getXServerFacade() {

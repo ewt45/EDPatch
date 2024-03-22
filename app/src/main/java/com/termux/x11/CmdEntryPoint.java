@@ -248,7 +248,7 @@ public class CmdEntryPoint extends ICmdEntryInterface.Stub {
     public native void windowChanged(Surface surface);
     public native ParcelFileDescriptor getXConnection();
     public native ParcelFileDescriptor getLogcatOutput();
-    private static native boolean connected();
+    public static native boolean connected();
 
     static {
 //        String path = "lib/" + Build.SUPPORTED_ABIS[0] + "/libXlorie.so";
