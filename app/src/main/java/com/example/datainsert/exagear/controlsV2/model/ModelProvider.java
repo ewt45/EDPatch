@@ -1,5 +1,8 @@
 package com.example.datainsert.exagear.controlsV2.model;
 
+import static com.example.datainsert.exagear.controlsV2.Const.bundledProfilesPath;
+import static com.example.datainsert.exagear.controlsV2.Const.profileDefaultName;
+
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -210,8 +213,8 @@ public class ModelProvider {
     /**
      * 将某个配置作为当前选中的配置
      */
-    public static void makeCurrent(String name) {
-        File profile = new File(profilesDir, name);
+    public static void makeCurrent(String fileName) {
+        File profile = new File(profilesDir, fileName);
         try {
             boolean b = currentProfile.delete();
             Os.symlink(profile.getAbsolutePath(), currentProfile.getAbsolutePath());
@@ -306,5 +309,50 @@ public class ModelProvider {
         }
     }
 
+    /**
+     * 获取apk内置配置的名称数组。一定不为null，可能长度为0
+     */
+    public static @NonNull String[] getAssetsProfileNames(Context c){
+        String[] assetProfileNames = null;
+        try {
+            assetProfileNames = c.getAssets().list(bundledProfilesPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(assetProfileNames==null) assetProfileNames = new String[0];
+        return assetProfileNames;
+    }
+
+    /**
+     * 从apk/assets中解压出内置配置
+     * @param reExtract 是否为重新解压。若Const.init初次操作，则false。若已经存在配置了，点击按钮重解压，则为true。为true时不应修改当前配置的软链接或在assetsName长度为0时新建空配置。
+     */
+    public static void extractBundledProfilesFromAssets(Context c, boolean reExtract){
+        String[] assetProfileNames = getAssetsProfileNames(c);
+
+        //如果是重解压，即使没有内置配置，也不要新建
+        if(assetProfileNames.length==0 && !reExtract){
+            OneProfile defaultProfile = new OneProfile(profileDefaultName);
+            ModelProvider.saveProfile(defaultProfile);
+            ModelProvider.makeCurrent(defaultProfile.name);
+        }else if(assetProfileNames.length>0){
+            int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
+            for(int i=0; i<assetProfileNames.length; i++){
+                String name = assetProfileNames[i];
+                if(assetProfileNames[i].trim().equalsIgnoreCase("default"))
+                    prefIndex=i;
+                try (InputStream is = c.getAssets().open(bundledProfilesPath + "/" + name)) {
+                    FileUtils.copyInputStreamToFile(is, new File(ModelProvider.profilesDir, name));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(!reExtract){
+                ModelProvider.makeCurrent(assetProfileNames[prefIndex]);
+            }
+        }
+
+
+    }
 
 }

@@ -19,7 +19,7 @@ public class MouseMoveRelativeAdapter extends MouseMoveAdapter {
         //emmm也不行，因为从view转到x11单位时精度还会变，干脆不用AndroidPointerReporter了吧，直接存x11单位的坐标
         int[] pNow = mapToXUnit(x, y);
         Const.getXServerHolder().injectPointerDelta(pNow[0] - pLast[0], pNow[1] - pLast[1]);
-        Log.d("相对移动", "moveTo: 移动xy="+(pNow[0] - pLast[0])+","+(pNow[1] - pLast[1]));
+//        Log.d("相对移动", "moveTo: 移动xy="+(pNow[0] - pLast[0])+","+(pNow[1] - pLast[1]));
         pLast = pNow;
     }
 

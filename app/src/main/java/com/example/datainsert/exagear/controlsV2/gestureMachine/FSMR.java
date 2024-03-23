@@ -137,13 +137,9 @@ public class FSMR {
          * 如果在时间段内移动的距离超过了fastMinDistance，立刻发送此事件
          */
         public static final int 手指_移动_快速 = 8;
-        /**
-         * 时间段内有手指松开且此时移动距离小于等于tapMaxDistance，立刻发送此事件
-         */
+        /** 时间段内有手指松开且此时移动距离小于等于tapMaxDistance，立刻发送此事件。注意可能并非是观测的那根手指 */
         public static final int 某手指_未移动并松开 = 9;
-        /**
-         * 时间段内有手指松开且此时移动距离超过tapMaxDistance，立刻发送此事件
-         */
+        /** 时间段内有手指松开且此时移动距离超过tapMaxDistance，立刻发送此事件。注意可能并非是观测的那根手指 */
         public static final int 某手指_移动并松开 = 10;
         /**
          * 用于检测手指数量变化时，倒计时结束时手指数量没有变化

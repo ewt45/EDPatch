@@ -5,6 +5,7 @@ import static com.example.datainsert.exagear.controlsV2.Const.BtnType.NORMAL;
 import static com.example.datainsert.exagear.controlsV2.Const.BtnType.STICK;
 
 import android.content.Context;
+import android.graphics.ColorSpace;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -21,9 +22,15 @@ import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Objects;
 
 public class Const {
     public static boolean initiated=false;
@@ -55,8 +62,9 @@ public class Const {
     public static double stickMoveThreshold = 20; //摇杆按下并移动时，若手指距离中心小于此距离，则算作不移动
 
     public static int defaultBgColor = 0xffc2e2ff;
-
-    public static String defaultProfileName = "default"; //没有任何配置时，默认配置名称
+    public static String profileDefaultName = "default"; //没有任何配置时，默认配置名称
+    public static String bundledProfilesPath = "controls/profiles"; //内置配置在assets中的位置
+//    public static String[] profileBundledNames; //放在apk/assets内的配置
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
 
     public static boolean detailDebug = false; //用于调试的便捷开关
@@ -81,6 +89,7 @@ public class Const {
         ModelProvider.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
         ModelProvider.profilesDir = new File(ModelProvider.workDir, "profiles");
         ModelProvider.currentProfile = new File(ModelProvider.workDir, "current");
+
         //        先检查一下路径是否存在，然后决定是否要初始化；
         //        保证各个文件夹存在，配置至少有一个（算上预设的），且current的符号链接存在
         boolean isFirst = false;
@@ -92,18 +101,17 @@ public class Const {
             isFirst = true;
             ModelProvider.profilesDir.mkdir();
         }
-        if (!ModelProvider.currentProfile.exists())
+        if (!ModelProvider.currentProfile.exists() || Objects.requireNonNull(ModelProvider.profilesDir.list()).length==0)
             isFirst = true;
 
-        //TODO 添加预设的几个配置（不过不应该在这添加，因为不应该允许用户删除）
-        if (isFirst) {
-            OneProfile defaultProfile = new OneProfile(defaultProfileName);
-            ModelProvider.saveProfile(defaultProfile);
-            ModelProvider.makeCurrent(defaultProfile.name);
-        }
+        //添加预设的几个配置
+        if (isFirst)
+            ModelProvider.extractBundledProfilesFromAssets(c,true);
 
         initiated=true;
     }
+
+
 
     /**
      * 一些exagear的实现

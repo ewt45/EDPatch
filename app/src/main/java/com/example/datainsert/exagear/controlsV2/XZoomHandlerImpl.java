@@ -182,9 +182,9 @@ public class XZoomHandlerImpl implements XZoomHandler {
             viewTranslateY = (viewH - (visibleHeight * scaleY)) / 2.0f;
         }
 
-        Log.d(TAG, String.format("makeTransformationMatrix: 可见区域：%f,%f,%f,%f. 矩阵变化：%f,%f,%f,%f,%f,%f"
-                , visibleLeft, visibleTop, visibleWidth, visibleHeight,
-                xServerTranslateX, xServerTranslateY, scaleX, scaleY, viewTranslateX, viewTranslateY));
+//        Log.d(TAG, String.format("makeTransformationMatrix: 可见区域：%f,%f,%f,%f. 矩阵变化：%f,%f,%f,%f,%f,%f"
+//                , visibleLeft, visibleTop, visibleWidth, visibleHeight,
+//                xServerTranslateX, xServerTranslateY, scaleX, scaleY, viewTranslateX, viewTranslateY));
         //makeTransformationMatrix原本内容
         Matrix matrix = new Matrix();
         matrix.postTranslate(xServerTranslateX, xServerTranslateY);
