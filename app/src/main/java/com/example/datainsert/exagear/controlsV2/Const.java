@@ -106,7 +106,7 @@ public class Const {
 
         //添加预设的几个配置
         if (isFirst)
-            ModelProvider.extractBundledProfilesFromAssets(c,true);
+            ModelProvider.extractBundledProfilesFromAssets(c,false);
 
         initiated=true;
     }
