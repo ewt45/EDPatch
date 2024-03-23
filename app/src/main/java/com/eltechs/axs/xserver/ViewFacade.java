@@ -6,8 +6,6 @@ import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.xserver.helpers.WindowHelpers;
-import com.termux.x11.ViewForRendering;
-import com.termux.x11.input.InputStub;
 
 import java.util.ArrayList;
 
@@ -28,652 +26,205 @@ public class ViewFacade {
         return this.xServer;
     }
 
-    public void injectKeyPress(byte b) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectKeyPress(b, 0);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectKeyPress(byte keycode) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectKeyPress(keycode, 0);
         }
     }
 
-    public void injectKeyPressWithSym(byte b, int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectKeyPress(b, i);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectKeyPressWithSym(byte keycode, int keySym) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectKeyPress(keycode, keySym);
         }
     }
 
-    public void injectKeyRelease(byte b) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectKeyRelease(b, 0);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectKeyRelease(byte keycode) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectKeyRelease(keycode, 0);
         }
     }
 
-    public void injectKeyReleaseWithSym(byte b, int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectKeyRelease(b, i);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectKeyReleaseWithSym(byte keycode, int keySym) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectKeyRelease(keycode, keySym);
         }
     }
 
-    public void injectKeyType(byte b) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectKeyPress(b, 0);
-            this.xServer.getEventsInjector().injectKeyRelease(b, 0);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectKeyType(byte keycode) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectKeyPress(keycode, 0);
+            xServer.getEventsInjector().injectKeyRelease(keycode, 0);
         }
     }
 
-    public void injectKeyTypeWithSym(byte b, int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectKeyPress(b, i);
-            this.xServer.getEventsInjector().injectKeyRelease(b, i);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectKeyTypeWithSym(byte keycode, int keySym) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectKeyPress(keycode, keySym);
+            xServer.getEventsInjector().injectKeyRelease(keycode, keySym);
         }
     }
 
-    public void injectMultiKeyPress(byte[] bArr) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            for (byte b : bArr) {
-                this.xServer.getEventsInjector().injectKeyPress(b, 0);
-            }
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectMultiKeyPress(byte[] keycodes) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for (byte keycode : keycodes)
+                this.xServer.getEventsInjector().injectKeyPress(keycode, 0);
         }
     }
 
-    public void injectMultiKeyPressWithSym(byte[] bArr, byte[] bArr2) {
-        Assert.isTrue(bArr.length == bArr2.length);
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        for (int i = 0; i < bArr.length; i++) {
-            try {
-                this.xServer.getEventsInjector().injectKeyPress(bArr[i], bArr2[i]);
-            } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    if (lockForInputDevicesManipulation != null) {
-                        try {
-                            lockForInputDevicesManipulation.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    }
-                    throw th2;
-                }
-            }
-        }
-        if (lockForInputDevicesManipulation != null) {
-            lockForInputDevicesManipulation.close();
+    public void injectMultiKeyPressWithSym(byte[] keycodes, byte[] keySyms) {
+        Assert.isTrue(keycodes.length == keySyms.length);
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for (int i = 0; i < keycodes.length; i++)
+                xServer.getEventsInjector().injectKeyPress(keycodes[i], keySyms[i]);
         }
     }
 
-    public void injectMultiKeyRelease(byte[] bArr) {
+    public void injectMultiKeyRelease(byte[] keycodes) {
         try {
             Thread.sleep(50L);
         } catch (InterruptedException ignored) {
         }
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            for (byte b : bArr) {
-                this.xServer.getEventsInjector().injectKeyRelease(b, 0);
-            }
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for (byte keycode : keycodes)
+                this.xServer.getEventsInjector().injectKeyRelease(keycode, 0);
         }
     }
 
-    public void injectMultiKeyReleaseWithSym(byte[] bArr, int[] iArr) {
-        Assert.isTrue(bArr.length == iArr.length);
+    public void injectMultiKeyReleaseWithSym(byte[] keycodes, int[] keySyms) {
+        Assert.isTrue(keycodes.length == keySyms.length);
         try {
             Thread.sleep(50L);
         } catch (InterruptedException ignored) {
         }
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        for (int i = 0; i < bArr.length; i++) {
-            try {
-                this.xServer.getEventsInjector().injectKeyRelease(bArr[i], iArr[i]);
-            } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    if (lockForInputDevicesManipulation != null) {
-                        try {
-                            lockForInputDevicesManipulation.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    }
-                    throw th2;
-                }
-            }
-        }
-        if (lockForInputDevicesManipulation != null) {
-            lockForInputDevicesManipulation.close();
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for (int i = 0; i < keycodes.length; i++)
+                xServer.getEventsInjector().injectKeyRelease(keycodes[i], keySyms[i]);
         }
     }
 
-    public void injectMultiKeyType(byte[] bArr) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        Throwable th = null;
-        try {
-            for (byte b : bArr) {
-                this.xServer.getEventsInjector().injectKeyPress(b, 0);
+    public void injectMultiKeyType(byte[] keycodes) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for (byte keycode : keycodes) {
+                this.xServer.getEventsInjector().injectKeyPress(keycode, 0);
             }
             try {
                 Thread.sleep(50L);
             } catch (InterruptedException ignored) {
             }
-            for (byte b2 : bArr) {
-                this.xServer.getEventsInjector().injectKeyRelease(b2, 0);
+            for (byte keycode : keycodes) {
+                this.xServer.getEventsInjector().injectKeyRelease(keycode, 0);
             }
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th2) {
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-            throw th2;
         }
     }
 
-    public void injectMultiKeyTypeWithSym(byte[] bArr, int[] iArr) {
-        Assert.isTrue(bArr.length == iArr.length);
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        Throwable th = null;
-        for (int i = 0; i < bArr.length; i++) {
+    public void injectMultiKeyTypeWithSym(byte[] keycodes, int[] keySyms) {
+        Assert.isTrue(keycodes.length == keySyms.length);
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for (int i = 0; i < keycodes.length; i++)
+                xServer.getEventsInjector().injectKeyPress(keycodes[i], keySyms[i]);
             try {
-                this.xServer.getEventsInjector().injectKeyPress(bArr[i], iArr[i]);
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    lockForInputDevicesManipulation.close();
-                }
-                throw th2;
+                Thread.sleep(50L);
+            } catch (InterruptedException ignored) {
             }
-        }
-        try {
-            Thread.sleep(50L);
-        } catch (InterruptedException ignored) {
-        }
-        for (int i2 = 0; i2 < bArr.length; i2++) {
-            this.xServer.getEventsInjector().injectKeyRelease(bArr[i2], iArr[i2]);
-        }
-        if (lockForInputDevicesManipulation != null) {
-            lockForInputDevicesManipulation.close();
+            for (int i = 0; i < keycodes.length; i++) {
+                this.xServer.getEventsInjector().injectKeyRelease(keycodes[i], keySyms[i]);
+            }
         }
     }
 
     public void injectPointerMove(int x, int y) {
-//        Log.d("ViewFacade", String.format("injectPointerMove: 移动坐标 (%d,%d)",x,y));
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectPointerMove(x, y);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectPointerMove(x, y);
+        }
+    }
+
+    public void injectPointerDelta(int dx, int dy, int times) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            EventsInjector eventsInjector = xServer.getEventsInjector();
+            for (int i = 0; i < times; i++)
+                eventsInjector.injectPointerMove(xServer.getPointer().getX() + dx, xServer.getPointer().getY() + dy);
+        }
+    }
+
+    public void injectPointerDelta(int dx, int dy) {
+        injectPointerDelta(dx, dy, 1);
+    }
+
+    public void injectPointerButtonPress(int btnCode) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectPointerButtonPress(btnCode);
+        }
+    }
+
+    public void injectPointerWheelUp(int times) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for(int i=0; i<times; i++){
+                this.xServer.getEventsInjector().injectPointerButtonPress(Pointer.BUTTON_SCROLL_UP);
+                this.xServer.getEventsInjector().injectPointerButtonRelease(Pointer.BUTTON_SCROLL_UP);
             }
         }
     }
 
-    public void injectPointerDelta(int i, int i2, int times) {
-        Log.d("ViewFacade", String.format("injectPointerDelta: 偏移坐标 (%d,%d),次数 %d",i,i2,times));
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            EventsInjector eventsInjector = this.xServer.getEventsInjector();
-            for (int i4 = 0; i4 < times; i4++) {
-                ViewForRendering.mouseEvent(i,i2, InputStub.BUTTON_UNDEFINED,false,true);
-//                eventsInjector.injectPointerMove(this.xServer.getPointer().getX() + i, this.xServer.getPointer().getY() + i2);
-            }
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
+    public void injectPointerWheelDown(int times) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            for(int i=0; i<times; i++){
+                this.xServer.getEventsInjector().injectPointerButtonPress(Pointer.BUTTON_SCROLL_DOWN);
+                this.xServer.getEventsInjector().injectPointerButtonRelease(Pointer.BUTTON_SCROLL_DOWN);
             }
         }
     }
 
-    public void injectPointerDelta(int i, int i2) {
-        injectPointerDelta(i, i2, 1);
-    }
-
-    public void injectPointerButtonPress(int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectPointerButtonPress(i);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
-        }
-    }
-
-    public void injectPointerWheelUp(int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        while (true) {
-            int i2 = i - 1;
-            if (i <= 0) {
-                break;
-            }
-            try {
-                this.xServer.getEventsInjector().injectPointerButtonPress(4);
-                this.xServer.getEventsInjector().injectPointerButtonRelease(4);
-                i = i2;
-            } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    if (lockForInputDevicesManipulation != null) {
-                        try {
-                            lockForInputDevicesManipulation.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    }
-                    throw th2;
-                }
-            }
-        }
-        if (lockForInputDevicesManipulation != null) {
-            lockForInputDevicesManipulation.close();
-        }
-    }
-
-    public void injectPointerWheelDown(int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        while (true) {
-            int i2 = i - 1;
-            if (i <= 0) {
-                break;
-            }
-            try {
-                this.xServer.getEventsInjector().injectPointerButtonPress(5);
-                this.xServer.getEventsInjector().injectPointerButtonRelease(5);
-                i = i2;
-            } catch (Throwable th) {
-                try {
-                    throw th;
-                } catch (Throwable th2) {
-                    if (lockForInputDevicesManipulation != null) {
-                        try {
-                            lockForInputDevicesManipulation.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    }
-                    throw th2;
-                }
-            }
-        }
-        if (lockForInputDevicesManipulation != null) {
-            lockForInputDevicesManipulation.close();
-        }
-    }
-
-    public void injectPointerButtonRelease(int i) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            this.xServer.getEventsInjector().injectPointerButtonRelease(i);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void injectPointerButtonRelease(int btnCode) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            xServer.getEventsInjector().injectPointerButtonRelease(btnCode);
         }
     }
 
     public void addPointerListener(PointerListener pointerListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(LocksManager.Subsystem.INPUT_DEVICES);
-        try {
-            this.xServer.getPointer().addListener(pointerListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(LocksManager.Subsystem.INPUT_DEVICES)){
+            xServer.getPointer().addListener(pointerListener);
         }
     }
 
     public void removePointerListener(PointerListener pointerListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(LocksManager.Subsystem.INPUT_DEVICES);
-        try {
-            this.xServer.getPointer().removeListener(pointerListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(LocksManager.Subsystem.INPUT_DEVICES)){
+            xServer.getPointer().removeListener(pointerListener);
         }
     }
 
     public void addWindowLifecycleListener(WindowLifecycleListener windowLifecycleListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(LocksManager.Subsystem.WINDOWS_MANAGER);
-        try {
-            this.xServer.getWindowsManager().addWindowLifecycleListener(windowLifecycleListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(LocksManager.Subsystem.WINDOWS_MANAGER)){
+            xServer.getWindowsManager().addWindowLifecycleListener(windowLifecycleListener);
         }
     }
 
     public void removeWindowLifecycleListener(WindowLifecycleListener windowLifecycleListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(LocksManager.Subsystem.WINDOWS_MANAGER);
-        try {
-            this.xServer.getWindowsManager().removeWindowLifecycleListener(windowLifecycleListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(LocksManager.Subsystem.WINDOWS_MANAGER)){
+            xServer.getWindowsManager().removeWindowLifecycleListener(windowLifecycleListener);
         }
     }
 
-    public void addWindowContentModificationListner(WindowContentModificationListener windowContentModificationListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER});
-        try {
-            this.xServer.getWindowsManager().addWindowContentModificationListner(windowContentModificationListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void addWindowContentModificationListner(WindowContentModificationListener listener) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER})){
+            xServer.getWindowsManager().addWindowContentModificationListner(listener);
         }
     }
 
-    public void removeWindowContentModificationListner(WindowContentModificationListener windowContentModificationListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER});
-        try {
-            this.xServer.getWindowsManager().removeWindowContentModificationListner(windowContentModificationListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void removeWindowContentModificationListner(WindowContentModificationListener listener) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER})){
+            xServer.getWindowsManager().removeWindowContentModificationListner(listener);
         }
     }
 
     public void addWindowChangeListener(WindowChangeListener windowChangeListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER});
-        try {
-            this.xServer.getWindowsManager().addWindowChangeListener(windowChangeListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER})){
+            xServer.getWindowsManager().addWindowChangeListener(windowChangeListener);
         }
     }
 
     public void removeWindowChangeListener(WindowChangeListener windowChangeListener) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER});
-        try {
-            this.xServer.getWindowsManager().removeWindowChangeListener(windowChangeListener);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER})){
+            xServer.getWindowsManager().removeWindowChangeListener(windowChangeListener);
         }
     }
 
@@ -686,107 +237,45 @@ public class ViewFacade {
     }
 
     public void walkDrawables(DrawableHandler drawableHandler) {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER, LocksManager.Subsystem.CURSORS_MANAGER, LocksManager.Subsystem.INPUT_DEVICES});
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER, LocksManager.Subsystem.CURSORS_MANAGER, LocksManager.Subsystem.INPUT_DEVICES})){
             walkWindow(this.xServer.getWindowsManager().getRootWindow(), 0, 0, drawableHandler);
-            if (lock != null) {
-                lock.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     public ArrayList<PlacedDrawable> listNonRootWindowDrawables() {
         final ArrayList<PlacedDrawable> arrayList = new ArrayList<>();
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER});
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER})){
             final Window rootWindow = this.xServer.getWindowsManager().getRootWindow();
-            walkWindow(this.xServer.getWindowsManager().getRootWindow(), 0, 0, new DrawableHandler() { // from class: com.eltechs.axs.xserver.ViewFacade.1
-                @Override // com.eltechs.axs.xserver.ViewFacade.DrawableHandler
-                public void handle(PlacedDrawable placedDrawable) {
-                    if (placedDrawable.getDrawable() != rootWindow.getActiveBackingStore()) {
-                        arrayList.add(placedDrawable);
-                    }
+            walkWindow(this.xServer.getWindowsManager().getRootWindow(), 0, 0, placedDrawable -> {
+                if (placedDrawable.getDrawable() != rootWindow.getActiveBackingStore()) {
+                    arrayList.add(placedDrawable);
                 }
             });
-            if (lock != null) {
-                lock.close();
-            }
             return arrayList;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     public PlacedDrawable getCursorDrawable() {
         final ArrayList<PlacedDrawable> arrayList = new ArrayList<>();
-        LocksManager.XLock lock = this.xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER, LocksManager.Subsystem.INPUT_DEVICES, LocksManager.Subsystem.CURSORS_MANAGER});
-
-        try {
-            walkCursor(new DrawableHandler() { // from class: com.eltechs.axs.xserver.ViewFacade.2
-                @Override // com.eltechs.axs.xserver.ViewFacade.DrawableHandler
-                public void handle(PlacedDrawable placedDrawable) {
-                    arrayList.add(placedDrawable);
-                }
-            });
-            PlacedDrawable placedDrawable = arrayList.size() > 0 ? arrayList.get(0) : null;
-            if (lock != null) {
-                lock.close();
-            }
-            return placedDrawable;
-        } catch (Throwable th) {
-            if (lock != null) {
-                try {
-                    lock.close();
-                } catch (Throwable th3) {
-                    th.addSuppressed(th3);
-                }
-            }
-            throw th;
+        try (LocksManager.XLock lock = xServer.getLocksManager().lock(new LocksManager.Subsystem[]{LocksManager.Subsystem.WINDOWS_MANAGER, LocksManager.Subsystem.DRAWABLES_MANAGER, LocksManager.Subsystem.INPUT_DEVICES, LocksManager.Subsystem.CURSORS_MANAGER})){
+            walkCursor(placedDrawable -> arrayList.add(placedDrawable));
+            return !arrayList.isEmpty() ? arrayList.get(0) : null;
         }
     }
 
-    private void walkWindow(Window window, int i, int i2, DrawableHandler drawableHandler) {
+    private void walkWindow(Window window, int x, int y, DrawableHandler drawableHandler) {
         if (window.getWindowAttributes().isMapped()) {
             Drawable activeBackingStore = window.getActiveBackingStore();
-            drawableHandler.handle(new PlacedDrawable(activeBackingStore, new Rectangle(i, i2, activeBackingStore.getWidth(), activeBackingStore.getHeight())));
-            for (Window window2 : window.getChildrenBottomToTop()) {
-                walkWindow(window2, window2.getBoundingRectangle().x + i, window2.getBoundingRectangle().y + i2, drawableHandler);
+            drawableHandler.handle(new PlacedDrawable(activeBackingStore, new Rectangle(x, y, activeBackingStore.getWidth(), activeBackingStore.getHeight())));
+            for (Window child : window.getChildrenBottomToTop()) {
+                walkWindow(child, child.getBoundingRectangle().x + x, child.getBoundingRectangle().y + y, drawableHandler);
             }
         }
     }
 
     private void walkCursor(DrawableHandler drawableHandler) {
         Cursor cursor;
-        Window targetWindow = WindowHelpers.getLeafMappedSubWindowByCoords(this.xServer.getWindowsManager().getRootWindow(), this.xServer.getPointer().getX(), this.xServer.getPointer().getY());
-
-        //试试获取父窗口的光标(在getCursor里更改了）
-//        while (targetWindow!=null && targetWindow.getWindowAttributes().getCursor()==null)
-//            targetWindow= targetWindow.getParent();
-
+        Window targetWindow = WindowHelpers.getLeafMappedSubWindowByCoords(xServer.getWindowsManager().getRootWindow(), xServer.getPointer().getX(), xServer.getPointer().getY());
         if (targetWindow == null || (cursor = targetWindow.getWindowAttributes().getCursor()) == null) {
             return;
         }
@@ -798,184 +287,61 @@ public class ViewFacade {
     }
 
     public Point getPointerLocation() {
-        LocksManager.XLock lock = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
             Pointer pointer = this.xServer.getPointer();
-            Point point = new Point(pointer.getX(), pointer.getY());
-            if (lock != null) {
-                lock.close();
-            }
-            return point;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    try {
-                        lock.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+            return new Point(pointer.getX(), pointer.getY());
         }
     }
 
     public void addKeyboardListener(KeyboardListener keyboardListener) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
             this.xServer.getKeyboard().addKeyListener(keyboardListener);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     public void removeKeyboardListener(KeyboardListener keyboardListener) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
             this.xServer.getKeyboard().removeKeyListener(keyboardListener);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     public void addKeyboardModifiersChangeListener(KeyboardModifiersListener keyboardModifiersListener) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
             this.xServer.getKeyboard().addModifierListener(keyboardModifiersListener);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     public void removeKeyboardModifiersChangeListener(KeyboardModifiersListener keyboardModifiersListener) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
             this.xServer.getKeyboard().removeModifierListener(keyboardModifiersListener);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
-    public void setModifierState(KeyButNames keyButNames, boolean z, byte b, boolean z2) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
+    public void setModifierState(KeyButNames keyButNames, boolean z, byte keycode, boolean release) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
             if (this.xServer.getKeyboard().getModifiersMask().isSet(keyButNames) == z) {
-                if (lockForInputDevicesManipulation != null) {
-                    lockForInputDevicesManipulation.close();
-                    return;
-                }
                 return;
             }
             if (this.xServer.getKeyboard().getModifiersMask().isSet(keyButNames)) {
-                if (z2) {
-                    this.xServer.getKeyboard().keyReleased(b, 0);
+                if (release) {
+                    this.xServer.getKeyboard().keyReleased(keycode, 0);
                 } else {
-                    this.xServer.getKeyboard().keyPressed(b, 0);
-                    this.xServer.getKeyboard().keyReleased(b, 0);
+                    this.xServer.getKeyboard().keyPressed(keycode, 0);
+                    this.xServer.getKeyboard().keyReleased(keycode, 0);
                 }
-            } else if (z2) {
-                this.xServer.getKeyboard().keyPressed(b, 0);
+            } else if (release) {
+                this.xServer.getKeyboard().keyPressed(keycode, 0);
             } else {
-                this.xServer.getKeyboard().keyPressed(b, 0);
-                this.xServer.getKeyboard().keyReleased(b, 0);
-            }
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
+                this.xServer.getKeyboard().keyPressed(keycode, 0);
+                this.xServer.getKeyboard().keyReleased(keycode, 0);
             }
         }
+
     }
 
-    public void switchModifierState(KeyButNames keyButNames, byte b, boolean z) {
-        LocksManager.XLock lockForInputDevicesManipulation = this.xServer.getLocksManager().lockForInputDevicesManipulation();
-        try {
-            setModifierState(keyButNames, !this.xServer.getKeyboard().getModifiersMask().isSet(keyButNames), b, z);
-            if (lockForInputDevicesManipulation != null) {
-                lockForInputDevicesManipulation.close();
-            }
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lockForInputDevicesManipulation != null) {
-                    try {
-                        lockForInputDevicesManipulation.close();
-                    } catch (Throwable th3) {
-                        th.addSuppressed(th3);
-                    }
-                }
-                throw th2;
-            }
+    public void switchModifierState(KeyButNames keyButNames, byte keycode, boolean release) {
+        try (LocksManager.XLock lock = xServer.getLocksManager().lockForInputDevicesManipulation()){
+            setModifierState(keyButNames, !this.xServer.getKeyboard().getModifiersMask().isSet(keyButNames), keycode, release);
         }
     }
 }

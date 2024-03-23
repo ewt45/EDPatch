@@ -257,7 +257,7 @@ public class PointerEventSender implements PointerListener, WindowLifecycleListe
                 return;
             }
         }
-        Log.d(TAG, "pointerMoved: 将motionotify送给XClientWindowListener");
+//        Log.d(TAG, "pointerMoved: 将motionotify送给XClientWindowListener");
         ancestorWithDeviceEventMask.getEventListenersList().sendEventForEventMask(motionNotify, createCurrentEventMask);
     }
 

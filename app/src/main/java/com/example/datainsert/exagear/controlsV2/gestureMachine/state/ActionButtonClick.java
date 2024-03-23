@@ -36,6 +36,12 @@ public class ActionButtonClick extends FSMAction2 {
     public void run() {
         if (mDoPress)
             Const.getXServerHolder().pressKeyOrPointer(mKeycode);
+        //延迟50毫秒再松开，否则wine可能读取不到
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         if (mDoRelease)
             Const.getXServerHolder().releaseKeyOrPointer(mKeycode);
     }

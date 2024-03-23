@@ -77,7 +77,7 @@ public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapt
             return;
 
         if (!startMove)
-            startMove = GeometryHelpers.distance(firstXY[0], firstXY[1], finger.getX(), finger.getY()) >= mNoMoveThreshold;
+            startMove = GeometryHelpers.distance(firstXY[0], firstXY[1], finger.getX(), finger.getY()) > mNoMoveThreshold;
 
         if (startMove)
             this.moveAdapter.moveTo(finger.getX(), finger.getY());

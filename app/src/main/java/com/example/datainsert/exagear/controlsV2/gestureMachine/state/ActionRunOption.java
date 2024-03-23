@@ -50,7 +50,7 @@ public class ActionRunOption extends FSMAction2 {
         LimitEditText editOption = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_GIVEN_OPTIONS)
                 .setSelectableOptions(OptionsProvider.optionsInt,OptionsProvider.optionsName)
-                .setSelectedValue(OptionsProvider.OPTION_SHOW_SOFT_INPUT)
+                .setSelectedValue(mOptionType)
                 .setUpdateListener(editText -> mOptionType = editText.getSelectedValue());
         return createEditViewQuickly(c,new String[][]{{/*操作*/RR.getS(RR.ctr2_stateProp_option),null}},new View[]{editOption});
     }

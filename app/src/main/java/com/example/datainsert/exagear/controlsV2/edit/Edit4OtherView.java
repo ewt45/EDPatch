@@ -1,6 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.edit;
 
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.extractBundledProfilesFromAssets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -61,6 +62,12 @@ public class Edit4OtherView extends LinearLayout {
         btnGc.setText("Java Garbage Collection");
         btnGc.setOnClickListener(v-> System.gc());
 
+        //重新解压内置配置
+        Button btnBundledProfiles = new Button(c);
+        btnBundledProfiles.setAllCaps(false);
+        btnBundledProfiles.setText("Re-extract Bundled Profiles");
+        btnBundledProfiles.setOnClickListener(v-> extractBundledProfilesFromAssets(v.getContext(),true));
+
         LinearLayout linearSaves = new LinearLayout(c);
         linearSaves.setOrientation(HORIZONTAL);
         linearSaves.setVerticalGravity(Gravity.CENTER);
@@ -70,6 +77,7 @@ public class Edit4OtherView extends LinearLayout {
         addView(linearSaves);
         addView(QH.getOneLineWithTitle(c,/*鼠标移动速度倍率*/getS(RR.ctr2_other_mouseSpeed),editMsMvSpd,true), QH.LPLinear.one(-1, -2).top().left().right().to());
         addView(switchShowArea,QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(btnBundledProfiles,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
 //        addView(btnGc,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(new View(c),QH.LPLinear.one(-1,-2).bottom().to());
