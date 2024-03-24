@@ -104,9 +104,8 @@ public class Edit3ProfilesView extends LinearLayout {
     /**
      * 显示一个对话框，让用户输入配置名称。
      * <br/> 新建空白profile/复制现有profile/为现有profile重命名/为导入profile重命名
-     *
      * @param refName   若不为null，则使用此profile作为参考/编辑
-     * @param createNew 若为true，则新建一个profile。若为false，则修改现有profile的名称
+     * @param createNew 若为true，则新建一个profile且不删掉ref。若为false，则修改现有profile的名称（删掉ref对应文件）
      */
     @SuppressLint("NotifyDataSetChanged")
     private static void showEditNameDialog(Context c, @Nullable String refName, boolean createNew, ProfileAdapter adapter) {
@@ -115,21 +114,21 @@ public class Edit3ProfilesView extends LinearLayout {
 
         TextView tvWarn = new TextView(c);
         tvWarn.setTextColor(0xffF56C6C);
-        tvWarn.setText("名称与现有配置重复，或包含特殊字符");
+        tvWarn.setText(getS(RR.ctr2_profile_editNameWarn)); //某些情况下允许重复
 
-        //关闭dialog时回调
+        //关闭dialog时回调. 初始enable在下面的editName，先设置监听再设置初始值，触发监听就行了
         Button btnYes = QH.getBorderlessColoredButton(c,c.getString(android.R.string.yes));
-        btnYes.setEnabled(refName!=null && getNiceProfileName(refName).equals(refName));
 
         LimitEditText editName = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_TEXT_SINGLE_LINE)
-                .setStringValue(refName!=null?refName:"")
                 .setUpdateListener(editText -> {
                     String inputName = editText.getStringValue();
-                    boolean allowed = getNiceProfileName(inputName).equals(inputName);
+                    //如果输入名称与修正后名称不等，说明该名称重复或包含特殊字符。但是如果是在重命名，那么允许输入名称与原名称重复
+                    boolean allowed = (!createNew && refName.equals(inputName)) || getNiceProfileName(inputName).equals(inputName);
                     tvWarn.setVisibility(allowed ? GONE : VISIBLE);
                     btnYes.setEnabled(allowed);
-                 });
+                 })
+                .setStringValue(refName!=null?refName:"");
 
         LinearLayout linearEditNameRoot = new LinearLayout(c);
         linearEditNameRoot.setOrientation(VERTICAL);
@@ -231,8 +230,9 @@ public class Edit3ProfilesView extends LinearLayout {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 String[] itemNames = getSArr(RR.ctr2_profile_oneOptions);
                 popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 1, itemNames[0]);//导出为文件
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//重命名
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//删除
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//复制
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//重命名
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 4, itemNames[3]);//删除
 
                 ControlsFragment.IntentResultCallback exportCallback = (requestCode, resultCode, data) -> {
                     String[] exportMsgs = getSArr(RR.ctr2_profile_exportMsgs);
@@ -254,10 +254,13 @@ public class Edit3ProfilesView extends LinearLayout {
                         case 1: //导出
                             Const.getControlFragment().requestExportProfile(profileName, exportCallback);
                             break;
-                        case 2: //重命名
+                        case 2: //复制
+                            showEditNameDialog(v.getContext(), profileName, true, this);
+                            break;
+                        case 3: //重命名
                             showEditNameDialog(v.getContext(), profileName, false, this);
                             break;
-                        case 3: //删除
+                        case 4: //删除
                             //只剩一个 不删。 被选中的删了，切换选中到第一个
                             if (getDataList().size() == 1)
                                 break;

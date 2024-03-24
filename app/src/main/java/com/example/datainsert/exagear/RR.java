@@ -255,6 +255,7 @@ public class RR {
     public static int global_quit = 249;
     public static int ctr2_option_showAll = 250;
     public static int ctr2_option_softInput = 251;
+    public static int ctr2_option_fullscreen = 263;
     public static int ctr2_profile_importMsgs=252;
     public static int ctr2_profile_exportMsgs=253;
     public static int ctr2_profile_addOptions=254;
@@ -265,10 +266,10 @@ public class RR {
     public static int ctr2_other_saveExit=259;
     public static int ctr2_other_mouseSpeed=260;
     public static int ctr2_other_showTouchArea = 261;
-    public static int ctr2_editExitConfirm = 262;
-    public static int ctr2_option_fullscreen = 263;
     public static int ctr2_other_reExtract = 264;
     public static int ctr2_other_syncFallout = 265;
+    public static int ctr2_editExitConfirm = 262;
+    public static int ctr2_profile_editNameWarn = 266;
 
 
 
@@ -532,7 +533,7 @@ public class RR {
         zhArray.put(ctr2_profile_importMsgs,"导入成功: $导入失败: ");
         zhArray.put(ctr2_profile_exportMsgs,"导出成功: $导出失败: ");
         zhArray.put(ctr2_profile_addOptions,"空白配置$复制现有配置$从本地文件导入");
-        zhArray.put(ctr2_profile_oneOptions,"导出为文件$重命名$删除");
+        zhArray.put(ctr2_profile_oneOptions,"导出为文件$复制一份$重命名$删除");
         zhArray.put(ctr2_profile_editName,"配置名称");
         zhArray.put(ctr2_profile_delConfirm,"确定要删除吗？");
         zhArray.put(global_save,"保存");
@@ -543,6 +544,7 @@ public class RR {
         zhArray.put(ctr2_option_fullscreen,"切换拉伸全屏");
         zhArray.put(ctr2_other_reExtract,"还原内置配置");
         zhArray.put(ctr2_other_syncFallout,"修复鼠标位置与光标偏移");
+        zhArray.put(ctr2_profile_editNameWarn,"名称与现有配置重复，或包含特殊字符");
         /*
 
 
@@ -815,7 +817,7 @@ public class RR {
         enArray.put(ctr2_profile_importMsgs,"Import succeeded: $Import failed: ");
         enArray.put(ctr2_profile_exportMsgs,"Export succeeded: $Export failed: ");
         enArray.put(ctr2_profile_addOptions,"Empty profile$Copy existing profile$Import from local file");
-        enArray.put(ctr2_profile_oneOptions,"Export as file$Rename$Delete");
+        enArray.put(ctr2_profile_oneOptions,"Export as file$Duplicate$Rename$Delete");
         enArray.put(ctr2_profile_editName,"Profile name");
         enArray.put(ctr2_profile_delConfirm,"Delete this profile?");
         enArray.put(global_save,"Save");
