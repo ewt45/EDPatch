@@ -275,9 +275,9 @@ public class ModelProvider {
     }
 
     /**
-     * 从uri读取出一个oneProfile对象，并存入profilesDir
+     * 从uri读取出一个oneProfile对象，不存入profilesDir
      */
-    public static OneProfile importProfileFromUri(Uri uri) throws Exception {
+    public static OneProfile readProfileFromUri(Uri uri) throws Exception {
         Context c = Const.getContext();
         File tmpFile = new File(c.getFilesDir(), "tmp_control_profile");
         tmpFile.delete();
@@ -286,13 +286,11 @@ public class ModelProvider {
             assert is != null;
             IOUtils.copy(is, fos);
         }
-        OneProfile profile = readProfileFromFile(tmpFile);
 
-        String fitName = getNiceProfileName(profile.name);
-        profile.name = fitName;
-        FileUtils.moveFile(tmpFile, new File(profilesDir, fitName));
+//        profile.name = getNiceProfileName(profile.name);
+//        saveProfile(profile);
 
-        return profile;
+        return readProfileFromFile(tmpFile);
 
     }
 

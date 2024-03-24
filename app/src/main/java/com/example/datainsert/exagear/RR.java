@@ -266,6 +266,9 @@ public class RR {
     public static int ctr2_other_mouseSpeed=260;
     public static int ctr2_other_showTouchArea = 261;
     public static int ctr2_editExitConfirm = 262;
+    public static int ctr2_option_fullscreen = 263;
+    public static int ctr2_other_reExtract = 264;
+    public static int ctr2_other_syncFallout = 265;
 
 
 
@@ -537,7 +540,9 @@ public class RR {
         zhArray.put(ctr2_other_mouseSpeed,"鼠标移动速度倍率");
         zhArray.put(ctr2_other_showTouchArea,"显示屏幕按键 (退出编辑时生效)");
         zhArray.put(ctr2_editExitConfirm,"保存并退出编辑模式？");
-
+        zhArray.put(ctr2_option_fullscreen,"切换拉伸全屏");
+        zhArray.put(ctr2_other_reExtract,"还原内置配置");
+        zhArray.put(ctr2_other_syncFallout,"修复鼠标位置与光标偏移");
         /*
 
 
@@ -818,6 +823,10 @@ public class RR {
         enArray.put(ctr2_other_mouseSpeed,"Mouse movement speed multiplier");
         enArray.put(ctr2_other_showTouchArea,"Show buttons on screen \n(take effect after exit edit mode)");
         enArray.put(ctr2_editExitConfirm,"Save and exit Edit Mode?");
+        enArray.put(ctr2_option_fullscreen,"Toggle stretched fullscreen");
+        enArray.put(ctr2_other_reExtract,"Reset bundled profiles");
+        enArray.put(ctr2_other_syncFallout,"Sync pointer and cursor drawable location\n(Fallout Sync Button)");
+
 
         /*
 

@@ -8,6 +8,8 @@ import static android.widget.LinearLayout.HORIZONTAL;
 import static com.eltechs.ed.guestContainers.GuestContainerConfig.CONTAINER_CONFIG_FILE_KEY_PREFIX;
 import static com.example.datainsert.exagear.RR.dimen.dialogPadding;
 import static com.example.datainsert.exagear.RR.dimen.margin8Dp;
+import static com.example.datainsert.exagear.controlsV2.Const.dp8;
+import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.getNiceProfileName;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -175,6 +177,29 @@ public class QH {
         //contentdrawable和maskdrawable用来限制波纹边界
         background = new RippleDrawable(ColorStateList.valueOf(Color.GRAY), contentDrawable, maskDrawable);
         ViewCompat.setBackground(view, background);
+    }
+
+    /**
+     * 获取一个透明波纹背景，带颜色文字的按钮。文字边缘加8dp的padding
+     */
+    public static Button getBorderlessColoredButton(Context c, String text){
+        Button btn = new Button(c);
+        QH.setRippleBackground(btn);
+        btn.setText(text);
+        btn.setAllCaps(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            btn.setTextAppearance(android.R.style.TextAppearance_Material_Widget_Button_Borderless_Colored);
+        int dp8 = RR.dimen.margin8Dp();
+        btn.setMinHeight(0);
+        btn.setMinimumHeight(0);
+        btn.setMinWidth(0);
+        btn.setMinimumWidth(0);
+        btn.setPadding(dp8,dp8,dp8,dp8);
+//        btn.setMinHeight(dp8 * 5);
+//        btn.setMinimumHeight(dp8 * 5);
+//        btn.setMinWidth(dp8 * 5);
+//        btn.setMinimumWidth(dp8 * 5);
+        return btn;
     }
 
     /**
@@ -476,6 +501,17 @@ public class QH {
             } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    /**
+     * Thread.sleep。内部try catch
+     */
+    public static void sleep(long millis) {
+        try {
+            Thread.sleep(millis, 0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

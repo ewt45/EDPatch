@@ -162,4 +162,8 @@ public class OneProfile {
     public OneGestureArea getGestureAreaModel(){
         return (OneGestureArea) modelList.get(modelList.size()-1);
     }
+
+    public String getName() {
+        return name;
+    }
 }
