@@ -3,10 +3,10 @@ package com.example.datainsert.exagear.controlsV2.edit;
 import static com.example.datainsert.exagear.RR.getSArr;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.getNiceProfileName;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -16,11 +16,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.Menu;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.ControlsFragment;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
@@ -55,9 +56,12 @@ public class Edit3ProfilesView extends LinearLayout {
         ControlsFragment.IntentResultCallback importCallback = (requestCode, resultCode, data) -> {
             String[] msgs = getSArr(RR.ctr2_profile_importMsgs);
             try {
-                OneProfile oneProfile = ModelProvider.importProfileFromUri(data.getData());
-                profileAdapter.refreshDataSet(true); //导入成功后要刷新列表显示
-                Toast.makeText(Const.getContext(), /*导入成功*/msgs[0]+oneProfile.name, Toast.LENGTH_SHORT).show();
+                //先把要导入的配置替换合理名称导入到本地。然后显示编辑名称的dialog，当做是在对现有配置重命名
+                OneProfile profile = ModelProvider.readProfileFromUri(data.getData());
+                profile.name = getNiceProfileName(profile.name);
+                ModelProvider.saveProfile(profile);
+                Toast.makeText(Const.getContext(), /*导入成功*/msgs[0]+profile.getName(), Toast.LENGTH_SHORT).show();
+                showEditNameDialog(c,profile.name,false,profileAdapter);
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(Const.getContext(),/*导入失败*/ msgs[1] + e.getCause(), Toast.LENGTH_SHORT).show();
@@ -99,44 +103,62 @@ public class Edit3ProfilesView extends LinearLayout {
 
     /**
      * 显示一个对话框，让用户输入配置名称。
-     * <br/> 结束时，新建profile或重命名
-     *
-     * @param refName   若不为null，则使用提供的名字
-     * @param createNew 若为true，则新建一个profile。若为false，则修改现有profile的名称
+     * <br/> 新建空白profile/复制现有profile/为现有profile重命名/为导入profile重命名
+     * @param refName   若不为null，则使用此profile作为参考/编辑
+     * @param createNew 若为true，则新建一个profile且不删掉ref。若为false，则修改现有profile的名称（删掉ref对应文件）
      */
     @SuppressLint("NotifyDataSetChanged")
-    public static void showEditNameDialog(Context c, @Nullable String refName, boolean createNew, ProfileAdapter adapter) {
+    private static void showEditNameDialog(Context c, @Nullable String refName, boolean createNew, ProfileAdapter adapter) {
         if (!createNew && refName == null)
             throw new RuntimeException("若为重命名操作，则必须提供配置的当前名称");
 
+        TextView tvWarn = new TextView(c);
+        tvWarn.setTextColor(0xffF56C6C);
+        tvWarn.setText(getS(RR.ctr2_profile_editNameWarn)); //某些情况下允许重复
+
+        //关闭dialog时回调. 初始enable在下面的editName，先设置监听再设置初始值，触发监听就行了
+        Button btnYes = QH.getBorderlessColoredButton(c,c.getString(android.R.string.yes));
+
         LimitEditText editName = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_TEXT_SINGLE_LINE)
+                .setUpdateListener(editText -> {
+                    String inputName = editText.getStringValue();
+                    //如果输入名称与修正后名称不等，说明该名称重复或包含特殊字符。但是如果是在重命名，那么允许输入名称与原名称重复
+                    boolean allowed = (!createNew && refName.equals(inputName)) || getNiceProfileName(inputName).equals(inputName);
+                    tvWarn.setVisibility(allowed ? GONE : VISIBLE);
+                    btnYes.setEnabled(allowed);
+                 })
                 .setStringValue(refName!=null?refName:"");
 
-        FrameLayout frameRoot = new FrameLayout(c);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-1, -2);
-        params.setMargins(dp8, dp8, dp8, dp8);
-        frameRoot.addView(editName, params);
-        new AlertDialog.Builder(c)
+        LinearLayout linearEditNameRoot = new LinearLayout(c);
+        linearEditNameRoot.setOrientation(VERTICAL);
+        linearEditNameRoot.addView(editName,QH.LPLinear.one(-1,-2).left().right().top().to());
+        linearEditNameRoot.addView(tvWarn,QH.LPLinear.one(-1,-2).left().right().top().to());
+        linearEditNameRoot.addView(btnYes,QH.LPLinear.one(-2,-2).gravity(Gravity.END).margin(0,dp8,dp8*2,dp8).to());
+        AlertDialog dialog = new AlertDialog.Builder(c)
                 .setTitle(getS(RR.ctr2_profile_editName))//配置名称
-                .setView(frameRoot)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                    TestHelper.saveCurrentEditProfileToFile();
-                    String finalName = ModelProvider.getNiceProfileName(editName.getStringValue());
-                    ModelProvider.createNewProfile(finalName, refName, true); //新建
-                    if (!createNew){
-                        boolean b = new File(ModelProvider.profilesDir, refName).delete();//重命名也相当于新建一个，然后把旧的删了就行
-                    }
-                    //创建完了之后，需要刷新回收视图.
-                    adapter.refreshDataSet(true);
+                .setView(linearEditNameRoot)
+                .setCancelable(true)
+                .create();
+        btnYes.setOnClickListener(v-> {
+            TestHelper.saveCurrentEditProfileToFile();
+            String finalName = editName.getStringValue();
+            if(!finalName.equals(refName)){
+                ModelProvider.createNewProfile(finalName, refName, true); //新建
+                if (!createNew){
+                    boolean b = new File(ModelProvider.profilesDir, refName).delete();//重命名也相当于新建一个，然后把旧的删了就行
+                }
+            }
+            //创建完了之后，需要刷新回收视图.
+            adapter.refreshDataSet(true);
+            adapter.setCheckedItem(finalName); //在这里将新的profile实例设置到touchAreaView上
 
-                    boolean needResetSelected = createNew || adapter.getDataList().get(adapter.currentSelect).equals(refName);
-                    if (needResetSelected)
-                        adapter.setCheckedItem(finalName); //在这里将新的profile实例设置到touchAreaView上
-                })
-                .setCancelable(false)
-                .show();
+            dialog.dismiss();
+        });
+        dialog.show();
+
+
+
     }
 
     public static class ProfileAdapter extends RecyclerAdapter<String> {
@@ -208,8 +230,9 @@ public class Edit3ProfilesView extends LinearLayout {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 String[] itemNames = getSArr(RR.ctr2_profile_oneOptions);
                 popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 1, itemNames[0]);//导出为文件
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//重命名
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//删除
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//复制
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//重命名
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 4, itemNames[3]);//删除
 
                 ControlsFragment.IntentResultCallback exportCallback = (requestCode, resultCode, data) -> {
                     String[] exportMsgs = getSArr(RR.ctr2_profile_exportMsgs);
@@ -220,6 +243,7 @@ public class Edit3ProfilesView extends LinearLayout {
                         Toast.makeText(Const.getContext(), /*失败*/exportMsgs[1]+ e.getCause(), Toast.LENGTH_SHORT).show();
                     }
                 };
+                //TODO 是否应该在此处也添加一个复制配置的选项？
                 //由于编辑的model放在内存，有修改操作时（导出，复制，切换，重命名，退出编辑）时都应该将当前model同步到本地(saveProfile())，然后再操作
                 popupMenu.setOnMenuItemClickListener(item -> {
                     TestHelper.saveCurrentEditProfileToFile();
@@ -230,10 +254,13 @@ public class Edit3ProfilesView extends LinearLayout {
                         case 1: //导出
                             Const.getControlFragment().requestExportProfile(profileName, exportCallback);
                             break;
-                        case 2: //重命名
+                        case 2: //复制
+                            showEditNameDialog(v.getContext(), profileName, true, this);
+                            break;
+                        case 3: //重命名
                             showEditNameDialog(v.getContext(), profileName, false, this);
                             break;
-                        case 3: //删除
+                        case 4: //删除
                             //只剩一个 不删。 被选中的删了，切换选中到第一个
                             if (getDataList().size() == 1)
                                 break;
@@ -253,5 +280,8 @@ public class Edit3ProfilesView extends LinearLayout {
                 popupMenu.show();
             });
         }
+    }
+    private interface EditNameCallback{
+        void call(String name);
     }
 }

@@ -16,7 +16,8 @@ public class OptionsProvider {
 //    public static final int OPTION_EMPTY = 0;
     public static final int OPTION_SHOW_SOFT_INPUT = 1;
     public static final int OPTION_SHOW_ALL_OPTIONS = 2;
-    public static final int[] optionsInt = {OPTION_SHOW_SOFT_INPUT,OPTION_SHOW_ALL_OPTIONS};
+    public static final int OPTION_TOGGLE_FULLSCREEN = 3;
+    public static final int[] optionsInt = {OPTION_SHOW_SOFT_INPUT,OPTION_SHOW_ALL_OPTIONS,OPTION_TOGGLE_FULLSCREEN};
     public static final String[] optionsName;
     /**
      * 初始时必须将全部OPTION放入map中，没有的就放EMPTY
@@ -27,6 +28,7 @@ public class OptionsProvider {
 //        optionsLoader.put(OPTION_EMPTY, EMPTY_OPTION.class);
         optionsLoader.put(OPTION_SHOW_SOFT_INPUT, new OptionToggleSoftInput());
         optionsLoader.put(OPTION_SHOW_ALL_OPTIONS, new OptionShowAllOptions());
+        optionsLoader.put(OPTION_TOGGLE_FULLSCREEN, new OptionToggleFullScreen());
 
         optionsName = new String[optionsInt.length];
         for(int i=0; i< optionsInt.length; i++){
@@ -45,7 +47,7 @@ public class OptionsProvider {
 //        }
     }
 
-    @IntDef({ OPTION_SHOW_SOFT_INPUT,OPTION_SHOW_ALL_OPTIONS})
+    @IntDef({ OPTION_SHOW_SOFT_INPUT,OPTION_SHOW_ALL_OPTIONS,OPTION_TOGGLE_FULLSCREEN})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface OptionType {
     }

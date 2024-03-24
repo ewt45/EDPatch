@@ -64,6 +64,7 @@ public class OptionShowAllOptions extends AbstractOption{
         linearRoot.setLayoutTransition(layoutTransition);
         linearRoot.addView(linearControlOuter);
         linearRoot.addView(addOption(new OptionToggleSoftInput()));
+        linearRoot.addView(addOption(new OptionToggleFullScreen()));
         linearRoot.addView(addOption(new OptionQuit()));
         linearRoot.addView(tvCancel);
 

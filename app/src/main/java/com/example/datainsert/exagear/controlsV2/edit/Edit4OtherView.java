@@ -5,18 +5,21 @@ import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.extr
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
+import com.eltechs.axs.helpers.UiThread;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.controlsV2.widget.TabPagerLayout;
 
 public class Edit4OtherView extends LinearLayout {
     @SuppressLint("SetTextI18n")
@@ -38,7 +41,7 @@ public class Edit4OtherView extends LinearLayout {
         //鼠标移速
         LimitEditText editMsMvSpd = new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)
-                .setRange(0f, 4f)
+                .setRange(0f, 30f)
                 .setFloatValue(Const.getActiveProfile().getMouseMoveSpeed())
                 .setUpdateListener(editText -> Const.getActiveProfile().setMouseMoveSpeed(editText.getFloatValue()));
 
@@ -65,8 +68,32 @@ public class Edit4OtherView extends LinearLayout {
         //重新解压内置配置
         Button btnBundledProfiles = new Button(c);
         btnBundledProfiles.setAllCaps(false);
-        btnBundledProfiles.setText("Re-extract Bundled Profiles");
+        btnBundledProfiles.setText(RR.getS(RR.ctr2_other_reExtract));
         btnBundledProfiles.setOnClickListener(v-> extractBundledProfilesFromAssets(v.getContext(),true));
+
+        //修复鼠标偏移
+        Button btnSyncFallout = new Button(c);
+        btnSyncFallout.setAllCaps(false);
+        btnSyncFallout.setText(getS(RR.ctr2_other_syncFallout));
+        btnSyncFallout.setOnClickListener(v->{
+            //编辑模式下屏蔽了鼠标移动，所以要先退出编辑模式。。。
+            btnExitEdit.performClick();
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(()->{
+                //才发现原exa的sync按钮，用的是PointerEventReporter，也就是说传入坐标是安卓单位的坐标？？
+                //如果只移动到四个角的位置，则游戏必须全屏大小等于容器分辨率大小，如果右下侧有黑边则可能无效（匀速移动可以解决但是是否值得？）
+                XServerViewHolder holder = Const.getXServerHolder();
+                int[] screenSize = holder.getXScreenPixels();
+                holder.injectPointerMove(0,0);
+                handler.postDelayed(()->holder.injectPointerMove(screenSize[0],0),80);
+                handler.postDelayed(()->holder.injectPointerMove(screenSize[0],screenSize[1]),160);
+                handler.postDelayed(()->holder.injectPointerMove(0,screenSize[1]),240);
+                handler.postDelayed(()->holder.injectPointerMove(0,0),320);
+                handler.postDelayed(()->holder.injectPointerMove(50,50),400);
+            },400);
+        });
+
+        //TODO 为不同容器使用不同配置
 
         LinearLayout linearSaves = new LinearLayout(c);
         linearSaves.setOrientation(HORIZONTAL);
@@ -78,7 +105,8 @@ public class Edit4OtherView extends LinearLayout {
         addView(QH.getOneLineWithTitle(c,/*鼠标移动速度倍率*/getS(RR.ctr2_other_mouseSpeed),editMsMvSpd,true), QH.LPLinear.one(-1, -2).top().left().right().to());
         addView(switchShowArea,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(btnBundledProfiles,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(btnSyncFallout,QH.LPLinear.one(-1,-2).top().left().right().to());
+//        addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
 //        addView(btnGc,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(new View(c),QH.LPLinear.one(-1,-2).bottom().to());
     }

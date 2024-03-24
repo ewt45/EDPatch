@@ -186,9 +186,11 @@ public class XServerViewHolderImpl implements XServerViewHolder {
         if (scaleStyle == SCALE_FULL_WITH_RATIO) {
             configuration.setFitStyleHorizontal(XServerViewConfiguration.FitStyleHorizontal.CENTER);
             configuration.setFitStyleVertical(XServerViewConfiguration.FitStyleVertical.CENTER);
+            mRenderViewRef.get().setHorizontalStretchEnabled(false);
         } else if (scaleStyle == SCALE_FULL_IGNORE_RATIO) {
             configuration.setFitStyleHorizontal(STRETCH);
             configuration.setFitStyleVertical(XServerViewConfiguration.FitStyleVertical.STRETCH);
+            mRenderViewRef.get().setHorizontalStretchEnabled(true);
         }
     }
 }
