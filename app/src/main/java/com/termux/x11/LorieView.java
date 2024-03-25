@@ -172,42 +172,42 @@ public class LorieView extends SurfaceView {//implements InputStub {
 //            p.set(w, h);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-//        if (preferences.getBoolean("displayStretch", false)
-//                || "native".equals(preferences.getString("displayResolutionMode", "native"))
-//                || "scaled".equals(preferences.getString("displayResolutionMode", "native"))) {
-//            getHolder().setSizeFromLayout();
-//            return;
-//        }
-
-        getDimensionsFromSettings();
-
-        if (p.x <= 0 || p.y <= 0)
-            return;
-
-        int width = getMeasuredWidth();
-        int height = getMeasuredHeight();
-
-//        if ((width < height && p.x > p.y) || (width > height && p.x < p.y))
-//            //noinspection SuspiciousNameCombination
-//            p.set(p.y, p.x);
+//    @Override
+//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) { //要删除这个onMeasure，否则画面文字锐化，且可能造成错误拉伸
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 //
-//        if (width > height * p.x / p.y)
-//            width = height * p.x / p.y;
-//        else
-//            height = width * p.y / p.x;
-
-        getHolder().setFixedSize(p.x, p.y);
-        setMeasuredDimension(width, height);
-
-        // In the case if old fixed surface size equals new fixed surface size surfaceChanged will not be called.
-        // We should force it.
-        regenerate();
-    }
+////        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+////        if (preferences.getBoolean("displayStretch", false)
+////                || "native".equals(preferences.getString("displayResolutionMode", "native"))
+////                || "scaled".equals(preferences.getString("displayResolutionMode", "native"))) {
+////            getHolder().setSizeFromLayout();
+////            return;
+////        }
+//
+//        getDimensionsFromSettings();
+//
+//        if (p.x <= 0 || p.y <= 0)
+//            return;
+//
+//        int width = getMeasuredWidth();
+//        int height = getMeasuredHeight();
+//
+////        if ((width < height && p.x > p.y) || (width > height && p.x < p.y))
+////            //noinspection SuspiciousNameCombination
+////            p.set(p.y, p.x);
+////
+////        if (width > height * p.x / p.y)
+////            width = height * p.x / p.y;
+////        else
+////            height = width * p.y / p.x;
+//
+//        getHolder().setFixedSize(p.x, p.y);
+//        setMeasuredDimension(width, height);
+//
+//        // In the case if old fixed surface size equals new fixed surface size surfaceChanged will not be called.
+//        // We should force it.
+//        regenerate();
+//    }
 
 //    @Override
     public void sendMouseWheelEvent(float deltaX, float deltaY) {

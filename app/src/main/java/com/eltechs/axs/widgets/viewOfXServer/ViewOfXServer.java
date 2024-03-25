@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.eltechs.axs.configuration.XServerViewConfiguration;
 import com.eltechs.axs.geom.RectangleF;
 import com.eltechs.axs.helpers.Assert;
+import com.eltechs.axs.helpers.UiThread;
 import com.termux.x11.CmdEntryPoint;
 import com.termux.x11.LorieView;
 import com.termux.x11.ViewForRendering;
@@ -156,20 +157,13 @@ public class ViewOfXServer extends FrameLayout {
         //只应该在初始时调用一次吧
 //        if (oldw == 0 && oldh == 0) {
         Log.d(TAG, String.format("onSizeChanged: 布局变化，新建缩放控制器.w=%d,h=%d,getWidth=%d,getHeight=%d", w, h, getWidth(), getHeight()));
-        reinitRenderTransformation();
-        //setXViewport不行，缩放一下行吗
-        //草，还必须post，这个时刻难道还有啥没更新完？
-        initXViewportAfterConnected(() -> {
-            setXViewport(new RectangleF(0, 0, xServerFacade.getScreenInfo().widthInPixels, xServerFacade.getScreenInfo().heightInPixels));
+        //保证在CmdEntryPoint.connected()之后再设置缩放，看看还会不会出现拉伸问题？
+        // 不行，切小窗时直接是connected，但还是会拉伸。必须无条件延迟0.5秒再执行
+        // 切小窗时的具体情况是：切成小窗会比例全屏，点一下小窗放大一圈 此时错误拉伸。解决办法：LorieView的onMeasure删掉
+        UiThread.postDelayed(500,()->{
+            reinitRenderTransformation();
+            zoomController.revertZoom();
         });
-    }
-
-    /**
-     * 保证在connected之后再设置缩放，看看还会不会出现拉伸问题？（好像可以了，xegw2.2时的post貌似也是这个原因）
-     */
-    private void initXViewportAfterConnected(Runnable r){
-        if(CmdEntryPoint.connected()) post(r);
-        else postDelayed(()-> initXViewportAfterConnected(r),500);
     }
 
     public ViewFacade getXServerFacade() {
@@ -239,6 +233,7 @@ public class ViewOfXServer extends FrameLayout {
                 .x(marginLeft)
                 .y(marginTop)
                 .setDuration(0).start();
+
         Log.d("缩放", "setXViewport: scaleXY="+
                 (trDesc.scaleX * xServerFacade.getScreenInfo().widthInPixels / getWidth())+", "
                 +(trDesc.scaleY * xServerFacade.getScreenInfo().heightInPixels / getHeight())+", rectFrame="+viewForRendering.getHolder().getSurfaceFrame());
