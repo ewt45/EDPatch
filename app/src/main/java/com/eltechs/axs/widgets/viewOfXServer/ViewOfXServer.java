@@ -1,5 +1,8 @@
 package com.eltechs.axs.widgets.viewOfXServer;
 
+import static com.eltechs.axs.configuration.XServerViewConfiguration.FitStyleHorizontal.CENTER;
+import static com.eltechs.axs.configuration.XServerViewConfiguration.FitStyleHorizontal.STRETCH;
+
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
@@ -23,6 +26,8 @@ import com.termux.x11.ViewForRendering;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.eltechs.axs.xserver.XServer;
+
+import java.util.Arrays;
 
 /* loaded from: classes.dex */
 public class ViewOfXServer extends FrameLayout {
@@ -216,28 +221,27 @@ public class ViewOfXServer extends FrameLayout {
 //        float stretchY = trDesc.scaleY * newVisibleRectF.height / getHeight();
 //        Log.d(TAG, "setXViewport: 拉伸系数=" + stretchX);
 
-        Log.d(TAG, String.format("setXViewport: 设置缩放，修改layoutparams为：topMargin=%d, leftMargin=%d, width=%d, height =%d, 裁切矩形=%s, trDesc=%s", layoutParams.topMargin, layoutParams.leftMargin, layoutParams.width, layoutParams.height, newVisibleRectF, trDesc));
-
         //用动画，貌似缩放不会抖动了（在某次Xegw更新 限制帧率之后 又或者用了gles之后，缩放就会抖动）
         //xserver全宽 除以 可见矩形宽，是缩放x，不过还要注意一下拉伸系数
 
-
         viewForRendering.setPivotX(0);
         viewForRendering.setPivotY(0);
-
+        float scaleX = trDesc.scaleX * xServerFacade.getScreenInfo().widthInPixels / getWidth();
+        float scaleY = trDesc.scaleY * xServerFacade.getScreenInfo().heightInPixels / getHeight();
         viewForRendering.animate()
-
-                .scaleX(trDesc.scaleX * xServerFacade.getScreenInfo().widthInPixels / getWidth())
-                .scaleY(trDesc.scaleY * xServerFacade.getScreenInfo().heightInPixels / getHeight())
-//                .scaleX(xServerFacade.)
+                .scaleX(scaleX)
+                .scaleY(scaleY)
                 .x(marginLeft)
                 .y(marginTop)
                 .setDuration(0).start();
 
-        Log.d("缩放", "setXViewport: scaleXY="+
-                (trDesc.scaleX * xServerFacade.getScreenInfo().widthInPixels / getWidth())+", "
-                +(trDesc.scaleY * xServerFacade.getScreenInfo().heightInPixels / getHeight())+", rectFrame="+viewForRendering.getHolder().getSurfaceFrame());
-
+        Log.d(TAG, String.format("setXViewport: 设置缩放，修改layoutparams为：top=%d, left=%d, " +
+                        "裁切矩形xywh=%f,%f,%f,%f, scaleXY=%f,%f, SurfaceFrame=%s, " +
+                        "堆栈信息=%s trDesc=%s",
+                layoutParams.topMargin, layoutParams.leftMargin,
+                newVisibleRectF.x, newVisibleRectF.y, newVisibleRectF.width, newVisibleRectF.height,
+                scaleX,scaleY, viewForRendering.getHolder().getSurfaceFrame(),
+                Arrays.toString(Thread.currentThread().getStackTrace()).replace("com.eltechs.axs.widgets.viewOfXServer.",""), trDesc));
 //        viewForRendering.getHolder().setFixedSize(xServerFacade.getScreenInfo().widthInPixels,xServerFacade.getScreenInfo().heightInPixels);
 //        viewForRendering.regenerate();
 //        this.renderer.setXViewport(newVisibleRectF);
@@ -256,15 +260,12 @@ public class ViewOfXServer extends FrameLayout {
     }
 
     public final boolean isHorizontalStretchEnabled() {
-        return this.configuration.getFitStyleHorizontal() == XServerViewConfiguration.FitStyleHorizontal.STRETCH;
+        return this.configuration.getFitStyleHorizontal() == STRETCH;
     }
 
-    public void setHorizontalStretchEnabled(boolean z) {
-        if (z) {
-            this.configuration.setFitStyleHorizontal(XServerViewConfiguration.FitStyleHorizontal.STRETCH);
-        } else {
-            this.configuration.setFitStyleHorizontal(XServerViewConfiguration.FitStyleHorizontal.CENTER);
-        }
+    public void setHorizontalStretchEnabled(boolean enabled) {
+        this.configuration.setFitStyleHorizontal(enabled ? STRETCH : CENTER);
+        Log.d(TAG, "setHorizontalStretchEnabled: 是否拉伸？"+enabled+" 宽高总不能等于0吧？"+isDegenerate());
         if (isDegenerate()) {
             return;
         }
