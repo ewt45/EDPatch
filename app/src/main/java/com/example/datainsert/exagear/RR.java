@@ -270,6 +270,7 @@ public class RR {
     public static int ctr2_other_syncFallout = 265;
     public static int ctr2_editExitConfirm = 262;
     public static int ctr2_profile_editNameWarn = 266;
+    public static int ctr2_other_syncFalloutTip = 267;
 
 
 
@@ -545,6 +546,8 @@ public class RR {
         zhArray.put(ctr2_other_reExtract,"还原内置配置");
         zhArray.put(ctr2_other_syncFallout,"修复鼠标位置与光标偏移");
         zhArray.put(ctr2_profile_editNameWarn,"名称与现有配置重复，或包含特殊字符");
+        zhArray.put(ctr2_other_syncFalloutTip,"一些老游戏（如辐射2）进入游戏时可能手指点击位置与光标位置有偏移。可以点击此按钮解决。" +
+                "\n此按钮运行逻辑与原Exagear辐射的操作模式中Sync按钮的逻辑相同。注意必须保证游戏全屏，分辨率与容器（wine桌面）分辨率相同，否则该按钮无法生效。（错误样例：容器分辨率为800x600，但游戏全屏分辨率为640*480，右侧和下侧有黑边）");
         /*
 
 
@@ -827,7 +830,9 @@ public class RR {
         enArray.put(ctr2_editExitConfirm,"Save and exit Edit Mode?");
         enArray.put(ctr2_option_fullscreen,"Toggle stretched fullscreen");
         enArray.put(ctr2_other_reExtract,"Reset bundled profiles");
-        enArray.put(ctr2_other_syncFallout,"Sync pointer and cursor drawable location\n(Fallout Sync Button)");
+        enArray.put(ctr2_other_syncFallout,"Sync pointer and cursor drawable position\n");
+        enArray.put(ctr2_other_syncFalloutTip,"In some games pointer and cursor image location is wrongly different. You can click this button to synchronize them. This is originally from Exagear Fallout Control - Sync Button." +
+                "\nNote that the game must be fullscreen, and its resolution is equal to container(wine desktop) resolution. Otherwise this function won't work correctly. (An incorrect example: container's resolution is 800x600, but game resolution is 640x480, you can see a piece of extra black area on the right and bottom.)");
 
 
         /*
