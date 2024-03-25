@@ -11,13 +11,10 @@ import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
 public class OptionToggleFullScreen extends AbstractOption{
     @Override
     public void run() {
-        //圣诞树的平板，这个没有效果。试试延迟0.7秒？
-        UiThread.postDelayed(700,()->{
-            XServerViewHolder holder = Const.getXServerHolder();
-            int currStyle = holder.getScaleStyle();
-            Const.getXServerHolder().setScaleStyle(currStyle == SCALE_FULL_IGNORE_RATIO ? SCALE_FULL_WITH_RATIO : SCALE_FULL_IGNORE_RATIO);
-
-        });
+        //圣诞树的平板，这个没有效果。试试延迟0.7秒？(好像改了改ViewOfXServer就行了，不需要延迟）
+        XServerViewHolder holder = Const.getXServerHolder();
+        int currStyle = holder.getScaleStyle();
+        Const.getXServerHolder().setScaleStyle(currStyle == SCALE_FULL_IGNORE_RATIO ? SCALE_FULL_WITH_RATIO : SCALE_FULL_IGNORE_RATIO);
     }
 
     @Override
