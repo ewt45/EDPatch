@@ -63,17 +63,9 @@ public class ViewOfXServer extends FrameLayout {
         this.zoomController = new XZoomController(this, xServer.getScreenInfo());
         setFocusable(true);
         setFocusableInTouchMode(true);
-        //设置surfaceholder的callback
+        //x11的视图
         viewForRendering = new ViewForRendering(context);
-
         addView(viewForRendering);
-
-        //按照termux x11的方式启动xserver
-//        Log.d(TAG, "ViewOfXServer: 与termux-x11 xserver连接");
-
-
-        //试试换成TextureView
-//        RealXServer.addCallback(viewForRendering);
     }
 
     /**
@@ -152,7 +144,6 @@ public class ViewOfXServer extends FrameLayout {
         ScreenInfo screenInfo = this.xServerFacade.getScreenInfo();
         TransformationHelpers.makeTransformationMatrix(getWidth(), getHeight(), 0.0f, 0.0f, screenInfo.widthInPixels, screenInfo.heightInPixels, this.configuration.getFitStyleHorizontal(), this.configuration.getFitStyleVertical()).invert(this.transformationViewToXServer);
         this.zoomController = new XZoomController(this, this.xServerFacade.getScreenInfo());
-//        this.zoomController.reInit(screenInfo);
     }
 
     @Override // android.view.View
@@ -160,14 +151,13 @@ public class ViewOfXServer extends FrameLayout {
         super.onSizeChanged(w, h, oldw, oldh);
         //现在因为要通过调整安卓布局大小来实现缩放，所以要一直调用onSizeChanged，如果半道new一个的话，会出现成员变量还没初始化的情况。
         //只应该在初始时调用一次吧
-//        if (oldw == 0 && oldh == 0) {
         Log.d(TAG, String.format("onSizeChanged: 布局变化，新建缩放控制器.w=%d,h=%d,getWidth=%d,getHeight=%d", w, h, getWidth(), getHeight()));
         //保证在CmdEntryPoint.connected()之后再设置缩放，看看还会不会出现拉伸问题？
         // 不行，切小窗时直接是connected，但还是会拉伸。必须无条件延迟0.5秒再执行
         // 切小窗时的具体情况是：切成小窗会比例全屏，点一下小窗放大一圈 此时错误拉伸。解决办法：LorieView的onMeasure删掉
         UiThread.postDelayed(500,()->{
             reinitRenderTransformation();
-            zoomController.revertZoom();
+            zoomController.revertZoom();//原ViewOfXServer是没有这一步的，现在模仿setHorizontalStretchEnabled给它加上了）
         });
     }
 
@@ -177,8 +167,6 @@ public class ViewOfXServer extends FrameLayout {
 
     /**
      * 这里可以设置缩放
-     *
-     * @param newVisibleRectF
      */
     public void setXViewport(RectangleF newVisibleRectF) {
 
@@ -289,28 +277,6 @@ public class ViewOfXServer extends FrameLayout {
 //        if (this.renderer != null) {
 //            this.renderer.unFreeze();
 //        }
-    }
-
-
-    public void test() {
-        SurfaceTexture texture = new SurfaceTexture(1);
-        SurfaceView surfaceView = new SurfaceView(getContext());
-        Surface surface = new Surface(texture);
-        TextureView textureView = new TextureView(getContext());
-//        textureView.tra
-        SurfaceTexture.OnFrameAvailableListener listener = new SurfaceTexture.OnFrameAvailableListener() {
-            @Override
-            public void onFrameAvailable(SurfaceTexture surfaceTexture) {
-                Log.d(TAG, "onFrameAvailable: ");
-            }
-        };
-
-        texture.setOnFrameAvailableListener(listener);
-
-        texture.attachToGLContext(2);
-        texture.release();
-        surface.release();
-
     }
 
 }
