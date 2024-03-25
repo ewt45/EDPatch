@@ -4,6 +4,7 @@ import static android.view.Gravity.CENTER_HORIZONTAL;
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.RR.getSArr;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
+import static com.example.datainsert.exagear.controlsV2.TestHelper.wrapWithTipBtn;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -243,10 +244,10 @@ public abstract class FSMState2 {
         LinearLayout.LayoutParams lp3 = QH.LPLinear.one(QH.px(c, 80), -2).weight(0).gravity(Gravity.CENTER).left().right().to();
 
         TextView tvInfo = TestHelper.getTextView16sp(c);
-        tvInfo.setPadding(0, 0, dp8 * 2, 0);
+//        tvInfo.setPadding(0, 0, dp8 * 2, 0);
         tvInfo.setText(/*说明*/getS(RR.global_instructions));
-        TestHelper.addHelpBadgeToView(tvInfo, getS(RR.ctr2_ges_transInfo));
-        root.addView(tvInfo, QH.LPRelative.one(-2,-2).top().left().to());//QH.LPLinear.one(-2, -2).top().left().to()
+//        TestHelper.addHelpBadgeToView(tvInfo, getS(RR.ctr2_ges_transInfo));
+        root.addView(wrapWithTipBtn(tvInfo,getS(RR.ctr2_ges_transInfo)), QH.LPRelative.one(-2,-2).top().left().to());//QH.LPLinear.one(-2, -2).top().left().to()
 
         //表格头
         LinearLayout linearHeader = new LinearLayout(c);

@@ -187,6 +187,7 @@ public class ButtonStickPressAdapter implements TouchAdapter {
 
         updateRealOuterCenterXYAndFingerDownXY(true);
         updatePressPos();
+        sendKeys(); //按下时就要发送一次按键。否则Dpad或者stick初始距圆心较远时不会发送按键
 
     }
 

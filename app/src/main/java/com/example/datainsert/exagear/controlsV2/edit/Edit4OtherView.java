@@ -13,9 +13,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 
-import com.eltechs.axs.helpers.UiThread;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
@@ -92,6 +92,8 @@ public class Edit4OtherView extends LinearLayout {
                 handler.postDelayed(()->holder.injectPointerMove(50,50),400);
             },400);
         });
+        btnSyncFallout.setLayoutParams(QH.LPLinear.one(0,-2).weight().to());
+        LinearLayout linearSyncFallout = TestHelper.wrapWithTipBtn(btnSyncFallout,getS(RR.ctr2_other_syncFalloutTip));
 
         //TODO 为不同容器使用不同配置
 
@@ -105,7 +107,7 @@ public class Edit4OtherView extends LinearLayout {
         addView(QH.getOneLineWithTitle(c,/*鼠标移动速度倍率*/getS(RR.ctr2_other_mouseSpeed),editMsMvSpd,true), QH.LPLinear.one(-1, -2).top().left().right().to());
         addView(switchShowArea,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(btnBundledProfiles,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(btnSyncFallout,QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearSyncFallout,QH.LPLinear.one(-1,-2).top().left().right().to());
 //        addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
 //        addView(btnGc,QH.LPLinear.one(-1,-2).top().left().right().to());
         addView(new View(c),QH.LPLinear.one(-1,-2).bottom().to());

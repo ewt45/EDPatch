@@ -454,8 +454,33 @@ public class TestHelper {
      */
     public static void addHelpBadgeToView(View view, String helpText) {
         view.getOverlay().add(new DrawableAlign(view));
-        view.setOnClickListener(v -> TestHelper.showConfirmDialog(v.getContext(), helpText, (dialog, which) -> {
-        }));
+        view.setOnClickListener(v -> TestHelper.showConfirmDialog(v.getContext(), helpText, null));
+    }
+
+    /**
+     * 为对应视图右上角添加一个问号图标，点击可查看说明。(是否要限制图标宽高？原视图是横向铺满还是wrap？）
+     * <br/>目前view是默认（wrap），图标宽高也是默认。二者垂直居中对齐
+     * @param view 若为纯TextView则点击文字同样打开说明。否则点击监听仅设置到问号图标上。
+     */
+    public static LinearLayout wrapWithTipBtn(View view, String helpText){
+        Context c = view.getContext();
+        View.OnClickListener l = v->showConfirmDialog(v.getContext(), helpText, null);
+        if(view.getClass().equals(TextView.class))
+            view.setOnClickListener(l);
+
+        Drawable drawable = getAssetsDrawable(c,"controls/help.xml");
+        drawable.mutate();
+        drawable.setTint(RR.attr.colorControlNormal(c));
+        ImageView img = new ImageView(c);
+        img.setImageDrawable(drawable);
+        img.setOnClickListener(l);
+
+        LinearLayout linear = new LinearLayout(c);
+        linear.setOrientation(HORIZONTAL);
+        linear.setVerticalGravity(Gravity.CENTER_VERTICAL);
+        linear.addView(view);
+        linear.addView(img,QH.LPLinear.one(-2,-2).left().to());
+        return linear;
     }
 
     /**
