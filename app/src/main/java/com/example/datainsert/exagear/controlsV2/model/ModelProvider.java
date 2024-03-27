@@ -43,7 +43,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ModelProvider {
     private static final String TAG = "ModelProvider";
@@ -308,49 +310,56 @@ public class ModelProvider {
     }
 
     /**
-     * 获取apk内置配置的名称数组。一定不为null，可能长度为0
+     * 从apk/assets中读取全部内置配置名。可选是否解压
+     * @param extract 是否解压。若解压且无内置配置，则新建一个空配置。
+     * @param switchCurrent 解压时，是否自动设置当前配置（点按钮手动解压时不应切换配置）
      */
-    public static @NonNull String[] getAssetsProfileNames(Context c){
-        String[] assetProfileNames = null;
+    public static List<String> readBundledProfilesFromAssets(Context c, boolean extract, boolean switchCurrent){
+        assert !(!extract && switchCurrent); //不解压的时候，不应该切换当前配置
+        List<String> assetsProfileNames = new ArrayList<>();
         try {
-            assetProfileNames = c.getAssets().list(bundledProfilesPath);
-        } catch (IOException e) {
+            String[] assetProfileFiles = c.getAssets().list(bundledProfilesPath);
+            if (assetProfileFiles == null) assetProfileFiles = new String[0];
+
+            int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
+            File tmpCopyFile = new File(ModelProvider.workDir, "tmp_copy_profile");
+            for (int i=0; i<assetProfileFiles.length; i++) {
+                String fileName = assetProfileFiles[i];
+                if(fileName.trim().equalsIgnoreCase("default"))
+                    prefIndex=i;
+                //1. 先读取配置名
+                try (InputStream is = c.getAssets().open(bundledProfilesPath + "/" + fileName)) {
+                    FileUtils.copyInputStreamToFile(is, tmpCopyFile);
+                }
+                OneProfile oneProfile = ModelProvider.readProfileFromFile(tmpCopyFile);
+                assetsProfileNames.add(oneProfile.getName());
+                //2. 解压
+                if(extract)
+                    saveProfile(oneProfile);
+            }
+
+            //3. 如果是第一次解压，设置首选配置
+            if(extract && switchCurrent){
+                //3.1 如果是第一次解压，但没有内置配置，则新建一个空的
+                String switchTargetName;
+                if(assetsProfileNames.isEmpty()){
+                    OneProfile defaultProfile = new OneProfile(profileDefaultName);
+                    ModelProvider.saveProfile(defaultProfile);
+                    switchTargetName = defaultProfile.getName();
+
+                }
+                //3.2 否则优先设置为名称为“default”的，若没有则设置为读取到的第一个
+                else{
+                    switchTargetName = assetsProfileNames.get(prefIndex);
+                }
+                if(switchCurrent)
+                    makeCurrent(switchTargetName);
+            }
+        }catch (IOException e) {
             e.printStackTrace();
         }
-        if(assetProfileNames==null) assetProfileNames = new String[0];
-        return assetProfileNames;
-    }
 
-    /**
-     * 从apk/assets中解压出内置配置
-     * @param reExtract 是否为重新解压。若Const.init初次操作，则false。若已经存在配置了，点击按钮重解压，则为true。为true时不应修改当前配置的软链接或在assetsName长度为0时新建空配置。
-     */
-    public static void extractBundledProfilesFromAssets(Context c, boolean reExtract){
-        String[] assetProfileNames = getAssetsProfileNames(c);
-
-        //如果是重解压，即使没有内置配置，也不要新建
-        if(assetProfileNames.length==0 && !reExtract){
-            OneProfile defaultProfile = new OneProfile(profileDefaultName);
-            ModelProvider.saveProfile(defaultProfile);
-            ModelProvider.makeCurrent(defaultProfile.name);
-        }else if(assetProfileNames.length>0){
-            int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
-            for(int i=0; i<assetProfileNames.length; i++){
-                String name = assetProfileNames[i];
-                if(assetProfileNames[i].trim().equalsIgnoreCase("default"))
-                    prefIndex=i;
-                try (InputStream is = c.getAssets().open(bundledProfilesPath + "/" + name)) {
-                    FileUtils.copyInputStreamToFile(is, new File(ModelProvider.profilesDir, name));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(!reExtract){
-                ModelProvider.makeCurrent(assetProfileNames[prefIndex]);
-            }
-        }
-
-
+        return assetsProfileNames;
     }
 
 }

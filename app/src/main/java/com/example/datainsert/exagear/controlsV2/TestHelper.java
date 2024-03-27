@@ -87,8 +87,8 @@ public class TestHelper {
         touchedView.setClickable(true);
 
         touchedView.setOnTouchListener(new View.OnTouchListener() {
-            int[] downPos = new int[2];
-            int[] downXY = new int[2];
+            int[] downPos = new int[2]; //初始手指位置
+            int[] downXY = new int[2]; //初始movedView marginLeft Top
             boolean noClickWhenFinish = false;
 
             @Override
@@ -447,14 +447,6 @@ public class TestHelper {
 
         }
 
-    }
-
-    /**
-     * 为对应视图右上角添加一个问号图标，点击可查看说明
-     */
-    public static void addHelpBadgeToView(View view, String helpText) {
-        view.getOverlay().add(new DrawableAlign(view));
-        view.setOnClickListener(v -> TestHelper.showConfirmDialog(v.getContext(), helpText, null));
     }
 
     /**

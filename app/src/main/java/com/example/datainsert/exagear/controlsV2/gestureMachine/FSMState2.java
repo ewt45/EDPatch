@@ -216,8 +216,11 @@ public abstract class FSMState2 {
         for (int i = 0; i < titleAndHelps.length; i++) {
             String[] titleAndHelp = titleAndHelps[i];
             LinearLayout linear1 = QH.getOneLineWithTitle(c, titleAndHelp[0], editViews[i], true);
-            if (titleAndHelp.length>1 && titleAndHelp[1] != null && !titleAndHelp[1].isEmpty())
-                TestHelper.addHelpBadgeToView(linear1.getChildAt(0), titleAndHelp[1]);
+            if (titleAndHelp.length>1 && titleAndHelp[1] != null && !titleAndHelp[1].isEmpty()){
+                View tvTitle = linear1.getChildAt(0);
+                linear1.removeView(tvTitle);
+                linear1.addView(TestHelper.wrapWithTipBtn(tvTitle,titleAndHelp[1]),0);
+            }
 
             int bottomMargin = i == titleAndHelps.length - 1 ? dp8 : 0;
             linearRoot.addView(linear1, QH.LPLinear.one(-1, -2).margin(dp8, dp8, dp8, bottomMargin).to());

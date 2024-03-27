@@ -122,22 +122,6 @@ public class AboutFab extends BaseFragment {
         linearLayout.addView(linearFun);
 
         if(QH.isTesting()){
-            Button btnControls2 = new Button(c);
-            btnControls2.setText("自定义操作2");
-            btnControls2.setOnClickListener(v -> {
-                requireActivity().getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN );
-                ActionBar actionBar = ((AppCompatActivity)requireActivity()).getSupportActionBar();
-                if (actionBar != null) actionBar.hide();
-
-                Const.init(requireActivity(), new XServerViewHolderImpl(null));
-                ControlsFragment fragment = new ControlsFragment()  ;
-                Bundle args = new Bundle();
-                args.putBoolean(ControlsFragment.ARGV_START_EDIT_ON_SHOW,true);
-                fragment.setArguments(args);
-                Const.initShowFragment(R.id.ed_main_fragment_container,fragment);
-                dismiss();
-            });
-            linearLayout.addView(btnControls2);
         }
 
         return linearLayout;

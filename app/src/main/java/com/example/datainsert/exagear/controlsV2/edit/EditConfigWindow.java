@@ -93,7 +93,7 @@ public class EditConfigWindow extends RelativeLayout {
         mIconView = new ImageView(c);
         mIconView.setPadding(dp8, dp8, dp8, dp8);
         QH.setRippleBackground(mIconView);
-        TestHelper.onTouchMoveView(mIconView, this);
+        TestHelper.onTouchMoveView(mIconView, this); //TODO 为啥移动速度不对了 (注释掉onMeasure就会导致移速过快）
 
         //toolbar
         mLinearTitle = new LinearLayout(c);

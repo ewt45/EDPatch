@@ -243,7 +243,6 @@ public class Edit3ProfilesView extends LinearLayout {
                         Toast.makeText(Const.getContext(), /*失败*/exportMsgs[1]+ e.getCause(), Toast.LENGTH_SHORT).show();
                     }
                 };
-                //TODO 是否应该在此处也添加一个复制配置的选项？
                 //由于编辑的model放在内存，有修改操作时（导出，复制，切换，重命名，退出编辑）时都应该将当前model同步到本地(saveProfile())，然后再操作
                 popupMenu.setOnMenuItemClickListener(item -> {
                     TestHelper.saveCurrentEditProfileToFile();

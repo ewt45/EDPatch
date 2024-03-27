@@ -24,7 +24,7 @@ public abstract class TouchAreaModel {
     public static final int TYPE_GESTURE = 3;
     public static final int TYPE_NONE=-1;
     protected final List<Integer> keycodes;
-    public int mainColor = Const.defaultBgColor;
+    public int mainColor = Const.defaultTouchAreaBgColor;
     @Const.BtnColorStyle
     public int colorStyle = Const.BtnColorStyle.STROKE;
     @SerializedName(value = Const.GsonField.md_ModelType)

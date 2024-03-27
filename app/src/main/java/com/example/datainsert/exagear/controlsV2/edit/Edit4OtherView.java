@@ -1,7 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.edit;
 
 import static com.example.datainsert.exagear.RR.getS;
-import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.extractBundledProfilesFromAssets;
+import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.readBundledProfilesFromAssets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -69,7 +69,12 @@ public class Edit4OtherView extends LinearLayout {
         Button btnBundledProfiles = new Button(c);
         btnBundledProfiles.setAllCaps(false);
         btnBundledProfiles.setText(RR.getS(RR.ctr2_other_reExtract));
-        btnBundledProfiles.setOnClickListener(v-> extractBundledProfilesFromAssets(v.getContext(),true));
+        btnBundledProfiles.setOnClickListener(v-> TestHelper.showConfirmDialog(v.getContext(),getS(RR.ctr2_other_reExtractWarn),(dialog, which) -> {
+            Const.getTouchView().exitEdit(); //需要刷新显示
+            readBundledProfilesFromAssets(v.getContext(),true,false);
+            Const.getTouchView().setProfile(ModelProvider.readCurrentProfile());//如果当前选中的配置，属于内置配置之一，那么需要舍弃内存中的，重新从文件读取
+            Const.getTouchView().startEdit();
+        }));
 
         //修复鼠标偏移
         Button btnSyncFallout = new Button(c);

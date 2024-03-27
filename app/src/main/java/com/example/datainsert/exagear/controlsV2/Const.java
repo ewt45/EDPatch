@@ -5,7 +5,6 @@ import static com.example.datainsert.exagear.controlsV2.Const.BtnType.NORMAL;
 import static com.example.datainsert.exagear.controlsV2.Const.BtnType.STICK;
 
 import android.content.Context;
-import android.graphics.ColorSpace;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -22,14 +21,11 @@ import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Const {
@@ -61,10 +57,10 @@ public class Const {
     public static float stickInnerMaxOffOuterRadiusRatio = 1; //摇杆内圆允许移动的距离（到内圆圆心）与外圆半径之比
     public static double stickMoveThreshold = 20; //摇杆按下并移动时，若手指距离中心小于此距离，则算作不移动
 
-    public static int defaultBgColor = 0xffc2e2ff;
+    public static int defaultTouchAreaBgColor = 0xffe8f6ff;//0xffc2e2ff;
     public static String profileDefaultName = "default"; //没有任何配置时，默认配置名称
     public static String bundledProfilesPath = "controls/profiles"; //内置配置在assets中的位置
-//    public static String[] profileBundledNames; //放在apk/assets内的配置
+    public static List<String> profileBundledNames = new ArrayList<>(); //放在apk/assets内的配置名（注意不是文件名）。
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
 
     public static boolean detailDebug = false; //用于调试的便捷开关
@@ -105,8 +101,7 @@ public class Const {
             isFirst = true;
 
         //添加预设的几个配置
-        if (isFirst)
-            ModelProvider.extractBundledProfilesFromAssets(c,false);
+        profileBundledNames = ModelProvider.readBundledProfilesFromAssets(c,isFirst,isFirst);
 
         initiated=true;
     }
@@ -118,18 +113,6 @@ public class Const {
      */
     public static void initExagearExtension(){
         Extension.addImpl(Extension.MOUSE_MOVE_CAMERA_RELATIVE,ConstExagearExtension.MouseMoveCameraAdapter.class);
-    }
-
-    /**
-     * 调用 {@link #init(FragmentActivity, XServerViewHolder)} 之后调用此函数添加fragment。传入用于替换显示fragment的视图id
-     */
-    public static void initShowFragment(int frameId, ControlsFragment fragment){
-        //添加fragment
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .add(frameId, fragment, Const.fragmentTag)
-                .addToBackStack(null) //如果不用退出fragment的话不驾到backstack也无所谓吧
-                .commit();
-
     }
 
     /**

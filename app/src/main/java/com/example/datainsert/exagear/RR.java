@@ -261,16 +261,18 @@ public class RR {
     public static int ctr2_profile_addOptions=254;
     public static int ctr2_profile_oneOptions=255;
     public static int ctr2_profile_editName=256;
+    public static int ctr2_profile_editNameWarn = 266;
     public static int ctr2_profile_delConfirm=257;
     public static int global_save=258;
     public static int ctr2_other_saveExit=259;
     public static int ctr2_other_mouseSpeed=260;
     public static int ctr2_other_showTouchArea = 261;
-    public static int ctr2_other_reExtract = 264;
-    public static int ctr2_other_syncFallout = 265;
-    public static int ctr2_editExitConfirm = 262;
-    public static int ctr2_profile_editNameWarn = 266;
-    public static int ctr2_other_syncFalloutTip = 267;
+    public static int ctr2_other_reExtract = 262;
+    public static int ctr2_other_syncFallout = 264;
+    public static int ctr2_other_syncFalloutTip = 265;
+    public static int ctr2_editExitConfirm = 267;
+    public static int ctr2_overallTip = 268;
+    public static int ctr2_other_reExtractWarn = 269;
 
 
 
@@ -548,6 +550,14 @@ public class RR {
         zhArray.put(ctr2_profile_editNameWarn,"名称与现有配置重复，或包含特殊字符");
         zhArray.put(ctr2_other_syncFalloutTip,"一些老游戏（如辐射2）进入游戏时可能手指点击位置与光标位置有偏移。可以点击此按钮解决。" +
                 "\n此按钮运行逻辑与原Exagear辐射的操作模式中Sync按钮的逻辑相同。注意必须保证游戏全屏，分辨率与容器（wine桌面）分辨率相同，否则该按钮无法生效。（错误样例：容器分辨率为800x600，但游戏全屏分辨率为640*480，右侧和下侧有黑边）");
+        zhArray.put(ctr2_overallTip,"1. 在容器(环境)设置中将操作模式调为“默认(default)”即可启用自定义操作模式。" +
+                "\n2. 启动容器后按手机返回键/返回手势显示通用菜单，可从此处进入编辑模式，添加屏幕按键，自定义手势逻辑，切换配置等。" +
+                "\n3. 若此功能不满足您的需求，可以尝试使用更为完善的Input Bridge (DotNetBurst开发)。" +
+                "\n\n也可以点击下方按钮在未启动容器时进入编辑模式，注意旋转屏幕会导致全部未保存的操作丢失。");
+        zhArray.put(ctr2_other_reExtractWarn,"内置配置为apk安装后自带的配置。若您修改了这些配置，此操作会导致修改全部丢失！确定要继续吗？");
+
+
+
         /*
 
 
@@ -831,9 +841,13 @@ public class RR {
         enArray.put(ctr2_option_fullscreen,"Toggle stretched fullscreen");
         enArray.put(ctr2_other_reExtract,"Reset bundled profiles");
         enArray.put(ctr2_other_syncFallout,"Sync pointer and cursor drawable position\n");
-        enArray.put(ctr2_other_syncFalloutTip,"In some games pointer and cursor image location is wrongly different. You can click this button to synchronize them. This is originally from Exagear Fallout Control - Sync Button." +
-                "\nNote that the game must be fullscreen, and its resolution is equal to container(wine desktop) resolution. Otherwise this function won't work correctly. (An incorrect example: container's resolution is 800x600, but game resolution is 640x480, you can see a piece of extra black area on the right and bottom.)");
-
+        enArray.put(ctr2_other_syncFalloutTip,"In some games pointer and cursor image location is wrongly different. You can click this button to synchronize them. Originally from Exagear Fallout Control - Sync Button." +
+                "\nNote that the game must be fullscreen, and its resolution is equal to container(wine desktop) resolution. Otherwise this function won't work correctly. (An incorrect example: container=800x600, but game=640x480, you can see extra black area on the right and bottom.)");
+        enArray.put(ctr2_overallTip,"1. To enable this control, set Control Mode to \"default\" in container properties." +
+                "\n2. After launching the container, press back key/back gesture to see the overall menu. Enter the edit mode from the menu to customize buttons, gestures, profiles, etc." +
+                "\n3. If this control doesn't meet your needs, you can try Input Bridge (by DotNetBurst) which is more powerful." +
+                "\n\nYou can also enter the edit mode without launching the container by clicking the button below. Note that on screen rotation all unsaved operations will be lost.");
+        enArray.put(ctr2_other_reExtractWarn,"Bundled profiles are those that appear at the first app launch. If you ever modified these profiles, all modification will be lost! Sure to continue?");
 
         /*
 

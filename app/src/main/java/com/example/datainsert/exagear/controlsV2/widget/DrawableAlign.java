@@ -14,6 +14,7 @@ import com.example.datainsert.exagear.RR;
 
 /**
  * 将一个drawable绘制到右上角
+ * <br/> 使用方法 {@code view.getOverlay().add(new DrawableAlign(view));}
  */
 public class DrawableAlign extends Drawable {
     private final Drawable mInner;
