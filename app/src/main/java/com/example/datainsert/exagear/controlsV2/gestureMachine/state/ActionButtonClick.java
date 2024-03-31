@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
-import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
@@ -71,7 +71,7 @@ public class ActionButtonClick extends FSMAction2 {
         checkDoRelease.setChecked(mDoRelease);
         checkDoRelease.setOnCheckedChangeListener((buttonView, isChecked) -> mDoRelease = isChecked);
 
-        return createEditViewQuickly(c,
+        return FSMState2.createEditViewQuickly(this, c,
                 new String[][]{{RR.getS(RR.global_keycode),null},{"",null},{"",null}},
                 new View[]{tvKeycodes,checkDoPress,checkDoRelease});
     }

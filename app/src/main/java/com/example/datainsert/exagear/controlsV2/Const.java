@@ -12,6 +12,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
+import com.eltechs.axs.Globals;
+import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.controlsV2.edit.Edit1KeyView;
 import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
@@ -22,6 +24,7 @@ import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ public class Const {
     public static int fingerTapMaxMs = 300;
     /**经过测试，12f（安卓像素）比较合适*/
     public static float fingerTapMaxMovePixels = 12f;
+    /** 手指移动多远距离，鼠标滚动应该滚动一次. 好像60 滚动刚好和手指移动同步 */
+    public static float fingerMoveDistToOneScrollUnit = 60f;
     public static Edit1KeyView editKeyView = null;
     /** 用于计算 {@link #maxPointerDeltaDistInOneEvent} 应为几分之一*/
     public final static int maxDivisor = 20;
@@ -62,7 +67,6 @@ public class Const {
     public static String bundledProfilesPath = "controls/profiles"; //内置配置在assets中的位置
     public static List<String> profileBundledNames = new ArrayList<>(); //放在apk/assets内的配置名（注意不是文件名）。
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
-
     public static boolean detailDebug = false; //用于调试的便捷开关
     //TODO 如果要在没有全部完成之前发布的话，在“其他”页面添加说明这个是alpha版，不推荐使用，可能含有bug，升级到正式版时可能有冲突需要清除数据重装。
     /**
@@ -82,26 +86,31 @@ public class Const {
         int[] xWH = holder.getXScreenPixels();
         maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
 
-        ModelProvider.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
-        ModelProvider.profilesDir = new File(ModelProvider.workDir, "profiles");
-        ModelProvider.currentProfile = new File(ModelProvider.workDir, "current");
+        Files.rootfsDir = ((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath();
+        Files.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
+        Files.profilesDir = new File(Files.workDir, "profiles");
+        Files.currentProfile = new File(Files.workDir, "current");
+        Files.currentContProfile = new File(Files.rootfsDir,"home/xdroid/currentProfile");
 
         //        先检查一下路径是否存在，然后决定是否要初始化；
         //        保证各个文件夹存在，配置至少有一个（算上预设的），且current的符号链接存在
         boolean isFirst = false;
-        if (!ModelProvider.workDir.exists()) {
+        if (!Files.workDir.exists()) {
             isFirst = true;
-            ModelProvider.workDir.mkdirs();
+            Files.workDir.mkdirs();
         }
-        if (!ModelProvider.profilesDir.exists()) {
+        if (!Files.profilesDir.exists()) {
             isFirst = true;
-            ModelProvider.profilesDir.mkdir();
+            Files.profilesDir.mkdir();
         }
-        if (!ModelProvider.currentProfile.exists() || Objects.requireNonNull(ModelProvider.profilesDir.list()).length==0)
+        if (!Files.currentProfile.exists() || Objects.requireNonNull(Files.profilesDir.list()).length==0)
             isFirst = true;
 
         //添加预设的几个配置
         profileBundledNames = ModelProvider.readBundledProfilesFromAssets(c,isFirst,isFirst);
+
+        //（可选）切换当前容器对应的默认配置
+        ModelProvider.syncCurrentProfileWhenContainerStart(Pref.isProfilePerContainer());
 
         initiated=true;
     }
@@ -289,6 +298,7 @@ public class Const {
      */
     public static class GsonField {
         public final static String md_ModelType = "modelType";
+        public final static String md_fsmTable = "fsmTable";
         public final static String st_StateType = "stateType";
         public final static String st_keycode = "keycode";
         public final static String st_doPress = "doPress";
@@ -303,8 +313,33 @@ public class Const {
         public final static String st_noMoveThreshold = "noMoveThreshold";
         public final static String st_fastMoveThreshold = "fastMoveThreshold" ;
         public final static String st_countDownMs = "countDownMs";
-        public final static String md_fsmTable = "fsmTable";
         public final static String st_nearFarThreshold = "nearFarThreshold";
         public final static String st_pointMoveType = "pointMoveType";
+    }
+
+    /**
+     * 记录一些应用级别的偏好，这些没法记录在一个profile里，而应该是对全体profile生效
+     */
+    public static class Pref{
+        public static final String PREF_KEY_ENABLE_PROFILE_PER_CONTAINER = "ENABLE_PROFILE_PER_CONTAINER"; //允许不同容器使用不同配置
+        public static void setProfilePerContainer(boolean enable){
+            QH.getPreference().edit().putBoolean(PREF_KEY_ENABLE_PROFILE_PER_CONTAINER,enable).apply();
+        }
+
+        public static boolean isProfilePerContainer(){
+            return QH.getPreference().getBoolean(PREF_KEY_ENABLE_PROFILE_PER_CONTAINER,false);
+        }
+    }
+
+    /**
+     * 文件相关的路径
+     */
+    public static class Files {
+        public static File rootfsDir; //rootfs路径
+
+        public static File workDir; //自定义操作模式 相关文件的根目录
+        public static File profilesDir; //存储全部配置的目录
+        public static File currentProfile; //当前全局配置的软链接
+        public static File currentContProfile; //当前容器默认配置的软链接
     }
 }

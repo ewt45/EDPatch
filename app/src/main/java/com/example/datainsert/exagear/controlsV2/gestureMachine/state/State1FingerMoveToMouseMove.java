@@ -1,25 +1,20 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
+import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.getFieldS;
+
 import android.content.Context;
-import android.graphics.Matrix;
-import android.graphics.PointF;
-import android.util.Log;
 import android.view.View;
 
 import com.eltechs.axs.GeometryHelpers;
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
-import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
-import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.MouseMoveAdapter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.MouseMoveRelativeAdapter;
-import com.example.datainsert.exagear.controlsV2.gestureMachine.adapter.MouseMoveSimpleAdapter;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
 
@@ -115,8 +110,9 @@ public class State1FingerMoveToMouseMove extends FSMState2 implements TouchAdapt
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_FLOAT)
                 .setFloatValue(mNoMoveThreshold)
                 .setUpdateListener(editText -> mNoMoveThreshold = editText.getFloatValue());
-        return createEditViewQuickly(c,
-                new String[][]{{/*第几根手指*/RR.getS(RR.ctr2_stateProp_fingerIndex),null},{RR.getS(RR.ctr2_stateProp_noMoveThreshold),null}},
+        return FSMState2.createEditViewQuickly(this, c,
+                new String[][]{/*第几根手指*/getFieldS(Const.GsonField.st_fingerIndex),
+                        getFieldS(Const.GsonField.st_ignorePixels)},
                 new View[]{editFingerIndex,editNoMoveThreshold});
     }
 }

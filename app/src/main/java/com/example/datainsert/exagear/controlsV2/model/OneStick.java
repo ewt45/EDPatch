@@ -20,7 +20,6 @@ public class OneStick extends TouchAreaModel {
     public static final int KEY_TOP = 1;
     public static final int KEY_RIGHT = 2;
     public static final int KEY_BOTTOM = 3;
-    //TODO adapter里实现这个
     public @HowManyDirections int direction = WAY_8;
     /**
      * 宽高相等的大小
@@ -120,11 +119,18 @@ public class OneStick extends TouchAreaModel {
     }
 
 
+    /**
+     * 移动时，是只有四个方向还是有八个方向（允许斜向）
+     */
     @IntDef({WAY_4, WAY_8})
     @Retention(RetentionPolicy.SOURCE)
     public @interface HowManyDirections {
     }
 
+    /**
+     * model的按键列表中，对应方向的按键的索引。
+     * 获取对应方向的按键：model.getKeycodeAt(KeyPos)
+     */
     @IntDef({KEY_LEFT, KEY_TOP, KEY_RIGHT, KEY_BOTTOM})
     @Retention(RetentionPolicy.SOURCE)
     public @interface KeyPos {

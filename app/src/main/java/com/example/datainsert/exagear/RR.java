@@ -19,6 +19,8 @@ import java.util.Objects;
 
 //使用sparseArray，可以不连续的数值，可以不按顺序的数值。在版本更迭的时候，数值可以更改，不影响未更新的功能，但是成员变量名不能更改。
 public class RR {
+    /** 用于一个字符串中，划分分段的标志 */
+    public static final String STR_SPLIT_SYMBOL = "\\$";
     /**
      * 存储按键按钮的framelayout布局.在dialogfragment里用这个来寻找当前是否存在该布局
      */
@@ -243,7 +245,7 @@ public class RR {
     public static int ctr2_stateProp_option = 236;
     public static int ctr2_stateProp_noMoveThreshold = 237;
     public static int ctr2_stateProp_zoom2Finger = 238;
-    public static int ctr2_stateProp_farDistThres = 239;
+    public static int ctr2_stateProp_nearFarThres = 239;
     public static int ctr2_stateProp_fastMoveThres = 240;
     public static int ctr2_stateProp_countDown = 241;
     public static int global_empty = 242;
@@ -255,24 +257,26 @@ public class RR {
     public static int global_quit = 249;
     public static int ctr2_option_showAll = 250;
     public static int ctr2_option_softInput = 251;
-    public static int ctr2_option_fullscreen = 263;
-    public static int ctr2_profile_importMsgs=252;
-    public static int ctr2_profile_exportMsgs=253;
-    public static int ctr2_profile_addOptions=254;
-    public static int ctr2_profile_oneOptions=255;
-    public static int ctr2_profile_editName=256;
-    public static int ctr2_profile_editNameWarn = 266;
-    public static int ctr2_profile_delConfirm=257;
-    public static int global_save=258;
-    public static int ctr2_other_saveExit=259;
-    public static int ctr2_other_mouseSpeed=260;
-    public static int ctr2_other_showTouchArea = 261;
-    public static int ctr2_other_reExtract = 262;
-    public static int ctr2_other_syncFallout = 264;
-    public static int ctr2_other_syncFalloutTip = 265;
+    public static int ctr2_option_fullscreen = 252;
+    public static int ctr2_profile_importMsgs=253;
+    public static int ctr2_profile_exportMsgs=254;
+    public static int ctr2_profile_addOptions=255;
+    public static int ctr2_profile_oneOptions=256;
+    public static int ctr2_profile_editName=257;
+    public static int ctr2_profile_editNameWarn = 258;
+    public static int ctr2_profile_delConfirm=259;
+    public static int global_save=260;
+    public static int ctr2_other_saveExit=261;
+    public static int ctr2_other_mouseSpeed=262;
+    public static int ctr2_other_showTouchArea = 263;
+    public static int ctr2_other_reExtract = 264;
+    public static int ctr2_other_syncFallout = 265;
+    public static int ctr2_other_syncFalloutTip = 266;
     public static int ctr2_editExitConfirm = 267;
     public static int ctr2_overallTip = 268;
-    public static int ctr2_other_reExtractWarn = 269;
+    public static int ctr2_entryInFab = 269;
+    public static int ctr2_other_isProfPerCont = 270;
+    public static int ctr2_other_isProfPerContTip = 271;
 
 
 
@@ -521,7 +525,7 @@ public class RR {
         zhArray.put(ctr2_stateProp_option,"操作");
         zhArray.put(ctr2_stateProp_noMoveThreshold,"手指移动小于此距离，则算作不移动");
         zhArray.put(ctr2_stateProp_zoom2Finger,"第几根手指 (其一)$第几根手指 (其二)");
-        zhArray.put(ctr2_stateProp_farDistThres,"超过此大小则属于远距离，否则属于近距离");
+        zhArray.put(ctr2_stateProp_nearFarThres,"超过此大小则属于远距离，否则属于近距离");
         zhArray.put(ctr2_stateProp_fastMoveThres,"手指移动大于此距离，则算作快速移动；小于此距离则算作慢速移动");
         zhArray.put(ctr2_stateProp_countDown,"倒计时限时 (毫秒)");
         zhArray.put(global_empty,"空");
@@ -545,7 +549,8 @@ public class RR {
         zhArray.put(ctr2_other_showTouchArea,"显示屏幕按键 (退出编辑时生效)");
         zhArray.put(ctr2_editExitConfirm,"保存并退出编辑模式？");
         zhArray.put(ctr2_option_fullscreen,"切换拉伸全屏");
-        zhArray.put(ctr2_other_reExtract,"还原内置配置");
+        zhArray.put(ctr2_other_reExtract,"还原内置配置" +
+                "$内置配置为apk安装后自带的配置。若您修改了这些配置，此操作会导致修改全部丢失！确定要继续吗？");
         zhArray.put(ctr2_other_syncFallout,"修复鼠标位置与光标偏移");
         zhArray.put(ctr2_profile_editNameWarn,"名称与现有配置重复，或包含特殊字符");
         zhArray.put(ctr2_other_syncFalloutTip,"一些老游戏（如辐射2）进入游戏时可能手指点击位置与光标位置有偏移。可以点击此按钮解决。" +
@@ -554,8 +559,9 @@ public class RR {
                 "\n2. 启动容器后按手机返回键/返回手势显示通用菜单，可从此处进入编辑模式，添加屏幕按键，自定义手势逻辑，切换配置等。" +
                 "\n3. 若此功能不满足您的需求，可以尝试使用更为完善的Input Bridge (DotNetBurst开发)。" +
                 "\n\n也可以点击下方按钮在未启动容器时进入编辑模式，注意旋转屏幕会导致全部未保存的操作丢失。");
-        zhArray.put(ctr2_other_reExtractWarn,"内置配置为apk安装后自带的配置。若您修改了这些配置，此操作会导致修改全部丢失！确定要继续吗？");
-
+        zhArray.put(ctr2_entryInFab,"进入编辑模式");
+        zhArray.put(ctr2_other_isProfPerCont,"每个容器使用不同配置");
+        zhArray.put(ctr2_other_isProfPerContTip, "当此选项关闭时，当切换配置时，进入任意容器都会默认使用该配置。\n若开启此选项，则可以为每个容器指定一个不同的配置。");
 
 
         /*
@@ -813,7 +819,7 @@ public class RR {
         enArray.put(ctr2_stateProp_option,"Option");
         enArray.put(ctr2_stateProp_noMoveThreshold,"Finger movement less than this distance is counted as no movement");
         enArray.put(ctr2_stateProp_zoom2Finger,"Which finger (one)$Which finger (the other)");
-        enArray.put(ctr2_stateProp_farDistThres,"Distance above this is counted as far distance, otherwise near");
+        enArray.put(ctr2_stateProp_nearFarThres,"Distance above this is counted as far distance, otherwise near");
         enArray.put(ctr2_stateProp_fastMoveThres,"Finger movement greater than this distance is a fast move, otherwise is a slow move");
         enArray.put(ctr2_stateProp_countDown,"Countdown (millisecond)");
         enArray.put(global_empty,"Empty");
@@ -839,7 +845,8 @@ public class RR {
         enArray.put(ctr2_other_showTouchArea,"Show buttons on screen \n(take effect after exit edit mode)");
         enArray.put(ctr2_editExitConfirm,"Save and exit Edit Mode?");
         enArray.put(ctr2_option_fullscreen,"Toggle stretched fullscreen");
-        enArray.put(ctr2_other_reExtract,"Reset bundled profiles");
+        enArray.put(ctr2_other_reExtract,"Reset bundled profiles" +
+                "$Bundled profiles are those that appear at the first app launch. All modification to these profiles will be lost! Sure to continue?");
         enArray.put(ctr2_other_syncFallout,"Sync pointer and cursor drawable position\n");
         enArray.put(ctr2_other_syncFalloutTip,"In some games pointer and cursor image location is wrongly different. You can click this button to synchronize them. Originally from Exagear Fallout Control - Sync Button." +
                 "\nNote that the game must be fullscreen, and its resolution is equal to container(wine desktop) resolution. Otherwise this function won't work correctly. (An incorrect example: container=800x600, but game=640x480, you can see extra black area on the right and bottom.)");
@@ -847,7 +854,10 @@ public class RR {
                 "\n2. After launching the container, press back key/back gesture to see the overall menu. Enter the edit mode from the menu to customize buttons, gestures, profiles, etc." +
                 "\n3. If this control doesn't meet your needs, you can try Input Bridge (by DotNetBurst) which is more powerful." +
                 "\n\nYou can also enter the edit mode without launching the container by clicking the button below. Note that on screen rotation all unsaved operations will be lost.");
-        enArray.put(ctr2_other_reExtractWarn,"Bundled profiles are those that appear at the first app launch. If you ever modified these profiles, all modification will be lost! Sure to continue?");
+        enArray.put(ctr2_entryInFab,"Enter edit mode");
+        enArray.put(ctr2_other_isProfPerCont,"Use separate profiles per container");
+        enArray.put(ctr2_other_isProfPerContTip, "If this option is off, when switching profiles, any container will use the same profile as default." +
+                "\nIf this option is turned on, a different profile can be specified for each container.");
 
         /*
 
@@ -1068,10 +1078,10 @@ public class RR {
     }
 
     /**
-     * 获取id对应的字符串（getS），然后用'\\$' 分割成字符串数组并返回
+     * 获取id对应的字符串（getS），然后用 {@link #STR_SPLIT_SYMBOL} 分割成字符串数组并返回
      */
     public static String[] getSArr(int id) {
-        return getS(id).split("\\$");
+        return getS(id).split(STR_SPLIT_SYMBOL);
     }
 
     public static class attr {

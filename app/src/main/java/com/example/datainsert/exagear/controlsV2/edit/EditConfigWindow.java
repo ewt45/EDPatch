@@ -8,6 +8,7 @@ import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Outline;
+import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
@@ -19,6 +20,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,10 +66,16 @@ public class EditConfigWindow extends RelativeLayout {
         mMaxWidth = QH.px(c, 400);
         mMaxHeight = QH.px(c, 600);
 
-        //宽高怎么适配比较好呢？
+        //宽高怎么适配比较好呢？(用相对布局然后wrap就完事了）
+        // gravity如果是横向居中的话，会导致拖动时横向移动速度不对。还是去掉吧。直接获取Display宽高然后再设置leftMargin
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-2, -2);
         params.setMargins(dp8, dp8, dp8, dp8);
-        params.gravity = Gravity.CENTER_HORIZONTAL;
+        Point point = new Point();
+        ((WindowManager)c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(point);
+        Log.d(TAG, "EditConfigWindow: 小窗时是否能正确获取宽高？："+ point);//可以
+        if(point.x > mMaxWidth)
+            params.leftMargin = (point.x - mMaxWidth)/2;
+//        params.gravity = Gravity.CENTER_HORIZONTAL;
         setLayoutParams(params);
 
         ShapeDrawable bgDrawable = new ShapeDrawable();
@@ -93,7 +102,7 @@ public class EditConfigWindow extends RelativeLayout {
         mIconView = new ImageView(c);
         mIconView.setPadding(dp8, dp8, dp8, dp8);
         QH.setRippleBackground(mIconView);
-        TestHelper.onTouchMoveView(mIconView, this); //TODO 为啥移动速度不对了 (注释掉onMeasure就会导致移速过快）
+        TestHelper.onTouchMoveView(mIconView, this);
 
         //toolbar
         mLinearTitle = new LinearLayout(c);
@@ -263,38 +272,43 @@ public class EditConfigWindow extends RelativeLayout {
         //先修改一下宽高，合适了再让super处理
         int oriWidthSize = MeasureSpec.getSize(widthMeasureSpec);
         int oriHeightSize = MeasureSpec.getSize(heightMeasureSpec);
-//        Log.d(TAG, "onMeasure: 宽度：" + oriWidthSize);
 
+        int finalWidthSpec = makeMeasureSpec(Math.min(oriWidthSize,mMaxWidth),AT_MOST);
+        int finalHeightSpec = makeMeasureSpec(Math.min(oriHeightSize, mMaxHeight), AT_MOST);
+
+        super.onMeasure(finalWidthSpec, finalHeightSpec);
         //TODO 宽度过小时，给定一个固定的精确值，保证getRight()能够超出父边界，
         // 这样触摸监听里才能判断出右侧出界以便移回来（但把这个判断放到触摸监听里，右-左<最小宽度 也行吧
         // 还要测试一下，手机竖屏，如果屏幕宽度没有mMaxWidth，那么是按屏幕宽度还是mMaxWidth
-        mLinearTitle.measure(widthMeasureSpec, heightMeasureSpec);
-        mPager.measure(widthMeasureSpec, heightMeasureSpec);
-        int subWidth = Math.max(mLinearTitle.getMeasuredWidth(), mPager.getMeasuredWidth());
+//        mLinearTitle.measure(widthMeasureSpec, heightMeasureSpec);
+//        mPager.measure(widthMeasureSpec, heightMeasureSpec);
+//        int subWidth = Math.max(mLinearTitle.getMeasuredWidth(), mPager.getMeasuredWidth());
+//
+//        //toolbar和pager取更大的，然后屏幕限制，自定义限制和视图宽度取最小的，然后pager的宽度用match_parent就行了
+//        int finalWidthSpec = makeMeasureSpec(min(subWidth, oriWidthSize, mMaxWidth), AT_MOST);//Math.min(oriWidthSize, mMaxWidth)
+//        int finalHeightSpec = makeMeasureSpec(min(oriHeightSize, mMaxHeight), AT_MOST);
 
-        //toolbar和pager取更大的，然后屏幕限制，自定义限制和视图宽度取最小的，然后pager的宽度用match_parent就行了
-        int finalWidthSpec = makeMeasureSpec(min(subWidth, oriWidthSize, mMaxWidth), AT_MOST);//Math.min(oriWidthSize, mMaxWidth)
-        int finalHeightSpec = makeMeasureSpec(min(oriHeightSize, mMaxHeight), AT_MOST);
-        super.onMeasure(finalWidthSpec, finalHeightSpec);
+
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        if (changed) {
-            if (l < 0) {
-                Log.d(TAG, "onLayout: 左侧小于0");
-                r -= l;
-                l = 0;
-            }
-            if (t < 0) {
-                Log.d(TAG, "onLayout: 上方小于0");
-
-                b -= t;
-                t = 0;
-            }
-        }
-        super.onLayout(changed, l, t, r, b);
-    }
+//
+//    @Override
+//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+//        if (changed) {
+//            if (l < 0) {
+//                Log.d(TAG, "onLayout: 左侧小于0");
+//                r -= l;
+//                l = 0;
+//            }
+//            if (t < 0) {
+//                Log.d(TAG, "onLayout: 上方小于0");
+//
+//                b -= t;
+//                t = 0;
+//            }
+//        }
+//        super.onLayout(changed, l, t, r, b);
+//    }
 
     /**
      * 调用toPreviousView的时候，对即将显示的视图调用此方法，以进行一些刷新操作

@@ -6,4 +6,9 @@ public class OptionTaskMgr extends AbstractOption{
     public void run() {
 
     }
+
+    @Override
+    public String getName() {
+        return "任务管理器？";
+    }
 }

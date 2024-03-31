@@ -50,7 +50,7 @@ public class GestureMachine {
      */
     private void initStateIfNeeded(FSMState2... states) {
         for (FSMState2 state : states)
-            if (state.getMachine()!=this)
+            if (state.getMachine() != this)
                 state.attach(this);
     }
 

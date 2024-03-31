@@ -12,6 +12,7 @@ import android.system.Os;
 import android.util.Log;
 
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
@@ -93,9 +94,6 @@ public class ModelProvider {
             State2FingersZoom.class,
             ActionRunOption.class
     };
-    public static File workDir;
-    public static File profilesDir;
-    public static File currentProfile;
 
     public static Class<? extends TouchArea<? extends TouchAreaModel>> getAreaClass(Class<? extends TouchAreaModel> modelClass) {
            return areaClasses[indexOf(modelClasses,modelClass)];
@@ -147,7 +145,7 @@ public class ModelProvider {
 
     public static String getCurrentProfileCanonicalName() {
         try {
-            return currentProfile.getCanonicalFile().getName();
+            return Const.Files.currentProfile.getCanonicalFile().getName();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -164,7 +162,7 @@ public class ModelProvider {
             String jsonStr = gson.toJson(profile);
 //            Log.d(TAG, "转为json：" + jsonStr);
 
-            File file = new File(profilesDir, profile.name);
+            File file = new File(Const.Files.profilesDir, profile.getName());
             if (file.exists() && !file.delete())
                 Log.e(TAG, "文件存在且无法删除");
             FileUtils.writeStringToFile(file, jsonStr);
@@ -185,7 +183,7 @@ public class ModelProvider {
      */
     public static @NonNull OneProfile readProfile(String name) {
         try {
-            return readProfileFromFile(new File(profilesDir, name));
+            return readProfileFromFile(new File(Const.Files.profilesDir, name));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -206,21 +204,50 @@ public class ModelProvider {
 
     public static @NonNull OneProfile readCurrentProfile() {
         try {
-            return readProfile(currentProfile.getCanonicalFile().getName());
+            return readProfile(Const.Files.currentProfile.getCanonicalFile().getName());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * 将某个配置作为当前选中的配置
+     * 将某个配置作为当前选中的配置.
+     * <br/> 将该配置符号链接到当前配置和当前容器配置
      */
     public static void makeCurrent(String fileName) {
-        File profile = new File(profilesDir, fileName);
+        File profile = new File(Const.Files.profilesDir, fileName);
         try {
-            boolean b = currentProfile.delete();
-            Os.symlink(profile.getAbsolutePath(), currentProfile.getAbsolutePath());
+            boolean b = Const.Files.currentProfile.delete();
+            Os.symlink(profile.getAbsolutePath(), Const.Files.currentProfile.getAbsolutePath());
+
+            b = Const.Files.currentContProfile.delete();
+            Os.symlink(profile.getAbsolutePath(), Const.Files.currentContProfile.getAbsolutePath());
         } catch (ErrnoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 读取当前容器的默认配置。若存在，则同步到全局默认配置
+     * <br/> 调用此函数时，请确保currProfile存在。
+     * <br/> 若存在容器级别当前配置且启用容器单独配置，则同步到全局当前配置，若不存在容器级别当前配置，则同步全局到当前容器
+     * @param isProfilePerContainer 是否开启不同容器不同配置该功能
+     */
+    public static void syncCurrentProfileWhenContainerStart(boolean isProfilePerContainer) {
+        try {
+            //删除源文件后，链接文件自身exists=false，canonical是自身
+            File contProfile = Const.Files.currentContProfile.getCanonicalFile();
+            //若存在容器级别当前配置且启用容器单独配置，则同步到全局当前配置，若不存在容器级别当前配置，则同步全局到当前容器
+            if(!contProfile.exists()){
+                boolean b = contProfile.delete();
+                File currGlobal = Const.Files.currentProfile.getCanonicalFile();
+                TestHelper.assertTrue(currGlobal.exists());
+                Os.symlink(currGlobal.getAbsolutePath(),contProfile.getAbsolutePath());
+            }else if(isProfilePerContainer){
+                makeCurrent(contProfile.getName());
+            }
+
+        } catch (IOException | ErrnoException e) {
             e.printStackTrace();
         }
     }
@@ -236,13 +263,13 @@ public class ModelProvider {
      * @return 新生成的配置
      */
     public static OneProfile createNewProfile(String newName, @Nullable String ref, boolean makeCurrent) {
-        File newFile = new File(profilesDir, newName);
+        File newFile = new File(Const.Files.profilesDir, newName);
         if (newFile.exists())
             throw new RuntimeException("同名profile已存在，无法创建");
         //为防止与现在的实例冲突，所以需要从json重新构建一个实例。
         // 然后需要改成指定的名字，再存为json
         OneProfile newProfile = ref != null ? readProfile(ref) : new OneProfile(newName);
-        newProfile.name = newName;
+        newProfile.setName(newName);
         saveProfile(newProfile);
         if (makeCurrent)
             makeCurrent(newName);
@@ -267,7 +294,7 @@ public class ModelProvider {
 
         //检查是否有同名的
         for (int i = 1; ; i++) {
-            if (new File(profilesDir, builder.toString()).exists()) {
+            if (new File(Const.Files.profilesDir, builder.toString()).exists()) {
                 if (i == 1) builder.append('_');
                 builder.deleteCharAt(builder.length() - 1).append(i);
             } else
@@ -304,7 +331,7 @@ public class ModelProvider {
         File tmpFile = new File(c.getFilesDir(), "tmp_control_profile");
         tmpFile.delete();
         try (OutputStream os = c.getContentResolver().openOutputStream(uri);
-             FileInputStream fis = new FileInputStream(new File(profilesDir, name));) {
+             FileInputStream fis = new FileInputStream(new File(Const.Files.profilesDir, name));) {
             IOUtils.copy(fis, os);
         }
     }
@@ -322,7 +349,7 @@ public class ModelProvider {
             if (assetProfileFiles == null) assetProfileFiles = new String[0];
 
             int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
-            File tmpCopyFile = new File(ModelProvider.workDir, "tmp_copy_profile");
+            File tmpCopyFile = new File(Const.Files.workDir, "tmp_copy_profile");
             for (int i=0; i<assetProfileFiles.length; i++) {
                 String fileName = assetProfileFiles[i];
                 if(fileName.trim().equalsIgnoreCase("default"))
@@ -361,5 +388,6 @@ public class ModelProvider {
 
         return assetsProfileNames;
     }
+
 
 }

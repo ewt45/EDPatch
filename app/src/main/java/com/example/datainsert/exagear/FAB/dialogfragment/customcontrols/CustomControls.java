@@ -139,7 +139,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         TextView tvTip = QH.TV.one(c).solidColor().lineSpace().text(tips).to();
 
         Button btnToFragment = new Button(c);
-        btnToFragment.setText("进入编辑模式");
+        btnToFragment.setText(getS(RR.ctr2_entryInFab));
         btnToFragment.setOnClickListener(v->{
             showFragmentV2(requireActivity());
             dismiss();

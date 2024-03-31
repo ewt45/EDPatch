@@ -61,6 +61,6 @@ public class StateNeutral  extends FSMState2 implements TouchAdapter {
 
     @Override
     public View createPropEditView(Context c) {
-        return Helper.createEmptyPropEditView(c);
+        return createEditViewQuickly(this, c, null, null);
     }
 }

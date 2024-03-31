@@ -58,10 +58,10 @@ public class Edit3ProfilesView extends LinearLayout {
             try {
                 //先把要导入的配置替换合理名称导入到本地。然后显示编辑名称的dialog，当做是在对现有配置重命名
                 OneProfile profile = ModelProvider.readProfileFromUri(data.getData());
-                profile.name = getNiceProfileName(profile.name);
+                profile.setName(getNiceProfileName(profile.getName()));
                 ModelProvider.saveProfile(profile);
                 Toast.makeText(Const.getContext(), /*导入成功*/msgs[0]+profile.getName(), Toast.LENGTH_SHORT).show();
-                showEditNameDialog(c,profile.name,false,profileAdapter);
+                showEditNameDialog(c,profile.getName(),false,profileAdapter);
             } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(Const.getContext(),/*导入失败*/ msgs[1] + e.getCause(), Toast.LENGTH_SHORT).show();
@@ -78,7 +78,7 @@ public class Edit3ProfilesView extends LinearLayout {
         popupMenuAdd.getMenu().addSubMenu(/*复制现有配置*/addTitles[1]).getItem().setOnMenuItemClickListener(item->{
             popupMenuAdd.dismiss();
             PopupMenu popupMenuCopyCurrent = new PopupMenu(c,btnAdd);
-            for (String name : Objects.requireNonNull(ModelProvider.profilesDir.list()))
+            for (String name : Objects.requireNonNull(Const.Files.profilesDir.list()))
                 popupMenuCopyCurrent.getMenu().add( name).setOnMenuItemClickListener(itemSub -> {
                     showEditNameDialog(c, name, true, profileAdapter);
                     return true;
@@ -146,7 +146,7 @@ public class Edit3ProfilesView extends LinearLayout {
             if(!finalName.equals(refName)){
                 ModelProvider.createNewProfile(finalName, refName, true); //新建
                 if (!createNew){
-                    boolean b = new File(ModelProvider.profilesDir, refName).delete();//重命名也相当于新建一个，然后把旧的删了就行
+                    boolean b = new File(Const.Files.profilesDir, refName).delete();//重命名也相当于新建一个，然后把旧的删了就行
                 }
             }
             //创建完了之后，需要刷新回收视图.
@@ -175,7 +175,7 @@ public class Edit3ProfilesView extends LinearLayout {
          * <br/> 注意这个函数不会调用adapter.notify方法，请手动调用
          */
         private static List<String> reReadAllProfiles() {
-            return Arrays.asList(Objects.requireNonNull(ModelProvider.profilesDir.list()));
+            return Arrays.asList(Objects.requireNonNull(Const.Files.profilesDir.list()));
         }
 
         /**
@@ -266,7 +266,7 @@ public class Edit3ProfilesView extends LinearLayout {
                             TestHelper.showConfirmDialog(v.getContext(), getS(RR.ctr2_profile_delConfirm), (dialog, which) -> {
                                 int removedIndex = getDataList().indexOf(profileName);
                                 boolean selectAnother = profileName.equals(ModelProvider.getCurrentProfileCanonicalName());
-                                new File(ModelProvider.profilesDir, profileName).delete();
+                                new File(Const.Files.profilesDir, profileName).delete();
                                 refreshDataSet(false);
                                 notifyItemRemoved(removedIndex);
                                 if (selectAnother)

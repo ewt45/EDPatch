@@ -222,7 +222,7 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
             popupMenu.getMenu().add(/*编辑*/getS(RR.global_edit)).setOnMenuItemClickListener(item -> {
                 String[] editTabTitles = getSArr(RR.ctr2_ges_state_edit_tabTitles);
                 TabPagerLayout tabPagerLayout = new TabPagerLayout(c)
-                        .addTabAndPage(/*状态转移*/editTabTitles[0], state.createTranEditView(c, getGestureAreaModel()))
+                        .addTabAndPage(/*状态转移*/editTabTitles[0], FSMState2.createTranEditView(state, c, getGestureAreaModel()))
                         .addTabAndPage(/*属性*/editTabTitles[1], state.createPropEditView(c));
 //                "编辑 - " + FSMR.getStateS(FSMState2.getStateTag(state.getClass()))
                 Const.getEditWindow().toNextView(tabPagerLayout, tabPagerLayout.detachTabLayout());
