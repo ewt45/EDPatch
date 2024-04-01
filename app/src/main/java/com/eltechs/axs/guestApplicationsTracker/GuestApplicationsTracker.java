@@ -20,11 +20,14 @@ public class GuestApplicationsTracker {
     private final Killswitch killswitch;
     private final String libubtPath;
 
-    public GuestApplicationsTracker(UnixSocketConfiguration unixSocketConfiguration, String str, String str2, String str3) throws IOException {
-        this.connector = FairEpollConnector.listenOnSpecifiedUnixSocket(unixSocketConfiguration, new TranslatorConnectionHandler(this.guestApplicationsCollection), new TranslatorRequestsDispatcher(this.guestApplicationsCollection));
+    public GuestApplicationsTracker(UnixSocketConfiguration unixSocketConfiguration, String elfLoaderPath, String libUbtPath, String killSwitchPath) throws IOException {
+        this.connector = FairEpollConnector.listenOnSpecifiedUnixSocket(
+                unixSocketConfiguration,
+                new TranslatorConnectionHandler(this.guestApplicationsCollection),
+                new TranslatorRequestsDispatcher(this.guestApplicationsCollection));
         this.connector.start();
-        this.killswitch = new Killswitch(str, str3, str2);
-        this.libubtPath = str2;
+        this.killswitch = new Killswitch(elfLoaderPath, killSwitchPath, libUbtPath);
+        this.libubtPath = libUbtPath;
     }
 
     public void stop() throws IOException {

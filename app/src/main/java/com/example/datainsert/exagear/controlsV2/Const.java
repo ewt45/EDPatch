@@ -67,6 +67,9 @@ public class Const {
     public static String bundledProfilesPath = "controls/profiles"; //内置配置在assets中的位置
     public static List<String> profileBundledNames = new ArrayList<>(); //放在apk/assets内的配置名（注意不是文件名）。
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
+    /** 启动任务管理器选项，执行初始脚本的环境变量名（将命令中中该字符串替换为脚本位置） */
+    public static final String OPTION_TASKMGR_START_SH_ENV = "$ANOTHER_SH";
+
     public static boolean detailDebug = false; //用于调试的便捷开关
     //TODO 如果要在没有全部完成之前发布的话，在“其他”页面添加说明这个是alpha版，不推荐使用，可能含有bug，升级到正式版时可能有冲突需要清除数据重装。
     /**
@@ -321,13 +324,24 @@ public class Const {
      * 记录一些应用级别的偏好，这些没法记录在一个profile里，而应该是对全体profile生效
      */
     public static class Pref{
-        public static final String PREF_KEY_ENABLE_PROFILE_PER_CONTAINER = "ENABLE_PROFILE_PER_CONTAINER"; //允许不同容器使用不同配置
+        /** 允许不同容器使用不同配置. 默认为false */
+        private static final String PREF_KEY_ENABLE_PROFILE_PER_CONTAINER = "ENABLE_PROFILE_PER_CONTAINER";
+        /** 启动任务管理器选项的替换命令。默认为空字符串。不为空时执行指定命令，每段参数用换行分割。 */
+        private static final String PREF_KEY_RUN_TASKMGR_ALT = "RUN_TASKMGR_ALT";
         public static void setProfilePerContainer(boolean enable){
             QH.getPreference().edit().putBoolean(PREF_KEY_ENABLE_PROFILE_PER_CONTAINER,enable).apply();
         }
 
         public static boolean isProfilePerContainer(){
             return QH.getPreference().getBoolean(PREF_KEY_ENABLE_PROFILE_PER_CONTAINER,false);
+        }
+
+        public static void setRunTaskmgrAlt(String cmd){
+            QH.getPreference().edit().putString(PREF_KEY_RUN_TASKMGR_ALT,cmd).apply();
+        }
+
+        public static String getRunTaskmgrAlt(){
+            return QH.getPreference().getString(PREF_KEY_RUN_TASKMGR_ALT,"");
         }
     }
 

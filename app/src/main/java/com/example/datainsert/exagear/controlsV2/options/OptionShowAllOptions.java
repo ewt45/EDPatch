@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.RR;
@@ -65,6 +66,7 @@ public class OptionShowAllOptions extends AbstractOption{
         linearRoot.addView(linearControlOuter);
         linearRoot.addView(addOption(new OptionToggleSoftInput()));
         linearRoot.addView(addOption(new OptionToggleFullScreen()));
+        linearRoot.addView(addOption(new OptionTaskMgr()));
         linearRoot.addView(addOption(new OptionQuit()));
         linearRoot.addView(tvCancel);
 

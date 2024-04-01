@@ -2,17 +2,21 @@ package com.example.datainsert.exagear.controlsV2.edit;
 
 import static com.example.datainsert.exagear.RR.getS;
 import static com.example.datainsert.exagear.RR.getSArr;
+import static com.example.datainsert.exagear.controlsV2.Const.OPTION_TASKMGR_START_SH_ENV;
 import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.readBundledProfilesFromAssets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
@@ -110,6 +114,16 @@ public class Edit4OtherView extends LinearLayout {
         btnEnablePerContainer.setLayoutParams(QH.LPLinear.one(0,-2).weight().to());
         LinearLayout linearEnablePerCont = TestHelper.wrapWithTipBtn(btnEnablePerContainer,getS(RR.ctr2_other_isProfPerContTip));
 
+        //启动任务管理器选项替代命令
+        String[] strTaskmgrAltCmd = RR.getS(RR.ctr2_other_taskmgrAlt).split("\\$",2);
+        EditText editTaskmgrAltCmd = new EditText(c);
+        editTaskmgrAltCmd.setText(Const.Pref.getRunTaskmgrAlt());
+        editTaskmgrAltCmd.addTextChangedListener((QH.SimpleTextWatcher) s -> Const.Pref.setRunTaskmgrAlt(s.toString()));
+        LinearLayout linearTaskmgrAltCmd = QH.getOneLineWithTitle(c,/*任务管理器选项替代命令*/strTaskmgrAltCmd[0],editTaskmgrAltCmd,true);
+        View tmpView = linearTaskmgrAltCmd.getChildAt(0);
+        tmpView.setLayoutParams(QH.LPLinear.one(-2,-2).to());
+        linearTaskmgrAltCmd.removeView(tmpView);
+        linearTaskmgrAltCmd.addView(TestHelper.wrapWithTipBtn(tmpView, strTaskmgrAltCmd[1]),0);
 
         LinearLayout linearSaves = new LinearLayout(c);
         linearSaves.setOrientation(HORIZONTAL);
@@ -119,13 +133,14 @@ public class Edit4OtherView extends LinearLayout {
 
         addView(linearSaves);
         addView(QH.getOneLineWithTitle(c,/*鼠标移动速度倍率*/getS(RR.ctr2_other_mouseSpeed),editMsMvSpd,true), QH.LPLinear.one(-1, -2).top().left().right().to());
-        addView(switchShowArea,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(linearEnablePerCont,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(btnBundledProfiles,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(linearSyncFallout,QH.LPLinear.one(-1,-2).top().left().right().to());
-//        addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
-//        addView(btnGc,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(new View(c),QH.LPLinear.one(-1,-2).bottom().to());
+        addView(switchShowArea, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearEnablePerCont, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(btnBundledProfiles, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearSyncFallout, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearTaskmgrAltCmd, QH.LPLinear.one(-1,-2).top().left().right().to());
+//        addView(switchDetailDebug, QH.LPLinear.one(-1,-2).top().left().right().to());
+//        addView(btnGc, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(new View(c), QH.LPLinear.one(-1,-2).bottom().to());
     }
 
     /**
