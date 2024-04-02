@@ -146,7 +146,8 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         });
 
         linearRoot.addView(tvTip,QH.LPLinear.one(-1,-2).top().left().right().to());
-        linearRoot.addView(btnToFragment,QH.LPLinear.one(-1,-2).top().left().right().bottom().to());
+        if(QH.isTesting())
+            linearRoot.addView(btnToFragment,QH.LPLinear.one(-1,-2).top().left().right().bottom().to());
         return linearRoot;
     }
 

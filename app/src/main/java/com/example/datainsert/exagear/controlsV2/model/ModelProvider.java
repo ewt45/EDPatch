@@ -1,7 +1,7 @@
 package com.example.datainsert.exagear.controlsV2.model;
 
+import static com.example.datainsert.exagear.controlsV2.Const.Files.defaultProfileForNewContainer;
 import static com.example.datainsert.exagear.controlsV2.Const.bundledProfilesPath;
-import static com.example.datainsert.exagear.controlsV2.Const.profileDefaultName;
 
 import android.content.Context;
 import android.net.Uri;
@@ -214,7 +214,7 @@ public class ModelProvider {
      * 将某个配置作为当前选中的配置.
      * <br/> 将该配置符号链接到当前配置和当前容器配置
      */
-    public static void makeCurrent(String fileName) {
+    public static void makeCurrentForContainerAndGlobal(String fileName) {
         File profile = new File(Const.Files.profilesDir, fileName);
         try {
             boolean b = Const.Files.currentProfile.delete();
@@ -223,30 +223,54 @@ public class ModelProvider {
             b = Const.Files.currentContProfile.delete();
             Os.symlink(profile.getAbsolutePath(), Const.Files.currentContProfile.getAbsolutePath());
         } catch (ErrnoException e) {
+            Log.w(TAG, "将配置"+fileName+"软链接到容器和全局current时出错", e);
+        }
+    }
+
+    /**
+     * 将某个配置作为新容器的默认配置(软链接到 {@link Const.Files#defaultProfileForNewContainer} ）
+     */
+    public static void makeDefaultForNewContainer(String profileName){
+        File profile = new File(Const.Files.profilesDir, profileName);
+        try {
+            boolean b = defaultProfileForNewContainer.delete();
+            Os.symlink(profile.getAbsolutePath(), defaultProfileForNewContainer.getAbsolutePath());
+        } catch (ErrnoException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * 读取当前容器的默认配置。若存在，则同步到全局默认配置
-     * <br/> 调用此函数时，请确保currProfile存在。
-     * <br/> 若存在容器级别当前配置且启用容器单独配置，则同步到全局当前配置，若不存在容器级别当前配置，则同步全局到当前容器
-     * @param isProfilePerContainer 是否开启不同容器不同配置该功能
+     * 调整启动容器时应选择的配置
+     * <br/> 若为新容器（判断条件：容器current不存在）：设置容器和全局current为 用户/系统设定的默认配置
+     * <br/> 若开启容器单独配置选项：设置全局current为容器current
+     * <br/> 调用此函数时，请确保default存在。
      */
-    public static void syncCurrentProfileWhenContainerStart(boolean isProfilePerContainer) {
+    public static void prepareCurrentProfileWhenContainerStart() {
         try {
             //删除源文件后，链接文件自身exists=false，canonical是自身
-            File contProfile = Const.Files.currentContProfile.getCanonicalFile();
-            //若存在容器级别当前配置且启用容器单独配置，则同步到全局当前配置，若不存在容器级别当前配置，则同步全局到当前容器
-            if(!contProfile.exists()){
-                boolean b = contProfile.delete();
-                File currGlobal = Const.Files.currentProfile.getCanonicalFile();
-                TestHelper.assertTrue(currGlobal.exists());
-                Os.symlink(currGlobal.getAbsolutePath(),contProfile.getAbsolutePath());
-            }else if(isProfilePerContainer){
-                makeCurrent(contProfile.getName());
+            File currContainer = Const.Files.currentContProfile;
+            File currGlobal = Const.Files.currentProfile;
+            File defaultGlobal = defaultProfileForNewContainer;
+            TestHelper.assertTrue(defaultGlobal.exists());
+
+            boolean isNewContainer = !currContainer.exists(); //如果容器current不存在，认为是新建的容器
+            //如果是新建的容器，将default链接到容器current和 全局current。
+            if(isNewContainer){
+                makeCurrentForContainerAndGlobal(defaultGlobal.getCanonicalFile().getName());
             }
 
+            //如果开启容器单独配置，全局current改为容器current
+            if(Const.Pref.isProfilePerContainer()){
+                boolean b = currGlobal.delete();
+                Os.symlink(currContainer.getCanonicalPath(), currGlobal.getAbsolutePath());
+            }
+
+            //如果全局current不存在，将default链接到全局current
+            if(!currGlobal.exists()){
+                boolean b = currGlobal.delete();
+                Os.symlink(defaultGlobal.getCanonicalPath(), currGlobal.getAbsolutePath());
+            }
         } catch (IOException | ErrnoException e) {
             e.printStackTrace();
         }
@@ -272,7 +296,7 @@ public class ModelProvider {
         newProfile.setName(newName);
         saveProfile(newProfile);
         if (makeCurrent)
-            makeCurrent(newName);
+            makeCurrentForContainerAndGlobal(newName);
         return readProfile(newName);
     }
 
@@ -337,23 +361,18 @@ public class ModelProvider {
     }
 
     /**
-     * 从apk/assets中读取全部内置配置名。可选是否解压
+     * 从apk/assets中读取全部内置配置名。可选是否解压&链接默认配置
+     * <br/> 这一步只是解压配置以及设置新容器默认配置。还没有将新容器默认配置链接到当前配置
      * @param extract 是否解压。若解压且无内置配置，则新建一个空配置。
-     * @param switchCurrent 解压时，是否自动设置当前配置（点按钮手动解压时不应切换配置）
      */
-    public static List<String> readBundledProfilesFromAssets(Context c, boolean extract, boolean switchCurrent){
-        assert !(!extract && switchCurrent); //不解压的时候，不应该切换当前配置
+    public static List<String> readBundledProfilesFromAssets(Context c, boolean extract){
         List<String> assetsProfileNames = new ArrayList<>();
         try {
             String[] assetProfileFiles = c.getAssets().list(bundledProfilesPath);
             if (assetProfileFiles == null) assetProfileFiles = new String[0];
 
-            int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
             File tmpCopyFile = new File(Const.Files.workDir, "tmp_copy_profile");
-            for (int i=0; i<assetProfileFiles.length; i++) {
-                String fileName = assetProfileFiles[i];
-                if(fileName.trim().equalsIgnoreCase("default"))
-                    prefIndex=i;
+            for (String fileName : assetProfileFiles) {
                 //1. 先读取配置名
                 try (InputStream is = c.getAssets().open(bundledProfilesPath + "/" + fileName)) {
                     FileUtils.copyInputStreamToFile(is, tmpCopyFile);
@@ -361,26 +380,8 @@ public class ModelProvider {
                 OneProfile oneProfile = ModelProvider.readProfileFromFile(tmpCopyFile);
                 assetsProfileNames.add(oneProfile.getName());
                 //2. 解压
-                if(extract)
+                if (extract)
                     saveProfile(oneProfile);
-            }
-
-            //3. 如果是第一次解压，设置首选配置
-            if(extract && switchCurrent){
-                //3.1 如果是第一次解压，但没有内置配置，则新建一个空的
-                String switchTargetName;
-                if(assetsProfileNames.isEmpty()){
-                    OneProfile defaultProfile = new OneProfile(profileDefaultName);
-                    ModelProvider.saveProfile(defaultProfile);
-                    switchTargetName = defaultProfile.getName();
-
-                }
-                //3.2 否则优先设置为名称为“default”的，若没有则设置为读取到的第一个
-                else{
-                    switchTargetName = assetsProfileNames.get(prefIndex);
-                }
-                if(switchCurrent)
-                    makeCurrent(switchTargetName);
             }
         }catch (IOException e) {
             e.printStackTrace();
