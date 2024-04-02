@@ -1,17 +1,22 @@
 package com.example.datainsert.exagear.controlsV2.edit;
 
 import static com.example.datainsert.exagear.RR.getS;
-import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.extractBundledProfilesFromAssets;
+import static com.example.datainsert.exagear.RR.getSArr;
+import static com.example.datainsert.exagear.controlsV2.Const.OPTION_TASKMGR_START_SH_ENV;
+import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.readBundledProfilesFromAssets;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
@@ -68,8 +73,14 @@ public class Edit4OtherView extends LinearLayout {
         //重新解压内置配置
         Button btnBundledProfiles = new Button(c);
         btnBundledProfiles.setAllCaps(false);
-        btnBundledProfiles.setText(RR.getS(RR.ctr2_other_reExtract));
-        btnBundledProfiles.setOnClickListener(v-> extractBundledProfilesFromAssets(v.getContext(),true));
+        String[] strBundledProfiles = getSArr(RR.ctr2_other_reExtract);
+        btnBundledProfiles.setText(strBundledProfiles[0]);
+        btnBundledProfiles.setOnClickListener(v-> TestHelper.showConfirmDialog(v.getContext(),strBundledProfiles[1],(dialog, which) -> {
+            Const.getTouchView().exitEdit(); //需要刷新显示
+            readBundledProfilesFromAssets(v.getContext(),true,false);
+            Const.getTouchView().setProfile(ModelProvider.readCurrentProfile());//如果当前选中的配置，属于内置配置之一，那么需要舍弃内存中的，重新从文件读取
+            Const.getTouchView().startEdit();
+        }));
 
         //修复鼠标偏移
         Button btnSyncFallout = new Button(c);
@@ -78,24 +89,41 @@ public class Edit4OtherView extends LinearLayout {
         btnSyncFallout.setOnClickListener(v->{
             //编辑模式下屏蔽了鼠标移动，所以要先退出编辑模式。。。
             btnExitEdit.performClick();
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.postDelayed(()->{
-                //才发现原exa的sync按钮，用的是PointerEventReporter，也就是说传入坐标是安卓单位的坐标？？
-                //如果只移动到四个角的位置，则游戏必须全屏大小等于容器分辨率大小，如果右下侧有黑边则可能无效（匀速移动可以解决但是是否值得？）
-                XServerViewHolder holder = Const.getXServerHolder();
-                int[] screenSize = holder.getXScreenPixels();
-                holder.injectPointerMove(0,0);
-                handler.postDelayed(()->holder.injectPointerMove(screenSize[0],0),80);
-                handler.postDelayed(()->holder.injectPointerMove(screenSize[0],screenSize[1]),160);
-                handler.postDelayed(()->holder.injectPointerMove(0,screenSize[1]),240);
-                handler.postDelayed(()->holder.injectPointerMove(0,0),320);
-                handler.postDelayed(()->holder.injectPointerMove(50,50),400);
-            },400);
+            XServerViewHolder holder = Const.getXServerHolder();
+            int[] screenSize = holder.getXScreenPixels();
+            holder.injectPointerMove(0,0);
+            QH.sleep(50);
+            holder.injectPointerMove(screenSize[0],0);
+            QH.sleep(50);
+            holder.injectPointerMove(screenSize[0],screenSize[1]);
+            QH.sleep(50);
+            holder.injectPointerMove(0,screenSize[1]);
+            QH.sleep(50);
+            holder.injectPointerMove(0,0);
+            QH.sleep(50);
+            holder.injectPointerMove(50,50);
         });
         btnSyncFallout.setLayoutParams(QH.LPLinear.one(0,-2).weight().to());
         LinearLayout linearSyncFallout = TestHelper.wrapWithTipBtn(btnSyncFallout,getS(RR.ctr2_other_syncFalloutTip));
 
-        //TODO 为不同容器使用不同配置
+        //为不同容器使用不同配置
+        Switch btnEnablePerContainer = new Switch(c);
+        btnEnablePerContainer.setText(getS(RR.ctr2_other_isProfPerCont));
+        btnEnablePerContainer.setOnCheckedChangeListener((buttonView, isChecked) -> Const.Pref.setProfilePerContainer(isChecked));
+        btnEnablePerContainer.setChecked(Const.Pref.isProfilePerContainer());
+        btnEnablePerContainer.setLayoutParams(QH.LPLinear.one(0,-2).weight().to());
+        LinearLayout linearEnablePerCont = TestHelper.wrapWithTipBtn(btnEnablePerContainer,getS(RR.ctr2_other_isProfPerContTip));
+
+        //启动任务管理器选项替代命令
+        String[] strTaskmgrAltCmd = RR.getS(RR.ctr2_other_taskmgrAlt).split("\\$",2);
+        EditText editTaskmgrAltCmd = new EditText(c);
+        editTaskmgrAltCmd.setText(Const.Pref.getRunTaskmgrAlt());
+        editTaskmgrAltCmd.addTextChangedListener((QH.SimpleTextWatcher) s -> Const.Pref.setRunTaskmgrAlt(s.toString()));
+        LinearLayout linearTaskmgrAltCmd = QH.getOneLineWithTitle(c,/*任务管理器选项替代命令*/strTaskmgrAltCmd[0],editTaskmgrAltCmd,true);
+        View tmpView = linearTaskmgrAltCmd.getChildAt(0);
+        tmpView.setLayoutParams(QH.LPLinear.one(-2,-2).to());
+        linearTaskmgrAltCmd.removeView(tmpView);
+        linearTaskmgrAltCmd.addView(TestHelper.wrapWithTipBtn(tmpView, strTaskmgrAltCmd[1]),0);
 
         LinearLayout linearSaves = new LinearLayout(c);
         linearSaves.setOrientation(HORIZONTAL);
@@ -105,12 +133,14 @@ public class Edit4OtherView extends LinearLayout {
 
         addView(linearSaves);
         addView(QH.getOneLineWithTitle(c,/*鼠标移动速度倍率*/getS(RR.ctr2_other_mouseSpeed),editMsMvSpd,true), QH.LPLinear.one(-1, -2).top().left().right().to());
-        addView(switchShowArea,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(btnBundledProfiles,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(linearSyncFallout,QH.LPLinear.one(-1,-2).top().left().right().to());
-//        addView(switchDetailDebug,QH.LPLinear.one(-1,-2).top().left().right().to());
-//        addView(btnGc,QH.LPLinear.one(-1,-2).top().left().right().to());
-        addView(new View(c),QH.LPLinear.one(-1,-2).bottom().to());
+        addView(switchShowArea, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearEnablePerCont, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(btnBundledProfiles, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearSyncFallout, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(linearTaskmgrAltCmd, QH.LPLinear.one(-1,-2).top().left().right().to());
+//        addView(switchDetailDebug, QH.LPLinear.one(-1,-2).top().left().right().to());
+//        addView(btnGc, QH.LPLinear.one(-1,-2).top().left().right().to());
+        addView(new View(c), QH.LPLinear.one(-1,-2).bottom().to());
     }
 
     /**

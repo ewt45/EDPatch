@@ -6,6 +6,7 @@ import com.eltechs.axs.environmentService.EnvironmentComponent;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.RootXRequestHandlerConfigurer;
 import com.eltechs.axs.rendering.impl.virglRenderer.VirglRedererEngine;
+import com.eltechs.axs.sysvipc.SHMEngine;
 import com.eltechs.axs.xconnectors.epoll.FairEpollConnector;
 import com.eltechs.axs.xconnectors.epoll.UnixSocketConfiguration;
 import com.eltechs.axs.xserver.DesktopExperience;
@@ -33,9 +34,9 @@ public class XServerComponent extends EnvironmentComponent {
     private UnixSocketConfiguration socketConf;
     private XServer xServer;
 
-    public XServerComponent(ScreenInfo screenInfo, int i, UnixSocketConfiguration unixSocketConfiguration) {
+    public XServerComponent(ScreenInfo screenInfo, int displayNumber, UnixSocketConfiguration unixSocketConfiguration) {
         this.screenInfo = screenInfo;
-        this.displayNumber = i;
+        this.displayNumber = displayNumber;
         this.socketConf = unixSocketConfiguration;
     }
 
@@ -75,9 +76,10 @@ public class XServerComponent extends EnvironmentComponent {
     }
 
     private XServer createXServer(ScreenInfo screenInfo, KeyboardModel keyboardModel) {
-        GLDrawablesFactory create = GLDrawablesFactory.create(screenInfo.depth);
-        SysVIPCEmulatorComponent sysVIPCEmulatorComponent = (SysVIPCEmulatorComponent) getEnvironment().getComponent(SysVIPCEmulatorComponent.class);
-        return new XServer(screenInfo, keyboardModel, create, sysVIPCEmulatorComponent != null ? sysVIPCEmulatorComponent.getShmEngine() : null, new VirglRedererEngine(), 512);
+        GLDrawablesFactory drawablesFactory = GLDrawablesFactory.create(screenInfo.depth);
+        SysVIPCEmulatorComponent sysvipc = getEnvironment().getComponent(SysVIPCEmulatorComponent.class);
+        SHMEngine shmEngine = sysvipc != null ? sysvipc.getShmEngine() : null;
+        return new XServer(screenInfo, keyboardModel, drawablesFactory,shmEngine , new VirglRedererEngine(), 512);
     }
 
     private void startXConnector(XServer xServer) throws IOException {

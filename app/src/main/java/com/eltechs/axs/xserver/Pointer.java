@@ -25,8 +25,6 @@ public class Pointer {
     int lastYUnmodify;
     private int xPos;
     private int yPos;
-    private int offWindowLimit = 0;
-
     public Pointer(XServer xServer) {
         this.xServer = xServer;
         //初始别放左上角了 看不见
@@ -34,8 +32,8 @@ public class Pointer {
         yPos=100;
     }
 
-    public boolean isButtonValid(byte b) {
-        return b >= 1 && b <= 7;
+    public boolean isButtonValid(byte button) {
+        return button >= 1 && button <= 7;
     }
 
     public int getX() {
@@ -46,19 +44,12 @@ public class Pointer {
         return this.yPos;
     }
 
-    public void setOffWindowLimit(int offWindowLimit) {
-        this.offWindowLimit = offWindowLimit;
-    }
-
     /**
      * 这个是更新自身坐标的，会限制在视图的范围内（这个改到窗口外会闪退。。）
      */
     private void updateCoordinates(int x, int y) {
         this.xPos = ArithHelpers.unsignedSaturate(x, this.xServer.getScreenInfo().widthInPixels - 1);
         this.yPos = ArithHelpers.unsignedSaturate(y, this.xServer.getScreenInfo().heightInPixels - 1);
-        lastXUnmodify = x;
-        lastYUnmodify = y;
-
     }
 
 
@@ -93,13 +84,13 @@ public class Pointer {
 //        Log.d(TAG, String.format("鼠标移动到( %d , %d )",x,y));
     }
 
-    public void warpOnCoordinates(int i, int i2) {
-        updateCoordinates(i, i2);
+    public void warpOnCoordinates(int x, int y) {
+        updateCoordinates(x, y);
         this.listeners.sendPointerWarped(this.xPos, this.yPos);
     }
 
-    public boolean isButtonPressed(int i) {
-        return this.buttons.isSet(KeyButNames.getFlagForButtonNumber(i));
+    public boolean isButtonPressed(int button) {
+        return this.buttons.isSet(KeyButNames.getFlagForButtonNumber(button));
     }
 
 

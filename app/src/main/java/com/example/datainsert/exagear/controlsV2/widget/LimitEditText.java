@@ -34,6 +34,7 @@ public class LimitEditText extends EditText {
     public static final int TYPE_NUMBER_INT = 2; //无符号，无小数点
     public static final int TYPE_GIVEN_OPTIONS = 3; //只能选择预先提供好的选项
     public static final int TYPE_TEXT_SINGLE_LINE = 4; //普通的一行文字
+    public static final int TYPE_TEXT_ANY = 5; //普通多行文字
     public static final int TYPE_HEX_COLOR_ARGB = 5; //十六进制颜色的argb值，最多8位
     @CustomInputType
     private int mType;

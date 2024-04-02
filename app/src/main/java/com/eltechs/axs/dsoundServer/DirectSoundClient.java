@@ -46,7 +46,7 @@ public class DirectSoundClient {
     }
 
     private boolean checkShmSegmentFormat(MappedByteBuffer mappedByteBuffer) {
-        return mappedByteBuffer.limit() > 64 && mappedByteBuffer.getInt(0) == MAGIC;
+        return mappedByteBuffer.limit() > MIN_SIZE_OF_SHM_SEGMENT && mappedByteBuffer.getInt(0) == MAGIC;
     }
 
     public boolean isAttached() {

@@ -1,5 +1,13 @@
 package com.eltechs.axs.dsoundServer;
 
+import static com.eltechs.axs.dsoundServer.Opcodes.Attach;
+import static com.eltechs.axs.dsoundServer.Opcodes.InitGlobalNotifier;
+import static com.eltechs.axs.dsoundServer.Opcodes.Play;
+import static com.eltechs.axs.dsoundServer.Opcodes.RecalcVolpan;
+import static com.eltechs.axs.dsoundServer.Opcodes.SetCurrentPosition;
+import static com.eltechs.axs.dsoundServer.Opcodes.SetNotifications;
+import static com.eltechs.axs.dsoundServer.Opcodes.Stop;
+
 import com.eltechs.axs.dsoundServer.impl.PlayFlags;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.proto.input.ProcessingResult;
@@ -50,50 +58,50 @@ public class DirectSoundRequestHandler implements RequestHandler<DirectSoundClie
         if (xInputStream.getAvailableBytesCount() < 8) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        int i = xInputStream.getInt();
-        int i2 = xInputStream.getInt();
-        if (xInputStream.getAvailableBytesCount() < i2) {
+        int opcode = xInputStream.getInt();
+        int len = xInputStream.getInt();
+        if (xInputStream.getAvailableBytesCount() < len) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        if (i == 255) {
-            if (i2 != 0) {
+        if (opcode == InitGlobalNotifier) {
+            if (len != 0) {
                 return ProcessingResult.PROCESSED_KILL_CONNECTION;
             }
             return initGlobalNotifier(directSoundClient, xOutputStream);
-        } else if (i == 0) {
-            if (i2 != 4) {
+        } else if (opcode == Attach) {
+            if (len != SIZE_OF_ATTACH_REQ) {
                 return ProcessingResult.PROCESSED_KILL_CONNECTION;
             }
             return attach(directSoundClient, xInputStream.getInt(), xOutputStream);
         } else if (!directSoundClient.isAttached()) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         } else {
-            switch (i) {
-                case 1:
-                    if (i2 != 4) {
+            switch (opcode) {
+                case Play:
+                    if (len != SIZE_OF_PLAY_REQ) {
                         return ProcessingResult.PROCESSED_KILL_CONNECTION;
                     }
                     return play(directSoundClient, xInputStream.getInt(), xOutputStream);
-                case 2:
-                    if (i2 != 0) {
+                case Stop:
+                    if (len != SIZE_OF_STOP_REQ) {
                         return ProcessingResult.PROCESSED_KILL_CONNECTION;
                     }
                     return stop(directSoundClient, xOutputStream);
-                case 3:
-                    if (i2 != 4) {
+                case SetCurrentPosition:
+                    if (len != SIZE_OF_SET_CURRENT_POSITION_REQ) {
                         return ProcessingResult.PROCESSED_KILL_CONNECTION;
                     }
                     return setCurrentPosition(directSoundClient, xInputStream.getInt(), xOutputStream);
-                case 4:
+                case SetNotifications:
                     int i3 = xInputStream.getInt();
-                    if (i2 != (i3 * 4 * 2) + 4) {
+                    if (len != (i3 * 4 * 2) + 4) {
                         return ProcessingResult.PROCESSED_KILL_CONNECTION;
                     }
                     return setNotificationPositions(directSoundClient, i3, xInputStream, xOutputStream);
-                case 5:
+                case RecalcVolpan:
                     int i4 = xInputStream.getInt();
                     int i5 = xInputStream.getInt();
-                    if (i2 != 8) {
+                    if (len != SIZE_OF_RECALC_VOLPAN_REQ) {
                         return ProcessingResult.PROCESSED_KILL_CONNECTION;
                     }
                     return recalcVolpan(directSoundClient, i4, i5, xOutputStream);
@@ -110,30 +118,9 @@ public class DirectSoundRequestHandler implements RequestHandler<DirectSoundClie
         if (!directSoundClient.attach(i)) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
@@ -143,119 +130,35 @@ public class DirectSoundRequestHandler implements RequestHandler<DirectSoundClie
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
         directSoundClient.play(create);
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     private ProcessingResult stop(DirectSoundClient directSoundClient, XOutputStream xOutputStream) throws IOException {
         directSoundClient.stop();
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
     private ProcessingResult recalcVolpan(DirectSoundClient directSoundClient, int i, int i2, XOutputStream xOutputStream) throws IOException {
         directSoundClient.recalcVolpan(i, i2);
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
-    private ProcessingResult setCurrentPosition(DirectSoundClient directSoundClient, int i, XOutputStream xOutputStream) throws IOException {
-        if (!directSoundClient.setCurrentPosition(i)) {
+    private ProcessingResult setCurrentPosition(DirectSoundClient directSoundClient, int position, XOutputStream xOutputStream) throws IOException {
+        if (!directSoundClient.setCurrentPosition(position)) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 
@@ -271,43 +174,17 @@ public class DirectSoundRequestHandler implements RequestHandler<DirectSoundClie
         } else {
             directSoundClient.setNotificationPositions(null, null);
         }
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } finally {
         }
     }
 
     private ProcessingResult initGlobalNotifier(DirectSoundClient directSoundClient, XOutputStream xOutputStream) throws IOException {
         DirectSoundGlobalNotifier.createInstance(directSoundClient, xOutputStream);
-        XStreamLock lock = xOutputStream.lock();
-        try {
+        try (XStreamLock ignored = xOutputStream.lock()) {
             xOutputStream.writeInt(0);
-            if (lock != null) {
-                lock.close();
-            }
             return ProcessingResult.PROCESSED;
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 }

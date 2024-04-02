@@ -14,15 +14,15 @@ public class XResourceCursor implements XResource {
         return "Xcursor";
     }
 
-    public XResourceCursor(int i, String str, boolean z) {
-        this.size = i;
-        this.theme = str;
-        this.themeCore = z;
+    public XResourceCursor(int size, String theme, boolean themeCore) {
+        this.size = size;
+        this.theme = theme;
+        this.themeCore = themeCore;
     }
 
     @Override // com.eltechs.axs.desktopExperience.XResource
     public Map<String, String> getKeyValPairs() {
-        HashMap hashMap = new HashMap();
+        HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("size", String.valueOf(this.size));
         hashMap.put("theme", this.theme);
         hashMap.put("theme_core", String.valueOf(true));

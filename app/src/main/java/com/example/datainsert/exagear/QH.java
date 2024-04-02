@@ -792,6 +792,12 @@ public class QH {
             return this;
         }
 
+        /** 1.2倍行间距 */
+        public TV lineSpace(){
+            textView.setLineSpacing(0,1.2f);
+            return this;
+        }
+
         public TextView to() {
             TextView tmp = textView;
             textView = null;

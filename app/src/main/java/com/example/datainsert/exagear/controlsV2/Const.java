@@ -5,7 +5,6 @@ import static com.example.datainsert.exagear.controlsV2.Const.BtnType.NORMAL;
 import static com.example.datainsert.exagear.controlsV2.Const.BtnType.STICK;
 
 import android.content.Context;
-import android.graphics.ColorSpace;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,6 +12,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.SparseArray;
 
+import com.eltechs.axs.Globals;
+import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
 import com.example.datainsert.exagear.controlsV2.edit.Edit1KeyView;
 import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
@@ -22,14 +23,12 @@ import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Const {
@@ -44,6 +43,8 @@ public class Const {
     public static int fingerTapMaxMs = 300;
     /**经过测试，12f（安卓像素）比较合适*/
     public static float fingerTapMaxMovePixels = 12f;
+    /** 手指移动多远距离，鼠标滚动应该滚动一次. 好像60 滚动刚好和手指移动同步 */
+    public static float fingerMoveDistToOneScrollUnit = 60f;
     public static Edit1KeyView editKeyView = null;
     /** 用于计算 {@link #maxPointerDeltaDistInOneEvent} 应为几分之一*/
     public final static int maxDivisor = 20;
@@ -61,11 +62,13 @@ public class Const {
     public static float stickInnerMaxOffOuterRadiusRatio = 1; //摇杆内圆允许移动的距离（到内圆圆心）与外圆半径之比
     public static double stickMoveThreshold = 20; //摇杆按下并移动时，若手指距离中心小于此距离，则算作不移动
 
-    public static int defaultBgColor = 0xffc2e2ff;
+    public static int defaultTouchAreaBgColor = 0xffe8f6ff;//0xffc2e2ff;
     public static String profileDefaultName = "default"; //没有任何配置时，默认配置名称
     public static String bundledProfilesPath = "controls/profiles"; //内置配置在assets中的位置
-//    public static String[] profileBundledNames; //放在apk/assets内的配置
+    public static List<String> profileBundledNames = new ArrayList<>(); //放在apk/assets内的配置名（注意不是文件名）。
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
+    /** 启动任务管理器选项，执行初始脚本的环境变量名（将命令中中该字符串替换为脚本位置） */
+    public static final String OPTION_TASKMGR_START_SH_ENV = "$ANOTHER_SH";
 
     public static boolean detailDebug = false; //用于调试的便捷开关
     //TODO 如果要在没有全部完成之前发布的话，在“其他”页面添加说明这个是alpha版，不推荐使用，可能含有bug，升级到正式版时可能有冲突需要清除数据重装。
@@ -86,27 +89,31 @@ public class Const {
         int[] xWH = holder.getXScreenPixels();
         maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
 
-        ModelProvider.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
-        ModelProvider.profilesDir = new File(ModelProvider.workDir, "profiles");
-        ModelProvider.currentProfile = new File(ModelProvider.workDir, "current");
+        Files.rootfsDir = ((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath();
+        Files.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
+        Files.profilesDir = new File(Files.workDir, "profiles");
+        Files.currentProfile = new File(Files.workDir, "current");
+        Files.currentContProfile = new File(Files.rootfsDir,"home/xdroid/currentProfile");
 
         //        先检查一下路径是否存在，然后决定是否要初始化；
         //        保证各个文件夹存在，配置至少有一个（算上预设的），且current的符号链接存在
         boolean isFirst = false;
-        if (!ModelProvider.workDir.exists()) {
+        if (!Files.workDir.exists()) {
             isFirst = true;
-            ModelProvider.workDir.mkdirs();
+            Files.workDir.mkdirs();
         }
-        if (!ModelProvider.profilesDir.exists()) {
+        if (!Files.profilesDir.exists()) {
             isFirst = true;
-            ModelProvider.profilesDir.mkdir();
+            Files.profilesDir.mkdir();
         }
-        if (!ModelProvider.currentProfile.exists() || Objects.requireNonNull(ModelProvider.profilesDir.list()).length==0)
+        if (!Files.currentProfile.exists() || Objects.requireNonNull(Files.profilesDir.list()).length==0)
             isFirst = true;
 
         //添加预设的几个配置
-        if (isFirst)
-            ModelProvider.extractBundledProfilesFromAssets(c,false);
+        profileBundledNames = ModelProvider.readBundledProfilesFromAssets(c,isFirst,isFirst);
+
+        //（可选）切换当前容器对应的默认配置
+        ModelProvider.syncCurrentProfileWhenContainerStart(Pref.isProfilePerContainer());
 
         initiated=true;
     }
@@ -118,18 +125,6 @@ public class Const {
      */
     public static void initExagearExtension(){
         Extension.addImpl(Extension.MOUSE_MOVE_CAMERA_RELATIVE,ConstExagearExtension.MouseMoveCameraAdapter.class);
-    }
-
-    /**
-     * 调用 {@link #init(FragmentActivity, XServerViewHolder)} 之后调用此函数添加fragment。传入用于替换显示fragment的视图id
-     */
-    public static void initShowFragment(int frameId, ControlsFragment fragment){
-        //添加fragment
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .add(frameId, fragment, Const.fragmentTag)
-                .addToBackStack(null) //如果不用退出fragment的话不驾到backstack也无所谓吧
-                .commit();
-
     }
 
     /**
@@ -306,6 +301,7 @@ public class Const {
      */
     public static class GsonField {
         public final static String md_ModelType = "modelType";
+        public final static String md_fsmTable = "fsmTable";
         public final static String st_StateType = "stateType";
         public final static String st_keycode = "keycode";
         public final static String st_doPress = "doPress";
@@ -320,8 +316,44 @@ public class Const {
         public final static String st_noMoveThreshold = "noMoveThreshold";
         public final static String st_fastMoveThreshold = "fastMoveThreshold" ;
         public final static String st_countDownMs = "countDownMs";
-        public final static String md_fsmTable = "fsmTable";
         public final static String st_nearFarThreshold = "nearFarThreshold";
         public final static String st_pointMoveType = "pointMoveType";
+    }
+
+    /**
+     * 记录一些应用级别的偏好，这些没法记录在一个profile里，而应该是对全体profile生效
+     */
+    public static class Pref{
+        /** 允许不同容器使用不同配置. 默认为false */
+        private static final String PREF_KEY_ENABLE_PROFILE_PER_CONTAINER = "ENABLE_PROFILE_PER_CONTAINER";
+        /** 启动任务管理器选项的替换命令。默认为空字符串。不为空时执行指定命令，每段参数用换行分割。 */
+        private static final String PREF_KEY_RUN_TASKMGR_ALT = "RUN_TASKMGR_ALT";
+        public static void setProfilePerContainer(boolean enable){
+            QH.getPreference().edit().putBoolean(PREF_KEY_ENABLE_PROFILE_PER_CONTAINER,enable).apply();
+        }
+
+        public static boolean isProfilePerContainer(){
+            return QH.getPreference().getBoolean(PREF_KEY_ENABLE_PROFILE_PER_CONTAINER,false);
+        }
+
+        public static void setRunTaskmgrAlt(String cmd){
+            QH.getPreference().edit().putString(PREF_KEY_RUN_TASKMGR_ALT,cmd).apply();
+        }
+
+        public static String getRunTaskmgrAlt(){
+            return QH.getPreference().getString(PREF_KEY_RUN_TASKMGR_ALT,"");
+        }
+    }
+
+    /**
+     * 文件相关的路径
+     */
+    public static class Files {
+        public static File rootfsDir; //rootfs路径
+
+        public static File workDir; //自定义操作模式 相关文件的根目录
+        public static File profilesDir; //存储全部配置的目录
+        public static File currentProfile; //当前全局配置的软链接
+        public static File currentContProfile; //当前容器默认配置的软链接
     }
 }

@@ -38,14 +38,14 @@ public class TouchScreenControlsWidget extends FrameLayout {
     }
 
     @Override // android.widget.FrameLayout, android.view.ViewGroup, android.view.View
-    protected void onLayout(boolean z, final int i, final int i2, final int i3, final int i4) {
-        super.onLayout(z, i, i2, i3, i4);
-        if (i == i3 || i2 == i4) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (left == right || top == bottom) {
             return;
         }
         // from class: com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget.1
 // java.lang.Runnable
-        UiThread.post(() -> TouchScreenControlsWidget.this.host.placeViewOfXServer(i, i2, i3 - i, i4 - i2));
+        UiThread.post(() -> TouchScreenControlsWidget.this.host.placeViewOfXServer(left, top, right - left, bottom - top));
         Log.d(TAG, "onLayout: 设置inputWidget的TouchScreenControls（toucharea）");
         TouchScreenControls create = this.controlsFactory.create(this, this.target);
         this.inputWidget.setTouchScreenControls(create);

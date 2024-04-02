@@ -6,10 +6,10 @@ public class TrayConfiguration {
     private final int trayIcon;
     private final int trayIconName;
 
-    public TrayConfiguration(int i, int i2, int i3) {
-        this.trayIcon = i;
-        this.trayIconName = i2;
-        this.returnToDescription = i3;
+    public TrayConfiguration(int icon, int iconName, int returnToDescription) {
+        this.trayIcon = icon;
+        this.trayIconName = iconName;
+        this.returnToDescription = returnToDescription;
     }
 
     public int getTrayIcon() {

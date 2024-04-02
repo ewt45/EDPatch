@@ -13,8 +13,8 @@ public class StartGuestApplication<StateClass extends UBTLaunchConfigurationAwar
     private final boolean restartAXSAfterShutdown;
     private final boolean terminateAXSOnGuestExit;
 
-    public StartGuestApplication(boolean z) {
-        this(z, false);
+    public StartGuestApplication(boolean terminateAXSOnGuestExit) {
+        this(terminateAXSOnGuestExit, false);
     }
 
     public StartGuestApplication(boolean terminateAXSOnGuestExit, boolean restartAXSAfterShutdown) {
@@ -32,7 +32,7 @@ public class StartGuestApplication<StateClass extends UBTLaunchConfigurationAwar
                 @Override // com.eltechs.axs.guestApplicationsTracker.GuestApplicationsLifecycleAdapter, com.eltechs.axs.guestApplicationsTracker.GuestApplicationsLifecycleListener
                 public void translatorExited(Translator translator) {
                     if (!guestApplicationsTrackerComponent.haveGuestApplications()) {
-                        StartupActivity.shutdownAXSApplication(StartGuestApplication.this.restartAXSAfterShutdown);
+                        StartupActivity.shutdownAXSApplication(restartAXSAfterShutdown);
                     }
                 }
             });

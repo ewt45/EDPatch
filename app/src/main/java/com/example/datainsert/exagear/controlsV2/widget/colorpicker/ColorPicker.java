@@ -1,16 +1,12 @@
 package com.example.datainsert.exagear.controlsV2.widget.colorpicker;
 
-import static android.graphics.Shader.TileMode.REPEAT;
 import static android.graphics.drawable.GradientDrawable.OVAL;
 import static android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT;
 import static android.view.Gravity.CENTER_VERTICAL;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -23,9 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
-import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.QH;
+import com.example.datainsert.exagear.controlsV2.widget.DrawableMosaic;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 
 /**
@@ -268,14 +264,7 @@ public class ColorPicker extends LinearLayout {
      * 需要注意给topDrawable设置一个宽高，否则会按照bitmap的宽高来，非常小
      */
     public static LayerDrawable wrapAlphaAlertBg(Context c, GradientDrawable topDrawable) {
-        Drawable bgAlertSingleDrawable = new DrawableMosaic();//c.getDrawable(R.drawable.alpha_bg);
-        Bitmap bgAlertSingleBitmap = Bitmap.createBitmap(dp8*2,dp8*2, Bitmap.Config.ARGB_8888);
-        Canvas tmpCanvas = new Canvas(bgAlertSingleBitmap);
-        bgAlertSingleDrawable.setBounds(0, 0, bgAlertSingleBitmap.getWidth(), bgAlertSingleBitmap.getHeight());
-        bgAlertSingleDrawable.draw(tmpCanvas);
-        BitmapDrawable bgAlertRepeatDrawable = new BitmapDrawable(c.getResources(), bgAlertSingleBitmap);
-        bgAlertRepeatDrawable.setTileModeXY(REPEAT, REPEAT);
-        return new LayerDrawable(new Drawable[]{bgAlertRepeatDrawable, topDrawable});
+        return new LayerDrawable(new Drawable[]{DrawableMosaic.repeatedBitmapDrawable(c.getResources()), topDrawable});
     }
 
 

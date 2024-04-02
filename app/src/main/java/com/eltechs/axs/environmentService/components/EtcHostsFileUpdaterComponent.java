@@ -21,20 +21,17 @@ public class EtcHostsFileUpdaterComponent extends EnvironmentComponent {
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent
     public void start() {
-        this.listener = new NetworkStateListener(Globals.getAppContext(), new NetworkStateListener.OnNetworkStateChangedListener() { // from class: com.eltechs.axs.environmentService.components.EtcHostsFileUpdaterComponent.1
-            @Override // com.eltechs.axs.NetworkStateListener.OnNetworkStateChangedListener
-            public void onNetworkStateChanged(String str) {
-                File file = new File(EtcHostsFileUpdaterComponent.this.exagearImage.getPath(), "etc/hosts");
-                Assert.isTrue(file.exists() && file.isFile());
-                Assert.isTrue(file.canRead() && file.canWrite());
-                try {
-                    PrintWriter printWriter = new PrintWriter(file);
-                    printWriter.printf("%s\t%s\n", str, "localhost");
-                    printWriter.close();
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                    Assert.unreachable();
-                }
+        this.listener = new NetworkStateListener(Globals.getAppContext(), ipAddr -> {
+            File file = new File(EtcHostsFileUpdaterComponent.this.exagearImage.getPath(), "etc/hosts");
+            Assert.isTrue(file.exists() && file.isFile());
+            Assert.isTrue(file.canRead() && file.canWrite());
+            try {
+                PrintWriter printWriter = new PrintWriter(file);
+                printWriter.printf("%s\t%s\n", ipAddr, "localhost");
+                printWriter.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Assert.unreachable();
             }
         });
         this.listener.start();

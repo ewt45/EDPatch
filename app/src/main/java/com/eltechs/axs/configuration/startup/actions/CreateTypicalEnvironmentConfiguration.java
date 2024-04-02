@@ -53,19 +53,19 @@ public class CreateTypicalEnvironmentConfiguration<StateClass extends Environmen
     }
 
     private UnixSocketConfiguration createVirglServerSocketConf() {
-        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.VIRGL_SERVER, Integer.valueOf(this.productId))) : UnixSocketConfiguration.createRegularSocket(((ExagearImageAware) ((EnvironmentAware) getApplicationState())).getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.VIRGL_SERVER, Integer.valueOf(this.productId)));
+        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.VIRGL_SERVER, this.productId)) : UnixSocketConfiguration.createRegularSocket(getApplicationState().getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.VIRGL_SERVER, this.productId));
     }
 
     private UnixSocketConfiguration createALSASocketConf() {
-        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.ALSA_SERVER, Integer.valueOf(this.productId))) : UnixSocketConfiguration.createRegularSocket(((ExagearImageAware) ((EnvironmentAware) getApplicationState())).getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.ALSA_SERVER, Integer.valueOf(this.productId)));
+        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.ALSA_SERVER, this.productId)) : UnixSocketConfiguration.createRegularSocket(getApplicationState().getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.ALSA_SERVER, this.productId));
     }
 
     private UnixSocketConfiguration createXServerSocketConf() {
-        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.XSERVER, Integer.valueOf(this.productId))) : UnixSocketConfiguration.createRegularSocket(((ExagearImageAware) ((EnvironmentAware) getApplicationState())).getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.XSERVER, Integer.valueOf(this.productId)));
+        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.XSERVER, this.productId)) : UnixSocketConfiguration.createRegularSocket(getApplicationState().getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.XSERVER, this.productId));
     }
 
     private UnixSocketConfiguration createDSoundServerSocketConf() {
-        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.DSOUND_SERVER, Integer.valueOf(this.productId))) : UnixSocketConfiguration.createRegularSocket(((ExagearImageAware) ((EnvironmentAware) getApplicationState())).getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.DSOUND_SERVER, Integer.valueOf(this.productId)));
+        return this.forceUseAbstractSockets ? UnixSocketConfiguration.createAbstractSocket(String.format("%s%d", SocketPaths.DSOUND_SERVER, this.productId)) : UnixSocketConfiguration.createRegularSocket(getApplicationState().getExagearImage().getPath().getAbsolutePath(), String.format("%s%d", SocketPaths.DSOUND_SERVER, this.productId));
     }
 
     private UnixSocketConfiguration createGATServerSocketConf() {

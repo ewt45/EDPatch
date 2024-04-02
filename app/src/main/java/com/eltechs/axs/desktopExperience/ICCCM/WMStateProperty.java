@@ -7,8 +7,8 @@ public class WMStateProperty {
     public final Window iconWindow;
     public final WMStateValues state;
 
-    public WMStateProperty(WMStateValues wMStateValues, Window window) {
-        this.state = wMStateValues;
-        this.iconWindow = window;
+    public WMStateProperty(WMStateValues state, Window iconWindow) {
+        this.state = state;
+        this.iconWindow = iconWindow;
     }
 }

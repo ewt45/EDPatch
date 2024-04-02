@@ -24,15 +24,15 @@ public class GuestApplicationsTrackerComponent extends EnvironmentComponent {
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent
     public void start() throws IOException {
-        String libubt2GPath;
+        String libubtPath;
         Assert.state(this.tracker == null, "Guest applications tracker is already started.");
         NativeLibsConfiguration nativeLibsConfiguration = getEnvironment().getNativeLibsConfiguration();
         if (((MemsplitConfigurationAware) Globals.getApplicationState()).getMemsplitConfiguration().isMemsplit3g()) {
-            libubt2GPath = nativeLibsConfiguration.getLibubtPath();
+            libubtPath = nativeLibsConfiguration.getLibubtPath();
         } else {
-            libubt2GPath = nativeLibsConfiguration.getLibubt2GPath();
+            libubtPath = nativeLibsConfiguration.getLibubt2GPath();
         }
-        this.tracker = new GuestApplicationsTracker(this.socketConf, nativeLibsConfiguration.getElfLoaderPath(), libubt2GPath, nativeLibsConfiguration.getKillswitchPath());
+        this.tracker = new GuestApplicationsTracker(this.socketConf, nativeLibsConfiguration.getElfLoaderPath(), libubtPath, nativeLibsConfiguration.getKillswitchPath());
     }
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent

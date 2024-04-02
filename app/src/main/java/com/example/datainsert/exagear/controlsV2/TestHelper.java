@@ -56,27 +56,12 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TestHelper {
     private static final String TAG = "TestHelper";
     private final static float[] hsvTemp = new float[3];
-
-    public static void addTouchAreas(Context c, TouchAreaView touchAreaView) {
-//        OneProfile oneProfile = new OneProfile();
-//
-//        //最底层手势
-//        oneProfile.addTouchArea(new TouchArea<OneGestureArea>(
-//                touchAreaView,
-//                new OneGestureArea(),
-//                new ClickAdapter(0.1f, () -> showEditOptions(c))) {
-//            @Override
-//            public void onDraw(Canvas canvas) {
-//
-//            }
-//        });
-        //添加一个悬浮窗。点击可以展开或折叠
-    }
 
     public static void onTouchMoveView(View touchedView, View movedView) {
         if (movedView.getParent() != null && !(movedView.getParent() instanceof FrameLayout))
@@ -87,8 +72,8 @@ public class TestHelper {
         touchedView.setClickable(true);
 
         touchedView.setOnTouchListener(new View.OnTouchListener() {
-            int[] downPos = new int[2];
-            int[] downXY = new int[2];
+            int[] downPos = new int[2]; //初始手指位置
+            int[] downXY = new int[2]; //初始movedView margin
             boolean noClickWhenFinish = false;
 
             @Override
@@ -118,6 +103,7 @@ public class TestHelper {
 //                        Log.d(TAG, "onTouch: " + String.format("%d, %d, %d, %d, %s, %s", v.getBottom(), ((FrameLayout) v.getParent()).getHeight(), v.getRight(), v.getBottom(), v.getWidth() == v.getRight() - v.getLeft(), v.getHeight() == v.getBottom() - v.getTop()));
                         return true;
                     }
+                    //其实这里应该也应该同ACTION_MOVE更新坐标
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL: {
                         touchedView.setPressed(false);
@@ -169,12 +155,6 @@ public class TestHelper {
         else if (parent.getHeight() - movedView.getTop() < minTouchSize)
             paramsUpd.topMargin -= minTouchSize - (parent.getHeight() - movedView.getTop());
         movedView.setLayoutParams(paramsUpd);
-    }
-
-    public static TextView getTextView16sp(Context c) {
-        TextView tv = new TextView(c);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        return tv;
     }
 
     public static Button getTextButton(Context c, String text) {
@@ -447,14 +427,6 @@ public class TestHelper {
 
         }
 
-    }
-
-    /**
-     * 为对应视图右上角添加一个问号图标，点击可查看说明
-     */
-    public static void addHelpBadgeToView(View view, String helpText) {
-        view.getOverlay().add(new DrawableAlign(view));
-        view.setOnClickListener(v -> TestHelper.showConfirmDialog(v.getContext(), helpText, null));
     }
 
     /**

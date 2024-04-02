@@ -13,7 +13,7 @@ public class ALSAClient {
     public static final int MIN_RATE = 8000;
     private final PCMPlayersManager pcmPlayersManager;
     private ClientFormats format = ClientFormats.U8;
-    private int channels = 1;
+    private int channels = MIN_CHANNELS;
     private int rate = MIN_RATE;
     private PCMPlayer pcmPlayer = null;
     private final ReluctantlyGarbageCollectedArrays arrays = new ReluctantlyGarbageCollectedArrays();
@@ -53,13 +53,13 @@ public class ALSAClient {
         }
     }
 
-    public void writeDataToTrack(ByteBuffer byteBuffer, int i) {
+    public void writeDataToTrack(ByteBuffer byteBuffer, int length) {
         prepareAudioTrack();
         if (this.pcmPlayer != null) {
             if (this.format == ClientFormats.U8) {
-                byte[] byteArray = this.arrays.getByteArray(i);
-                byteBuffer.get(byteArray, 0, i);
-                this.pcmPlayer.writeData(byteArray, 0, i);
+                byte[] byteArray = this.arrays.getByteArray(length);
+                byteBuffer.get(byteArray, 0, length);
+                this.pcmPlayer.writeData(byteArray, 0, length);
                 return;
             }
             if (this.format == ClientFormats.S16BE) {
@@ -67,10 +67,10 @@ public class ALSAClient {
             } else {
                 byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
             }
-            int i2 = i / 2;
-            short[] shortArray = this.arrays.getShortArray(i2);
-            byteBuffer.asShortBuffer().get(shortArray, 0, i2);
-            this.pcmPlayer.writeData(shortArray, 0, i2);
+            int shortLen = length / 2;
+            short[] shortArray = this.arrays.getShortArray(shortLen);
+            byteBuffer.asShortBuffer().get(shortArray, 0, shortLen);
+            this.pcmPlayer.writeData(shortArray, 0, shortLen);
         }
     }
 
@@ -89,19 +89,19 @@ public class ALSAClient {
         return true;
     }
 
-    public boolean setChannels(int i) {
-        if (i < 1 || i > 2) {
+    public boolean setChannels(int channels) {
+        if (channels < MIN_CHANNELS || channels > MAX_CHANNELS) {
             return false;
         }
-        this.channels = i;
+        this.channels = channels;
         return true;
     }
 
-    public boolean setRate(int i) {
-        if (i < 8000 || i > 48000) {
+    public boolean setRate(int rate) {
+        if (rate < MIN_RATE || rate > MAX_RATE) {
             return false;
         }
-        this.rate = i;
+        this.rate = rate;
         return true;
     }
 }

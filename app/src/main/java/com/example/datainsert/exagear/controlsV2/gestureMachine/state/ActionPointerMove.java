@@ -1,14 +1,17 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fingerIndex;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fingerXYType;
+import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.getFieldS;
+
 import android.content.Context;
 import android.view.View;
 
-import com.example.datainsert.exagear.RR;
-import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
 import com.google.gson.annotations.SerializedName;
@@ -22,10 +25,10 @@ public class ActionPointerMove extends FSMAction2 {
     /**
      * 若执行此操作时没有手指按下，则忽略该值，从历史记录中获取手指位置
      */
-    @SerializedName(value = Const.GsonField.st_fingerIndex)
+    @SerializedName(value = st_fingerIndex)
     public int mFingerIndex = 0;
 
-    @SerializedName(value = Const.GsonField.st_fingerXYType)
+    @SerializedName(value = st_fingerXYType)
     public int mFingerXYType = FSMR.value.手指位置_最后移动;
 
     @Override
@@ -62,10 +65,11 @@ public class ActionPointerMove extends FSMAction2 {
                     editFingerIndex.setEnabled(mFingerXYType != FSMR.value.手指位置_最后移动);
                 });
 
-        return createEditViewQuickly(c,
+
+        return FSMState2.createEditViewQuickly(this, c,
                 new String[][]{
-                        /*第几根手指*/{RR.getS(RR.ctr2_stateProp_fingerIndex),null},
-                        /*手指坐标类型*/{RR.getS(RR.ctr2_stateProp_fingerXYType),null},
+                        /*第几根手指*/getFieldS(st_fingerIndex),
+                        /*手指坐标类型*/getFieldS(st_fingerXYType),
                 },
                 new View[]{editFingerIndex,editFingerXYType});
     }

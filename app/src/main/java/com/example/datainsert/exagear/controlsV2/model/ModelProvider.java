@@ -12,6 +12,7 @@ import android.system.Os;
 import android.util.Log;
 
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
@@ -43,7 +44,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ModelProvider {
     private static final String TAG = "ModelProvider";
@@ -91,9 +94,6 @@ public class ModelProvider {
             State2FingersZoom.class,
             ActionRunOption.class
     };
-    public static File workDir;
-    public static File profilesDir;
-    public static File currentProfile;
 
     public static Class<? extends TouchArea<? extends TouchAreaModel>> getAreaClass(Class<? extends TouchAreaModel> modelClass) {
            return areaClasses[indexOf(modelClasses,modelClass)];
@@ -145,7 +145,7 @@ public class ModelProvider {
 
     public static String getCurrentProfileCanonicalName() {
         try {
-            return currentProfile.getCanonicalFile().getName();
+            return Const.Files.currentProfile.getCanonicalFile().getName();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -162,7 +162,7 @@ public class ModelProvider {
             String jsonStr = gson.toJson(profile);
 //            Log.d(TAG, "转为json：" + jsonStr);
 
-            File file = new File(profilesDir, profile.name);
+            File file = new File(Const.Files.profilesDir, profile.getName());
             if (file.exists() && !file.delete())
                 Log.e(TAG, "文件存在且无法删除");
             FileUtils.writeStringToFile(file, jsonStr);
@@ -183,7 +183,7 @@ public class ModelProvider {
      */
     public static @NonNull OneProfile readProfile(String name) {
         try {
-            return readProfileFromFile(new File(profilesDir, name));
+            return readProfileFromFile(new File(Const.Files.profilesDir, name));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -204,21 +204,50 @@ public class ModelProvider {
 
     public static @NonNull OneProfile readCurrentProfile() {
         try {
-            return readProfile(currentProfile.getCanonicalFile().getName());
+            return readProfile(Const.Files.currentProfile.getCanonicalFile().getName());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
-     * 将某个配置作为当前选中的配置
+     * 将某个配置作为当前选中的配置.
+     * <br/> 将该配置符号链接到当前配置和当前容器配置
      */
     public static void makeCurrent(String fileName) {
-        File profile = new File(profilesDir, fileName);
+        File profile = new File(Const.Files.profilesDir, fileName);
         try {
-            boolean b = currentProfile.delete();
-            Os.symlink(profile.getAbsolutePath(), currentProfile.getAbsolutePath());
+            boolean b = Const.Files.currentProfile.delete();
+            Os.symlink(profile.getAbsolutePath(), Const.Files.currentProfile.getAbsolutePath());
+
+            b = Const.Files.currentContProfile.delete();
+            Os.symlink(profile.getAbsolutePath(), Const.Files.currentContProfile.getAbsolutePath());
         } catch (ErrnoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 读取当前容器的默认配置。若存在，则同步到全局默认配置
+     * <br/> 调用此函数时，请确保currProfile存在。
+     * <br/> 若存在容器级别当前配置且启用容器单独配置，则同步到全局当前配置，若不存在容器级别当前配置，则同步全局到当前容器
+     * @param isProfilePerContainer 是否开启不同容器不同配置该功能
+     */
+    public static void syncCurrentProfileWhenContainerStart(boolean isProfilePerContainer) {
+        try {
+            //删除源文件后，链接文件自身exists=false，canonical是自身
+            File contProfile = Const.Files.currentContProfile.getCanonicalFile();
+            //若存在容器级别当前配置且启用容器单独配置，则同步到全局当前配置，若不存在容器级别当前配置，则同步全局到当前容器
+            if(!contProfile.exists()){
+                boolean b = contProfile.delete();
+                File currGlobal = Const.Files.currentProfile.getCanonicalFile();
+                TestHelper.assertTrue(currGlobal.exists());
+                Os.symlink(currGlobal.getAbsolutePath(),contProfile.getAbsolutePath());
+            }else if(isProfilePerContainer){
+                makeCurrent(contProfile.getName());
+            }
+
+        } catch (IOException | ErrnoException e) {
             e.printStackTrace();
         }
     }
@@ -234,13 +263,13 @@ public class ModelProvider {
      * @return 新生成的配置
      */
     public static OneProfile createNewProfile(String newName, @Nullable String ref, boolean makeCurrent) {
-        File newFile = new File(profilesDir, newName);
+        File newFile = new File(Const.Files.profilesDir, newName);
         if (newFile.exists())
             throw new RuntimeException("同名profile已存在，无法创建");
         //为防止与现在的实例冲突，所以需要从json重新构建一个实例。
         // 然后需要改成指定的名字，再存为json
         OneProfile newProfile = ref != null ? readProfile(ref) : new OneProfile(newName);
-        newProfile.name = newName;
+        newProfile.setName(newName);
         saveProfile(newProfile);
         if (makeCurrent)
             makeCurrent(newName);
@@ -265,7 +294,7 @@ public class ModelProvider {
 
         //检查是否有同名的
         for (int i = 1; ; i++) {
-            if (new File(profilesDir, builder.toString()).exists()) {
+            if (new File(Const.Files.profilesDir, builder.toString()).exists()) {
                 if (i == 1) builder.append('_');
                 builder.deleteCharAt(builder.length() - 1).append(i);
             } else
@@ -302,55 +331,63 @@ public class ModelProvider {
         File tmpFile = new File(c.getFilesDir(), "tmp_control_profile");
         tmpFile.delete();
         try (OutputStream os = c.getContentResolver().openOutputStream(uri);
-             FileInputStream fis = new FileInputStream(new File(profilesDir, name));) {
+             FileInputStream fis = new FileInputStream(new File(Const.Files.profilesDir, name));) {
             IOUtils.copy(fis, os);
         }
     }
 
     /**
-     * 获取apk内置配置的名称数组。一定不为null，可能长度为0
+     * 从apk/assets中读取全部内置配置名。可选是否解压
+     * @param extract 是否解压。若解压且无内置配置，则新建一个空配置。
+     * @param switchCurrent 解压时，是否自动设置当前配置（点按钮手动解压时不应切换配置）
      */
-    public static @NonNull String[] getAssetsProfileNames(Context c){
-        String[] assetProfileNames = null;
+    public static List<String> readBundledProfilesFromAssets(Context c, boolean extract, boolean switchCurrent){
+        assert !(!extract && switchCurrent); //不解压的时候，不应该切换当前配置
+        List<String> assetsProfileNames = new ArrayList<>();
         try {
-            assetProfileNames = c.getAssets().list(bundledProfilesPath);
-        } catch (IOException e) {
+            String[] assetProfileFiles = c.getAssets().list(bundledProfilesPath);
+            if (assetProfileFiles == null) assetProfileFiles = new String[0];
+
+            int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
+            File tmpCopyFile = new File(Const.Files.workDir, "tmp_copy_profile");
+            for (int i=0; i<assetProfileFiles.length; i++) {
+                String fileName = assetProfileFiles[i];
+                if(fileName.trim().equalsIgnoreCase("default"))
+                    prefIndex=i;
+                //1. 先读取配置名
+                try (InputStream is = c.getAssets().open(bundledProfilesPath + "/" + fileName)) {
+                    FileUtils.copyInputStreamToFile(is, tmpCopyFile);
+                }
+                OneProfile oneProfile = ModelProvider.readProfileFromFile(tmpCopyFile);
+                assetsProfileNames.add(oneProfile.getName());
+                //2. 解压
+                if(extract)
+                    saveProfile(oneProfile);
+            }
+
+            //3. 如果是第一次解压，设置首选配置
+            if(extract && switchCurrent){
+                //3.1 如果是第一次解压，但没有内置配置，则新建一个空的
+                String switchTargetName;
+                if(assetsProfileNames.isEmpty()){
+                    OneProfile defaultProfile = new OneProfile(profileDefaultName);
+                    ModelProvider.saveProfile(defaultProfile);
+                    switchTargetName = defaultProfile.getName();
+
+                }
+                //3.2 否则优先设置为名称为“default”的，若没有则设置为读取到的第一个
+                else{
+                    switchTargetName = assetsProfileNames.get(prefIndex);
+                }
+                if(switchCurrent)
+                    makeCurrent(switchTargetName);
+            }
+        }catch (IOException e) {
             e.printStackTrace();
         }
-        if(assetProfileNames==null) assetProfileNames = new String[0];
-        return assetProfileNames;
+
+        return assetsProfileNames;
     }
 
-    /**
-     * 从apk/assets中解压出内置配置
-     * @param reExtract 是否为重新解压。若Const.init初次操作，则false。若已经存在配置了，点击按钮重解压，则为true。为true时不应修改当前配置的软链接或在assetsName长度为0时新建空配置。
-     */
-    public static void extractBundledProfilesFromAssets(Context c, boolean reExtract){
-        String[] assetProfileNames = getAssetsProfileNames(c);
-
-        //如果是重解压，即使没有内置配置，也不要新建
-        if(assetProfileNames.length==0 && !reExtract){
-            OneProfile defaultProfile = new OneProfile(profileDefaultName);
-            ModelProvider.saveProfile(defaultProfile);
-            ModelProvider.makeCurrent(defaultProfile.name);
-        }else if(assetProfileNames.length>0){
-            int prefIndex = 0;//优先将名称为“default”的配置作为默认配置
-            for(int i=0; i<assetProfileNames.length; i++){
-                String name = assetProfileNames[i];
-                if(assetProfileNames[i].trim().equalsIgnoreCase("default"))
-                    prefIndex=i;
-                try (InputStream is = c.getAssets().open(bundledProfilesPath + "/" + name)) {
-                    FileUtils.copyInputStreamToFile(is, new File(ModelProvider.profilesDir, name));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(!reExtract){
-                ModelProvider.makeCurrent(assetProfileNames[prefIndex]);
-            }
-        }
-
-
-    }
 
 }

@@ -21,12 +21,10 @@ public class OneProfile {
     private final List<TouchAreaModel> modelList;
     transient private final List<TouchArea<? extends TouchAreaModel>> touchAreaList;
     transient private final List<TouchArea<? extends TouchAreaModel>> umodifiableList;
-    //TODO 编辑名称的时候，需要同时修改本地文件的名称。另外还需要检查是否有重复，是否有特殊字符
-    public String name = "invalidName";
+    private String name;
     private final int version = 20240229; //版本号
     private boolean showTouchArea = true; //是否显示按键
     private float mouseMoveSpeed = 1f; //全局鼠标移动速度
-
     transient private boolean isEditing = false;
 
 
@@ -161,6 +159,10 @@ public class OneProfile {
      */
     public OneGestureArea getGestureAreaModel(){
         return (OneGestureArea) modelList.get(modelList.size()-1);
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {

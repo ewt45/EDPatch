@@ -1,10 +1,22 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine;
 
 import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.RR.getSArr;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_countDownMs;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fastMoveThreshold;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fingerIndex;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fingerXYType;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_ignorePixels;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_nearFarThreshold;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_noMoveThreshold;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_optionType;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_zoomFingerIndex1;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_zoomFingerIndex2;
 
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.RR;
 
@@ -20,7 +32,7 @@ public class FSMR {
     private static final String TAG = "FSMR";
 
     private static final SparseArray<String> stateArr = new SparseArray<>();
-    private static final SparseArray<String> fieldArr = new SparseArray<>();
+    private static final Map<String, String> fieldArr = new HashMap<>();
     private static final SparseArray<String> eventIdArr = new SparseArray<>();
     private static final Map<int[],String[]> valueArr = new HashMap<>();
 
@@ -55,6 +67,18 @@ public class FSMR {
         valueArr.put(value.手指位置_全部可用选项,RR.getSArr(RR.ctr2_FSMR_value_fingerXYType));//"任意一根手指最后一次位置改变时","手指初始按下时", "手指当前位置"
         valueArr.put(value.观测手指序号_全部可用选项,RR.getSArr(RR.ctr2_FSMR_value_fingerIndex));//"全部手指","1","2","3","4","5","6","7","8","9","10
         valueArr.put(value.鼠标移动逻辑_全部可用选项,RR.getSArr(RR.ctr2_FSMR_value_pointerMoveType)); //正常 视角转动
+
+        fieldArr.put(st_fingerIndex, getS(RR.ctr2_stateProp_fingerIndex));
+        fieldArr.put(st_fingerXYType, getS(RR.ctr2_stateProp_fingerXYType));
+        fieldArr.put(st_optionType, getS(RR.ctr2_stateProp_option));
+        fieldArr.put(st_ignorePixels, getS(RR.ctr2_stateProp_noMoveThreshold));
+        fieldArr.put(st_zoomFingerIndex1, getSArr(RR.ctr2_stateProp_zoom2Finger)[0]);
+        fieldArr.put(st_zoomFingerIndex2, getSArr(RR.ctr2_stateProp_zoom2Finger)[1]);
+        fieldArr.put(st_nearFarThreshold, getS(RR.ctr2_stateProp_nearFarThres));
+        fieldArr.put(st_noMoveThreshold, getS(RR.ctr2_stateProp_noMoveThreshold));
+        fieldArr.put(st_fastMoveThreshold, getS(RR.ctr2_stateProp_fastMoveThres));
+        fieldArr.put(st_countDownMs, getS(RR.ctr2_stateProp_countDown));
+
     }
 
     /**
@@ -68,10 +92,18 @@ public class FSMR {
         }
         return str;
     }
-    //TODO getFieldS返回数组，如果包含$字符，则第二个元素是说明，否则第二个元素是空
-    @Deprecated
-    public static String getFieldS(int id) {
-        return fieldArr.get(id);
+
+    /**
+     * 返回state属性对应的名称以及说明。
+     * @param fieldId 应该为 {@link com.example.datainsert.exagear.controlsV2.Const.GsonField} 中的值
+     * @return 包含两个元素，第一个是名称。如果没有说明，第二个元素是null
+     */
+    public static String[] getFieldS(String fieldId) {
+        String str = fieldArr.get(fieldId);
+        assert str != null;
+        if(str.contains(RR.STR_SPLIT_SYMBOL))
+            return str.split(RR.STR_SPLIT_SYMBOL,2);
+        return new String[]{str,null};
     }
 
     /**
@@ -145,11 +177,6 @@ public class FSMR {
          * 用于检测手指数量变化时，倒计时结束时手指数量没有变化
          */
         public static final int 手指数量不变 = 11;
-    }
-
-    public static class field {
-
-        public static final int 一指测速_超时倒计时 = 1;
     }
 
     public static class adapter {

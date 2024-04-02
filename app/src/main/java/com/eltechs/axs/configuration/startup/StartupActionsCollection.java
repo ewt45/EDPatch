@@ -85,7 +85,7 @@ public class StartupActionsCollection<StateClass> {
         }
     }
 
-    public void actionDone(final StartupAction startupAction) {
+    public void actionDone(final StartupAction<StateClass> startupAction) {
         UiThread.post(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.3
             @Override // java.lang.Runnable
             public void run() {
@@ -99,7 +99,7 @@ public class StartupActionsCollection<StateClass> {
         });
     }
 
-    public void actionFailed(final StartupAction startupAction, final String str) {
+    public void actionFailed(final StartupAction<StateClass> startupAction, final String str) {
         UiThread.post(new Runnable() { // from class: com.eltechs.axs.configuration.startup.StartupActionsCollection.4
             @Override // java.lang.Runnable
             public void run() {

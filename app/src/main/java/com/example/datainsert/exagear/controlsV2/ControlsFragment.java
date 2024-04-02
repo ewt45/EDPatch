@@ -15,12 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.eltechs.axs.Globals;
-import com.eltechs.axs.applicationState.XServerDisplayActivityConfigurationAware;
-import com.eltechs.ed.R;
 import com.eltechs.ed.activities.EDMainActivity;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
+
 //TODO fab里也改成这个fragment，还是去掉？
 public class ControlsFragment extends Fragment {
     public static final String ARGV_START_EDIT_ON_SHOW = "ARGV_START_EDIT_ON_SHOW";
@@ -79,8 +77,11 @@ public class ControlsFragment extends Fragment {
             if (getArguments() != null && getArguments().getBoolean(ARGV_START_EDIT_ON_SHOW))
                 touchAreaView.startEdit();
 
-            if (requireActivity() instanceof EDMainActivity)
-                touchAreaView.setBackgroundResource(R.drawable.someimg);
+            if (requireActivity() instanceof EDMainActivity){
+//                touchAreaView.setBackgroundResource(R.drawable.someimg);
+                touchAreaView.setBackgroundColor(0xff8D6F64);
+            }
+
         }
 
         //将touchView放入容器视图中。

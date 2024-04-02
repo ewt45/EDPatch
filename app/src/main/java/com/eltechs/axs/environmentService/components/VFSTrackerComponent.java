@@ -15,10 +15,10 @@ public class VFSTrackerComponent extends EnvironmentComponent {
     private final List<String> trackedFiles;
     private VFSTracker tracker;
 
-    public VFSTrackerComponent(String str, List<String> list, SyscallReportMultiplexor syscallReportMultiplexor) {
-        this.address = str;
-        this.trackedFiles = list;
-        this.rootHandler = syscallReportMultiplexor;
+    public VFSTrackerComponent(String address, List<String> trackedFiles, SyscallReportMultiplexor rootHandler) {
+        this.address = address;
+        this.trackedFiles = trackedFiles;
+        this.rootHandler = rootHandler;
     }
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent

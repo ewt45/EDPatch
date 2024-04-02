@@ -1,17 +1,13 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
-import static com.example.datainsert.exagear.RR.getS;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 
-import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.geom.Point;
 import com.eltechs.axs.helpers.Assert;
-import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
@@ -32,7 +28,7 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
      * 单位是安卓像素
      */
     @SerializedName(value = Const.GsonField.st_nearFarThreshold)
-    public float mDistThreshold = 12f;
+    public float mDistThreshold = Const.fingerTapMaxMovePixels;
 
     @Override
     protected void onAttach() {
@@ -44,15 +40,15 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
     public void notifyBecomeActive() {
 
         Assert.state(getContext().getFingers().size() > mFingerIndex);
-        Point pointerLocation = getContext().getXServerHolder().getPointerLocation();
-        float[] posInAMatrix = {pointerLocation.x, pointerLocation.y};
-        TransformationHelpers.mapPoints(getContext().getXServerHolder().getXServerToViewTransformationMatrix(), posInAMatrix);
+        Point p = getContext().getXServerHolder().getPointerLocation();
+        float[] pointerInAMatrix = {p.x, p.y};
+        getContext().getXServerHolder().getViewToXServerTransformationMatrix().mapPoints(pointerInAMatrix);
 
-        //TODO 这里原代码用的getXWhenFirstTouched，是有什么理由吗？）
+        //这里原代码用的getXWhenFirstTouched，是有什么理由吗？）
         float[] fingerXY = getContext().getFingerXYByType(mFingerXYType,mFingerIndex);
-        float shortestDist = GeometryHelpers.distance(posInAMatrix[0], posInAMatrix[1], fingerXY[0], fingerXY[1]);
+        float dist = TestHelper.distance(pointerInAMatrix[0], pointerInAMatrix[1], fingerXY[0], fingerXY[1]);
 
-        sendEvent( shortestDist<= this.mDistThreshold
+        sendEvent( dist <= this.mDistThreshold
                 ? FSMR.event.手指距离指针_近
                 : FSMR.event.手指距离指针_远);
     }
@@ -84,11 +80,11 @@ public class StateCheckFingerNearToPointer extends FSMState2 {
                 .setFloatValue(mDistThreshold)
                 .setUpdateListener(editText -> mDistThreshold = editText.getFloatValue());
 
-        return createEditViewQuickly(c,
+        return FSMState2.createEditViewQuickly(this, c,
                 new String[][]{
-                        {getS(RR.ctr2_stateProp_fingerIndex),null},//"观测第几根手指"
-                        {getS(RR.ctr2_stateProp_fingerXYType),null},//观测手指的哪个坐标
-                        {getS(RR.ctr2_stateProp_farDistThres),null}//超过此大小则属于远距离
+                        FSMR.getFieldS(Const.GsonField.st_fingerIndex),//"观测第几根手指"
+                        FSMR.getFieldS(Const.GsonField.st_fingerXYType),//观测手指的哪个坐标
+                        FSMR.getFieldS(Const.GsonField.st_nearFarThreshold)//超过此大小则属于远距离
                 },
                 new View[]{editFingerIndex,editFingerXYType,editThreshold});
     }

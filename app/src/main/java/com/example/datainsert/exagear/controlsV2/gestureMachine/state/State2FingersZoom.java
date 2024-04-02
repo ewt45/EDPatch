@@ -7,7 +7,6 @@ import android.content.Context;
 import android.view.View;
 
 import com.eltechs.axs.helpers.Assert;
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -34,6 +33,10 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
     transient private XZoomHandler mZoomController;
     @Override
     protected void onAttach() {
+        if(mFingerIndex1 < 0)
+            mFingerIndex1 = 0;
+        if(mFingerIndex2 < 0)
+            mFingerIndex2 = (mFingerIndex1 + 1) % 10;
     }
 
     @Override
@@ -45,7 +48,6 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
         finger2 = getContext().getFingers().get(mFingerIndex2);
 //        lastCenterXY = new float[]{(finger1.getX() + finger2.getX()) / 2, (finger1.getY() + finger2.getY()) / 2};
 //        lastDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
-//        //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
         mZoomController = getContext().getZoomController();
 //        mZoomController.setAnchorBoth(finger1.getX(), finger1.getY());
         mZoomController.start(finger1.getX(),finger1.getY(),finger2.getX(),finger2.getY());
@@ -90,11 +92,11 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
                 .setSelectedValue(mFingerIndex2)
                 .setUpdateListener(editText -> mFingerIndex2 = editText.getSelectedValue());
 
-        String[] titles = RR.getSArr(RR.ctr2_stateProp_zoom2Finger);//第几根手指 (其一)$第几根手指 (其二)
-        return createEditViewQuickly(c,
+        //第几根手指 (其一)$第几根手指 (其二)
+        return FSMState2.createEditViewQuickly(this, c,
                 new String[][]{
-                        {titles[0], null},
-                        {titles[1], null}},
+                        FSMR.getFieldS(Const.GsonField.st_zoomFingerIndex1),
+                        FSMR.getFieldS(Const.GsonField.st_zoomFingerIndex2)},
                 new View[]{edit1, edit2});
     }
 }

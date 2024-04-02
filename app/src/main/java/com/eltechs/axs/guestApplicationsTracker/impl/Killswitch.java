@@ -13,17 +13,17 @@ public class Killswitch {
 
     private static native boolean initialiseNativeParts();
 
-    private native int startKillswitch(String str, String str2, String str3, String str4);
+    private native int startKillswitch(String elfLoaderPath, String killSwitchPath, String libUbtPath, String outputFilePath);
 
-    private native void stopKillswitch(int i, int i2);
+    private native void stopKillswitch(int killswitchPid, int controlPipeFd);
 
     static {
         System.loadLibrary("ubt-helpers");
         Assert.state(initialiseNativeParts(), "Managed and native parts of Killswitch do not match one another.");
     }
 
-    public Killswitch(String str, String str2, String str3) throws IOException {
-        int startKillswitch = startKillswitch(str, str2, str3, "/mnt/sdcard/killswitch.txt");
+    public Killswitch(String elfLoaderPath, String killSwitchPath, String libUbtPath) throws IOException {
+        int startKillswitch = startKillswitch(elfLoaderPath, killSwitchPath, libUbtPath, "/mnt/sdcard/killswitch.txt");
         if (startKillswitch < 0) {
             throw new IOException(String.format("Failed to start the killswitch; errno = %d.", Integer.valueOf(-startKillswitch)));
         }

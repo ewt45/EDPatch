@@ -1,8 +1,10 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 
-import static com.example.datainsert.exagear.RR.ctr2_stateProp_countDown;
-import static com.example.datainsert.exagear.RR.ctr2_stateProp_fastMoveThres;
-import static com.example.datainsert.exagear.RR.getS;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_countDownMs;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fastMoveThreshold;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_fingerIndex;
+import static com.example.datainsert.exagear.controlsV2.Const.GsonField.st_noMoveThreshold;
+import static com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR.getFieldS;
 
 import android.content.Context;
 import android.view.View;
@@ -10,7 +12,6 @@ import android.view.View;
 import com.eltechs.axs.GeometryHelpers;
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.helpers.OneShotTimer;
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -42,7 +43,7 @@ import java.util.List;
                 FSMR.event.新手指按下 //时间段内有新手指按下，立刻发送此事件
         })
 public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapter {
-    @SerializedName(value = Const.GsonField.st_noMoveThreshold)
+    @SerializedName(value = st_noMoveThreshold)
     public float mNoMoveThreshold = 12f;
     @SerializedName(value = Const.GsonField.st_fastMoveThreshold)
     public float mFastMoveThreshold = mNoMoveThreshold * 3;
@@ -181,12 +182,12 @@ public class StateCountDownMeasureSpeed extends FSMState2 implements TouchAdapte
                 .setSelectedValue(mFingerIndex)
                 .setUpdateListener(editText -> mFingerIndex = editText.getSelectedValue());
 
-        return createEditViewQuickly(c,
+        return FSMState2.createEditViewQuickly(this, c,
                 new String[][]{
-                        {getS(RR.ctr2_stateProp_noMoveThreshold), null}, //小于此距离则算作不移动
-                        {getS(ctr2_stateProp_fastMoveThres), null},//大于此距离则算作快速移动
-                        {getS(ctr2_stateProp_countDown), null},//倒计时限时 (毫秒)
-                        {getS(RR.ctr2_stateProp_fingerIndex), null},},//观测第几根手指
+                        getFieldS(st_noMoveThreshold), //小于此距离则算作不移动
+                        getFieldS(st_fastMoveThreshold),//大于此距离则算作快速移动
+                        getFieldS(st_countDownMs),//倒计时限时 (毫秒)
+                        getFieldS(st_fingerIndex)},//观测第几根手指
                 new View[]{
                        editNoMoveThreshold,
                        editFastMoveThreshold,

@@ -1,5 +1,8 @@
 package com.eltechs.axs.alsaServer.impl.audioTrackBacked;
 
+import static android.media.AudioTrack.PLAYSTATE_PAUSED;
+import static android.media.AudioTrack.PLAYSTATE_PLAYING;
+
 import android.media.AudioTrack;
 import com.eltechs.axs.alsaServer.impl.PCMPlayer;
 
@@ -14,10 +17,10 @@ public class AudioTrackBackedPCMPlayer implements PCMPlayer {
 
     @Override // com.eltechs.axs.alsaServer.impl.PCMPlayer
     public void stopAndReleaseResources() {
-        if (this.audioTrack.getPlayState() == 3) {
+        if (this.audioTrack.getPlayState() == PLAYSTATE_PLAYING) {
             this.audioTrack.pause();
         }
-        if (this.audioTrack.getPlayState() == 2) {
+        if (this.audioTrack.getPlayState() == PLAYSTATE_PAUSED) {
             this.audioTrack.flush();
         }
         this.audioTrack.release();
@@ -50,14 +53,14 @@ public class AudioTrackBackedPCMPlayer implements PCMPlayer {
     }
 
     @Override // com.eltechs.axs.alsaServer.impl.PCMPlayer
-    public void writeData(byte[] bArr, int i, int i2) {
-        this.audioTrack.write(bArr, i, i2);
-        this.framesWritten += i2 / this.audioTrack.getChannelCount();
+    public void writeData(byte[] bArr, int off, int len) {
+        this.audioTrack.write(bArr, off, len);
+        this.framesWritten += len / this.audioTrack.getChannelCount();
     }
 
     @Override // com.eltechs.axs.alsaServer.impl.PCMPlayer
-    public void writeData(short[] sArr, int i, int i2) {
-        this.audioTrack.write(sArr, i, i2);
-        this.framesWritten += i2 / this.audioTrack.getChannelCount();
+    public void writeData(short[] sArr, int off, int len) {
+        this.audioTrack.write(sArr, off, len);
+        this.framesWritten += len / this.audioTrack.getChannelCount();
     }
 }

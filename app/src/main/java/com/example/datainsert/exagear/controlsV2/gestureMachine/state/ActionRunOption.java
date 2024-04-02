@@ -3,10 +3,10 @@ package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
 import android.content.Context;
 import android.view.View;
 
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.StateTag;
 import com.example.datainsert.exagear.controlsV2.options.OptionsProvider;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
@@ -52,6 +52,7 @@ public class ActionRunOption extends FSMAction2 {
                 .setSelectableOptions(OptionsProvider.optionsInt,OptionsProvider.optionsName)
                 .setSelectedValue(mOptionType)
                 .setUpdateListener(editText -> mOptionType = editText.getSelectedValue());
-        return createEditViewQuickly(c,new String[][]{{/*操作*/RR.getS(RR.ctr2_stateProp_option),null}},new View[]{editOption});
+        return FSMState2.createEditViewQuickly(this, c, new String[][]{/*操作*/FSMR.getFieldS(Const.GsonField.st_optionType)},
+                new View[]{editOption});
     }
 }

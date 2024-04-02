@@ -287,7 +287,6 @@ public class FuncFAB implements Func {
             PatcherFile.copy(TYPE_SMALI, new String[]{
                     "/com/eltechs/ed/controls/DefaultControls.smali", //覆盖原有的默认操作模式
                     //仅供测试用
-                    "/com/example/datainsert/exagear/controlsV2"
 //                    "/com/eltechs/axs/xserver/Pointer.smali",
 //                    "/com/eltechs/axs/xserver/ViewFacade.smali",
 //                    "/com/eltechs/axs/xserver/PointerEventSender.smali",
@@ -297,19 +296,19 @@ public class FuncFAB implements Func {
             PatcherFile.copy(TYPE_ASSETS,new String[]{
                     "/controls"
             });
-            //糟了，现在xegw也需要改Pointer.smali，所以只能检测一下非xegw才复制这个
-            if (!new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXegw.so").exists()
-                    && !new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXlorie.so").exists()) {
-                Log.d(TAG, "updateSelfPackage: x11 server为ex原始的，可以复制Pointer.smali");
-                PatcherFile.copy(TYPE_SMALI, new String[]{
-                        "/com/eltechs/axs/xserver/Pointer.smali"});//控制鼠标是否允许移出屏幕
-            } else {
-                Log.d(TAG, "updateSelfPackage: x11 server 为Xegw，跳过复制Pointer.smali");
-            }
+//            //糟了，现在xegw也需要改Pointer.smali，所以只能检测一下非xegw才复制这个(ControlV2不再需要这个类）
+//            if (!new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXegw.so").exists()
+//                    && !new File(PatchUtils.getExaExtractDir(), "lib/armeabi-v7a/libXlorie.so").exists()) {
+//                Log.d(TAG, "updateSelfPackage: x11 server为ex原始的，可以复制Pointer.smali");
+//                PatcherFile.copy(TYPE_SMALI, new String[]{
+//                        "/com/eltechs/axs/xserver/Pointer.smali"});//控制鼠标是否允许移出屏幕
+//            } else {
+//                Log.d(TAG, "updateSelfPackage: x11 server 为Xegw，跳过复制Pointer.smali");
+//            }
 
 
             PatcherFile.copy(TYPE_SMALI, new String[]{
-                    "/com/example/datainsert/exagear/controls",});
+                    "/com/example/datainsert/exagear/controlsV2",});
         }
     }
 

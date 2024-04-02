@@ -4,18 +4,28 @@ import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.*;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.ColorStateListDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.util.SparseArray;
+import android.util.StateSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
+
+import org.apache.commons.lang3.concurrent.Computable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,10 +112,10 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
             mKeyBtnArray.put(info.xKeyCode,check);
             check.setTag(info.xKeyCode);
             check.setButtonDrawable(null);
-            //TODO 1:背景Drawable改为代码创建。2:exa的apk中文字仍然是靠左对齐
-            check.setBackground(TestHelper.getAssetsDrawable(getContext(), "controls/keyboard_key_toggle.xml"));
-            check.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+            check.setBackground(createKeyToggleDrawable());
             check.setTextColor(0xFFF3F3F3);
+            check.setTextAlignment(TEXT_ALIGNMENT_GRAVITY);//不知道为啥，exa的apk里这个设置完raw的是CENTER但get的始终是GRAVITY。只能能用setGravity设置了
+            check.setGravity(Gravity.CENTER);
             check.setOnCheckedChangeListener(this);
             check.setChecked(false);
 
@@ -124,6 +134,19 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
         }
         linearLineRoot.addView(new View(c),QH.LPLinear.one(-2,-2).right().to());
         return linearLineRoot;
+    }
+
+    private static Drawable createKeyToggleDrawable(){
+        //https://blog.csdn.net/Sansecy/article/details/107810160
+        //纯色的话直接GradientDrawable设置ColorStateList就能做到了。用不上StateListDrawable。。。
+        GradientDrawable gradient = new GradientDrawable();
+        gradient.setShape(GradientDrawable.RECTANGLE);
+        gradient.setCornerRadius(dp8/2f);
+        gradient.setColor(new ColorStateList(
+                new int[][]{{android.R.attr.state_checked},StateSet.WILD_CARD},
+                new int[]{0xff858484,0xff3A3A3A}
+        ));
+        return gradient;
     }
 
 
@@ -175,6 +198,13 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
             mSelectKeys.add(btn);
         } else if (!isChecked) {
             mSelectKeys.remove(btn);
+        }
+    }
+
+    private static class KeyButton extends CompoundButton{
+
+        public KeyButton(Context context) {
+            super(context);
         }
     }
 }

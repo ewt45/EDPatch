@@ -31,32 +31,10 @@ public class DirectSoundGlobalNotifier {
     }
 
     public void notifyPositionReached(int i) throws IOException {
-        XStreamLock lock = this.outputStream.lock();
-        try {
+        try (XStreamLock ignored = this.outputStream.lock()) {
             this.outputStream.writeInt(1);
             this.outputStream.writeInt(i);
             this.outputStream.flush();
-            if (lock == null) {
-                return;
-            }
-            lock.close();
-        } catch (Throwable th) {
-            try {
-                throw th;
-            } catch (Throwable th2) {
-                if (lock != null) {
-                    if (th != null) {
-                        try {
-                            lock.close();
-                        } catch (Throwable th3) {
-                            th.addSuppressed(th3);
-                        }
-                    } else {
-                        lock.close();
-                    }
-                }
-                throw th2;
-            }
         }
     }
 }

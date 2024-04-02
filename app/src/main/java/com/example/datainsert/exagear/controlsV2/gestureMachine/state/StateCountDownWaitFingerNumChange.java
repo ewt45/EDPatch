@@ -8,7 +8,6 @@ import android.content.Context;
 import android.view.View;
 
 import com.eltechs.axs.helpers.OneShotTimer;
-import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -67,7 +66,8 @@ public class StateCountDownWaitFingerNumChange extends FSMState2 implements Touc
 
     @Override
     public View createPropEditView(Context c) {
-        return createEditViewQuickly(c, new String[][]{{RR.getS(RR.ctr2_stateProp_countDown), null}}, new View[]{new LimitEditText(c)
+
+        return FSMState2.createEditViewQuickly(this, c, new String[][]{FSMR.getFieldS(Const.GsonField.st_countDownMs)}, new View[]{new LimitEditText(c)
                 .setCustomInputType(LimitEditText.TYPE_NUMBER_INT)
                 .setRange(0, Integer.MAX_VALUE)
                 .setIntValue(mCountDownMs)

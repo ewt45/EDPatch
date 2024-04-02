@@ -20,7 +20,7 @@ public class VirglServerComponent extends EnvironmentComponent {
         this.t = new Thread() { // from class: com.eltechs.axs.environmentService.components.VirglServerComponent.1
             @Override // java.lang.Thread, java.lang.Runnable
             public void run() {
-                VirglServerComponent.this.virglServer.startServer(VirglServerComponent.this.socketConf.getHostPath());
+                virglServer.startServer(socketConf.getHostPath());
             }
         };
         this.t.start();

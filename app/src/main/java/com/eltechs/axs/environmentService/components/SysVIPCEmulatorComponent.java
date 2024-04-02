@@ -9,12 +9,13 @@ import java.io.IOException;
 
 /* loaded from: classes.dex */
 public class SysVIPCEmulatorComponent extends EnvironmentComponent {
+    /** app 包名 */
     private final String domainName;
     private Emulator emulator;
     private SHMEngineImpl shmEngine;
 
-    public SysVIPCEmulatorComponent(String str) {
-        this.domainName = str;
+    public SysVIPCEmulatorComponent(String domainName) {
+        this.domainName = domainName;
     }
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent

@@ -17,7 +17,7 @@ import java.util.List;
 /* loaded from: classes.dex */
 public class AXSEnvironment implements Iterable<EnvironmentComponent> {
     private final Context applicationContext;
-    private final List<EnvironmentComponent> components = new ArrayList();
+    private final List<EnvironmentComponent> components = new ArrayList<>();
     StartupCallback startupCallback = null;
     TrayConfiguration trayConfiguration = null;
 
@@ -42,16 +42,15 @@ public class AXSEnvironment implements Iterable<EnvironmentComponent> {
 
     public <T extends EnvironmentComponent> T getComponent(Class<T> cls) {
         for (EnvironmentComponent component : this.components) {
-            T t = (T) component;
-            if (t.getClass() == cls) {
-                return t;
+            if (component.getClass() == cls) {
+                return (T) component;
             }
         }
         return null;
     }
 
     public NativeLibsConfiguration getNativeLibsConfiguration() {
-        return (NativeLibsConfiguration) getComponent(NativeLibsConfiguration.class);
+        return getComponent(NativeLibsConfiguration.class);
     }
 
     @Override // java.lang.Iterable
@@ -72,8 +71,8 @@ public class AXSEnvironment implements Iterable<EnvironmentComponent> {
 
     public void freezeEnvironment() {
         Assert.state(getService() != null);
-        GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = (GuestApplicationsTrackerComponent) getComponent(GuestApplicationsTrackerComponent.class);
-        DirectSoundServerComponent directSoundServerComponent = (DirectSoundServerComponent) getComponent(DirectSoundServerComponent.class);
+        GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = getComponent(GuestApplicationsTrackerComponent.class);
+        DirectSoundServerComponent directSoundServerComponent = getComponent(DirectSoundServerComponent.class);
         if (directSoundServerComponent != null) {
             directSoundServerComponent.suspendPlayback();
         }
@@ -83,12 +82,9 @@ public class AXSEnvironment implements Iterable<EnvironmentComponent> {
     }
 
     public void resumeEnvironment() {
-        if(getService()==null){
-
-        }
         Assert.state(getService() != null);
-        GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = (GuestApplicationsTrackerComponent) getComponent(GuestApplicationsTrackerComponent.class);
-        DirectSoundServerComponent directSoundServerComponent = (DirectSoundServerComponent) getComponent(DirectSoundServerComponent.class);
+        GuestApplicationsTrackerComponent guestApplicationsTrackerComponent = getComponent(GuestApplicationsTrackerComponent.class);
+        DirectSoundServerComponent directSoundServerComponent = getComponent(DirectSoundServerComponent.class);
         if (guestApplicationsTrackerComponent != null) {
             guestApplicationsTrackerComponent.resumeGuestApplications();
         }

@@ -104,20 +104,20 @@ public class UBTLaunchConfiguration implements Serializable {
 
     @SuppressLint("DefaultLocale")
     public void addArgumentsToEnvironment(AXSEnvironment aXSEnvironment) {
-        XServerComponent xServerComponent = (XServerComponent) aXSEnvironment.getComponent(XServerComponent.class);
+        XServerComponent xServerComponent = aXSEnvironment.getComponent(XServerComponent.class);
         if (xServerComponent != null) {
             this.guestEnvironmentVariables.add(String.format("DISPLAY=:%d", xServerComponent.getDisplayNumber()));
         }
-        VirglServerComponent virglServerComponent = (VirglServerComponent) aXSEnvironment.getComponent(VirglServerComponent.class);
+        VirglServerComponent virglServerComponent = aXSEnvironment.getComponent(VirglServerComponent.class);
         if (virglServerComponent != null) {
             this.guestEnvironmentVariables.add("GALLIUM_DRIVER=virpipe");
             this.guestEnvironmentVariables.add(String.format("VTEST_SOCKET=%s", virglServerComponent.getAddress()));
         }
-        ALSAServerComponent aLSAServerComponent = (ALSAServerComponent) aXSEnvironment.getComponent(ALSAServerComponent.class);
+        ALSAServerComponent aLSAServerComponent = aXSEnvironment.getComponent(ALSAServerComponent.class);
         if (aLSAServerComponent != null) {
             this.guestEnvironmentVariables.add(String.format("AXS_SOUND_SERVER_PORT=%s", aLSAServerComponent.getAddress()));
         }
-        DirectSoundServerComponent directSoundServerComponent = (DirectSoundServerComponent) aXSEnvironment.getComponent(DirectSoundServerComponent.class);
+        DirectSoundServerComponent directSoundServerComponent = aXSEnvironment.getComponent(DirectSoundServerComponent.class);
         if (directSoundServerComponent != null) {
             this.guestEnvironmentVariables.add(String.format("AXS_DSOUND_SERVER_PORT=%s", directSoundServerComponent.getAddress()));
         }
