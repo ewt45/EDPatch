@@ -219,7 +219,8 @@ public class GestureMachineMix {
             int pressSecondTimeToDragMs = 100; //第一根手指松开后，相隔多久再次按下会进入拖拽
             //是否开启视角转动模式。
             int offsetWindow = sp.getInt(PREF_KEY_MOUSE_OFFWINDOW_DISTANCE, 0);
-            viewOfXServer.getXServerFacade().getXServer().getPointer().setOffWindowLimit(offsetWindow); //将移出距离设置给pointer
+            //已废弃
+//            viewOfXServer.getXServerFacade().getXServer().getPointer().setOffWindowLimit(offsetWindow); //将移出距离设置给pointer
 
 
             //第一根手指按下，测速
