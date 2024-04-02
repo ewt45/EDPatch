@@ -17,10 +17,10 @@ import java.util.Map;
 public class Container {
     private boolean iterating;
     private final Thread mainThread = Thread.currentThread();
-    private final Map<String, Object> components = Collections.synchronizedMap(new LinkedHashMap());
-    private final Map<Class, List<LifecycleHandlerMethod>> postAddActions = new HashMap();
-    private final Map<Class, List<LifecycleHandlerMethod>> preRemoveActions = new HashMap();
-    private final Map<Class, List<AutowiringRequest>> autowiringInformation = new HashMap();
+    private final Map<String, Object> components = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final Map<Class, List<LifecycleHandlerMethod>> postAddActions = new HashMap<>();
+    private final Map<Class, List<LifecycleHandlerMethod>> preRemoveActions = new HashMap<>();
+    private final Map<Class, List<AutowiringRequest>> autowiringInformation = new HashMap<>();
 
     public void addComponent(String str, Object obj) {
         Assert.state(Thread.currentThread() == this.mainThread);
@@ -54,13 +54,12 @@ public class Container {
 
     public void removeAllComponents() {
         Assert.state(Thread.currentThread() == this.mainThread);
-        LinkedList linkedList = new LinkedList();
+        LinkedList<String> linkedList = new LinkedList<>();
         for (Map.Entry<String, Object> entry : this.components.entrySet()) {
             linkedList.addFirst(entry.getKey());
         }
-        Iterator it = linkedList.iterator();
-        while (it.hasNext()) {
-            removeComponent((String) it.next());
+        for (String component : linkedList) {
+            removeComponent(component);
         }
     }
 

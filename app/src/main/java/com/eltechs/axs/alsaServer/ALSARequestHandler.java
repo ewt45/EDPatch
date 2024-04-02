@@ -1,5 +1,15 @@
 package com.eltechs.axs.alsaServer;
 
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Close;
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Drain;
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Pointer;
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Prepare;
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Start;
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Stop;
+import static com.eltechs.axs.alsaServer.ClientOpcodes.Write;
+
+import android.support.constraint.motion.utils.StopLogic;
+
 import com.eltechs.axs.proto.input.ProcessingResult;
 import com.eltechs.axs.xconnectors.RequestHandler;
 import com.eltechs.axs.xconnectors.XInputStream;
@@ -16,63 +26,39 @@ public class ALSARequestHandler implements RequestHandler<ALSAClient> {
         if (xInputStream.getAvailableBytesCount() < 8) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        int i = xInputStream.getInt();
-        int i2 = xInputStream.getInt();
-        if (xInputStream.getAvailableBytesCount() < i2) {
+        int opcode = xInputStream.getInt();
+        int len = xInputStream.getInt();
+        if (xInputStream.getAvailableBytesCount() < len) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        switch (i) {
-            case 0:
+        switch (opcode) {
+            case Close:
                 aLSAClient.reset();
                 break;
-            case 1:
+            case Prepare:
                 aLSAClient.reset();
-                boolean z = false;
-                boolean z2 = aLSAClient.setChannels(xInputStream.getInt()) && (aLSAClient.setFormat(xInputStream.getInt()));
-                if (aLSAClient.setRate(xInputStream.getInt()) && z2) {
-                    z = true;
-                }
-                if (!z) {
+                boolean successful = aLSAClient.setChannels(xInputStream.getInt())
+                        && (aLSAClient.setFormat(xInputStream.getInt()))
+                        && aLSAClient.setRate(xInputStream.getInt());
+                if (!successful) {
                     return ProcessingResult.PROCESSED_KILL_CONNECTION;
                 }
                 break;
-            case 2:
+            case Start:
                 aLSAClient.start();
                 break;
-            case 3:
-                aLSAClient.writeDataToTrack(xInputStream.getAsByteBuffer(i2), i2);
+            case Write:
+                aLSAClient.writeDataToTrack(xInputStream.getAsByteBuffer(len), len);
                 break;
-            case 4:
+            case Stop:
                 aLSAClient.stop();
                 break;
-            case 5:
-                XStreamLock lock = xOutputStream.lock();
-                try {
+            case Pointer:
+                try (XStreamLock ignored = xOutputStream.lock()) {
                     xOutputStream.writeInt(aLSAClient.pointer());
-                    if (lock != null) {
-                        lock.close();
-                        break;
-                    }
-                } catch (Throwable th) {
-                    try {
-                        throw th;
-                    } catch (Throwable th2) {
-                        if (lock != null) {
-                            if (th != null) {
-                                try {
-                                    lock.close();
-                                } catch (Throwable th3) {
-                                    th.addSuppressed(th3);
-                                }
-                            } else {
-                                lock.close();
-                            }
-                        }
-                        throw th2;
-                    }
                 }
                 break;
-            case 6:
+            case Drain:
                 aLSAClient.drain();
                 break;
         }

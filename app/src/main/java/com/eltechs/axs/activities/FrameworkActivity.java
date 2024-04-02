@@ -79,7 +79,7 @@ public class FrameworkActivity<StateClass extends ApplicationStateBase> extends 
 
     /* JADX INFO: Access modifiers changed from: protected */
     protected final StateClass getApplicationState() {
-        return (StateClass) Globals.getApplicationState();
+        return Globals.getApplicationState();
     }
 
     /* JADX INFO: Access modifiers changed from: protected */

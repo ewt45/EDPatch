@@ -14,6 +14,7 @@ import android.os.CountDownTimer;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.eltechs.axs.AppConfig;
@@ -32,6 +33,7 @@ import com.eltechs.axs.widgets.popupMenu.AXSPopupMenu;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.eltechs.axs.xserver.XServer;
+import com.eltechs.ed.EDApplicationState;
 import com.eltechs.ed.R;
 import java.util.List;
 import java.util.Set;
@@ -44,7 +46,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
     private static final int REQUEST_CODE_INFORMER = 10003;
     private Runnable contextMenuRequestHandler;
     private XServerDisplayActivityInterfaceOverlay interfaceOverlay = new TrivialInterfaceOverlay();
-    private CountDownTimer periodicIabCheckTimer = new CountDownTimer(86400000, COUNT_DOWN_INTERVAL) { // from class: com.eltechs.axs.activities.XServerDisplayActivity.1
+    private CountDownTimer periodicIabCheckTimer = new CountDownTimer(COUNT_DOWN_TOTAL, COUNT_DOWN_INTERVAL) { // from class: com.eltechs.axs.activities.XServerDisplayActivity.1
         @Override // android.os.CountDownTimer
         public void onTick(long j) {
             XServerDisplayActivity.this.checkUiThread();
@@ -82,7 +84,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
             }
         }
         //这个jadx反编译完串位置了
-        getWindow().addFlags(128);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.main);
         if (!checkForSuddenDeath()) {
             this.viewOfXServer = new ViewOfXServer(this, xServerComponent.getXServer(), viewFacade, getApplicationState().getXServerViewConfiguration());
@@ -103,17 +105,14 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
                 | SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
-        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() { // from class: com.eltechs.axs.activities.XServerDisplayActivity.1MyOnSystemUiVisibilityChangeListener
-            @Override // android.view.View.OnSystemUiVisibilityChangeListener
-            public void onSystemUiVisibilityChange(int i) {
-                if (i == 0) {
-                    decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE); //260
-                } else {
-                    decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            |SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    ); //5894
-                }
+        decorView.setOnSystemUiVisibilityChangeListener(visibility -> {
+            if (visibility == 0) {
+                decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_STABLE); //260
+            } else {
+                decorView.setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        |SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | SYSTEM_UI_FLAG_LAYOUT_STABLE
+                ); //5894
             }
         });
     }
@@ -136,8 +135,8 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         checkIab();
         if (getApplicationContext().getPackageName().equals("com.eltechs.ed")) {
             AppConfig appConfig = AppConfig.getInstance(this);
-            DialogFragment controlsInfoDialog = ((SelectedExecutableFileAware) getApplicationState()).getSelectedExecutableFile().getControlsInfoDialog();
-            String controlsId = ((SelectedExecutableFileAware) getApplicationState()).getSelectedExecutableFile().getControlsId();
+            DialogFragment controlsInfoDialog = getApplicationState().getSelectedExecutableFile().getControlsInfoDialog();
+            String controlsId = getApplicationState().getSelectedExecutableFile().getControlsId();
             Set<String> controlsWithInfoShown = appConfig.getControlsWithInfoShown();
             if (controlsWithInfoShown.contains(controlsId)) {
                 return;
@@ -172,7 +171,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         if (getApplicationContext().getPackageName().equals("com.eltechs.ed")) {
             return;
         }
-        PurchasableComponentsCollection purchasableComponentsCollection = ((PurchasableComponentsCollectionAware) getApplicationState()).getPurchasableComponentsCollection();
+        PurchasableComponentsCollection purchasableComponentsCollection = getApplicationState().getPurchasableComponentsCollection();
         if (purchasableComponentsCollection.isTrialPeriodActive() || purchasableComponentsCollection.isPrepaidPeriodActive()) {
             return;
         }
@@ -218,24 +217,19 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
         getRootLayout().addView(textView, new FrameLayout.LayoutParams(0, 0, 5));
         final AXSPopupMenu aXSPopupMenu = new AXSPopupMenu(this, textView);
         aXSPopupMenu.add(list);
-        this.contextMenuRequestHandler = new Runnable() { // from class: com.eltechs.axs.activities.XServerDisplayActivity.2
-            @Override // java.lang.Runnable
-            public void run() {
-                aXSPopupMenu.show();
-            }
-        };
+        this.contextMenuRequestHandler = () -> aXSPopupMenu.show();
     }
 
-    public void placeViewOfXServer(int i, int i2, int i3, int i4) {
+    public void placeViewOfXServer(int left, int top, int width, int height) {
         if (this.viewOfXServer != null) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) this.viewOfXServer.getLayoutParams();
-            if (layoutParams.leftMargin == i && layoutParams.topMargin == i2 && layoutParams.width == i3 && layoutParams.height == i4) {
+            if (layoutParams.leftMargin == left && layoutParams.topMargin == top && layoutParams.width == width && layoutParams.height == height) {
                 return;
             }
-            layoutParams.leftMargin = i;
-            layoutParams.topMargin = i2;
-            layoutParams.width = i3;
-            layoutParams.height = i4;
+            layoutParams.leftMargin = left;
+            layoutParams.topMargin = top;
+            layoutParams.width = width;
+            layoutParams.height = height;
             this.viewOfXServer.setLayoutParams(layoutParams);
             this.viewOfXServer.invalidate();
         }
@@ -254,7 +248,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
     }
 
     private FrameLayout getRootLayout() {
-        return (FrameLayout) findViewById(R.id.mainView);
+        return findViewById(R.id.mainView);
     }
 
     /* loaded from: classes.dex */
@@ -287,7 +281,7 @@ public class XServerDisplayActivity<StateClass extends ApplicationStateBase<Stat
     }
 
     public void startInformerActivity(Intent intent) {
-        startActivityForResult(intent, (int) REQUEST_CODE_INFORMER);
+        startActivityForResult(intent, REQUEST_CODE_INFORMER);
     }
 
     public void freezeXServerScene() {

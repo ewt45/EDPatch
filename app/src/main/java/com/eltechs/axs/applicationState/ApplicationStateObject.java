@@ -9,8 +9,8 @@ public class ApplicationStateObject<T> {
 
 
     public ApplicationStateObject(Class<T> cls) {
-        AutowiringEnhancedObject addAutowiring = AutowiringEnhancedObject.addAutowiring(cls);
-        this.state = (T) addAutowiring.getProxy();
+        AutowiringEnhancedObject<T> addAutowiring = AutowiringEnhancedObject.addAutowiring(cls);
+        this.state = addAutowiring.getProxy();
         this.container = addAutowiring.getContainer();
     }
 

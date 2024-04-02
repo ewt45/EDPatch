@@ -23,13 +23,13 @@ public class AutowiringEnhancedObject<T> {
         return this.container;
     }
 
-    public static <T> AutowiringEnhancedObject addAutowiring(Class<?> cls) {
+    public static <T> AutowiringEnhancedObject<T> addAutowiring(Class<T> cls) {
         final Container container = new Container();
-        return new AutowiringEnhancedObject<>(Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, new InvocationHandler() { // from class: com.eltechs.axs.container.AutowiringEnhancedObject.1
+        return new AutowiringEnhancedObject<>((T) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, new InvocationHandler() { // from class: com.eltechs.axs.container.AutowiringEnhancedObject.1
             @Override // java.lang.reflect.InvocationHandler
             public Object invoke(Object obj, Method method, Object[] objArr) throws Throwable {
-                String propertyNameOfSetter = AutowiringEnhancedObject.getPropertyNameOfSetter(method.getName());
-                String propertyNameOfGetter = AutowiringEnhancedObject.getPropertyNameOfGetter(method.getName());
+                String propertyNameOfSetter = getPropertyNameOfSetter(method.getName());
+                String propertyNameOfGetter = getPropertyNameOfGetter(method.getName());
                 if (propertyNameOfSetter != null) {
                     container.setComponent(propertyNameOfSetter, objArr[0]);
                     return null;
@@ -44,7 +44,7 @@ public class AutowiringEnhancedObject<T> {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static String getPropertyNameOfSetter(String str) {
+    private static String getPropertyNameOfSetter(String str) {
         if (str.startsWith("set")) {
             return str.substring(3);
         }
@@ -52,7 +52,7 @@ public class AutowiringEnhancedObject<T> {
     }
 
     /* JADX INFO: Access modifiers changed from: private */
-    public static String getPropertyNameOfGetter(String str) {
+    private static String getPropertyNameOfGetter(String str) {
         if (str.startsWith("get")) {
             return str.substring(3);
         }

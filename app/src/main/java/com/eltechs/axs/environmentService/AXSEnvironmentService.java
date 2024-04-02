@@ -33,7 +33,6 @@ public class AXSEnvironmentService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: intent应该有创建吧");
     }
 
     @Override // android.app.Service
@@ -54,7 +53,6 @@ public class AXSEnvironmentService extends Service {
             configureAsForegroundService();
             return Service.START_NOT_STICKY;
         } catch (IOException e) {
-            Log.e(TAG, "onStartCommand: 现在还会报错嘛" );
             stopSelf();
             environmentAware.setEnvironmentServiceInstance(null);
             startupCallback.serviceFailed(e);
@@ -100,7 +98,7 @@ public class AXSEnvironmentService extends Service {
             environmentComponent.stop();
         }
         this.startedComponents.clear();
-        EnvironmentAware environmentAware = (EnvironmentAware) Globals.getApplicationState();
+        EnvironmentAware environmentAware = Globals.getApplicationState();
         if (environmentAware != null) {
             environmentAware.setEnvironmentServiceInstance(null);
         }

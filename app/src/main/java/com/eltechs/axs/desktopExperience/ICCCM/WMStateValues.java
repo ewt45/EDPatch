@@ -8,8 +8,8 @@ public enum WMStateValues {
 
     private final int id;
 
-    WMStateValues(int i) {
-        this.id = i;
+    WMStateValues(int id) {
+        this.id = id;
     }
 
     public int value() {

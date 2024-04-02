@@ -25,13 +25,13 @@ public class DirectSoundServerComponent extends EnvironmentComponent {
 
     @Override // com.eltechs.axs.environmentService.EnvironmentComponent
     public void start() throws IOException {
-        boolean z = false;
+        boolean sysvipcEnabled = false;
         Assert.state(this.connector == null, "DirectSound server component already started.");
-        SHMEngine shmEngine = ((SysVIPCEmulatorComponent) getEnvironment().getComponent(SysVIPCEmulatorComponent.class)).getShmEngine();
+        SHMEngine shmEngine = getEnvironment().getComponent(SysVIPCEmulatorComponent.class).getShmEngine();
         if (shmEngine != null) {
-            z = true;
+            sysvipcEnabled = true;
         }
-        Assert.state(z, "DirectSoundServerComponent requires SysVIPCEmulatorComponent.");
+        Assert.state(sysvipcEnabled, "DirectSoundServerComponent requires SysVIPCEmulatorComponent.");
         this.directSoundBufferFactory = new OpenSLDirectSoundBufferFactoryImpl();
         this.connectionHandler = new DirectSoundConnectionHandler(shmEngine, this.directSoundBufferFactory);
         this.requestHandler = new DirectSoundRequestHandler();
@@ -66,22 +66,12 @@ public class DirectSoundServerComponent extends EnvironmentComponent {
     public void suspendPlayback() {
         Assert.state(this.connector != null, "DirectSound server component not yet started.");
         this.requestHandler.suspendRequestProcessing();
-        this.connectionHandler.forEachClient(new DirectSoundConnectionHandler.ClientCallback() { // from class: com.eltechs.axs.environmentService.components.DirectSoundServerComponent.1
-            @Override // com.eltechs.axs.dsoundServer.DirectSoundConnectionHandler.ClientCallback
-            public void apply(DirectSoundClient directSoundClient) {
-                directSoundClient.suspendPlayback();
-            }
-        });
+        this.connectionHandler.forEachClient(directSoundClient -> directSoundClient.suspendPlayback());
     }
 
     public void resumePlayback() {
         Assert.state(this.connector != null, "DirectSound server component not yet started.");
-        this.connectionHandler.forEachClient(new DirectSoundConnectionHandler.ClientCallback() { // from class: com.eltechs.axs.environmentService.components.DirectSoundServerComponent.2
-            @Override // com.eltechs.axs.dsoundServer.DirectSoundConnectionHandler.ClientCallback
-            public void apply(DirectSoundClient directSoundClient) {
-                directSoundClient.resumePlayback();
-            }
-        });
+        this.connectionHandler.forEachClient(directSoundClient -> directSoundClient.resumePlayback());
         this.requestHandler.resumeRequestProcessing();
     }
 }

@@ -21,7 +21,7 @@ public enum FunctionKeysyms implements KeysymsEnum {
     F11(65480),
     F12(65481),
     INSERT(65379),
-    DELETE(SupportMenu.USER_MASK);
+    DELETE(65535);
     
     private int keysym;
 

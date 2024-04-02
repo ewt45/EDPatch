@@ -1,5 +1,9 @@
 package com.eltechs.axs;
 
+import static android.net.ConnectivityManager.TYPE_WIFI;
+
+import static com.eltechs.axs.helpers.ArithHelpers.extendAsUnsigned;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +13,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import com.eltechs.axs.helpers.ArithHelpers;
 import com.eltechs.axs.helpers.Assert;
+
+import java.util.Objects;
 
 /* loaded from: classes.dex */
 public class NetworkStateListener {
@@ -21,7 +27,7 @@ public class NetworkStateListener {
 
     /* loaded from: classes.dex */
     public interface OnNetworkStateChangedListener {
-        void onNetworkStateChanged(String str);
+        void onNetworkStateChanged(String ipAddr);
     }
 
     public NetworkStateListener(Context context, OnNetworkStateChangedListener onNetworkStateChangedListener) {
@@ -34,14 +40,16 @@ public class NetworkStateListener {
             @Override // android.content.BroadcastReceiver
             public void onReceive(Context context2, Intent intent) {
                 int ipAddress;
-                Assert.isTrue(intent.getAction() == "android.net.conn.CONNECTIVITY_CHANGE");
-                String str = "127.0.0.1";
-//                NetworkInfo activeNetworkInfo = NetworkStateListener.this.connectivityManager.getActiveNetworkInfo();
-//                if (activeNetworkInfo != null && activeNetworkInfo.isAvailable() && activeNetworkInfo.isConnected() && activeNetworkInfo.getType() == 1 && (ipAddress = NetworkStateListener.this.wifiManager.getConnectionInfo().getIpAddress()) != 0) {
-//                    byte[] bArr = {(byte) ipAddress, (byte) (ipAddress >> 8), (byte) (ipAddress >> 16), (byte) (ipAddress >> 24)};
-//                    str = String.format("%d.%d.%d.%d", Integer.valueOf(ArithHelpers.extendAsUnsigned(bArr[0])), Integer.valueOf(ArithHelpers.extendAsUnsigned(bArr[1])), Integer.valueOf(ArithHelpers.extendAsUnsigned(bArr[2])), Integer.valueOf(ArithHelpers.extendAsUnsigned(bArr[3])));
-//                }
-                NetworkStateListener.this.networkStateChangedListener.onNetworkStateChanged(str);
+                Assert.isTrue(Objects.equals(intent.getAction(), "android.net.conn.CONNECTIVITY_CHANGE"));
+                String ipAddr = "127.0.0.1";
+                NetworkInfo activeNetworkInfo = NetworkStateListener.this.connectivityManager.getActiveNetworkInfo();
+                if (activeNetworkInfo != null
+                        && activeNetworkInfo.isAvailable() && activeNetworkInfo.isConnected() && activeNetworkInfo.getType() == TYPE_WIFI
+                        && (ipAddress = NetworkStateListener.this.wifiManager.getConnectionInfo().getIpAddress()) != 0) {
+                    byte[] bArr = {(byte) ipAddress, (byte) (ipAddress >> 8), (byte) (ipAddress >> 16), (byte) (ipAddress >> 24)};
+                    ipAddr = String.format("%d.%d.%d.%d", extendAsUnsigned(bArr[0]), extendAsUnsigned(bArr[1]), extendAsUnsigned(bArr[2]), extendAsUnsigned(bArr[3]));
+                }
+                NetworkStateListener.this.networkStateChangedListener.onNetworkStateChanged(ipAddr);
             }
         };
     }

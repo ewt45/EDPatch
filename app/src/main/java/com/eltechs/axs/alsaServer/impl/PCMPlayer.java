@@ -14,7 +14,7 @@ public interface PCMPlayer {
 
     void stopAndReleaseResources();
 
-    void writeData(byte[] bArr, int i, int i2);
+    void writeData(byte[] bArr, int off, int len);
 
-    void writeData(short[] sArr, int i, int i2);
+    void writeData(short[] sArr, int off, int len);
 }

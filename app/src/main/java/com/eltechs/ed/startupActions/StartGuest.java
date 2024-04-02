@@ -18,6 +18,7 @@ import com.eltechs.axs.environmentService.TrayConfiguration;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.helpers.FileHelpers;
 import com.eltechs.axs.helpers.UiThread;
+import com.eltechs.axs.productsRegistry.ProductIDs;
 import com.eltechs.axs.xserver.ScreenInfo;
 import com.eltechs.ed.ContainerPackage;
 import com.eltechs.ed.InstallRecipe;
@@ -270,7 +271,7 @@ public class StartGuest<StateClass extends ApplicationStateBase<StateClass> & Se
             getApplicationState().setSelectedExecutableFile(new DetectedExecutableFile<>(environmentCustomisationParameters, mControls.getId(),mControls.createInfoDialog()));
             StartGuest.this.getApplicationState().setXServerDisplayActivityInterfaceOverlay(mControls.create());
         });
-        arrayList.add(new CreateTypicalEnvironmentConfiguration<>(12, false));
+        arrayList.add(new CreateTypicalEnvironmentConfiguration<>(ProductIDs.WDESKTOP, false));
         this.mEnv.addAll(Arrays.asList("HOME=/home/xdroid/", "WINEPREFIX=" + guestPath));
         arrayList.add(new CreateLaunchConfiguration<>(this.mExeWorkDir, guestPath, this.mExeArgv.toArray(new String[0]), this.mEnv.toArray(new String[0]), EDStartupActivity.SOCKET_PATH_SUFFIX, mUserAreaDir.getAbsolutePath()));
 
