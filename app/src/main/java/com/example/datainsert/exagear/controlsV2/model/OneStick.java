@@ -14,8 +14,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 public class OneStick extends TouchAreaModel {
-    public static final int WAY_8 = 1;
     public static final int WAY_4 = 0;
+    public static final int WAY_8 = 1;
+    public static final int WAY_MOUSE = 2;//鼠标移动
     public static final int KEY_LEFT = 0;
     public static final int KEY_TOP = 1;
     public static final int KEY_RIGHT = 2;
@@ -109,6 +110,10 @@ public class OneStick extends TouchAreaModel {
             keycodes.remove(keycodes.size() - 1);
     }
 
+    public @HowManyDirections int getDirection(){
+        return direction;
+    }
+
     @Override
     protected void cloneSelfFields(TouchAreaModel ref) {
         if (ref.getClass().equals(OneStick.class)) {
@@ -122,7 +127,7 @@ public class OneStick extends TouchAreaModel {
     /**
      * 移动时，是只有四个方向还是有八个方向（允许斜向）
      */
-    @IntDef({WAY_4, WAY_8})
+    @IntDef({WAY_4, WAY_8, WAY_MOUSE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface HowManyDirections {
     }

@@ -54,16 +54,16 @@ public class KeyboardModifiersLayout {
         };
     }
 
-    public void setKeycodeToModifier(byte b, KeyButNames keyButNames) {
+    public void setKeycodeToModifier(byte keycode, KeyButNames keyButNames) {
         Assert.isTrue(keyButNames.ordinal() <= MODIFIER_MAX);
         byte[] bArr = this.modifierToKeycodes[keyButNames.ordinal()];
         for (int i = 0; i < 4; i++) {
             if (bArr[i] == 0) {
-                bArr[i] = b;
+                bArr[i] = keycode;
                 return;
             }
         }
-        Assert.state(false, String.format("Unable to assign keycode %d to modifier %d: too many keycodes already assigned", Byte.valueOf(b), Integer.valueOf(keyButNames.ordinal())));
+        Assert.state(false, String.format("Unable to assign keycode %d to modifier %d: too many keycodes already assigned", Byte.valueOf(keycode), Integer.valueOf(keyButNames.ordinal())));
     }
 
     public KeyButNames getModifierByKeycode(byte b) {
@@ -81,7 +81,7 @@ public class KeyboardModifiersLayout {
         return this.modifierStickness[keyButNames.ordinal()];
     }
 
-    public void setModifierSticky(KeyButNames keyButNames, boolean z) {
-        this.modifierStickness[keyButNames.ordinal()] = z;
+    public void setModifierSticky(KeyButNames keyButNames, boolean isSticky) {
+        this.modifierStickness[keyButNames.ordinal()] = isSticky;
     }
 }

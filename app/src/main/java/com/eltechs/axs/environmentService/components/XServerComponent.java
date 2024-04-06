@@ -88,6 +88,9 @@ public class XServerComponent extends EnvironmentComponent {
 //        this.connector.start();
     }
 
+    /**
+     * 设置键盘。貌似就是这里，把小键盘映射成普通键盘按键了导致小键盘识别不了
+     */
     private static KeyboardModel createKeyboardModel() {
         KeyboardLayout keyboardLayout = new KeyboardLayout();
         keyboardLayout.setKeysymMapping(KeyCodesX.KEY_ESC.getValue(), FunctionKeysyms.ESC.getKeysym(), 0);
@@ -185,6 +188,7 @@ public class XServerComponent extends EnvironmentComponent {
         keyboardLayout.setKeysymMapping(KeyCodesX.KEY_F10.getValue(), FunctionKeysyms.F10.getKeysym(), 0);
         keyboardLayout.setKeysymMapping(KeyCodesX.KEY_F11.getValue(), FunctionKeysyms.F11.getKeysym(), 0);
         keyboardLayout.setKeysymMapping(KeyCodesX.KEY_F12.getValue(), FunctionKeysyms.F12.getKeysym(), 0);
+
         KeyboardModifiersLayout keyboardModifiersLayout = new KeyboardModifiersLayout();
         keyboardModifiersLayout.setKeycodeToModifier((byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), KeyButNames.SHIFT);
         keyboardModifiersLayout.setKeycodeToModifier((byte) KeyCodesX.KEY_SHIFT_RIGHT.getValue(), KeyButNames.SHIFT);

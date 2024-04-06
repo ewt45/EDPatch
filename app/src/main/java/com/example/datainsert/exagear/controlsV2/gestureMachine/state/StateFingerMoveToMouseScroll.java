@@ -27,7 +27,6 @@ public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdap
 
 
     public StateFingerMoveToMouseScroll() {
-
     }
 
     @Override
@@ -54,7 +53,7 @@ public class StateFingerMoveToMouseScroll extends FSMState2 implements TouchAdap
     @Override
     public void notifyMoved(Finger finger, List<Finger> list) {
         //如果手指移动多远，视图就滚多远，那么可以在这里写。但是如果要手指移动然后定住，但是视图一直滚动，就要用计时器了
-        scrollAdapter.scroll(finger.getX(), finger.getY());
+        scrollAdapter.scroll(savedFinger.getX(), savedFinger.getY());
     }
 
     @Override

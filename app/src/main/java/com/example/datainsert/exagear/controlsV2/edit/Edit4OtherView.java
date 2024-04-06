@@ -77,7 +77,7 @@ public class Edit4OtherView extends LinearLayout {
         btnBundledProfiles.setText(strBundledProfiles[0]);
         btnBundledProfiles.setOnClickListener(v-> TestHelper.showConfirmDialog(v.getContext(),strBundledProfiles[1],(dialog, which) -> {
             Const.getTouchView().exitEdit(); //需要刷新显示
-            readBundledProfilesFromAssets(v.getContext(),true,false);
+            readBundledProfilesFromAssets(v.getContext(),true);
             Const.getTouchView().setProfile(ModelProvider.readCurrentProfile());//如果当前选中的配置，属于内置配置之一，那么需要舍弃内存中的，重新从文件读取
             Const.getTouchView().startEdit();
         }));

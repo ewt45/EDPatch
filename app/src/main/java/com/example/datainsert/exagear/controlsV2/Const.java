@@ -24,7 +24,6 @@ import com.example.datainsert.exagear.QH;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -45,6 +44,14 @@ public class Const {
     public static float fingerTapMaxMovePixels = 12f;
     /** 手指移动多远距离，鼠标滚动应该滚动一次. 好像60 滚动刚好和手指移动同步 */
     public static float fingerMoveDistToOneScrollUnit = 60f;
+    /** 摇杆移动鼠标: 将横向和竖向分为多少个片段（一次最大发送一个片段的距离） */
+    public static final int stickMouse_howManyFragment = 100;
+    /** 摇杆移动鼠标: 如果每次移动一个片段的距离，经过多少秒正好能从最左侧移动到最右侧 */
+    public static final float stickMouse_howMuchTimeToMoveAcross = 1.25f;
+    /* 摇杆移动鼠标: 每隔多少毫秒发送一个片段的距离 */
+    public static final int stickMouse_interval = (int) (1000 * stickMouse_howMuchTimeToMoveAcross / stickMouse_howManyFragment);
+    /** 摇杆移动鼠标: 一个片段移动多远距离 */
+    public static float[] stickMouse_distXYPerMove;
     public static Edit1KeyView editKeyView = null;
     /** 用于计算 {@link #maxPointerDeltaDistInOneEvent} 应为几分之一*/
     public final static int maxDivisor = 20;
@@ -63,7 +70,7 @@ public class Const {
     public static double stickMoveThreshold = 20; //摇杆按下并移动时，若手指距离中心小于此距离，则算作不移动
 
     public static int defaultTouchAreaBgColor = 0xffe8f6ff;//0xffc2e2ff;
-    public static String profileDefaultName = "default"; //没有任何配置时，默认配置名称
+    public static String profilePreferDefaultName = "default"; //设置新容器默认配置时，优先寻找叫这个名称的配置
     public static String bundledProfilesPath = "controls/profiles"; //内置配置在assets中的位置
     public static List<String> profileBundledNames = new ArrayList<>(); //放在apk/assets内的配置名（注意不是文件名）。
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
@@ -88,12 +95,14 @@ public class Const {
         minStickAreaSize = minBtnAreaSize;
         int[] xWH = holder.getXScreenPixels();
         maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
+        stickMouse_distXYPerMove = new float[]{1.0f * xWH[0] / stickMouse_howManyFragment, 1.0f * xWH[1] / stickMouse_howManyFragment};
 
         Files.rootfsDir = ((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath();
         Files.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
         Files.profilesDir = new File(Files.workDir, "profiles");
         Files.currentProfile = new File(Files.workDir, "current");
         Files.currentContProfile = new File(Files.rootfsDir,"home/xdroid/currentProfile");
+        Files.defaultProfileForNewContainer = new File(Files.workDir, "default");
 
         //        先检查一下路径是否存在，然后决定是否要初始化；
         //        保证各个文件夹存在，配置至少有一个（算上预设的），且current的符号链接存在
@@ -109,11 +118,18 @@ public class Const {
         if (!Files.currentProfile.exists() || Objects.requireNonNull(Files.profilesDir.list()).length==0)
             isFirst = true;
 
-        //添加预设的几个配置
-        profileBundledNames = ModelProvider.readBundledProfilesFromAssets(c,isFirst,isFirst);
+        //（若未解压过）解压预设的几个配置以及设置新容器默认配置
+        profileBundledNames = ModelProvider.readBundledProfilesFromAssets(c,isFirst);
 
-        //（可选）切换当前容器对应的默认配置
-        ModelProvider.syncCurrentProfileWhenContainerStart(Pref.isProfilePerContainer());
+        // 如果默认配置不存在则设置一个（优先找名称为default的），assets里不存在任何配置的情况不考虑了吧
+        if(!Files.defaultProfileForNewContainer.exists()){
+            String defaultName = profileBundledNames.contains(profilePreferDefaultName)
+                    ? profilePreferDefaultName : profileBundledNames.get(0);
+            ModelProvider.makeDefaultForNewContainer(defaultName);
+        }
+
+        //调整启动容器时应选择的配置（新容器：用户/系统设定的默认配置，开启容器单独配置选项：该容器最近一次所选的配置）
+        ModelProvider.prepareCurrentProfileWhenContainerStart();
 
         initiated=true;
     }
@@ -355,5 +371,7 @@ public class Const {
         public static File profilesDir; //存储全部配置的目录
         public static File currentProfile; //当前全局配置的软链接
         public static File currentContProfile; //当前容器默认配置的软链接
+        public static File defaultProfileForNewContainer; //新建容器时 使用的默认配置
+
     }
 }

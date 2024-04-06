@@ -41,3 +41,5 @@ google-services.json
 edapi（旧module，已删除）.zip
 app/src/main/cpp/libadrenotools/
 /patchapp/release/
+app/src/main/java/com/eltechs/axs/configuration/startup/actions/CheckLicense.java
+/app/src/main/java/com/eltechs/axs/helpers/licensing

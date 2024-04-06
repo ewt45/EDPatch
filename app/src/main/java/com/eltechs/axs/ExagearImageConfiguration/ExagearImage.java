@@ -14,11 +14,16 @@ public class ExagearImage {
         this.path = file;
     }
 
-    public static ExagearImage find(Context context, String str, boolean z) {
-        if (z) {
-            return new ExagearImage(AndroidHelpers.getInternalFilesDirectory(context, str));
+    /**
+     * 获取镜像目录
+     * @param dirName 镜像所在文件夹名（例如 /data/data/包名/files/image，这里就传image
+     * @param internalDir true使用AndroidHelpers.getInternalFilesDirectory，false使用getExternalFilesDirectory
+     */
+    public static ExagearImage find(Context context, String dirName, boolean internalDir) {
+        if (internalDir) {
+            return new ExagearImage(AndroidHelpers.getInternalFilesDirectory(context, dirName));
         }
-        return new ExagearImage(AndroidHelpers.getExternalFilesDirectory(context, str));
+        return new ExagearImage(AndroidHelpers.getExternalFilesDirectory(context, dirName));
     }
 
     public File getPath() {

@@ -7,6 +7,7 @@ import static com.example.datainsert.exagear.controlsV2.model.ModelProvider.getN
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.ColorSpace;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -33,6 +34,7 @@ import com.example.datainsert.exagear.controlsV2.widget.RecyclerAdapter;
 import com.example.datainsert.exagear.RR;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -198,7 +200,7 @@ public class Edit3ProfilesView extends LinearLayout {
 //            if ((index != -1 && index != currentSelect) || (index==0 && mDataList.size()==1)) { //只剩下两个，第一个已选中，删除第一个，第二个变为第一个，但不会被选中，所以需要加个判断条件
                 int oldSelect = currentSelect;
                 currentSelect = index;
-                ModelProvider.makeCurrent(name);
+                ModelProvider.makeCurrentForContainerAndGlobal(name);
                 notifyItemChanged(oldSelect);
                 notifyItemChanged(index);
                 //刷新触摸区域显示
@@ -229,10 +231,12 @@ public class Edit3ProfilesView extends LinearLayout {
             holder.btnMenu.setOnClickListener(v -> {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 String[] itemNames = getSArr(RR.ctr2_profile_oneOptions);
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 1, itemNames[0]);//导出为文件
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//复制
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//重命名
-                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 4, itemNames[3]);//删除
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 1, itemNames[0])//设置为新建容器的默认配置
+                        .setCheckable(true).setChecked(isDefaultForNewContainer(profileName));
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 2, itemNames[1]);//导出为文件
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 3, itemNames[2]);//复制
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 4, itemNames[3]);//重命名
+                popupMenu.getMenu().add(Menu.NONE, Menu.NONE, 5, itemNames[4]);//删除
 
                 ControlsFragment.IntentResultCallback exportCallback = (requestCode, resultCode, data) -> {
                     String[] exportMsgs = getSArr(RR.ctr2_profile_exportMsgs);
@@ -250,16 +254,29 @@ public class Edit3ProfilesView extends LinearLayout {
 //                        case 1: //使用该配置
 //                            holder.root.performClick();
 //                            break;
-                        case 1: //导出
+                        case 1: //设置为新建容器的默认配置
+                            ModelProvider.makeDefaultForNewContainer(profileName);
+                            break;
+                        case 2: //导出
                             Const.getControlFragment().requestExportProfile(profileName, exportCallback);
                             break;
-                        case 2: //复制
+                        case 3: //复制
                             showEditNameDialog(v.getContext(), profileName, true, this);
                             break;
-                        case 3: //重命名
+                        case 4: //重命名 内置配置禁止
+                            if(Const.profileBundledNames.contains(profileName)) {
+                                TestHelper.showConfirmDialog(v.getContext(), //"该配置为内置配置，无法进行此操作。"
+                                        getS(RR.ctr2_profile_bundleProfNotAllow), null);
+                                break;
+                            }
                             showEditNameDialog(v.getContext(), profileName, false, this);
                             break;
-                        case 4: //删除
+                        case 5: //删除 内置配置禁止
+                            if(Const.profileBundledNames.contains(profileName)) {
+                                TestHelper.showConfirmDialog(v.getContext(), //"该配置为内置配置，无法进行此操作。"
+                                        getS(RR.ctr2_profile_bundleProfNotAllow), null);
+                                break;
+                            }
                             //只剩一个 不删。 被选中的删了，切换选中到第一个
                             if (getDataList().size() == 1)
                                 break;
@@ -279,8 +296,15 @@ public class Edit3ProfilesView extends LinearLayout {
                 popupMenu.show();
             });
         }
+        private boolean isDefaultForNewContainer(String profileName){
+            boolean isDefaultForNewCont = false;
+            try {
+                isDefaultForNewCont = Const.Files.defaultProfileForNewContainer.getCanonicalFile().getName().equals(profileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return isDefaultForNewCont;
+        }
     }
-    private interface EditNameCallback{
-        void call(String name);
-    }
+
 }

@@ -280,6 +280,7 @@ public class RR {
     public static int ctr2_other_isProfPerContTip = 271;
     public static int ctr2_option_taskmgr = 272;
     public static int ctr2_other_taskmgrAlt = 273;
+    public static int ctr2_profile_bundleProfNotAllow = 274;
 
 
 
@@ -500,7 +501,7 @@ public class RR {
         zhArray.put(ctr2_prop_colorStyle_names,"描边$填充");
         zhArray.put(ctr2_prop_type_names,"按钮$摇杆$十字键");
         zhArray.put(ctr2_prop_shape_names,"矩形$圆形");
-        zhArray.put(ctr2_prop_direction_names,"4方向$8方向");
+        zhArray.put(ctr2_prop_direction_names,"4方向$8方向$鼠标移动");
         zhArray.put(ctr2_ges_state,"状态");
         zhArray.put(ctr2_ges_action,"附加操作");
         zhArray.put(ctr2_ges_transition,"状态转移");
@@ -543,7 +544,7 @@ public class RR {
         zhArray.put(ctr2_profile_importMsgs,"导入成功: $导入失败: ");
         zhArray.put(ctr2_profile_exportMsgs,"导出成功: $导出失败: ");
         zhArray.put(ctr2_profile_addOptions,"空白配置$复制现有配置$从本地文件导入");
-        zhArray.put(ctr2_profile_oneOptions,"导出为文件$复制一份$重命名$删除");
+        zhArray.put(ctr2_profile_oneOptions,"设置为新建容器的默认配置$导出为文件$复制一份$重命名$删除");
         zhArray.put(ctr2_profile_editName,"配置名称");
         zhArray.put(ctr2_profile_delConfirm,"确定要删除吗？");
         zhArray.put(global_save,"保存");
@@ -560,16 +561,16 @@ public class RR {
                 "\n此按钮运行逻辑与原Exagear辐射的操作模式中Sync按钮的逻辑相同。注意必须保证游戏全屏，分辨率与容器（wine桌面）分辨率相同，否则该按钮无法生效。（错误样例：容器分辨率为800x600，但游戏全屏分辨率为640*480，右侧和下侧有黑边）");
         zhArray.put(ctr2_overallTip,"1. 在容器(环境)设置中将操作模式调为“默认(default)”即可启用自定义操作模式。" +
                 "\n2. 启动容器后按手机返回键/返回手势显示通用菜单，可从此处进入编辑模式，添加屏幕按键，自定义手势逻辑，切换配置等。" +
-                "\n3. 若此功能不满足您的需求，可以尝试使用更为完善的Input Bridge (DotNetBurst开发)。" +
-                "\n\n也可以点击下方按钮在未启动容器时进入编辑模式，注意旋转屏幕会导致全部未保存的操作丢失。");
+                "\n3. 若此功能不满足您的需求，可以尝试使用更为完善的Input Bridge (DotNetBurst开发)。");
         zhArray.put(ctr2_entryInFab,"进入编辑模式");
         zhArray.put(ctr2_other_isProfPerCont,"每个容器使用不同配置");
         zhArray.put(ctr2_other_isProfPerContTip, "当此选项关闭时，当切换配置时，进入任意容器都会默认使用该配置。\n若开启此选项，则可以为每个容器指定一个不同的配置。");
-        zhArray.put(ctr2_option_taskmgr,"任务管理器");
-        zhArray.put(ctr2_other_taskmgrAlt,"任务管理器选项替代命令" +
+        zhArray.put(ctr2_option_taskmgr, "任务管理器");
+        zhArray.put(ctr2_other_taskmgrAlt, "任务管理器选项替代命令" +
                 "$若此处留空，则按手机返回键显示通用菜单时，\"任务管理器\"选项会执行命令\n" +
                 OPTION_TASKMGR_START_SH_ENV+"\neval \"wine explorer /desktop=shell taskmgr\"\n在当前wine虚拟桌面内打开任务管理器。" +
                 "\n\n若此处文本不为空，则点击选项时执行此处填入的命令。");
+        zhArray.put(ctr2_profile_bundleProfNotAllow, "该配置为内置配置，无法进行此操作。");
 
 
 
@@ -798,7 +799,7 @@ public class RR {
         enArray.put(ctr2_prop_colorStyle_names,"stroke$fill");
         enArray.put(ctr2_prop_type_names,"Button$Stick$D-pad");
         enArray.put(ctr2_prop_shape_names,"Rectangle$Circle");
-        enArray.put(ctr2_prop_direction_names,"4 directions$8 directions");
+        enArray.put(ctr2_prop_direction_names,"4 directions$8 directions$mouse move");
         enArray.put(ctr2_ges_state,"State");
         enArray.put(ctr2_ges_action,"Action");
         enArray.put(ctr2_ges_transition,"Transition");
@@ -845,7 +846,7 @@ public class RR {
         enArray.put(ctr2_profile_importMsgs,"Import succeeded: $Import failed: ");
         enArray.put(ctr2_profile_exportMsgs,"Export succeeded: $Export failed: ");
         enArray.put(ctr2_profile_addOptions,"Empty profile$Copy existing profile$Import from local file");
-        enArray.put(ctr2_profile_oneOptions,"Export as file$Duplicate$Rename$Delete");
+        enArray.put(ctr2_profile_oneOptions,"Set to default for new container$Export as file$Duplicate$Rename$Delete");
         enArray.put(ctr2_profile_editName,"Profile name");
         enArray.put(ctr2_profile_delConfirm,"Delete this profile?");
         enArray.put(global_save,"Save");
@@ -861,8 +862,7 @@ public class RR {
                 "\nNote that the game must be fullscreen, and its resolution is equal to container(wine desktop) resolution. Otherwise this function won't work correctly. (An incorrect example: container=800x600, but game=640x480, you can see extra black area on the right and bottom.)");
         enArray.put(ctr2_overallTip,"1. To enable this control, set Control Mode to \"default\" in container properties." +
                 "\n2. After launching the container, press back key/back gesture to see the overall menu. Enter the edit mode from the menu to customize buttons, gestures, profiles, etc." +
-                "\n3. If this control doesn't meet your needs, you can try Input Bridge (by DotNetBurst) which is more powerful." +
-                "\n\nYou can also enter the edit mode without launching the container by clicking the button below. Note that on screen rotation all unsaved operations will be lost.");
+                "\n3. If this control doesn't meet your needs, you can try Input Bridge (by DotNetBurst) which is more powerful.");
         enArray.put(ctr2_entryInFab,"Enter edit mode");
         enArray.put(ctr2_other_isProfPerCont,"Use separate profiles per container");
         enArray.put(ctr2_other_isProfPerContTip, "If this option is off, when switching profiles, any container will use the same profile as default." +
@@ -872,6 +872,8 @@ public class RR {
                 "$If left empty, when pressing back key and click Taskmgr option, it will run the following command\n" +
                 OPTION_TASKMGR_START_SH_ENV+"\neval \"wine explorer /desktop=shell taskmgr\"\nto open taskmgr in the current wine virtual desktop." +
                 "\n\nIf the text here is not empty, it will run the text instead.");
+        enArray.put(ctr2_profile_bundleProfNotAllow, "This is a bundled profile, operation not permitted.");
+
 
         /*
 
