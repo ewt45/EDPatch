@@ -8,10 +8,8 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureStateNeutral extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent FINGER_TOUCHED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateNeutral.1
-    };
-    public static FSMEvent FINGER_MOVED_IN = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateNeutral.2
-    };
+    public static FSMEvent FINGER_TOUCHED = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_IN = new FSMEvent();
 
     public GestureStateNeutral(GestureContext gestureContext) {
         super(gestureContext);

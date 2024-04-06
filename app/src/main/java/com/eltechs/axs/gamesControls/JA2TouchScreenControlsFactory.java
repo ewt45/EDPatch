@@ -40,12 +40,7 @@ public class JA2TouchScreenControlsFactory implements TouchScreenControlsFactory
         }
         TouchEventMultiplexor touchEventMultiplexor = new TouchEventMultiplexor();
         TouchArea touchArea = new TouchArea(0.0f, 0.0f, view.getWidth(), view.getHeight(), touchEventMultiplexor);
-        this.gestureContext = GestureMachineConfigurerJA2.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, new Runnable() { // from class: com.eltechs.axs.gamesControls.JA2TouchScreenControlsFactory.1
-            @Override // java.lang.Runnable
-            public void run() {
-                ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu();
-            }
-        });
+        this.gestureContext = GestureMachineConfigurerJA2.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, () -> ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu());
         touchScreenControls.add(new SimpleTouchScreenControl(new TouchArea[]{touchArea}, null));
     }
 }

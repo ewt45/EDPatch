@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cpi_root_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffe0e0e0"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/cpi_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/title_bar_background"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="10dp"
+        android:text="@string/cpi_header_label"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff000000" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffe0e0e0"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:id="@+id/cpi_run_trial_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffffff"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cpi_run_trial_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/launch"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:onClick="onRunTrialButtonClicked"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="@string/cpi_run_trial_button_label" />
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/cpi_info"
+                    android:onClick="onInfoButtonClicked"
+                    android:tag="run_trial" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="#ffffffff"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <Button
+                        android:id="@+id/cpi_buy_cp_button"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:drawableLeft="@drawable/buy_inf"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:onClick="onBuyLifetimeButtonClicked"
+                        android:text="@string/cpi_buy_lifetime_button_label" />
+
+                    <ImageView
+                        android:id="@+id/cpi_buy_cp_promo_image"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_alignBottom="@+id/cpi_buy_cp_button"
+                        android:layout_alignParentBottom="false"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginBottom="5dp" />
+                </RelativeLayout>
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/cpi_info"
+                    android:onClick="onInfoButtonClicked"
+                    android:tag="buy_lifetime" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cpi_buy_subscription_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="#ffffffff"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cpi_buy_subscription_button"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/buy_lim"
+                    android:drawablePadding="10dp"
+                    android:gravity="center"
+                    android:onClick="onBuySubscriptionButtonClicked"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    android:text="@string/cpi_buy_subscription_button_label" />
+
+                <Button
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="45dp"
+                    android:layout_height="match_parent"
+                    android:drawableRight="@drawable/cpi_info"
+                    android:onClick="onInfoButtonClicked"
+                    android:tag="buy_subscription" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

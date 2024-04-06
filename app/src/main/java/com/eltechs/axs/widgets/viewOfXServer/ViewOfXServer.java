@@ -279,6 +279,9 @@ public class ViewOfXServer extends GLSurfaceView {
         return this.xServerFacade;
     }
 
+    /**
+     * @param rectangleF 注意这里rect y向上为正
+     */
     public synchronized void setXViewport(RectangleF rectangleF) {
         this.renderer.setXViewport(rectangleF);
         requestRender();

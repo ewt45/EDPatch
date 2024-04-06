@@ -95,6 +95,9 @@ public class XZoomController {
         applyZoomRect(new RectangleF(visibleRectangle.x + anchorXServer.x - newAnchorXServer[0], visibleRectangle.y + anchorXServer.y - newAnchorXServer[1], zoomedW, zoomedH));
     }
 
+    /**
+     * @param newVisibleRect 注意这里Rect y向上为正
+     */
     private void applyZoomRect(RectangleF newVisibleRect) {
         Matrix TransMatrix = TransformationHelpers.makeTransformationMatrix(this.viewOfXServer.getWidth(), this.viewOfXServer.getHeight(), newVisibleRect.x, newVisibleRect.y, newVisibleRect.width, newVisibleRect.height, this.viewOfXServer.getConfiguration().getFitStyleHorizontal(), this.viewOfXServer.getConfiguration().getFitStyleVertical());
         Assert.state(TransMatrix.invert(TransMatrix), "xScreenRect is degenerate");

@@ -7,8 +7,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureStateWaitForNeutral extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateWaitForNeutral.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyMoved(Finger finger, List<Finger> list) {

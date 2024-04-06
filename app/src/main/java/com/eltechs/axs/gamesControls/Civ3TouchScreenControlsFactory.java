@@ -46,12 +46,8 @@ public class Civ3TouchScreenControlsFactory implements TouchScreenControlsFactor
         }
         TouchEventMultiplexor touchEventMultiplexor = new TouchEventMultiplexor();
         TouchArea touchArea = new TouchArea(0.0f, 0.0f, view.getWidth(), view.getHeight(), touchEventMultiplexor);
-        this.gestureContext = GestureMachineConfigurerCiv3.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, this.mouseMode, new Runnable() { // from class: com.eltechs.axs.gamesControls.Civ3TouchScreenControlsFactory.1
-            @Override // java.lang.Runnable
-            public void run() {
-                ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu();
-            }
-        });
+        this.gestureContext = GestureMachineConfigurerCiv3.createGestureContext(viewOfXServer, touchArea, touchEventMultiplexor, displayMetrics.densityDpi, this.mouseMode,
+                () -> ((XServerDisplayActivity) ((ApplicationStateBase) Globals.getApplicationState()).getCurrentActivity()).showPopupMenu());
         touchScreenControls.add(new SimpleTouchScreenControl(new TouchArea[]{touchArea}, null));
     }
 }

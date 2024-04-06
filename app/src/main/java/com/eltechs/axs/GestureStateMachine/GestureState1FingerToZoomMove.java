@@ -11,14 +11,10 @@ import java.util.List;
 public class GestureState1FingerToZoomMove extends AbstractGestureFSMState implements TouchEventAdapter {
     private static final int timerPeriodMs = 40;
     private InfiniteTimer timer;
-    public static FSMEvent FINGER_TOUCHED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToZoomMove.1
-    };
-    public static FSMEvent FINGER_RELEASED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToZoomMove.2
-    };
-    public static FSMEvent FINGER_MOVED_IN = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToZoomMove.3
-    };
-    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToZoomMove.4
-    };
+    public static FSMEvent FINGER_TOUCHED = new FSMEvent();
+    public static FSMEvent FINGER_RELEASED = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_IN = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent();
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyMoved(Finger finger, List<Finger> list) {
@@ -31,20 +27,16 @@ public class GestureState1FingerToZoomMove extends AbstractGestureFSMState imple
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
         getContext().getFingerEventsSource().addListener(this);
-        this.timer = new InfiniteTimer(40L) { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToZoomMove.5
+        this.timer = new InfiniteTimer(timerPeriodMs) { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToZoomMove.5
             @Override // android.os.CountDownTimer
             public void onTick(long j) {
-                if (GestureState1FingerToZoomMove.this.getContext().getMachine().isActiveState(GestureState1FingerToZoomMove.this)) {
-                    GestureState1FingerToZoomMove.this.notifyTimer();
+                if (getContext().getMachine().isActiveState(GestureState1FingerToZoomMove.this)) {
+                    notifyTimer();
                 }
             }
         };
         this.timer.start();
-        boolean z = true;
-        if (getContext().getFingers().size() != 1) {
-            z = false;
-        }
-        Assert.state(z);
+        Assert.state(getContext().getFingers().size() == 1);
         Finger finger = getContext().getFingers().get(0);
         getContext().getZoomController().setAnchorBoth(finger.getXWhenFingerCountLastChanged(), finger.getYWhenFingerCountLastChanged());
     }
@@ -55,14 +47,9 @@ public class GestureState1FingerToZoomMove extends AbstractGestureFSMState imple
         this.timer.cancel();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     private void notifyTimer() {
         List<Finger> fingers = getContext().getFingers();
-        boolean z = true;
-        if (fingers.size() != 1) {
-            z = false;
-        }
-        Assert.state(z);
+        Assert.state(fingers.size() == 1);
         Finger finger = fingers.get(0);
         getContext().getZoomController().setAnchorHost(finger.getX(), finger.getY());
         getContext().getZoomController().refreshZoom();

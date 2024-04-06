@@ -5,7 +5,6 @@ public class PointerContext {
     private MoveMethod lastMoveMethod = MoveMethod.NOT_INIT;
     private long lastMoveTimestamp;
 
-    /* loaded from: classes.dex */
     public enum MoveMethod {
         TAP,
         AIM,

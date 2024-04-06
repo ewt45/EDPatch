@@ -72,22 +72,12 @@ public class GestureMachineConfigurerCiv3 {
         GestureStateWaitFingersNumberChangeWithTimeout gestureStateWaitFingersNumberChangeWithTimeout = new GestureStateWaitFingersNumberChangeWithTimeout(gestureContext, 100);
         GestureStateWaitFingersNumberChangeWithTimeout gestureStateWaitFingersNumberChangeWithTimeout2 = new GestureStateWaitFingersNumberChangeWithTimeout(gestureContext, 100);
         FSMStateRunRunnable fSMStateRunRunnable = new FSMStateRunRunnable(runnable);
-        FSMStateRunRunnable fSMStateRunRunnable2 = new FSMStateRunRunnable(new Runnable() { // from class: com.eltechs.axs.gamesControls.GestureMachineConfigurerCiv3.1
-            @Override // java.lang.Runnable
-            public void run() {
-                gestureMouseMode.setState(GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT);
-            }
-        });
+        FSMStateRunRunnable fSMStateRunRunnable2 = new FSMStateRunRunnable(() -> gestureMouseMode.setState(GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT));
         GestureStatePressKey gestureStatePressKey = new GestureStatePressKey(gestureContext, KeyCodesX.KEY_SPACE);
         GestureStatePressKey gestureStatePressKey2 = new GestureStatePressKey(gestureContext, KeyCodesX.KEY_RETURN);
         float f5 = 0.0f * f;
         OffsetMouseMoveAdapter offsetMouseMoveAdapter = new OffsetMouseMoveAdapter(new SimpleMouseMoveAdapter(gestureContext.getPointerReporter()), f5, f5);
-        GestureState1FingerMoveToMouseDragAndDrop gestureState1FingerMoveToMouseDragAndDrop = new GestureState1FingerMoveToMouseDragAndDrop(gestureContext, new SimpleDragAndDropAdapter(offsetMouseMoveAdapter, new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 1), new Runnable() { // from class: com.eltechs.axs.gamesControls.GestureMachineConfigurerCiv3.2
-            @Override // java.lang.Runnable
-            public void run() {
-                gestureContext.getPointerReporter().click(3, 50);
-            }
-        }), pointerContext, true, 0.0f);
+        GestureState1FingerMoveToMouseDragAndDrop gestureState1FingerMoveToMouseDragAndDrop = new GestureState1FingerMoveToMouseDragAndDrop(gestureContext, new SimpleDragAndDropAdapter(offsetMouseMoveAdapter, new PressAndHoldMouseClickAdapter(gestureContext.getPointerReporter(), 1), () -> gestureContext.getPointerReporter().click(3, 50)), pointerContext, true, 0.0f);
         GestureState1FingerMoveToMouseMove gestureState1FingerMoveToMouseMove = new GestureState1FingerMoveToMouseMove(gestureContext, pointerContext, offsetMouseMoveAdapter);
         GestureState1FingerMoveToScrollAsync gestureState1FingerMoveToScrollAsync = new GestureState1FingerMoveToScrollAsync(gestureContext, new AsyncScrollAdapterWithPointer(gestureContext.getViewFacade(), new Rectangle(0, 0, gestureContext.getViewFacade().getScreenInfo().widthInPixels, gestureContext.getViewFacade().getScreenInfo().heightInPixels)), 1.0E7f, 1.0E7f, scrollThresholdPixels, true, 50, true);
         GestureState1FingerToZoomMove gestureState1FingerToZoomMove = new GestureState1FingerToZoomMove(gestureContext);

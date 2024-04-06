@@ -44,8 +44,8 @@ public class GestureState1FingerMoveToScrollSync extends AbstractGestureFSMState
         this.timer = new InfiniteTimer(this.fingerLocationPollIntervalMs) { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMoveToScrollSync.2
             @Override // android.os.CountDownTimer
             public void onTick(long j) {
-                if (GestureState1FingerMoveToScrollSync.this.getContext().getMachine().isActiveState(GestureState1FingerMoveToScrollSync.this)) {
-                    GestureState1FingerMoveToScrollSync.this.notifyTimer();
+                if (getContext().getMachine().isActiveState(GestureState1FingerMoveToScrollSync.this)) {
+                    notifyTimer();
                 }
             }
         };
@@ -68,11 +68,11 @@ public class GestureState1FingerMoveToScrollSync extends AbstractGestureFSMState
         this.timer.cancel();
     }
 
-    private void scrollImpl(MovementAccumulator.Direction direction, MovementAccumulator.Direction direction2, boolean z, boolean z2) {
+    private void scrollImpl(MovementAccumulator.Direction directX, MovementAccumulator.Direction directY, boolean scrollX, boolean scrollY) {
         ScrollDirections.DirectionX directionX = ScrollDirections.DirectionX.NONE;
         ScrollDirections.DirectionY directionY = ScrollDirections.DirectionY.NONE;
-        if (z) {
-            switch (direction) {
+        if (scrollX) {
+            switch (directX) {
                 case ASC:
                     directionX = ScrollDirections.DirectionX.LEFT;
                     break;
@@ -81,8 +81,8 @@ public class GestureState1FingerMoveToScrollSync extends AbstractGestureFSMState
                     break;
             }
         }
-        if (z2) {
-            switch (direction2) {
+        if (scrollY) {
+            switch (directY) {
                 case ASC:
                     directionY = ScrollDirections.DirectionY.UP;
                     break;
@@ -103,29 +103,24 @@ public class GestureState1FingerMoveToScrollSync extends AbstractGestureFSMState
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     private void notifyTimer() {
         long currentTimeMillis = System.currentTimeMillis();
-        boolean z = false;
         this.movementX.processFingerMovement(false, this.savedFinger.getX(), currentTimeMillis);
         this.movementY.processFingerMovement(false, this.savedFinger.getY(), currentTimeMillis);
         MovementAccumulator.Direction direction = this.movementX.getDirection();
         MovementAccumulator.Direction direction2 = this.movementY.getDirection();
-        boolean z2 = this.movementX.getDirection() != MovementAccumulator.Direction.NEUTRAL && this.movementX.getMovementUnitsAccumulated() >= 1.0f;
-        if (this.movementY.getDirection() != MovementAccumulator.Direction.NEUTRAL && this.movementY.getMovementUnitsAccumulated() >= 1.0f) {
-            z = true;
-        }
-        scrollImpl(direction, direction2, z2, z);
-        if (z2) {
+        boolean doScrollX = this.movementX.getDirection() != MovementAccumulator.Direction.NEUTRAL && this.movementX.getMovementUnitsAccumulated() >= 1.0f;
+        boolean doScrollY = this.movementY.getDirection() != MovementAccumulator.Direction.NEUTRAL && this.movementY.getMovementUnitsAccumulated() >= 1.0f;
+        scrollImpl(direction, direction2, doScrollX, doScrollY);
+        if (doScrollX)
             changeMovementUnits(this.movementX, this.savedFinger.getX());
-        }
-        if (z) {
+        if (doScrollY)
             changeMovementUnits(this.movementY, this.savedFinger.getY());
-        }
+
         if (getContext().getFingers().isEmpty()) {
-            if (!this.breakIfFingerReleased && (z2 || z)) {
+            if (!this.breakIfFingerReleased && (doScrollX || doScrollY))
                 return;
-            }
+
             sendEvent(GESTURE_COMPLETED);
         }
     }
