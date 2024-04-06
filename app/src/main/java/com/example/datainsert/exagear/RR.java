@@ -501,7 +501,7 @@ public class RR {
         zhArray.put(ctr2_prop_colorStyle_names,"描边$填充");
         zhArray.put(ctr2_prop_type_names,"按钮$摇杆$十字键");
         zhArray.put(ctr2_prop_shape_names,"矩形$圆形");
-        zhArray.put(ctr2_prop_direction_names,"4方向$8方向");
+        zhArray.put(ctr2_prop_direction_names,"4方向$8方向$鼠标移动");
         zhArray.put(ctr2_ges_state,"状态");
         zhArray.put(ctr2_ges_action,"附加操作");
         zhArray.put(ctr2_ges_transition,"状态转移");
@@ -799,7 +799,7 @@ public class RR {
         enArray.put(ctr2_prop_colorStyle_names,"stroke$fill");
         enArray.put(ctr2_prop_type_names,"Button$Stick$D-pad");
         enArray.put(ctr2_prop_shape_names,"Rectangle$Circle");
-        enArray.put(ctr2_prop_direction_names,"4 directions$8 directions");
+        enArray.put(ctr2_prop_direction_names,"4 directions$8 directions$mouse move");
         enArray.put(ctr2_ges_state,"State");
         enArray.put(ctr2_ges_action,"Action");
         enArray.put(ctr2_ges_transition,"Transition");

@@ -10,7 +10,7 @@ public class KeyboardLayout {
      * 设置keycode对应的keysym
      * @param keycode 按键的keycode
      * @param minKeysym 小写字母对应的keysym
-     * @param majKeysyms 大写字母对应的kesym。若没有则填0
+     * @param majKeysym 大写字母对应的kesym。若没有则填0
      */
     public void setKeysymMapping(int keycode, int minKeysym, int majKeysym) {
         Assert.isTrue(keycode >= 8, "Keycoded 0 through 7 are not used by X11.");

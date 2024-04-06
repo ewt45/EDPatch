@@ -19,12 +19,18 @@ public class ExagearImageConfigurationHelpers {
         this.image = exagearImage;
     }
 
-    public void createEtcPasswd(String str, String str2) throws IOException {
+    /**
+     * 创建 /etc/passwd文件 （用于存储用户信息），向其中写入一行用户信息
+     * @param username 用户名
+     * @param home 家目录
+     * @throws IOException
+     */
+    public void createEtcPasswd(String username, String home) throws IOException {
         File file = new File(this.image.getPath(), ExagearImagePaths.ETC_PASSWD);
         int myUid = Process.myUid();
         FileHelpers.touch(file.getPath());
         PrintWriter printWriter = new PrintWriter(new FileOutputStream(file));
-        printWriter.printf("%s:x:%d:%d::%s:/bin/sh\n", str, myUid, myUid, str2);
+        printWriter.printf("%s:x:%d:%d::%s:/bin/sh\n", username, myUid, myUid, home);//用户名，用户标识号，组标识号，家目录
         printWriter.close();
     }
 

@@ -44,6 +44,14 @@ public class Const {
     public static float fingerTapMaxMovePixels = 12f;
     /** 手指移动多远距离，鼠标滚动应该滚动一次. 好像60 滚动刚好和手指移动同步 */
     public static float fingerMoveDistToOneScrollUnit = 60f;
+    /** 摇杆移动鼠标: 将横向和竖向分为多少个片段（一次最大发送一个片段的距离） */
+    public static final int stickMouse_howManyFragment = 100;
+    /** 摇杆移动鼠标: 如果每次移动一个片段的距离，经过多少秒正好能从最左侧移动到最右侧 */
+    public static final float stickMouse_howMuchTimeToMoveAcross = 1.25f;
+    /* 摇杆移动鼠标: 每隔多少毫秒发送一个片段的距离 */
+    public static final int stickMouse_interval = (int) (1000 * stickMouse_howMuchTimeToMoveAcross / stickMouse_howManyFragment);
+    /** 摇杆移动鼠标: 一个片段移动多远距离 */
+    public static float[] stickMouse_distXYPerMove;
     public static Edit1KeyView editKeyView = null;
     /** 用于计算 {@link #maxPointerDeltaDistInOneEvent} 应为几分之一*/
     public final static int maxDivisor = 20;
@@ -87,6 +95,7 @@ public class Const {
         minStickAreaSize = minBtnAreaSize;
         int[] xWH = holder.getXScreenPixels();
         maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
+        stickMouse_distXYPerMove = new float[]{1.0f * xWH[0] / stickMouse_howManyFragment, 1.0f * xWH[1] / stickMouse_howManyFragment};
 
         Files.rootfsDir = ((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath();
         Files.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
@@ -112,14 +121,12 @@ public class Const {
         //（若未解压过）解压预设的几个配置以及设置新容器默认配置
         profileBundledNames = ModelProvider.readBundledProfilesFromAssets(c,isFirst);
 
-        //要不 不在readBundledProfilesFromAssets里，单独拿出来设置默认配置的代码？
-        // 如果默认配置不存在则设置一个（profileBundledNames里优先找名称为default的，没有就第一个），assets里不存在任何配置的情况不考虑了吧
+        // 如果默认配置不存在则设置一个（优先找名称为default的），assets里不存在任何配置的情况不考虑了吧
         if(!Files.defaultProfileForNewContainer.exists()){
             String defaultName = profileBundledNames.contains(profilePreferDefaultName)
                     ? profilePreferDefaultName : profileBundledNames.get(0);
             ModelProvider.makeDefaultForNewContainer(defaultName);
         }
-
 
         //调整启动容器时应选择的配置（新容器：用户/系统设定的默认配置，开启容器单独配置选项：该容器最近一次所选的配置）
         ModelProvider.prepareCurrentProfileWhenContainerStart();

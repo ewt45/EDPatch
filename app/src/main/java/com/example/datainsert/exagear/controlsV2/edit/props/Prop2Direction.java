@@ -26,8 +26,8 @@ public class Prop2Direction extends Prop<TouchAreaModel>{
     @Override
     protected View createMainEditView(Context c) {
         HorizontalScrollView scrollGroupDirection = buildOptionsGroup(c,
-                RR.getSArr(RR.ctr2_prop_direction_names),//"4方向  8方向"
-                new int[]{OneStick.WAY_4, OneStick.WAY_8},
+                RR.getSArr(RR.ctr2_prop_direction_names),//"4方向  8方向", "鼠标移动“
+                new int[]{OneStick.WAY_4, OneStick.WAY_8, OneStick.WAY_MOUSE},
                 (group, btn, intValue) -> {
                     if (mHost.getModel() instanceof OneStick)
                         ((OneStick) mHost.getModel()).direction = intValue;

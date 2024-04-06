@@ -12,10 +12,10 @@ public class ButtonDpadPressAdapter extends ButtonStickPressAdapter{
         float centerX = mModel.getLeft() + mModel.getSize() / 2f;
         float centerY = mModel.getTop() + mModel.getSize() / 2f;
 
-        fingerFirstDownX = isTouching ? mFinger.getXWhenFirstTouched() : centerX;
-        fingerFirstDownY = isTouching ? mFinger.getYWhenFirstTouched() : centerY;
+        fingerFirstDown.x = isTouching ? mFinger.getXWhenFirstTouched() : centerX;
+        fingerFirstDown.y = isTouching ? mFinger.getYWhenFirstTouched() : centerY;
 
-        outerCenterX = centerX;
-        outerCenterY = centerY;
+        outerCenter.x = centerX;
+        outerCenter.y = centerY;
     }
 }
