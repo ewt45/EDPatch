@@ -23,7 +23,6 @@ public class ExagearImageConfigurationHelpers {
      * 创建 /etc/passwd文件 （用于存储用户信息），向其中写入一行用户信息
      * @param username 用户名
      * @param home 家目录
-     * @throws IOException
      */
     public void createEtcPasswd(String username, String home) throws IOException {
         File file = new File(this.image.getPath(), ExagearImagePaths.ETC_PASSWD);

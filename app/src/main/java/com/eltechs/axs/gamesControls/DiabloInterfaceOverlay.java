@@ -36,7 +36,10 @@ import com.eltechs.axs.xserver.ViewFacade;
 import java.util.Arrays;
 @SuppressLint("WrongConstant")
 
-/* loaded from: classes.dex */
+/**
+ * 非原版代码。暗黑2操作模式
+ */
+@Deprecated
 public class DiabloInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay, XServerDisplayActivityUiOverlaySidePanels {
     public static final float buttonMaxSizeInches = 0.35f;
     private static final float buttonSzNormalDisplayInches = 0.3f;

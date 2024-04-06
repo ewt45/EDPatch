@@ -11,9 +11,9 @@ public interface TexturesManager {
 
     int getTextureId(int i);
 
-    void getTextureSize(int i, int[] iArr);
+    void getTextureSize(int i, int[] size);
 
-    boolean setTextureSize(int i, int i2, int i3);
+    boolean setTextureSize(int i, int width, int height);
 
     void updateTextureFromBitmap(int i, Bitmap bitmap);
 

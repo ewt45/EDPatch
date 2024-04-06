@@ -15,7 +15,10 @@ import com.eltechs.axs.graphicsScene.GraphicsSceneConfigurer;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 
-/* loaded from: classes.dex */
+/**
+ * @deprecated 非原版代码
+ */
+@Deprecated
 public class HybridScreenControlsFactory implements TouchScreenControlsFactory {
     private GestureContext gestureContext;
 

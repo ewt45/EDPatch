@@ -1,5 +1,7 @@
 package com.eltechs.axs.GestureStateMachine;
 
+import static com.eltechs.axs.GeometryHelpers.distance;
+
 import android.graphics.PointF;
 import com.eltechs.axs.Finger;
 import com.eltechs.axs.GeometryHelpers;
@@ -12,44 +14,40 @@ import com.eltechs.axs.widgets.viewOfXServer.TransformationHelpers;
 public class GestureStateCheckFingerNearToPointer extends AbstractGestureFSMState {
     private final double distThreshold;
     private final boolean isTwoFingersAllowed;
-    public static FSMEvent NEAR = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateCheckFingerNearToPointer.1
-    };
-    public static FSMEvent FAR = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateCheckFingerNearToPointer.2
-    };
+    public static FSMEvent NEAR = new FSMEvent();
+    public static FSMEvent FAR = new FSMEvent();
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeInactive() {
     }
 
-    public GestureStateCheckFingerNearToPointer(GestureContext gestureContext, double d, boolean z) {
+    public GestureStateCheckFingerNearToPointer(GestureContext gestureContext, double distThreshold, boolean isTwoFingersAllowed) {
         super(gestureContext);
-        this.distThreshold = d;
-        this.isTwoFingersAllowed = z;
+        this.distThreshold = distThreshold;
+        this.isTwoFingersAllowed = isTwoFingersAllowed;
     }
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
-        PointF center;
-        Point pointerLocation = getContext().getViewFacade().getPointerLocation();
-        float[] fArr = {pointerLocation.x, pointerLocation.y};
-        TransformationHelpers.mapPoints(getContext().getHostView().getXServerToViewTransformationMatrix(), fArr);
-        if (!this.isTwoFingersAllowed) {
-            Assert.state(getContext().getFingers().size() < 2);
-        } else {
-            Assert.state(getContext().getFingers().size() > 0 && getContext().getFingers().size() <= 2);
-        }
-        if (getContext().getFingers().size() == 0) {
-            Finger finger = getContext().getTouchArea().getLastFingerAction().getFinger();
-            center = new PointF(finger.getXWhenFirstTouched(), finger.getYWhenFirstTouched());
+        PointF fingerPos;
+        Point pLoc = getContext().getViewFacade().getPointerLocation();
+        float[] pointerPos = {pLoc.x, pLoc.y};
+        TransformationHelpers.mapPoints(getContext().getHostView().getXServerToViewTransformationMatrix(), pointerPos);
+        Assert.state(isTwoFingersAllowed
+                ? getContext().getFingers().size() < 2
+                : (!getContext().getFingers().isEmpty() && getContext().getFingers().size() <= 2));
+        if (getContext().getFingers().isEmpty()) {
+            Finger lastAction = getContext().getTouchArea().getLastFingerAction().getFinger();
+            fingerPos = new PointF(lastAction.getXWhenFirstTouched(), lastAction.getYWhenFirstTouched());
         } else if (getContext().getFingers().size() == 1) {
-            center = new PointF(getContext().getFingers().get(0).getXWhenFirstTouched(), getContext().getFingers().get(0).getYWhenFirstTouched());
+            fingerPos = new PointF(getContext().getFingers().get(0).getXWhenFirstTouched(), getContext().getFingers().get(0).getYWhenFirstTouched());
         } else {
-            center = getContext().getFingers().size() == 2 ? GeometryHelpers.center(new PointF(getContext().getFingers().get(0).getXWhenFirstTouched(), getContext().getFingers().get(0).getYWhenFirstTouched()), new PointF(getContext().getFingers().get(1).getXWhenFirstTouched(), getContext().getFingers().get(1).getYWhenFirstTouched())) : null;
+            PointF finger1Pos = new PointF(getContext().getFingers().get(0).getXWhenFirstTouched(), getContext().getFingers().get(0).getYWhenFirstTouched());
+            PointF finger2Pos = new PointF(getContext().getFingers().get(1).getXWhenFirstTouched(), getContext().getFingers().get(1).getYWhenFirstTouched());
+            fingerPos = GeometryHelpers.center(finger1Pos, finger2Pos);
         }
-        if (GeometryHelpers.distance(fArr[0], fArr[1], center.x, center.y) < this.distThreshold) {
-            sendEvent(NEAR);
-        } else {
-            sendEvent(FAR);
-        }
+
+        sendEvent(distance(pointerPos[0], pointerPos[1], fingerPos.x, fingerPos.y) < this.distThreshold
+                ? NEAR : FAR);
     }
 }

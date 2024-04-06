@@ -5,8 +5,7 @@ import com.eltechs.axs.finiteStateMachine.FSMEvent;
 
 /* loaded from: classes.dex */
 public class GestureStatePressKey extends AbstractGestureFSMState {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStatePressKey.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final KeyCodesX keyCode;
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState

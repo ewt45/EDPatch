@@ -15,9 +15,7 @@ public class FiniteStateMachine {
     private ArrayList<AbstractFSMState> allStates = new ArrayList<>();
     private FSMListenersList listeners = new FSMListenersList();
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class FSMTransitionTableEntry {
+    private static class FSMTransitionTableEntry {
         public final FSMEvent event;
         public final AbstractFSMState postState;
         public final AbstractFSMState preState;

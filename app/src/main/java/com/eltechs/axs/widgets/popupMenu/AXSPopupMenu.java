@@ -31,9 +31,9 @@ public class AXSPopupMenu {
         this.impl = new PopupMenu(activity, view);
     }
 
-    public AXSPopupMenu(Activity activity, View view, int i) {
+    public AXSPopupMenu(Activity activity, View view, int gravity) {
         if (AndroidFeatureTests.haveAndroidApi(AndroidFeatureTests.ApiLevel.ANDROID_4_4)) {
-            this.impl = new PopupMenu(activity, view, i);
+            this.impl = new PopupMenu(activity, view, gravity);
         } else {
             this.impl = new PopupMenu(activity, view);
         }
@@ -93,8 +93,6 @@ public class AXSPopupMenu {
         this.impl.show();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
     private class ActionWrapper implements MenuItemWrapper {
         private final Action action;
 

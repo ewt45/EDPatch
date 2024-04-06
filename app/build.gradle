@@ -113,9 +113,11 @@ dependencies {
 //    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
     implementation 'org.apache.httpcomponents:httpcore:4.4.16'
-
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-collections4
+    implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'com.github.iwgang:countdownview:2.1.6'
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'org.tukaani:xz:1.9' //下载wine压缩包，解压tar.xz需要
 

@@ -6,8 +6,7 @@ import com.eltechs.axs.finiteStateMachine.FSMEvent;
 
 /* loaded from: classes.dex */
 public class GestureStateClickToFingerFirstCoords extends AbstractGestureFSMState {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateClickToFingerFirstCoords.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final MousePointAndClickAdapter clicker;
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState

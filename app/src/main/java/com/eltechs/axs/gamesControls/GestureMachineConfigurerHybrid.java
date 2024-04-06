@@ -28,7 +28,10 @@ import com.eltechs.axs.finiteStateMachine.generalStates.FSMStateRunRunnable;
 import com.eltechs.axs.geom.Rectangle;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 
-/* loaded from: classes.dex */
+/**
+ * @deprecated 非原版代码
+ */
+@Deprecated
 public class GestureMachineConfigurerHybrid {
     private static final float clickAlignThresholdInches = 0.3f;
     private static final float doubleClickMaxDistance = 0.15f;

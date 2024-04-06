@@ -7,8 +7,7 @@ import com.eltechs.axs.finiteStateMachine.FSMEvent;
 
 /* loaded from: classes.dex */
 public class GestureStateMouseWarpToFingerLastCoords extends AbstractGestureFSMState {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateMouseWarpToFingerLastCoords.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final MouseMoveAdapter mover;
     private final PointerContext pointerContext;
 
@@ -16,9 +15,9 @@ public class GestureStateMouseWarpToFingerLastCoords extends AbstractGestureFSMS
     public void notifyBecomeInactive() {
     }
 
-    public GestureStateMouseWarpToFingerLastCoords(GestureContext gestureContext, MouseMoveAdapter mouseMoveAdapter, PointerContext pointerContext) {
+    public GestureStateMouseWarpToFingerLastCoords(GestureContext gestureContext, MouseMoveAdapter mover, PointerContext pointerContext) {
         super(gestureContext);
-        this.mover = mouseMoveAdapter;
+        this.mover = mover;
         this.pointerContext = pointerContext;
     }
 

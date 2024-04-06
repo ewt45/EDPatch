@@ -17,7 +17,10 @@ import com.eltechs.axs.graphicsScene.GraphicsSceneConfigurer;
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 
-/* loaded from: classes.dex */
+/**
+ * 非原版代码。暗黑2操作模式
+ */
+@Deprecated
 public class DiabloTouchScreenControlsFactory implements TouchScreenControlsFactory {
     private GestureContext gestureContext;
     private GestureJoyStickMode joyStickMode;

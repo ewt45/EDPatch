@@ -9,8 +9,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureStatePressAndHoldKeyUntilFingerRelease extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStatePressAndHoldKeyUntilFingerRelease.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final KeyCodesX keyCode;
 
     @Override // com.eltechs.axs.TouchEventAdapter
@@ -32,11 +31,7 @@ public class GestureStatePressAndHoldKeyUntilFingerRelease extends AbstractGestu
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
-        boolean z = true;
-        if (getContext().getFingers().size() != 1) {
-            z = false;
-        }
-        Assert.state(z);
+        Assert.state(getContext().getFingers().size() == 1);
         getContext().getFingerEventsSource().addListener(this);
         getContext().getViewFacade().injectKeyPress((byte) this.keyCode.getValue());
     }

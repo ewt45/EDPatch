@@ -5,8 +5,7 @@ import com.eltechs.axs.finiteStateMachine.FSMEvent;
 
 /* loaded from: classes.dex */
 public class FSMStateRunRunnable extends AbstractFSMState {
-    public static FSMEvent COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.finiteStateMachine.generalStates.FSMStateRunRunnable.1
-    };
+    public static FSMEvent COMPLETED = new FSMEvent();
     private final Runnable runnable;
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState

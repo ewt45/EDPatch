@@ -84,8 +84,8 @@ public abstract class SafeFileHelpers {
         doWithFiles(file, i, ACCEPT_EXECUTABLE_FILES, fileCallback);
     }
 
-    public static void doWithFiles(File file, int i, FileFilter fileFilter, FileCallback fileCallback) throws IOException {
-        if (i < 0) {
+    public static void doWithFiles(File file, int depth, FileFilter fileFilter, FileCallback fileCallback) throws IOException {
+        if (depth < 0) {
             return;
         }
         Assert.isTrue(file.isDirectory());
@@ -98,7 +98,7 @@ public abstract class SafeFileHelpers {
                     fileCallback.apply(canonicalFile, str);
                 }
             } else if (file2.isDirectory()) {
-                doWithFiles(file2, listWellNamedFiles.length == 1 ? i : i - 1, fileFilter, fileCallback);
+                doWithFiles(file2, listWellNamedFiles.length == 1 ? depth : depth - 1, fileFilter, fileCallback);
             }
         }
     }

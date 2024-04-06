@@ -5,7 +5,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class FSMListenersList {
-    private final List<FSMListener> listeners = new ArrayList();
+    private final List<FSMListener> listeners = new ArrayList<>();
 
     public void addListener(FSMListener fSMListener) {
         this.listeners.add(fSMListener);

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="100"
+    android:background="#ff373737"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:weightSum="5">
+
+    <ImageView
+        android:id="@+id/tutorial_pic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="3" />
+
+    <Button
+        android:id="@+id/tutorial_close"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_weight="2"
+        android:alpha="1"
+        android:enabled="true"
+        android:focusableInTouchMode="false"
+        android:onClick="onOKClicked"
+        android:text="OK" />
+</LinearLayout>

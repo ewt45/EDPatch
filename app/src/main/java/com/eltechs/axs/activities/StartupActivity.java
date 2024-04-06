@@ -14,7 +14,6 @@ import com.eltechs.ed.R;
 import com.eltechs.axs.applicationState.ApplicationStateBase;
 import com.eltechs.axs.applicationState.ApplicationStateObject;
 import com.eltechs.axs.applicationState.DroidApplicationContextAware;
-import com.eltechs.axs.applicationState.StartupActionsCollectionAware;
 import com.eltechs.axs.configuration.startup.StartupAction;
 import com.eltechs.axs.configuration.startup.StartupActionInfo;
 import com.eltechs.axs.configuration.startup.StartupActionsCollection;
@@ -242,8 +241,7 @@ public abstract class StartupActivity<StateClass extends ApplicationStateBase<St
     }
 
     private void setupUI() {
-        //R.layout.startup
-        setContentView(R.layout.ed_startup);
+        setContentView(R.layout.startup);
     }
 
     private void sendStatisticsForGA() {

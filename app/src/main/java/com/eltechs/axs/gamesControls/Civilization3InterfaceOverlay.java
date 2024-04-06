@@ -1,5 +1,8 @@
 package com.eltechs.axs.gamesControls;
 
+import static com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT;
+import static com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.DisplayMetrics;
@@ -43,7 +46,7 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
     private View leftToolbar;
     private TouchScreenControlsWidget tscWidget;
     private boolean isLeftToolbarVisible = true;
-    private final GestureMouseMode mouseMode = new GestureMouseMode(GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT);
+    private final GestureMouseMode mouseMode = new GestureMouseMode(MOUSE_MODE_LEFT);
     private final TouchScreenControlsFactory controlsFactory = new Civ3TouchScreenControlsFactory(this.mouseMode);
 
     @Override // com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay
@@ -104,8 +107,8 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
     }
 
     private static Button createShiftButton(Activity activity, final ViewFacade viewFacade, int i) {
-        final String string = activity.getResources().getString(R_original.string.civ3_shift_off);
-        final String string2 = activity.getResources().getString(R_original.string.civ3_shift_on);
+        final String str_shiftOff = activity.getResources().getString(R_original.string.civ3_shift_off);
+        final String str_shiftOn = activity.getResources().getString(R_original.string.civ3_shift_on);
         final Button button = new Button(activity);
         button.setWidth(i);
         button.setMaxWidth(i);
@@ -113,13 +116,9 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
         button.setHeight(i);
         button.setMaxHeight(i);
         button.setMinHeight(i);
-        button.setText(string);
-        button.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.1
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                viewFacade.switchModifierState(KeyButNames.SHIFT, (byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), true);
-            }
-        });
+        button.setText(str_shiftOff);
+        button.setOnClickListener(view ->
+                viewFacade.switchModifierState(KeyButNames.SHIFT, (byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), true));
         viewFacade.addKeyboardListener(new KeyboardListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.2
             @Override // com.eltechs.axs.xserver.KeyboardListener
             public void keyPressed(byte b, int i2, Mask<KeyButNames> mask) {
@@ -127,22 +126,12 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
 
             @Override // com.eltechs.axs.xserver.KeyboardListener
             public void keyReleased(byte b, int i2, Mask<KeyButNames> mask) {
-                if (b == ((byte) KeyCodesX.KEY_SHIFT_LEFT.getValue()) || b == ((byte) KeyCodesX.KEY_SHIFT_RIGHT.getValue())) {
-                    return;
-                }
-                viewFacade.setModifierState(KeyButNames.SHIFT, false, (byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), true);
+                if (b != ((byte) KeyCodesX.KEY_SHIFT_LEFT.getValue()) && b!= ((byte) KeyCodesX.KEY_SHIFT_RIGHT.getValue()))
+                    viewFacade.setModifierState(KeyButNames.SHIFT, false, (byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), true);
             }
         });
-        viewFacade.addKeyboardModifiersChangeListener(new KeyboardModifiersListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.3
-            @Override // com.eltechs.axs.xserver.KeyboardModifiersListener
-            public void modifiersChanged(Mask<KeyButNames> mask) {
-                if (mask.isSet(KeyButNames.SHIFT)) {
-                    button.setText(string2);
-                } else {
-                    button.setText(string);
-                }
-            }
-        });
+
+        viewFacade.addKeyboardModifiersChangeListener(mask -> button.setText(mask.isSet(KeyButNames.SHIFT) ? str_shiftOn : str_shiftOff));
         return button;
     }
 
@@ -168,38 +157,25 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
         return scrollView;
     }
 
-    private static ImageButton createMouseModeButton(Activity activity, final GestureMouseMode gestureMouseMode, int i) {
-        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, i, i, R_original.drawable.mouse_left);
-        createRegularImageButton.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.4
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                if (gestureMouseMode.getState().equals(GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT)) {
-                    gestureMouseMode.setState(GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT);
-                } else {
-                    gestureMouseMode.setState(GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT);
-                }
-            }
-        });
-        gestureMouseMode.addListener(new GestureMouseMode.MouseModeChangeListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.5
-            @Override // com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeChangeListener
-            public void mouseModeChanged(GestureMouseMode gestureMouseMode2, GestureMouseMode.MouseModeState mouseModeState) {
-                if (mouseModeState == GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT) {
-                    createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
-                } else {
-                    createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
-                }
+    private static ImageButton createMouseModeButton(Activity activity, final GestureMouseMode gestureMouseMode, int size) {
+        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, size, size, R_original.drawable.mouse_left);
+        createRegularImageButton.setOnClickListener(view -> gestureMouseMode.setState(
+                gestureMouseMode.getState().equals(MOUSE_MODE_LEFT)
+                        ? MOUSE_MODE_RIGHT
+                        : MOUSE_MODE_LEFT));
+
+        gestureMouseMode.addListener((gestureMouseMode2, mouseModeState) -> {
+            if (mouseModeState == MOUSE_MODE_LEFT) {
+                createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
+            } else {
+                createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
             }
         });
         return createRegularImageButton;
     }
 
     private static void setHandlerToButton(Button button, final KeyCodesX keyCodesX, final ViewFacade viewFacade) {
-        button.setOnClickListener(new View.OnClickListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.6
-            @Override // android.view.View.OnClickListener
-            public void onClick(View view) {
-                viewFacade.injectKeyType((byte) keyCodesX.getValue());
-            }
-        });
+        button.setOnClickListener(view -> viewFacade.injectKeyType((byte) keyCodesX.getValue()));
     }
 
     private static Button createLetterButton(Activity activity, ViewFacade viewFacade, KeyCodesX keyCodesX, int i, String str) {

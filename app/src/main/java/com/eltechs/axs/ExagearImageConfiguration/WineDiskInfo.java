@@ -7,8 +7,8 @@ public class WineDiskInfo implements Serializable {
     public final String diskLetter;
     public final String diskTargetPath;
 
-    public WineDiskInfo(String str, String str2) {
-        this.diskLetter = str;
-        this.diskTargetPath = str2;
+    public WineDiskInfo(String diskLetter, String diskTargetPath) {
+        this.diskLetter = diskLetter;
+        this.diskTargetPath = diskTargetPath;
     }
 }

@@ -9,10 +9,8 @@ import java.util.List;
 /* loaded from: classes.dex */
 public class GestureStateCheckShortZoom extends AbstractGestureFSMState {
     private static final int zoomActivateThresold = 400;
-    public static FSMEvent ZOOM_SHORT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateCheckShortZoom.1
-    };
-    public static FSMEvent ZOOM_LONG = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateCheckShortZoom.2
-    };
+    public static FSMEvent ZOOM_SHORT = new FSMEvent();
+    public static FSMEvent ZOOM_LONG = new FSMEvent();
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeInactive() {
@@ -32,10 +30,8 @@ public class GestureStateCheckShortZoom extends AbstractGestureFSMState {
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
         List<Finger> fingers = getContext().getFingers();
-        if (getContext().getZoomController().isZoomed() || getDistanceBetweenFingers(fingers) < 400.0f) {
-            sendEvent(ZOOM_SHORT);
-        } else {
-            sendEvent(ZOOM_LONG);
-        }
+        sendEvent(getContext().getZoomController().isZoomed() || getDistanceBetweenFingers(fingers) < zoomActivateThresold
+                ? ZOOM_SHORT
+                : ZOOM_LONG);
     }
 }

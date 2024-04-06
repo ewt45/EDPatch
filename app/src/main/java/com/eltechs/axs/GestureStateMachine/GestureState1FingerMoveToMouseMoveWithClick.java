@@ -11,8 +11,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureState1FingerMoveToMouseMoveWithClick extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMoveToMouseMoveWithClick.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final MouseClickAdapter clickAdapter;
     private Finger f;
     private final MouseMoveAdapter moveAdapter;
@@ -32,11 +31,7 @@ public class GestureState1FingerMoveToMouseMoveWithClick extends AbstractGesture
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
         getContext().getFingerEventsSource().addListener(this);
-        boolean z = true;
-        if (getContext().getFingers().size() != 1) {
-            z = false;
-        }
-        Assert.state(z);
+        Assert.state(getContext().getFingers().size() == 1);
         this.f = getContext().getFingers().get(0);
         this.moveAdapter.prepareMoving(this.f.getXWhenFirstTouched(), this.f.getYWhenFirstTouched());
     }

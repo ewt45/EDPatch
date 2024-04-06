@@ -10,8 +10,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureState1FingerMoveToMouseMove extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMoveToMouseMove.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private Finger f;
     private final MouseMoveAdapter moveAdapter;
     private PointerContext pointerContext;

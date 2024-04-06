@@ -7,33 +7,24 @@ import com.eltechs.axs.helpers.Assert;
 /* loaded from: classes.dex */
 public class GestureStateDetectSwipe extends AbstractGestureFSMState {
     private final double coordsRatioThreshold;
-    public static FSMEvent SWIPE_UP = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateDetectSwipe.1
-    };
-    public static FSMEvent SWIPE_DOWN = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateDetectSwipe.2
-    };
-    public static FSMEvent SWIPE_LEFT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateDetectSwipe.3
-    };
-    public static FSMEvent SWIPE_RIGHT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateDetectSwipe.4
-    };
-    public static FSMEvent NOT_SWIPE = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateDetectSwipe.5
-    };
+    public static FSMEvent SWIPE_UP = new FSMEvent();
+    public static FSMEvent SWIPE_DOWN = new FSMEvent();
+    public static FSMEvent SWIPE_LEFT = new FSMEvent();
+    public static FSMEvent SWIPE_RIGHT = new FSMEvent();
+    public static FSMEvent NOT_SWIPE = new FSMEvent();
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeInactive() {
     }
 
-    public GestureStateDetectSwipe(GestureContext gestureContext, double d) {
+    public GestureStateDetectSwipe(GestureContext gestureContext, double coordsRatioThreshold) {
         super(gestureContext);
-        this.coordsRatioThreshold = d;
+        this.coordsRatioThreshold = coordsRatioThreshold;
     }
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
-        boolean z = true;
-        if (getContext().getFingers().size() != 1) {
-            z = false;
-        }
-        Assert.state(z);
+        Assert.state(getContext().getFingers().size() == 1);
         Finger finger = getContext().getFingers().get(0);
         float x = finger.getX() - finger.getXWhenFirstTouched();
         float y = finger.getY() - finger.getYWhenFirstTouched();

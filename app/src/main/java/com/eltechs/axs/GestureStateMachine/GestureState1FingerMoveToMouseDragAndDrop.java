@@ -9,7 +9,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureState1FingerMoveToMouseDragAndDrop extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() ;
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final DragAndDropAdapter adapter;
     private final boolean cancelBy2ndFinger;
     private Finger f;

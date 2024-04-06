@@ -28,7 +28,10 @@ import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.ViewFacade;
 import java.util.Arrays;
 
-/* loaded from: classes.dex */
+/**
+ * @deprecated 非原版代码
+ */
+@Deprecated
 public class HybridInterfaceOverlay implements XServerDisplayActivityInterfaceOverlay, XServerDisplayActivityUiOverlaySidePanels {
     public static final float buttonSizeInches = 0.4f;
     private static final float buttonSzNormalDisplayInches = 0.45f;

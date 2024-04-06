@@ -5,10 +5,8 @@ import com.eltechs.axs.finiteStateMachine.FSMEvent;
 
 /* loaded from: classes.dex */
 public class GestureStateCheckMouseMode extends AbstractGestureFSMState {
-    public static FSMEvent MOUSE_MODE_LEFT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateCheckMouseMode.1
-    };
-    public static FSMEvent MOUSE_MODE_RIGHT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateCheckMouseMode.2
-    };
+    public static FSMEvent MOUSE_MODE_LEFT = new FSMEvent();
+    public static FSMEvent MOUSE_MODE_RIGHT = new FSMEvent();
     private final GestureMouseMode mouseMode;
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
@@ -22,10 +20,8 @@ public class GestureStateCheckMouseMode extends AbstractGestureFSMState {
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
-        if (this.mouseMode.getState() == GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT) {
-            sendEvent(MOUSE_MODE_RIGHT);
-        } else {
-            sendEvent(MOUSE_MODE_LEFT);
-        }
+        sendEvent(this.mouseMode.getState() == GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT
+                ? MOUSE_MODE_RIGHT
+                : MOUSE_MODE_LEFT);
     }
 }
