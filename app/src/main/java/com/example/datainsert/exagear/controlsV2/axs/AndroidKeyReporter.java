@@ -26,7 +26,9 @@ public class AndroidKeyReporter {
                 return false;
 //            Keyboard.XKey convertUnicodeToXKey = convertUnicodeToXKey(keyEvent.getUnicodeChar());//不处理unicode会发生什么？
             //unicodeChar可以认为是keySym吗？测试大小写A，俄语字母，+号等（貌似可以）
-            int finalUnicodeChar = unicodeChar ==0x0a ? 0x0d : unicodeChar;//回车 应该是return 0xff0d .但是从keyevent获取到的unicode是0x0a linefeed，手动改一下
+
+            //回车 应该是return 0xff0d .但是从keyevent获取到的unicode是0x0a linefeed，手动改一下 (必须是ff0d, 直接0d的话某些程序(run, cmd)不识别）
+            int finalUnicodeChar = unicodeChar ==0x0a ? 0xff0d : unicodeChar;
             if(action == ACTION_DOWN)
                 Const.getXServerHolder().injectKeyPress(keyInfo.xKeyCode,finalUnicodeChar);
             else if(action == ACTION_UP)
