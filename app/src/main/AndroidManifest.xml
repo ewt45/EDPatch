@@ -101,6 +101,17 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <provider
+            android:name="bin.mt.file.content.MTDataFilesProvider"
+            android:permission="android.permission.MANAGE_DOCUMENTS"
+            android:exported="true"
+            android:authorities="MTDataFilesProvider"
+            android:grantUriPermissions="true">
+            <intent-filter>
+                <action
+                    android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
         <!--        <provider-->
         <!--            android:name="bin.mt.file.content.MTDataFilesProvider"-->
         <!--            android:permission="android.permission.MANAGE_DOCUMENTS"-->
