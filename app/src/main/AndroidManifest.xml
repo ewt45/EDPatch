@@ -101,11 +101,12 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+<!--        mt的文件提供器，authorities不能与其他应用的冲突-->
         <provider
             android:name="bin.mt.file.content.MTDataFilesProvider"
             android:permission="android.permission.MANAGE_DOCUMENTS"
             android:exported="true"
-            android:authorities="MTDataFilesProvider"
+            android:authorities="com.eltechs.ed.MTDataFilesProvider"
             android:grantUriPermissions="true">
             <intent-filter>
                 <action

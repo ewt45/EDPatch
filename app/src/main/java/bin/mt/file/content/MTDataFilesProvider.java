@@ -32,7 +32,8 @@ import java.util.Objects;
 
 /*
 mt 2.15.2 的 文件提供器
-开头的uri： content:// + manifest里provider的authorities（MTDataFilesProvider）+ /tree/ + 包名
+开头的uri： content:// + manifest里provider的authorities（包名.MTDataFilesProvider）+ /tree/ + 包名
+注意authorities不能与其他app的冲突
 创建文件：父文件id+路径分隔符（可选）+显示名（文件名？）+防冲突序号（可选）
 将根目录的documentId设置为app包名
 
