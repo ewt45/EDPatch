@@ -346,7 +346,5 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
         mProfile.syncAreaList(isEditing);
         //TODO 还应该同步profile里存储的全局属性，比如屏幕按键显隐，鼠标移动速度等
     }
-
-
 }
 

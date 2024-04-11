@@ -380,8 +380,10 @@ public class ModelProvider {
                 OneProfile oneProfile = ModelProvider.readProfileFromFile(tmpCopyFile);
                 assetsProfileNames.add(oneProfile.getName());
                 //2. 解压
-                if (extract)
+                if (extract){
+                    oneProfile.adjustProfileToFullscreen();  //调整适配当前设备分辨率
                     saveProfile(oneProfile);
+                }
             }
         }catch (IOException e) {
             e.printStackTrace();
@@ -389,6 +391,5 @@ public class ModelProvider {
 
         return assetsProfileNames;
     }
-
 
 }

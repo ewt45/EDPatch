@@ -2,7 +2,6 @@ package com.example.datainsert.exagear.controlsV2;
 
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.controlsV2.Const.minTouchSize;
-import static com.example.datainsert.exagear.controlsV2.TestHelper.makeMultipleOf;
 
 import android.support.annotation.IntDef;
 
@@ -134,7 +133,7 @@ public abstract class TouchAreaModel {
      * 设置为8dp的倍数
      */
     public void setLeft(int left) {
-        this.left = Math.max(0, makeMultipleOf(dp8,left));
+        this.left = Math.max(0, floorDivToSmallestUnit(left));
     }
 
     public int getTop() {
@@ -145,7 +144,7 @@ public abstract class TouchAreaModel {
      * 设置为8dp的倍数
      */
     public void setTop(int top) {
-        this.top = Math.max(0, makeMultipleOf(dp8,top));
+        this.top = Math.max(0, floorDivToSmallestUnit(top));
     }
 
     public int getWidth() {
@@ -156,7 +155,7 @@ public abstract class TouchAreaModel {
      * 设置为4dp的倍数
      */
     public void setWidth(int width) {
-        this.width = Math.max(mMinAreaSize, makeMultipleOf(dp8/2,width));
+        this.width = Math.max(mMinAreaSize, floorDivToSmallestUnit(width));
     }
 
     public int getHeight() {
@@ -167,7 +166,14 @@ public abstract class TouchAreaModel {
      * 设置为4dp的倍数
      */
     public void setHeight(int height) {
-        this.height = Math.max(mMinAreaSize, makeMultipleOf(dp8/2,height));
+        this.height = Math.max(mMinAreaSize, floorDivToSmallestUnit(height));
+    }
+
+    /**
+     * 为方便对齐，需要将left，top，width，height全部转换为dp8(对应的px值)的倍数，向下取整
+     */
+    public static int floorDivToSmallestUnit(int value){
+        return Math.floorDiv(value, dp8) * dp8;
     }
 
     public boolean isPressed() {

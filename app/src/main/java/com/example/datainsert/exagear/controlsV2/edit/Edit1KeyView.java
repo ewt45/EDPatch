@@ -94,8 +94,10 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         });
 
         Button btnTest = new Button(c);
-        btnTest.setText("测试保存");
-        btnTest.setOnClickListener(v -> TestHelper.saveCurrentEditProfileToFile());
+        btnTest.setText("测试宽高");
+        btnTest.setOnClickListener(v -> {
+            TestHelper.getSystemDisplaySize(v.getContext());
+        });
 
         Button btnTestRead = new Button(c);
         btnTestRead.setText("测试读取state");

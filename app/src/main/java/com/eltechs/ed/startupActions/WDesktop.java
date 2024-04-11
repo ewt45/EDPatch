@@ -2,12 +2,9 @@ package com.eltechs.ed.startupActions;
 
 import android.util.Log;
 
-import com.eltechs.axs.Globals;
 import com.eltechs.axs.activities.StartupActivity;
 import com.eltechs.axs.configuration.startup.actions.InteractiveStartupActionBase;
 import com.eltechs.ed.activities.EDMainActivity;
-import com.ewt45.exagearsupportv7.MainActivity;
-import com.example.datainsert.exagear.QH;
 
 public class WDesktop<StateClass> extends InteractiveStartupActionBase<StateClass, WDesktop.UserRequestedAction> {
     public WDesktop(){

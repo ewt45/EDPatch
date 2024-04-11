@@ -61,6 +61,7 @@ public class Edit3ProfilesView extends LinearLayout {
                 //先把要导入的配置替换合理名称导入到本地。然后显示编辑名称的dialog，当做是在对现有配置重命名
                 OneProfile profile = ModelProvider.readProfileFromUri(data.getData());
                 profile.setName(getNiceProfileName(profile.getName()));
+                profile.adjustProfileToFullscreen(); //适配当前设备的分辨率
                 ModelProvider.saveProfile(profile);
                 Toast.makeText(Const.getContext(), /*导入成功*/msgs[0]+profile.getName(), Toast.LENGTH_SHORT).show();
                 showEditNameDialog(c,profile.getName(),false,profileAdapter);

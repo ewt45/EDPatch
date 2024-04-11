@@ -70,9 +70,7 @@ public class EditConfigWindow extends RelativeLayout {
         // gravity如果是横向居中的话，会导致拖动时横向移动速度不对。还是去掉吧。直接获取Display宽高然后再设置leftMargin
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-2, -2);
         params.setMargins(dp8, dp8, dp8, dp8);
-        Point point = new Point();
-        ((WindowManager)c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(point);
-        Log.d(TAG, "EditConfigWindow: 小窗时是否能正确获取宽高？："+ point);//可以
+        Point point = TestHelper.getWindowDisplaySize(getContext());
         if(point.x > mMaxWidth)
             params.leftMargin = (point.x - mMaxWidth)/2;
 //        params.gravity = Gravity.CENTER_HORIZONTAL;

@@ -15,16 +15,19 @@ import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -33,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -509,6 +513,28 @@ public class TestHelper {
         return builder.toString();
     }
 
+    /**
+     * 获取当前窗口的宽高。小窗时也可以正确获取小窗的宽高
+     */
+    public static Point getWindowDisplaySize(Context c){
+        Point point = new Point();
+        ((WindowManager)c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(point);
+        return point;
+    }
+
+    /**
+     * 获取系统的displayMetrics，不受屏幕旋转，小窗等影响(不行，会减去导航栏等的大小，只好用getRealSize了）
+     */
+    public static Point getSystemDisplaySize(Context c){
+//        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+//        return new Point(metrics.widthPixels, metrics.heightPixels);
+        Point point = new Point();
+        ((WindowManager)c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRealSize(point);
+        if(point.x < point.y)
+            point.set(point.y, point.x);
+        Log.d(TAG, "getSystemDisplaySize: 获取屏幕宽高="+ point);
+        return point;
+    }
 
     public static interface ArrayFilter<T> {
         public boolean accept(T item);

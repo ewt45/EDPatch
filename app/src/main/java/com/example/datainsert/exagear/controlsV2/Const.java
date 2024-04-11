@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Const {
-    public static boolean initiated=false;
+    private static boolean initiated=false;
 //    /**
 //     * 记录model的全部类型及其对应int
 //     * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
@@ -91,7 +91,7 @@ public class Const {
 
         dp8 = QH.px(c, 8);
         minTouchSize = QH.px(c, 32);
-        minBtnAreaSize = QH.px(c, 48);
+        minBtnAreaSize = QH.px(c, 32);
         minStickAreaSize = minBtnAreaSize;
         int[] xWH = holder.getXScreenPixels();
         maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
