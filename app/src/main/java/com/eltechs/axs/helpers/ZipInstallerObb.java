@@ -31,13 +31,13 @@ public class ZipInstallerObb {
     private final boolean mayTakeFromSdcard;
     private int foundObbVersion;
 
-    public ZipInstallerObb(Context context, boolean z, boolean z2, ExagearImage exagearImage, Callbacks callbacks, String[] strArr) {
+    public ZipInstallerObb(Context context, boolean isMain, boolean mayTakeFromSdcard, ExagearImage exagearImage, Callbacks callbacks, String[] keepOldFiles) {
         this.context = context;
-        this.isMain = z;
-        this.mayTakeFromSdcard = z2;
+        this.isMain = isMain;
+        this.mayTakeFromSdcard = mayTakeFromSdcard;
         this.exagearImage = exagearImage;
         this.callbacks = callbacks;
-        this.keepOldFiles = strArr;
+        this.keepOldFiles = keepOldFiles;
 
     }
 
@@ -47,21 +47,20 @@ public class ZipInstallerObb {
         Log.d("ZipInstallerObb", "installImageFromObbIfNeeded: 此时开始原解压数据包操作");
 
 //        callbacks.unpackingCompleted(this.exagearImage.getPath());
-        final File findObbFile = findObbFile();
+        final File obbFile = findObbFile();
         boolean checkObbUnpackNeed = checkObbUnpackNeed();
         final File path = this.exagearImage.getPath();
         if (!checkObbUnpackNeed) {
             this.callbacks.unpackingCompleted(path);
-        } else if (findObbFile == null) {
+        } else if (obbFile == null) {
             this.callbacks.noObbFound();
         } else {
-
             new AsyncTask<Object, Object, Object>() { // from class: com.eltechs.axs.helpers.ZipInstallerObb.1
                 @Override // android.os.AsyncTask
                 protected Object doInBackground(Object... objArr) {
                     try {
                         UiThread.post(callbacks::unpackingInProgress);
-                        if (ZipInstallerObb.this.keepOldFiles.length == 0) {
+                        if (keepOldFiles.length == 0) {
                             SafeFileHelpers.removeDirectory(path);
                             FileHelpers.createDirectory(path);
                         } else {
@@ -78,22 +77,22 @@ public class ZipInstallerObb {
                                     }
                                 }
                                 return true;
-                            }, (file, str) -> {
-                                File file2 = new File(file, str);
-                                if (file2.isDirectory()) {
-                                    SafeFileHelpers.removeDirectory(file2);
+                            }, (parent, fileName) -> {
+                                File file = new File(parent, fileName);
+                                if (file.isDirectory()) {
+                                    SafeFileHelpers.removeDirectory(file);
                                 } else {
-                                    file2.delete();
+                                    file.delete();
                                 }
                             });
                         }
-                        ZipUnpacker.unpackZip(findObbFile, path, ZipInstallerObb.this.callbacks);
+                        ZipUnpacker.unpackZip(obbFile, path, callbacks);
                         FileHelpers.createDirectory(path, ExagearImagePaths.DOT_EXAGEAR);
                         createFileWithObbVersion(path);
-                        UiThread.post(() -> ZipInstallerObb.this.callbacks.unpackingCompleted(path));
+                        UiThread.post(() -> callbacks.unpackingCompleted(path));
                         return null;
                     } catch (IOException e) {
-                        UiThread.post(() -> ZipInstallerObb.this.callbacks.error(e.getMessage()));
+                        UiThread.post(() -> callbacks.error(e.getMessage()));
                         return null;
                     }
                 }

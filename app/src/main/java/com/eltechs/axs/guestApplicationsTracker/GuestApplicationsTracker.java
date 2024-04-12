@@ -46,12 +46,12 @@ public class GuestApplicationsTracker {
     }
 
     public boolean startGuestApplication(UBTLaunchConfiguration uBTLaunchConfiguration, AXSEnvironment aXSEnvironment) {
-        int runUbt = UBT.runUbt(uBTLaunchConfiguration, aXSEnvironment, this.libubtPath);
-        if (runUbt < 0) {
+        int pid = UBT.runUbt(uBTLaunchConfiguration, aXSEnvironment, this.libubtPath);
+        if (pid < 0) {
             return false;
         }
-        Log.d("TAG", "startGuestApplication: fork的进程id="+runUbt);
-        this.guestApplicationsCollection.registerTranslator(runUbt);
+        Log.d("TAG", "startGuestApplication: fork的进程id="+pid);
+        this.guestApplicationsCollection.registerTranslator(pid);
         return true;
     }
 

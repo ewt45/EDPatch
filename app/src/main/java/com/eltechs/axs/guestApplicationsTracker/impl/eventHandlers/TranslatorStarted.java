@@ -15,7 +15,7 @@ public class TranslatorStarted extends RequestHandlerBase {
 
     @Override // com.eltechs.axs.xconnectors.RequestHandler
     public ProcessingResult handleRequest(TranslatorConnection translatorConnection, XInputStream xInputStream, XOutputStream xOutputStream) throws IOException {
-        if (xInputStream.getAvailableBytesCount() < 4) {
+        if (xInputStream.getAvailableBytesCount() < SIZE_OF_INT) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
         this.guestApplicationsCollection.translatorStarted(xInputStream.getInt(), translatorConnection);

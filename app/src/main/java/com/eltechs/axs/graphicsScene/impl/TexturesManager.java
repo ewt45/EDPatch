@@ -3,7 +3,6 @@ package com.eltechs.axs.graphicsScene.impl;
 import android.graphics.Bitmap;
 import com.eltechs.axs.xserver.impl.drawables.gl.PersistentGLDrawable;
 
-/* loaded from: classes.dex */
 public interface TexturesManager {
     boolean allocateTextures(int i);
 

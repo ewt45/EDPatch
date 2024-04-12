@@ -39,8 +39,8 @@ public abstract class AbstractStartupAction<StateClass> implements StartupAction
         return this.startupActions.getAndroidApplicationContext();
     }
 
-    protected final String getString(int i) {
-        return getAppContext().getString(i);
+    protected final String getString(int id) {
+        return getAppContext().getString(id);
     }
 
     protected final void sendDone() {

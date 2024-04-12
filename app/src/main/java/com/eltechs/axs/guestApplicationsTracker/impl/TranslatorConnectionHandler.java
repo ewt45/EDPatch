@@ -5,7 +5,6 @@ import com.eltechs.axs.xconnectors.XInputStream;
 import com.eltechs.axs.xconnectors.XOutputStream;
 import java.nio.ByteOrder;
 
-/* loaded from: classes.dex */
 public class TranslatorConnectionHandler implements ConnectionHandler<TranslatorConnection> {
     private final GuestApplicationsCollection guestApplicationsCollection;
 
@@ -13,7 +12,6 @@ public class TranslatorConnectionHandler implements ConnectionHandler<Translator
         this.guestApplicationsCollection = guestApplicationsCollection;
     }
 
-    /* JADX WARN: Can't rename method to resolve collision */
     @Override // com.eltechs.axs.proto.input.ConnectionHandler
     public TranslatorConnection handleNewConnection(XInputStream xInputStream, XOutputStream xOutputStream) {
         xInputStream.setByteOrder(ByteOrder.LITTLE_ENDIAN);

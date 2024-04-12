@@ -17,9 +17,9 @@ public class FSMStateCopyFileIfExists extends AbstractFSMState {
     public void notifyBecomeInactive() {
     }
 
-    public FSMStateCopyFileIfExists(File file, File file2) {
-        this.from = file;
-        this.to = file2;
+    public FSMStateCopyFileIfExists(File from, File to) {
+        this.from = from;
+        this.to = to;
     }
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState

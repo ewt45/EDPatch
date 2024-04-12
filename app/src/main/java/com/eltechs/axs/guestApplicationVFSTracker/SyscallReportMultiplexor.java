@@ -11,17 +11,17 @@ import java.util.Collection;
 public class SyscallReportMultiplexor implements SyscallReportHandler, Serializable {
     private final Collection<SyscallReportHandler> handlers = new ArrayList<>();
 
-    public void addHandler(SyscallReportHandler syscallReportHandler) {
-        this.handlers.add(syscallReportHandler);
+    public void addHandler(SyscallReportHandler handler) {
+        this.handlers.add(handler);
     }
 
-    public void removeHandler(SyscallReportHandler syscallReportHandler) {
-        this.handlers.remove(syscallReportHandler);
+    public void removeHandler(SyscallReportHandler handler) {
+        this.handlers.remove(handler);
     }
 
     @Override // com.eltechs.axs.guestApplicationVFSTracker.SyscallReportHandler
     public boolean handleSyscall(SyscallReportData syscallReportData, XOutputStream xOutputStream) {
-        Log.d("SYSCALL", String.format("Handling syscall for %d : nr : %d fl: %d", syscallReportData.getFileIndex(), Integer.valueOf(syscallReportData.getSyscallNr()), Integer.valueOf(syscallReportData.getFlags())));
+        Log.d("SYSCALL", String.format("Handling syscall for %d : nr : %d fl: %d", syscallReportData.getFileIndex(), syscallReportData.getSyscallNr(), syscallReportData.getFlags()));
         for (SyscallReportHandler syscallReportHandler : this.handlers) {
             if (syscallReportHandler.handleSyscall(syscallReportData, xOutputStream)) {
                 return true;

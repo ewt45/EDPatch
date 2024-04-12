@@ -25,7 +25,7 @@ public class Killswitch {
     public Killswitch(String elfLoaderPath, String killSwitchPath, String libUbtPath) throws IOException {
         int startKillswitch = startKillswitch(elfLoaderPath, killSwitchPath, libUbtPath, "/mnt/sdcard/killswitch.txt");
         if (startKillswitch < 0) {
-            throw new IOException(String.format("Failed to start the killswitch; errno = %d.", Integer.valueOf(-startKillswitch)));
+            throw new IOException(String.format("Failed to start the killswitch; errno = %d.", -startKillswitch));
         }
     }
 

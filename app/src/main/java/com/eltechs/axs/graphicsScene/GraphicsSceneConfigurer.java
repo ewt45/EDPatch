@@ -8,8 +8,8 @@ public class GraphicsSceneConfigurer {
     private int nTextures;
     private RectangleF sceneViewport = new RectangleF(0.0f, 0.0f, 0.0f, 0.0f);
 
-    public void setSceneViewport(RectangleF rectangleF) {
-        this.sceneViewport = rectangleF;
+    public void setSceneViewport(RectangleF sceneViewport) {
+        this.sceneViewport = sceneViewport;
     }
 
     public void setSceneViewport(float x, float y, float width, float height) {

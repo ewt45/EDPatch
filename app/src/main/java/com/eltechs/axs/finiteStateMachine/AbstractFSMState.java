@@ -23,7 +23,6 @@ public abstract class AbstractFSMState implements FSMState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     protected final FiniteStateMachine getMachine() {
         return this.machine;
     }

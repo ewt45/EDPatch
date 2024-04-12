@@ -21,7 +21,6 @@ import com.eltechs.axs.helpers.MathHelpers;
 import com.eltechs.axs.xserver.impl.drawables.gl.PersistentGLDrawable;
 import org.apache.commons.compress.archivers.tar.TarConstants;
 
-/* loaded from: classes.dex */
 public class TrivialTexturesManager implements TexturesManager {
     /** 记录每个texture的宽高（1个texture会连着占用两个位置，所以长度是textures数组的二倍） */
     private int[] textureSizes;

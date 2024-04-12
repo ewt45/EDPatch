@@ -9,24 +9,26 @@ import java.io.IOException;
 
 /* loaded from: classes.dex */
 public class PrepareGuestImage<StateClass extends ExagearImageAware> extends AbstractStartupAction<StateClass> {
+    /** "/home/xdroid/" */
     private final String homeDir;
+    /** /storage/emulated/0/Exagear */
     private final File hostDirInUserArea;
 
-    public PrepareGuestImage(String str, File file) {
-        this.homeDir = str;
-        this.hostDirInUserArea = file;
+    public PrepareGuestImage(String homeDir, File hostDirInUserArea) {
+        this.homeDir = homeDir;
+        this.hostDirInUserArea = hostDirInUserArea;
     }
 
     @Override // com.eltechs.axs.configuration.startup.StartupAction
     public void execute() {
         try {
-            ExagearImageConfigurationHelpers exagearImageConfigurationHelpers = new ExagearImageConfigurationHelpers(((ExagearImageAware) getApplicationState()).getExagearImage());
+            ExagearImageConfigurationHelpers helper = new ExagearImageConfigurationHelpers(((ExagearImageAware) getApplicationState()).getExagearImage());
             NativeLibsConfiguration nativeLibsConfiguration = new NativeLibsConfiguration(getAppContext());
-            exagearImageConfigurationHelpers.createEtcPasswd(new File(this.homeDir).getName(), this.homeDir);
-            exagearImageConfigurationHelpers.createVpathsList(StringHelpers.appendTrailingSlash(this.hostDirInUserArea.getAbsolutePath()), "/proc/", "/dev/");
-            exagearImageConfigurationHelpers.recreateX11SocketDir();
-            exagearImageConfigurationHelpers.recreateSoundSocketDir();
-            exagearImageConfigurationHelpers.prepareWineForCurrentMemoryConfiguration(nativeLibsConfiguration);
+            helper.createEtcPasswd(new File(this.homeDir).getName(), this.homeDir);
+            helper.createVpathsList(StringHelpers.appendTrailingSlash(this.hostDirInUserArea.getAbsolutePath()), "/proc/", "/dev/");
+            helper.recreateX11SocketDir();
+            helper.recreateSoundSocketDir();
+            helper.prepareWineForCurrentMemoryConfiguration(nativeLibsConfiguration);
             sendDone();
         } catch (IOException e) {
             sendError("Failed to prepare the unpacked exagear image for the game being started.", e);

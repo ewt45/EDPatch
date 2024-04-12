@@ -1,5 +1,7 @@
 package com.eltechs.axs.guestApplicationsTracker.impl;
 
+import static com.eltechs.axs.guestApplicationsTracker.impl.TranslatorRequestsDispatcher.MINIMUM_RESPONSE_LENGTH;
+
 import com.eltechs.axs.helpers.Assert;
 import com.eltechs.axs.xconnectors.XOutputStream;
 import com.eltechs.axs.xconnectors.XStreamLock;
@@ -39,7 +41,7 @@ public class TranslatorConnection {
         XStreamLock lock = this.outputStream.lock();
         try {
             this.outputStream.writeInt(TranslatorRequestsDispatcher.MAGIC);
-            this.outputStream.writeShort((short) 6);
+            this.outputStream.writeShort((short) MINIMUM_RESPONSE_LENGTH);
         } finally {
             lock.close();
         }

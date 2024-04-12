@@ -165,10 +165,10 @@ public abstract class FileHelpers {
         }
     }
 
-    public static File createDirectory(File file, String str) {
-        File file2 = new File(file, str);
-        file2.mkdirs();
-        return file2;
+    public static File createDirectory(File parent, String dirName) {
+        File target = new File(parent, dirName);
+        target.mkdirs();
+        return target;
     }
 
     public static File touch(String str) throws IOException {

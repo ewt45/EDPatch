@@ -77,9 +77,9 @@ public class DetectExecutableFiles<StateClass extends AvailableExecutableFilesAw
                     } else {
                         Log.i("DetectedExecutableFiles", String.format("Cache for '%s' is stale.", file.getAbsolutePath()));
                         final DetectedExecutableFilesCache createEmpty = DetectedExecutableFilesCache.createEmpty(file);
-                        SafeFileHelpers.doWithExecutableFiles(file, EXE_FILES_SEARCH_DEPTH, (file3, str) -> {
-                            filesAccumulator.apply(file3, str);
-                            createEmpty.addFile(file3, str);
+                        SafeFileHelpers.doWithExecutableFiles(file, EXE_FILES_SEARCH_DEPTH, (parent, str) -> {
+                            filesAccumulator.apply(parent, str);
+                            createEmpty.addFile(parent, str);
                         });
                         createEmpty.persist();
                     }
@@ -128,15 +128,15 @@ public class DetectExecutableFiles<StateClass extends AvailableExecutableFilesAw
         }
 
         @Override // com.eltechs.axs.helpers.SafeFileHelpers.FileCallback
-        public void apply(File file, String str) throws IOException {
+        public void apply(File parent, String fileName) throws IOException {
             for (ExecutableFileDetector<StateClass> executableFileDetector : detectors.getDetectors()) {
-                DetectedExecutableFile<StateClass> detectedFiles = executableFileDetector.detect(file, str);
+                DetectedExecutableFile<StateClass> detectedFiles = executableFileDetector.detect(parent, fileName);
                 if (detectedFiles != null) {
                     this.detectedExecutableFiles.add(detectedFiles);
                     return;
                 }
             }
-            DetectedExecutableFile<StateClass> otherFiles = detectors.getDefaultDetector().detect(file, str);
+            DetectedExecutableFile<StateClass> otherFiles = detectors.getDefaultDetector().detect(parent, fileName);
             if (otherFiles != null) {
                 this.otherExecutableFiles.add(otherFiles);
             }

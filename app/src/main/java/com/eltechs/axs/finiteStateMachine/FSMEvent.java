@@ -1,11 +1,10 @@
 package com.eltechs.axs.finiteStateMachine;
 
-/* loaded from: classes.dex */
 public class FSMEvent {
     private final String name;
 
-    public FSMEvent(String str) {
-        this.name = str;
+    public FSMEvent(String name) {
+        this.name = name;
     }
 
     public FSMEvent() {

@@ -31,18 +31,18 @@ public class TranslatorRequestsDispatcher implements RequestHandler<TranslatorCo
 
     @Override // com.eltechs.axs.xconnectors.RequestHandler
     public ProcessingResult handleRequest(TranslatorConnection translatorConnection, XInputStream xInputStream, XOutputStream xOutputStream) throws IOException {
-        if (xInputStream.getAvailableBytesCount() < 8) {
+        if (xInputStream.getAvailableBytesCount() < MINIMUM_REQUEST_LENGTH) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        int i = xInputStream.getInt();
-        int extendAsUnsigned = ArithHelpers.extendAsUnsigned(xInputStream.getShort()) - 8;
-        int extendAsUnsigned2 = ArithHelpers.extendAsUnsigned(xInputStream.getShort());
-        if (i != 1263685446 || extendAsUnsigned2 < 0 || extendAsUnsigned2 >= this.requestHandlers.size()) {
+        int rqMagic = xInputStream.getInt();
+        int extendAsUnsigned = ArithHelpers.extendAsUnsigned(xInputStream.getShort()) - MINIMUM_REQUEST_LENGTH;
+        int requestCode = ArithHelpers.extendAsUnsigned(xInputStream.getShort());
+        if (rqMagic != MAGIC || requestCode < 0 || requestCode >= this.requestHandlers.size()) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
         if (xInputStream.getAvailableBytesCount() < extendAsUnsigned) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        return this.requestHandlers.get(RequestCodes.values()[extendAsUnsigned2]).handleRequest(translatorConnection, xInputStream, xOutputStream);
+        return this.requestHandlers.get(RequestCodes.values()[requestCode]).handleRequest(translatorConnection, xInputStream, xOutputStream);
     }
 }

@@ -16,8 +16,7 @@ public abstract class EnvironmentComponent {
         this.environment = aXSEnvironment;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    public final AXSEnvironment getEnvironment() {
+    protected final AXSEnvironment getEnvironment() {
         return this.environment;
     }
 }
