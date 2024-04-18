@@ -13,7 +13,7 @@ import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.RR;
 
 /**
- * 将一个drawable绘制到右上角
+ * 自己大小无限制，但对子drawable的大小和gravity进行限制
  * <br/> 使用方法 {@code view.getOverlay().add(new DrawableAlign(view));}
  */
 public class DrawableAlign extends Drawable {

@@ -28,7 +28,7 @@ public class Prop1Trigger extends Prop<TouchAreaModel>{
             if(!(mHost.getModel() instanceof OneButton))
                 return;
 
-            ((OneButton) mHost.getModel()).isTrigger=isChecked;
+            ((OneButton) mHost.getModel()).setTrigger(isChecked);
             onWidgetListener();
         });
         return checkTrigger;
@@ -43,6 +43,6 @@ public class Prop1Trigger extends Prop<TouchAreaModel>{
     public void updateUIFromModel(TouchAreaModel model) {
         if(!(mHost.getModel() instanceof OneButton))
             return;
-        checkTrigger.setChecked(((OneButton)model).isTrigger);
+        checkTrigger.setChecked(((OneButton)model).isTrigger());
     }
 }

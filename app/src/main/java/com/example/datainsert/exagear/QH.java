@@ -781,6 +781,7 @@ public class QH {
          */
         public TV button() {
             solidColor();
+            textGravity(Gravity.CENTER);
             GradientDrawable contentDrawable = new GradientDrawable();
             contentDrawable.setColor(0);
             GradientDrawable maskDrawable = new GradientDrawable();

@@ -10,33 +10,33 @@ import android.widget.RadioGroup;
 
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.Const;
-import com.example.datainsert.exagear.controlsV2.model.OneButton;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
+import com.example.datainsert.exagear.controlsV2.model.OneButton;
+import com.example.datainsert.exagear.controlsV2.model.OneColumn;
 
-public class Prop1Shape extends Prop<TouchAreaModel> {
-    RadioGroup groupShape;
-    public Prop1Shape(Host<TouchAreaModel> host, Context c) {
+public class Prop5Vertical extends Prop<TouchAreaModel> {
+    RadioGroup group;
+    public Prop5Vertical(Host<TouchAreaModel> host, Context c) {
         super(host, c);
     }
 
     @Override
     public String getTitle() {
-        return RR.getS(RR.global_shape);
+        return RR.getS(RR.ctr2_prop_vertical);
     }
 
     @Override
     protected View createMainEditView(Context c) {
-        //形状
         HorizontalScrollView scrollGroupShape = buildOptionsGroup(c,
-                RR.getSArr(RR.ctr2_prop_shape_names) , //矩形 圆形
-                new int[]{Const.BtnShape.RECT, Const.BtnShape.OVAL,},
+                RR.getSArr(RR.ctr2_prop_vertical_names) , //横向，竖向
+                new int[]{0, 1},
                 (group, btn, intValue) -> {
-                    if (mHost.getModel() instanceof OneButton)
-                        ((OneButton) mHost.getModel()).setShape(intValue);
+                    if (mHost.getModel() instanceof OneColumn)
+                        ((OneColumn) mHost.getModel()).setVertical(intValue != 0);
 
                     onWidgetListener();
                 });
-        groupShape = (RadioGroup) scrollGroupShape.getChildAt(0);
+        group = (RadioGroup) scrollGroupShape.getChildAt(0);
         return scrollGroupShape;
     }
 
@@ -47,7 +47,9 @@ public class Prop1Shape extends Prop<TouchAreaModel> {
 
     @Override
     public void updateUIFromModel(TouchAreaModel model) {
-        if(model instanceof OneButton)
-            ((RadioButton) groupShape.getChildAt(((OneButton)model).getShape())).setChecked(true);
+        if(model instanceof OneColumn){
+            int idx = ((OneColumn) model).isVertical() ? 1 : 0;
+            ((RadioButton) group.getChildAt(idx)).setChecked(true);
+        }
     }
 }

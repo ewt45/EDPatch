@@ -1,10 +1,7 @@
 package com.example.datainsert.exagear.controlsV2;
 
-import static com.example.datainsert.exagear.controlsV2.Const.BtnType.DPAD;
-import static com.example.datainsert.exagear.controlsV2.Const.BtnType.NORMAL;
-import static com.example.datainsert.exagear.controlsV2.Const.BtnType.STICK;
-
 import android.content.Context;
+import android.graphics.Point;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -38,10 +35,11 @@ public class Const {
 //     * <br/> 找不到index的时候会返回 负数，不一定是-1？
 //     */
 //    public static final SparseArray<Class<? extends TouchAreaModel>> modelTypeArray = new SparseArray<>();
+    @Deprecated
     public static float fingerStandingMaxMoveInches = 0.03f;
     public static int fingerTapMaxMs = 300;
-    /**经过测试，12f（安卓像素）比较合适*/
-    public static float fingerTapMaxMovePixels = 12f;
+    /**经过测试，18f（安卓像素）比较合适*/
+    public static float fingerTapMaxMovePixels = 18f;
     /** 手指移动多远距离，鼠标滚动应该滚动一次. 好像60 滚动刚好和手指移动同步 */
     public static float fingerMoveDistToOneScrollUnit = 60f;
     /** 摇杆移动鼠标: 将横向和竖向分为多少个片段（一次最大发送一个片段的距离） */
@@ -52,6 +50,14 @@ public class Const {
     public static final int stickMouse_interval = (int) (1000 * stickMouse_howMuchTimeToMoveAcross / stickMouse_howManyFragment);
     /** 摇杆移动鼠标: 一个片段移动多远距离 */
     public static float[] stickMouse_distXYPerMove;
+    /** toucharea 圆角矩形的圆角大小 */
+    public static final int TOUCH_AREA_ROUND_CORNER_RADIUS = 10;
+    /** touchArea 边框描边大小 */
+    public static final int TOUCH_AREA_STROKE_WIDTH = 4;
+    /** touchArea 绘制文字的最小大小（高度） 12sp对应的px值 */
+    public static int TOUCH_AREA_MIN_TEXT_SIZE;
+    /** touchArea 绘制文字的最大大小（高度） 20sp对应的px值 （32也行不过还是22吧） */
+    public static int TOUCH_AREA_MAX_TEXT_SIZE;
     public static Edit1KeyView editKeyView = null;
     /** 用于计算 {@link #maxPointerDeltaDistInOneEvent} 应为几分之一*/
     public final static int maxDivisor = 20;
@@ -76,8 +82,10 @@ public class Const {
     public static final String fragmentTag = "ControlsFragment"; // 添加fragment时应该用这个tag，后续通过Const.get获取fragment时会用这个tag去寻找
     /** 启动任务管理器选项，执行初始脚本的环境变量名（将命令中中该字符串替换为脚本位置） */
     public static final String OPTION_TASKMGR_START_SH_ENV = "$ANOTHER_SH";
-
     public static boolean detailDebug = false; //用于调试的便捷开关
+    /** {@link TestHelper#getWindowDisplaySize(Context)} 的值，init时赋值一次。*/
+    public static Point windowDisplaySize = null;
+
     //TODO 如果要在没有全部完成之前发布的话，在“其他”页面添加说明这个是alpha版，不推荐使用，可能含有bug，升级到正式版时可能有冲突需要清除数据重装。
     /**
      * 有些数据需要context才能获取。此函数必须在访问Const成员变量前调用一次。
@@ -96,6 +104,10 @@ public class Const {
         int[] xWH = holder.getXScreenPixels();
         maxPointerDeltaDistInOneEvent =  1.0f * Math.min(xWH[0], xWH[1]) / Const.maxDivisor;
         stickMouse_distXYPerMove = new float[]{1.0f * xWH[0] / stickMouse_howManyFragment, 1.0f * xWH[1] / stickMouse_howManyFragment};
+        TOUCH_AREA_MIN_TEXT_SIZE = QH.sp2px(c, 12);
+        TOUCH_AREA_MAX_TEXT_SIZE = QH.sp2px(c, 20);
+        windowDisplaySize = TestHelper.getWindowDisplaySize(c);
+
 
         Files.rootfsDir = ((ExagearImageAware) Globals.getApplicationState()).getExagearImage().getPath();
         Files.workDir = new File(QH.Files.edPatchDir() + "/customcontrols2");
@@ -231,13 +243,6 @@ public class Const {
     }
 
 
-    @IntDef({NORMAL, STICK, DPAD})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface BtnType {
-        int NORMAL = 0;
-        int STICK = 1;
-        int DPAD = 2;
-    }
 
     @IntDef({BtnShape.RECT, BtnShape.OVAL})
     @Retention(RetentionPolicy.SOURCE)

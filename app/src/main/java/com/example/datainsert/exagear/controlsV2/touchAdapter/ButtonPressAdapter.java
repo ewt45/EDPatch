@@ -7,7 +7,7 @@ import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import java.util.List;
 
 public class ButtonPressAdapter implements TouchAdapter {
-    List<Integer> mKeys;
+    private final List<Integer> mKeys;
     boolean isTouched=false;
     public ButtonPressAdapter(List<Integer> keys){
         mKeys = keys;

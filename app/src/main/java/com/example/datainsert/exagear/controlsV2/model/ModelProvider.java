@@ -29,6 +29,7 @@ import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateFinge
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateNeutral;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateWaitForNeutral;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaButton;
+import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaColumn;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaDpad;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaGesture;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaStick;
@@ -54,17 +55,22 @@ public class ModelProvider {
             TouchAreaModel.TYPE_BUTTON,
             TouchAreaModel.TYPE_STICK,
             TouchAreaModel.TYPE_DPAD,
-            TouchAreaModel.TYPE_GESTURE,};
+            TouchAreaModel.TYPE_GESTURE,
+            TouchAreaModel.TYPE_COLUMN,
+    };
     public static final Class<? extends TouchAreaModel>[] modelClasses = new Class[]{
             OneButton.class,
             OneStick.class,
             OneDpad.class,
-            OneGestureArea.class};
+            OneGestureArea.class,
+            OneColumn.class
+    };
     public static final Class<? extends TouchArea<?>>[] areaClasses = new Class[]{
             TouchAreaButton.class,
             TouchAreaStick.class,
             TouchAreaDpad.class,
-            TouchAreaGesture.class
+            TouchAreaGesture.class,
+            TouchAreaColumn.class
     };
 
     public static  final int[] stateTypeInts = new int[]{

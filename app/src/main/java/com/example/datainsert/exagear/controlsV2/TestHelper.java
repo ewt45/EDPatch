@@ -15,7 +15,6 @@ import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
@@ -27,9 +26,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -51,7 +48,6 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
-import com.example.datainsert.exagear.controlsV2.widget.DrawableAlign;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -60,7 +56,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TestHelper {
@@ -484,8 +479,14 @@ public class TestHelper {
         return resultList;
     }
 
-    public static float adjustTextPaintCenter(float v, Paint paint) {
-        return v - (paint.ascent() + paint.descent()) / 2f;
+    /**
+     * 调整canvas使用某paint绘制文字时，应向canvas传入的y（baseline），保证绘制后文字距离上下边距相等。
+     * @param absCenterY 原始的y中心，直接使用此中心作为baseline会导致文字并非垂直居中
+     * @param paint 用于绘制文字的paint
+     * @return 调整后的y值（baseline），将此值传入canvas中
+     */
+    public static float adjustTextPaintCenterY(float absCenterY, Paint paint) {
+        return absCenterY - (paint.ascent() + paint.descent()) / 2f;
     }
 
     public static int min(int... values) {

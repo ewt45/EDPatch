@@ -275,12 +275,14 @@ public class RR {
     public static int ctr2_other_syncFalloutTip = 266;
     public static int ctr2_editExitConfirm = 267;
     public static int ctr2_overallTip = 268;
-    public static int ctr2_entryInFab = 269;
     public static int ctr2_other_isProfPerCont = 270;
     public static int ctr2_other_isProfPerContTip = 271;
     public static int ctr2_option_taskmgr = 272;
     public static int ctr2_other_taskmgrAlt = 273;
     public static int ctr2_profile_bundleProfNotAllow = 274;
+    public static int ctr2_prop_lengthLimit = 275;
+    public static int ctr2_prop_vertical = 276;
+    public static int ctr2_prop_vertical_names = 277;
 
 
 
@@ -499,7 +501,7 @@ public class RR {
         zhArray.put(global_shape,"形状");
         zhArray.put(ctr2_prop_direction_title,"方向");
         zhArray.put(ctr2_prop_colorStyle_names,"描边$填充");
-        zhArray.put(ctr2_prop_type_names,"按钮$摇杆$十字键");
+        zhArray.put(ctr2_prop_type_names,"按钮$摇杆$十字键$按钮组");
         zhArray.put(ctr2_prop_shape_names,"矩形$圆形");
         zhArray.put(ctr2_prop_direction_names,"4方向$8方向$鼠标移动");
         zhArray.put(ctr2_ges_state,"状态");
@@ -562,7 +564,6 @@ public class RR {
         zhArray.put(ctr2_overallTip,"1. 在容器(环境)设置中将操作模式调为“默认(default)”即可启用自定义操作模式。" +
                 "\n2. 启动容器后按手机返回键/返回手势显示通用菜单，可从此处进入编辑模式，添加屏幕按键，自定义手势逻辑，切换配置等。" +
                 "\n3. 若此功能不满足您的需求，可以尝试使用更为完善的Input Bridge (DotNetBurst开发)。");
-        zhArray.put(ctr2_entryInFab,"进入编辑模式");
         zhArray.put(ctr2_other_isProfPerCont,"每个容器使用不同配置");
         zhArray.put(ctr2_other_isProfPerContTip, "当此选项关闭时，当切换配置时，进入任意容器都会默认使用该配置。\n若开启此选项，则可以为每个容器指定一个不同的配置。");
         zhArray.put(ctr2_option_taskmgr, "任务管理器");
@@ -571,6 +572,9 @@ public class RR {
                 OPTION_TASKMGR_START_SH_ENV+"\neval \"wine explorer /desktop=shell taskmgr\"\n在当前wine虚拟桌面内打开任务管理器。" +
                 "\n\n若此处文本不为空，则点击选项时执行此处填入的命令。");
         zhArray.put(ctr2_profile_bundleProfNotAllow, "该配置为内置配置，无法进行此操作。");
+        zhArray.put(ctr2_prop_lengthLimit, "长度限制");
+        zhArray.put(ctr2_prop_vertical, "排列方向");
+        zhArray.put(ctr2_prop_vertical_names, "横向$竖向");
 
 
 
@@ -797,7 +801,7 @@ public class RR {
         enArray.put(global_shape,"Shape");
         enArray.put(ctr2_prop_direction_title,"Direction");
         enArray.put(ctr2_prop_colorStyle_names,"stroke$fill");
-        enArray.put(ctr2_prop_type_names,"Button$Stick$D-pad");
+        enArray.put(ctr2_prop_type_names,"Button$Stick$D-pad$Btn Group");
         enArray.put(ctr2_prop_shape_names,"Rectangle$Circle");
         enArray.put(ctr2_prop_direction_names,"4 directions$8 directions$mouse move");
         enArray.put(ctr2_ges_state,"State");
@@ -863,7 +867,6 @@ public class RR {
         enArray.put(ctr2_overallTip,"1. To enable this control, set Control Mode to \"default\" in container properties." +
                 "\n2. After launching the container, press back key/back gesture to see the overall menu. Enter the edit mode from the menu to customize buttons, gestures, profiles, etc." +
                 "\n3. If this control doesn't meet your needs, you can try Input Bridge (by DotNetBurst) which is more powerful.");
-        enArray.put(ctr2_entryInFab,"Enter edit mode");
         enArray.put(ctr2_other_isProfPerCont,"Use separate profiles per container");
         enArray.put(ctr2_other_isProfPerContTip, "If this option is off, when switching profiles, any container will use the same profile as default." +
                 "\nIf this option is turned on, a different profile can be specified for each container.");
@@ -873,6 +876,9 @@ public class RR {
                 OPTION_TASKMGR_START_SH_ENV+"\neval \"wine explorer /desktop=shell taskmgr\"\nto open taskmgr in the current wine virtual desktop." +
                 "\n\nIf the text here is not empty, it will run the text instead.");
         enArray.put(ctr2_profile_bundleProfNotAllow, "This is a bundled profile, operation not permitted.");
+        enArray.put(ctr2_prop_lengthLimit, "Length limit");
+        enArray.put(ctr2_prop_vertical, "Orientation");
+        enArray.put(ctr2_prop_vertical_names, "horizontal$vertical");
 
 
         /*
