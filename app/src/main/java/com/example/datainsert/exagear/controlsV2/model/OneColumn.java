@@ -16,8 +16,8 @@ import java.util.List;
 public class OneColumn extends TouchAreaModel {
     /** 名称列表，每个元素与keycodes列表中的元素是一一对应的 */
     private final List<String> nameList = new ArrayList<>();
-    /** 允许的最大长度，-1为无限制 */
-    private int lengthLimit = -1; //TODO 必须要有个限制，至少不能超过屏幕高度/宽度
+    /** 允许的最大长度，小于等于0为无限制 */
+    private int lengthLimit = 0; //TODO 必须要有个限制，至少不能超过屏幕高度/宽度
     /** 横向还是竖向排列 */
     private boolean isVertical = true;
 
