@@ -10,6 +10,8 @@ import com.eltechs.axs.activities.menus.ShowKeyboard;
 import com.eltechs.axs.activities.menus.ShowUsage;
 import com.eltechs.axs.activities.menus.ToggleHorizontalStretch;
 import com.eltechs.axs.configuration.TouchScreenControlsInputConfiguration;
+import com.eltechs.axs.widgets.actions.AbstractAction;
+import com.eltechs.axs.widgets.actions.Action;
 import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWidget;
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class BasicRolePlayingGamesUI implements XServerDisplayActivityInterfaceO
         this.widget = new TouchScreenControlsWidget(xServerDisplayActivity, viewOfXServer, this.controlsFactory, TouchScreenControlsInputConfiguration.DEFAULT);
         this.widget.setZOrderMediaOverlay(true);
         viewOfXServer.setHorizontalStretchEnabled(new CommonApplicationConfigurationAccessor().isHorizontalStretchEnabled());
-        ArrayList arrayList = new ArrayList();
+        ArrayList<AbstractAction> arrayList = new ArrayList<>();
         arrayList.add(new ShowKeyboard());
         arrayList.add(new ToggleHorizontalStretch());
         arrayList.add(new ShowUsage());

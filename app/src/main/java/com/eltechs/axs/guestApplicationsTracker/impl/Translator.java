@@ -16,9 +16,9 @@ public class Translator {
     private final GuestApplicationsCollection owner;
     private final int pid;
 
-    public Translator(GuestApplicationsCollection guestApplicationsCollection, int i) {
-        this.owner = guestApplicationsCollection;
-        this.pid = i;
+    public Translator(GuestApplicationsCollection owner, int pid) {
+        this.owner = owner;
+        this.pid = pid;
         scheduleDestructionIfNoConnectionIsMade();
     }
 
@@ -32,21 +32,16 @@ public class Translator {
         translatorConnection.associate(this);
     }
 
-    public void connectionLost(TranslatorConnection translatorConnection) {
-        Assert.state(translatorConnection != null);
-        if (this.connection == translatorConnection) {
+    public void connectionLost(TranslatorConnection connection) {
+        Assert.state(connection != null);
+        if (this.connection == connection) {
             this.connection = null;
             scheduleDestructionIfNoConnectionIsMade();
         }
     }
 
     private void scheduleDestructionIfNoConnectionIsMade() {
-        this.connectionTimeoutTracker.schedule(TIME_TO_CONNECT, new Runnable() { // from class: com.eltechs.axs.guestApplicationsTracker.impl.Translator.1
-            @Override // java.lang.Runnable
-            public void run() {
-                Translator.this.owner.killTranslator(Translator.this);
-            }
-        });
+        this.connectionTimeoutTracker.schedule(TIME_TO_CONNECT, () -> owner.killTranslator(Translator.this));
     }
 
     public void forkRequested() {

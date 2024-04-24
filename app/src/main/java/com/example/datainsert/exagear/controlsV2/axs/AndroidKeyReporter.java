@@ -3,11 +3,13 @@ package com.example.datainsert.exagear.controlsV2.axs;
 import static android.view.KeyEvent.ACTION_DOWN;
 import static android.view.KeyEvent.ACTION_UP;
 
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.example.datainsert.exagear.controlsV2.Const;
 
 public class AndroidKeyReporter {
+    private static final String TAG = AndroidKeyReporter.class.getSimpleName();
     /** 用于输入unicode文字时，临时充数的keycode */
     public static final XKeyButton.Info[] avaiKeyCode = {XKeyButton.key_a, XKeyButton.key_b, XKeyButton.key_c, XKeyButton.key_d, XKeyButton.key_e, XKeyButton.key_f, XKeyButton.key_g, XKeyButton.key_h, XKeyButton.key_i, XKeyButton.key_j, XKeyButton.key_k, XKeyButton.key_l, XKeyButton.key_m, XKeyButton.key_n, XKeyButton.key_o, XKeyButton.key_p, XKeyButton.key_q, XKeyButton.key_r, XKeyButton.key_s, XKeyButton.key_t, XKeyButton.key_u, XKeyButton.key_v, XKeyButton.key_w, XKeyButton.key_x, XKeyButton.key_y, XKeyButton.key_z};
     /** 用于输入unicode文字时，记录本次该用哪个充数的keycode，然后++ */
@@ -26,12 +28,15 @@ public class AndroidKeyReporter {
                 return false;
 //            Keyboard.XKey convertUnicodeToXKey = convertUnicodeToXKey(keyEvent.getUnicodeChar());//不处理unicode会发生什么？
             //unicodeChar可以认为是keySym吗？测试大小写A，俄语字母，+号等（貌似可以）
-            int finalUnicodeChar = unicodeChar ==0x0a ? 0x0d : unicodeChar;//回车 应该是return 0xff0d .但是从keyevent获取到的unicode是0x0a linefeed，手动改一下
+
+            //回车 应该是return 0xff0d .但是从keyevent获取到的unicode是0x0a linefeed，手动改一下 (必须是ff0d, 直接0d的话某些程序(run, cmd)不识别）
+            int finalUnicodeChar = unicodeChar ==0x0a ? 0xff0d : unicodeChar;
             if(action == ACTION_DOWN)
                 Const.getXServerHolder().injectKeyPress(keyInfo.xKeyCode,finalUnicodeChar);
             else if(action == ACTION_UP)
                 Const.getXServerHolder().injectKeyRelease(keyInfo.xKeyCode,finalUnicodeChar);
 
+            Log.d(TAG, "handleAKeyEvent: 0down 1up="+action+", xkeycode(未+8)="+keyInfo.xKeyCode+", keysym="+finalUnicodeChar);
             return true;
         }
         //输入文字（多个字符）
@@ -51,14 +56,8 @@ public class AndroidKeyReporter {
                 Const.getXServerHolder().injectKeyRelease(avaiKeyCode[currIndex].xKeyCode,keySym);
                 currIndex = (currIndex+1)%avaiKeyCode.length;//数组下标+1，为下一次设置另一个keycode做准备
                 handled = true;
-//                Keyboard.XKey xKey = convertUnicodeToXKey2(characters.codePointAt(characters.offsetByCodePoints(0, i)));
-//
-//                //如果初始化时设置了字符对应的xKey（没设置的默认就是0）
-//                if (xKey != null && xKey.keycode != KeyCodesX.KEY_NONE) {
-//                    this.reporter.reportKeyWithSym(xKey.keycode, xKey.keysym);
-//                    handled = true;
-//                }
             }
+            Log.d(TAG, "handleAKeyEvent: 2=multiple, string="+characters);
             return handled;
         }
         return false;

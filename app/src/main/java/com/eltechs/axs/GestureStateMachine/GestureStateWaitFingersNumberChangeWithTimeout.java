@@ -10,16 +10,11 @@ import java.util.List;
 public class GestureStateWaitFingersNumberChangeWithTimeout extends AbstractGestureFSMState implements TouchEventAdapter {
     private final int timeoutMs;
     private OneShotTimer timer;
-    public static FSMEvent FINGER_TOUCHED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateWaitFingersNumberChangeWithTimeout.1
-    };
-    public static FSMEvent FINGER_RELEASED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateWaitFingersNumberChangeWithTimeout.2
-    };
-    public static FSMEvent FINGER_MOVED_IN = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateWaitFingersNumberChangeWithTimeout.3
-    };
-    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateWaitFingersNumberChangeWithTimeout.4
-    };
-    public static FSMEvent TIMED_OUT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateWaitFingersNumberChangeWithTimeout.5
-    };
+    public static FSMEvent FINGER_TOUCHED = new FSMEvent();
+    public static FSMEvent FINGER_RELEASED = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_IN = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent();
+    public static FSMEvent TIMED_OUT = new FSMEvent();
 
     @Override // com.eltechs.axs.TouchEventAdapter
     public void notifyMoved(Finger finger, List<Finger> list) {
@@ -50,8 +45,7 @@ public class GestureStateWaitFingersNumberChangeWithTimeout extends AbstractGest
         this.timer.cancel();
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void notifyTimeout() {
+    private void notifyTimeout() {
         sendEvent(TIMED_OUT);
     }
 

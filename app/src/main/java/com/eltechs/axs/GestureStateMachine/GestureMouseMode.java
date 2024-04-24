@@ -5,7 +5,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureMouseMode {
-    private final List<MouseModeChangeListener> listeners = new ArrayList();
+    private final List<MouseModeChangeListener> listeners = new ArrayList<>();
     private MouseModeState state;
 
     /* loaded from: classes.dex */

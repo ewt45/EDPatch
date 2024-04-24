@@ -8,10 +8,8 @@ import java.io.IOException;
 
 /* loaded from: classes.dex */
 public class FSMStateCopyFileIfExists extends AbstractFSMState {
-    public static final FSMEvent COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.finiteStateMachine.generalStates.FSMStateCopyFileIfExists.1
-    };
-    public static final FSMEvent FAILED = new FSMEvent() { // from class: com.eltechs.axs.finiteStateMachine.generalStates.FSMStateCopyFileIfExists.2
-    };
+    public static final FSMEvent COMPLETED = new FSMEvent();
+    public static final FSMEvent FAILED = new FSMEvent();
     private final File from;
     private final File to;
 
@@ -19,9 +17,9 @@ public class FSMStateCopyFileIfExists extends AbstractFSMState {
     public void notifyBecomeInactive() {
     }
 
-    public FSMStateCopyFileIfExists(File file, File file2) {
-        this.from = file;
-        this.to = file2;
+    public FSMStateCopyFileIfExists(File from, File to) {
+        this.from = from;
+        this.to = to;
     }
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState

@@ -17,6 +17,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.datainsert.exagear.RR;
+import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
@@ -35,7 +36,7 @@ public class Prop0Size extends Prop<TouchAreaModel> {
 
     @Override
     protected View createMainEditView(Context c) {
-        seekSize = new RangeSeekbar(c, dp8 * 6, QH.px(c, 200)) {
+        seekSize = new RangeSeekbar(c, Const.minBtnAreaSize, QH.px(c, 200)) {
             @Override
             protected int rawToFinal(int rawValue) {
                 return rawValue * 2;

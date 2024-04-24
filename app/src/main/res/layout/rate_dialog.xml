@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1">
+
+    <TableRow>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_column="0"
+            android:layout_span="3"
+            android:singleLine="false"
+            android:text="@string/rate_me"
+            android:textSize="28dp" />
+    </TableRow>
+
+    <TableRow>
+
+        <Button
+            android:id="@+id/remind_me_later"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_marginTop="10dp"
+            android:onClick="onRateLaterClicked"
+            android:text="@string/rate_later"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/rate_now"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_column="2"
+            android:layout_marginTop="10dp"
+            android:onClick="onRateNowClicked"
+            android:singleLine="true"
+            android:text="@string/rate_now"
+            android:textSize="16dp" />
+    </TableRow>
+</TableLayout>

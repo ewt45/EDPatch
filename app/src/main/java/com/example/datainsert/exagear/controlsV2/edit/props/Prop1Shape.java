@@ -32,7 +32,7 @@ public class Prop1Shape extends Prop<TouchAreaModel> {
                 new int[]{Const.BtnShape.RECT, Const.BtnShape.OVAL,},
                 (group, btn, intValue) -> {
                     if (mHost.getModel() instanceof OneButton)
-                        ((OneButton) mHost.getModel()).shape = intValue;
+                        ((OneButton) mHost.getModel()).setShape(intValue);
 
                     onWidgetListener();
                 });
@@ -48,7 +48,6 @@ public class Prop1Shape extends Prop<TouchAreaModel> {
     @Override
     public void updateUIFromModel(TouchAreaModel model) {
         if(model instanceof OneButton)
-            ((RadioButton) groupShape.getChildAt(((OneButton)model).shape)).setChecked(true);
-
+            ((RadioButton) groupShape.getChildAt(((OneButton)model).getShape())).setChecked(true);
     }
 }

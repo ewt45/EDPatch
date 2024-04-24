@@ -227,14 +227,11 @@ public class MM6InterfaceOverlay implements XServerDisplayActivityInterfaceOverl
     private static ImageButton createMouseModeButton(Activity activity, final GestureMouseMode gestureMouseMode, int i, int i2) {
         final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, i, i2, R_original.drawable.mouse_right);
 
-        gestureMouseMode.addListener(new GestureMouseMode.MouseModeChangeListener() { // from class: com.eltechs.axs.gamesControls.MM6InterfaceOverlay.4
-            @Override // com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeChangeListener
-            public void mouseModeChanged(GestureMouseMode gestureMouseMode2, GestureMouseMode.MouseModeState mouseModeState) {
-                if (mouseModeState == GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT) {
-                    createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
-                } else {
-                    createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
-                }
+        gestureMouseMode.addListener((gestureMouseMode2, mouseModeState) -> {
+            if (mouseModeState == GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT) {
+                createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
+            } else {
+                createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
             }
         });
         return createRegularImageButton;

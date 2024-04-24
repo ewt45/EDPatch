@@ -29,22 +29,14 @@ public class GestureState1FingerMeasureSpeed extends AbstractGestureFSMState imp
     private final float tappingFingerMaxMove;
     private OneShotTimer timer;
     private long touchTime;
-    public static FSMEvent FINGER_STANDING = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.1
-    };
-    public static FSMEvent FINGER_TAPPED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.2
-    };
-    public static FSMEvent FINGER_WALKED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.3
-    };
-    public static FSMEvent FINGER_WALKED_AND_GONE = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.4
-    };
-    public static FSMEvent FINGER_FLASHED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.5
-    };
-    public static FSMEvent FINGER_TOUCHED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.6
-    };
-    public static FSMEvent FINGER_MOVED_IN = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.7
-    };
-    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerMeasureSpeed.8
-    };
+    public static FSMEvent FINGER_STANDING = new FSMEvent() ;
+    public static FSMEvent FINGER_TAPPED = new FSMEvent() ;
+    public static FSMEvent FINGER_WALKED = new FSMEvent();
+    public static FSMEvent FINGER_WALKED_AND_GONE = new FSMEvent();
+    public static FSMEvent FINGER_FLASHED = new FSMEvent();
+    public static FSMEvent FINGER_TOUCHED = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_IN = new FSMEvent();
+    public static FSMEvent FINGER_MOVED_OUT = new FSMEvent();
 
     public GestureState1FingerMeasureSpeed(GestureContext gestureContext, int measureTime, float standingFingerMaxMove, float aimingFingerMaxMove, float tappingFingerMaxMove, float f4) {
         super(gestureContext);
@@ -85,7 +77,6 @@ public class GestureState1FingerMeasureSpeed extends AbstractGestureFSMState imp
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
     private void notifyTimeout() {
         boolean z = getContext().getFingers().size() == 1;
         Assert.isTrue(z);

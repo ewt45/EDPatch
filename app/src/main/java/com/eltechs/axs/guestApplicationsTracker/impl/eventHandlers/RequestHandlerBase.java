@@ -9,7 +9,6 @@ public abstract class RequestHandlerBase implements RequestHandler<TranslatorCon
     protected static final int SIZE_OF_INT = 4;
     protected final GuestApplicationsCollection guestApplicationsCollection;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     protected RequestHandlerBase(GuestApplicationsCollection guestApplicationsCollection) {
         this.guestApplicationsCollection = guestApplicationsCollection;
     }

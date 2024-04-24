@@ -23,20 +23,20 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
     private final boolean mayTakeFromSdcard;
     private final String progressFileName;
 
-    public UnpackExagearImageObb(boolean z, String[] strArr, String str) {
-        this.mayTakeFromSdcard = z;
-        this.keepOldFiles = strArr;
-        this.progressFileName = str;
+    public UnpackExagearImageObb(boolean mayTakeFromSdcard, String[] keepOldFiles, String progressFileName) {
+        this.mayTakeFromSdcard = mayTakeFromSdcard;
+        this.keepOldFiles = keepOldFiles;
+        this.progressFileName = progressFileName;
     }
 
-    public UnpackExagearImageObb(boolean z, String[] strArr) {
-        this.mayTakeFromSdcard = z;
-        this.keepOldFiles = strArr;
+    public UnpackExagearImageObb(boolean mayTakeFromSdcard, String[] keepOldFiles) {
+        this.mayTakeFromSdcard = mayTakeFromSdcard;
+        this.keepOldFiles = keepOldFiles;
         this.progressFileName = null;
     }
 
-    public UnpackExagearImageObb(boolean z) {
-        this.mayTakeFromSdcard = z;
+    public UnpackExagearImageObb(boolean mayTakeFromSdcard) {
+        this.mayTakeFromSdcard = mayTakeFromSdcard;
         this.keepOldFiles = new String[0];
         this.progressFileName = null;
     }
@@ -52,11 +52,11 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
         ExagearImageAware exagearImageAware = (ExagearImageAware) getApplicationState();
         final Context appContext = getAppContext();
         final File file = this.progressFileName != null ? new File(this.progressFileName) : null;
+
         if (file != null) {
             try {
-                if (file.exists()) {
+                if (file.exists())
                     file.delete();
-                }
                 file.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -70,33 +70,40 @@ public class UnpackExagearImageObb<StateClass extends ExagearImageAware> extends
 
                 @Override // com.eltechs.axs.helpers.ZipInstallerObb.Callbacks
                 public void noObbFound() {
-                    UnpackExagearImageObb.this.sendError(appContext.getResources().getString(
+                    sendError(appContext.getResources().getString(
                             QH.rslvID(R.string.no_obb_file_found, 0x7f0d0071)));
                 }
 
                 @Override // com.eltechs.axs.helpers.ZipInstallerObb.Callbacks
                 public void unpackingCompleted(File file2) {
                     SelectObbFragment.delCopiedObb();
-                    UnpackExagearImageObb.this.sendDone();
+                    sendDone();
                 }
 
                 @Override // com.eltechs.axs.helpers.ZipInstallerObb.Callbacks
                 public void error(String str) {
-                    UnpackExagearImageObb.this.sendError(str);
+                    sendError(str);
                 }
 
                 @Override // com.eltechs.axs.helpers.ZipUnpacker.Callbacks
                 public void reportProgress(long j) {
-                    if (file != null) {
-                        try {
-                            AtomicFile atomicFile = new AtomicFile(file);
-                            FileOutputStream startWrite = atomicFile.startWrite();
-                            startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX + "解压中，请等待111...").getBytes());
-                            atomicFile.finishWrite(startWrite);
-                        } catch (IOException ignored) {
-                        }
+//                    if (file != null) {
+//                        try {
+//                            AtomicFile atomicFile = new AtomicFile(file);
+//                            FileOutputStream startWrite = atomicFile.startWrite();
+//                            startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX + "解压中，请等待111...").getBytes());
+//                            atomicFile.finishWrite(startWrite);
+//                        } catch (IOException ignored) {
+//                        }
+//                    }
+                    if(file == null) return;
+                    try {
+                        AtomicFile atomicFile = new AtomicFile(file);
+                        FileOutputStream startWrite = atomicFile.startWrite();
+                        startWrite.write((j + IOUtils.LINE_SEPARATOR_UNIX + getString(R.string.sa_unpacking_guest_image)).getBytes());
+                        atomicFile.finishWrite(startWrite);
+                    } catch (IOException ignored) {
                     }
-
                 }
             }, this.keepOldFiles).installImageFromObbIfNeededNew();
         } catch (IOException e) {

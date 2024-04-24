@@ -2,7 +2,8 @@ package com.example.datainsert.exagear.controlsV2.touchArea;
 
 import static com.example.datainsert.exagear.controlsV2.Const.BtnColorStyle.FILL;
 import static com.example.datainsert.exagear.controlsV2.Const.BtnColorStyle.STROKE;
-import static com.example.datainsert.exagear.controlsV2.Const.dp8;
+import static com.example.datainsert.exagear.controlsV2.Const.TOUCH_AREA_ROUND_CORNER_RADIUS;
+import static com.example.datainsert.exagear.controlsV2.Const.TOUCH_AREA_STROKE_WIDTH;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -11,12 +12,8 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.DynamicLayout;
 import android.text.TextPaint;
-import android.text.TextUtils;
-import android.util.Log;
 
-import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
@@ -53,8 +50,8 @@ public class TouchAreaButton extends TouchArea<OneButton> {
         if (mModel.isPressed())
             tmpStyle = tmpStyle == STROKE ? FILL : STROKE; //如果按下了，颜色反转
 
-        mDrawable.setCornerRadius(mModel.shape == Const.BtnShape.RECT ? 10 : 400);
-        mDrawable.setStroke(tmpStyle == STROKE ? 4 : 0, mModel.mainColor);
+        mDrawable.setCornerRadius(mModel.getShape() == Const.BtnShape.RECT ? TOUCH_AREA_ROUND_CORNER_RADIUS : 400);
+        mDrawable.setStroke(tmpStyle == STROKE ? TOUCH_AREA_STROKE_WIDTH : 0, mModel.mainColor);
         mDrawable.setColor(tmpStyle == STROKE ? 0x00000000 : mModel.mainColor);
         mDrawable.setBounds(mModel.getLeft(), mModel.getTop(), mModel.getLeft() + mModel.getWidth(), mModel.getTop() + mModel.getHeight());
 
@@ -62,12 +59,10 @@ public class TouchAreaButton extends TouchArea<OneButton> {
         if(!lastText.equals(mModel.getName()) || lastWH[0]!=mModel.getWidth() || lastWH[1]!=mModel.getHeight()){
             renderText = lastText = mModel.getName();
             lastWH = new int[]{mModel.getWidth(), mModel.getHeight()};
-//            float currTxtWidthIfDraw = mTextPaint.measureText(lastText);//以当前的文字大小，绘制全部文本需要多少宽度
-//            float firstAdjustTxtSize = mTextPaint.getTextSize() * mModel.getWidth() / currTxtWidthIfDraw;
-            float min = dp8*5/4f, max = mModel.getWidth()*2/3f;
-            float decidedAdjustSize = getTextSize(renderText);
-            decidedAdjustSize = Math.min(decidedAdjustSize,max);
-            decidedAdjustSize = Math.max(min,decidedAdjustSize);
+            //TODO 文字大小限制：应该去宽度和高度较小的那一方用来做为限制。 大小应该有个上限，比如1/3宽度，还有下限
+            setPaintTextSize(renderText, mTextPaint, mModel.getWidth() - TOUCH_AREA_STROKE_WIDTH);
+
+
 //            if (decidedAdjustSize < min && renderText.length()>1) { //过小时，首先考虑分两行
 //                if(renderText.contains(" "))
 //                    renderText = renderText.replaceFirst(" ","\n");
@@ -78,15 +73,7 @@ public class TouchAreaButton extends TouchArea<OneButton> {
 //                decidedAdjustSize = Math.min(getTextSize(parts[0]),getTextSize(parts[1]));
 //                decidedAdjustSize = Math.max(min,decidedAdjustSize);
 //            }
-
-            //TODO 文字大小限制：应该去宽度和高度较小的那一方用来做为限制。 大小应该有个上限，比如1/3宽度，还有下限
-            mTextPaint.setTextSize(decidedAdjustSize);
         }
-//        float tmpTextSize = getTextSize(mModel.getName());
-//        float min = dp8*5/4f, max = mModel.getWidth()*2/3f;
-//        tmpTextSize = Math.min(tmpTextSize,max);
-//        tmpTextSize = Math.max(min,tmpTextSize);
-//        mTextPaint.setTextSize(tmpTextSize);
 
         mTextPaint.setColor(tmpStyle == STROKE ? mModel.mainColor : TestHelper.getContrastColor(mModel.mainColor));
         mTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -96,9 +83,19 @@ public class TouchAreaButton extends TouchArea<OneButton> {
 //        Log.d(TAG, "updatePaint: 文字大小=" + finalTxtSize + ", w=" + mModel.getWidth());
     }
 
-    private float getTextSize(String str){
-        float currTxtWidthIfDraw = mTextPaint.measureText(str);//以当前的文字大小，绘制全部文本需要多少宽度
-        return  mTextPaint.getTextSize() * mModel.getWidth() / currTxtWidthIfDraw;
+    /**
+     * 计算该段文字的合适大小，限制在 {@link Const#TOUCH_AREA_MIN_TEXT_SIZE} 到 {@link Const#TOUCH_AREA_MAX_TEXT_SIZE} 之间
+     * 并设置到给定paint上
+     * @param str 文字
+     * @param paint 用于绘制文字的paint
+     * @param maxTotalWidth 整体文字最多可以多宽
+     */
+    static void setPaintTextSize(String str, Paint paint, int maxTotalWidth){
+        float size = paint.measureText(str);//以当前的文字大小，绘制全部文本需要多少宽度
+        size = paint.getTextSize() * maxTotalWidth / size;
+        size = Math.min(size,Const.TOUCH_AREA_MAX_TEXT_SIZE);
+        size = Math.max(Const.TOUCH_AREA_MIN_TEXT_SIZE,size);
+        paint.setTextSize(size);
     }
 
     @Override
@@ -115,11 +112,11 @@ public class TouchAreaButton extends TouchArea<OneButton> {
         float centerY = mModel.getTop() + mModel.getHeight() / 2f;
         canvas.save();
         //把文字超出框外的部分剪切掉。注意这个clip要放在save restore之内，因为会影响到整个画布，否则会导致其他部分无法显示
-        canvas.clipRect(mModel.getLeft(),mModel.getTop(),mModel.getLeft()+mModel.getWidth(),mModel.getTop()+mModel.getHeight());
-        canvas.scale(0.8f, 0.8f, centerX, centerY); //这个是把画出来的东西缩放，而不是把画布缩放
+        canvas.clipRect(mModel.getLeft()+TOUCH_AREA_STROKE_WIDTH ,mModel.getTop(),mModel.getLeft()+mModel.getWidth()-TOUCH_AREA_STROKE_WIDTH,mModel.getTop()+mModel.getHeight());
+//        canvas.scale(0.8f, 0.8f, centerX, centerY); //这个是把画出来的东西缩放，而不是把画布缩放
         canvas.drawText(renderText,
                 centerX,
-                centerY - (mTextPaint.ascent() + mTextPaint.descent()) / 2f,
+                TestHelper.adjustTextPaintCenterY(centerY, mTextPaint),
                 mTextPaint);
         canvas.restore();
 

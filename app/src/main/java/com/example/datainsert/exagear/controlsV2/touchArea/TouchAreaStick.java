@@ -15,12 +15,13 @@ import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.model.OneStick;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.ButtonStickPressAdapter;
+import com.example.datainsert.exagear.controlsV2.widget.DrawableNoOverlapStroke;
 
 /**
  * 设置描边宽度为外圆半径的十分之一
  */
 public class TouchAreaStick extends TouchArea<OneStick> {
-    protected GradientDrawable mRoundDraw = new GradientDrawable();
+    protected DrawableNoOverlapStroke mRoundDraw = new DrawableNoOverlapStroke();
 
 //    protected ButtonStickPressAdapter mStickAdapter;
 
@@ -33,7 +34,7 @@ public class TouchAreaStick extends TouchArea<OneStick> {
 
     private void updatePaint() {
         mRoundDraw.setCornerRadius(400);
-        mRoundDraw.setStroke((int) (mModel.getOuterRadius()/10), TestHelper.darkenColor(mModel.mainColor));//描边宽度根据大小而变化，为外圆半径的十分之一
+        mRoundDraw.setStroke((int) (mModel.getOuterRadius()/16), TestHelper.darkenColor(mModel.mainColor));//描边宽度根据大小而变化，为外圆半径的十分之一
         mRoundDraw.setColor(mModel.mainColor);
     }
 

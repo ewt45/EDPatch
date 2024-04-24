@@ -21,16 +21,16 @@ public class ReportSyscall implements RequestHandler<VFSTrackerConnection> {
 
     @Override // com.eltechs.axs.xconnectors.RequestHandler
     public ProcessingResult handleRequest(VFSTrackerConnection vFSTrackerConnection, XInputStream xInputStream, XOutputStream xOutputStream) throws IOException {
-        int i = xInputStream.getInt();
-        int i2 = xInputStream.getInt();
-        int i3 = xInputStream.getInt();
-        if (i < 0 || i > 350) {
+        int syscallNr = xInputStream.getInt();
+        int flags = xInputStream.getInt();
+        int fileIndex = xInputStream.getInt();
+        if (syscallNr < 0 || syscallNr > MAX_SYSCALL_NR) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
-        if (i3 < 0 || i3 >= 16) {
+        if (fileIndex < 0 || fileIndex >= MAX_TRACKED_FILES_COUNT) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
-        this.handler.handleSyscall(new SyscallReportData(i, i2, i3), xOutputStream);
+        this.handler.handleSyscall(new SyscallReportData(syscallNr, flags, fileIndex), xOutputStream);
         return ProcessingResult.PROCESSED;
     }
 }

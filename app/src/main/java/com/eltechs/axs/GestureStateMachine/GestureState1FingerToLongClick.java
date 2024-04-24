@@ -9,8 +9,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureState1FingerToLongClick extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureState1FingerToLongClick.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final MousePointAndClickAdapter clicker;
 
     @Override // com.eltechs.axs.TouchEventAdapter
@@ -25,19 +24,15 @@ public class GestureState1FingerToLongClick extends AbstractGestureFSMState impl
     public void notifyTouched(Finger finger, List<Finger> list) {
     }
 
-    public GestureState1FingerToLongClick(GestureContext gestureContext, MousePointAndClickAdapter mousePointAndClickAdapter) {
+    public GestureState1FingerToLongClick(GestureContext gestureContext, MousePointAndClickAdapter clicker) {
         super(gestureContext);
-        this.clicker = mousePointAndClickAdapter;
+        this.clicker = clicker;
     }
 
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
         getContext().getFingerEventsSource().addListener(this);
-        boolean z = true;
-        if (getContext().getFingers().size() != 1) {
-            z = false;
-        }
-        Assert.isTrue(z);
+        Assert.isTrue(getContext().getFingers().size() == 1);
         Finger finger = getContext().getFingers().get(0);
         this.clicker.click(finger.getX(), finger.getY());
     }

@@ -10,8 +10,8 @@ import java.io.IOException;
 public class ExagearImage {
     private final File path;
 
-    private ExagearImage(File file) {
-        this.path = file;
+    private ExagearImage(File path) {
+        this.path = path;
     }
 
     /**

@@ -14,57 +14,63 @@ public final class Rectangle {
         this.height = height;
     }
 
-    public boolean containsPoint(int i, int i2) {
-        return this.x <= i && this.y <= i2 && this.x + this.width > i && this.y + this.height > i2;
+    public boolean containsPoint(int x, int y) {
+        return this.x <= x && this.y <= y && this.x + this.width > x && this.y + this.height > y;
     }
 
     public boolean containsPoint(Point point) {
         return containsPoint(point.x, point.y);
     }
 
-    public boolean containsInnerPoint(int i, int i2) {
-        return i >= 0 && i2 >= 0 && i < this.width && i2 < this.height;
+    public boolean containsInnerPoint(int x, int y) {
+        return x >= 0 && y >= 0 && x < this.width && y < this.height;
     }
 
     public boolean containsInnerPoint(Point point) {
         return containsInnerPoint(point.x, point.y);
     }
 
-    public boolean containsRectangle(Rectangle rectangle) {
-        return containsPoint(rectangle.x, rectangle.y) && containsPoint((rectangle.x + rectangle.width) - 1, (rectangle.y + rectangle.height) - 1);
+    public boolean containsRectangle(Rectangle rect) {
+        return containsPoint(rect.x, rect.y)
+                && containsPoint((rect.x + rect.width) - 1, (rect.y + rect.height) - 1);
     }
 
-    public boolean containsInnerRectangle(Rectangle rectangle) {
-        return containsInnerPoint(rectangle.x, rectangle.y) && containsInnerPoint((rectangle.x + rectangle.width) - 1, (rectangle.y + rectangle.height) - 1);
+    public boolean containsInnerRectangle(Rectangle rect) {
+        return containsInnerPoint(rect.x, rect.y)
+                && containsInnerPoint((rect.x + rect.width) - 1, (rect.y + rect.height) - 1);
     }
 
-    public static Rectangle getIntersection(Rectangle rectangle, Rectangle rectangle2) {
-        if (rectangle.containsRectangle(rectangle2)) {
-            return rectangle2;
+    public static Rectangle getIntersection(Rectangle rect1, Rectangle rect2) {
+        if (rect1.containsRectangle(rect2)) {
+            return rect2;
         }
-        if (rectangle2.containsRectangle(rectangle)) {
-            return rectangle;
+        if (rect2.containsRectangle(rect1)) {
+            return rect1;
         }
-        int i = rectangle.x;
-        int i2 = rectangle.y;
-        int i3 = (rectangle.width + i) - 1;
-        int i4 = (rectangle.height + i2) - 1;
-        if (i >= rectangle2.x + rectangle2.width || i2 >= rectangle2.y + rectangle2.height || i3 < rectangle2.x || i4 < rectangle2.y) {
+        int interLeft = rect1.x;
+        int interTop = rect1.y;
+        int interRight = (rect1.width + interLeft) - 1;
+        int interBottom = (rect1.height + interTop) - 1;
+
+        //如果两者完全不相交
+        if (interLeft >= rect2.x + rect2.width || interTop >= rect2.y + rect2.height || interRight < rect2.x || interBottom < rect2.y) {
             return null;
         }
-        if (i < rectangle2.x) {
-            i = rectangle2.x;
+        if (interLeft < rect2.x) {
+            interLeft = rect2.x;
         }
-        if (i2 < rectangle2.y) {
-            i2 = rectangle2.y;
+        if (interTop < rect2.y) {
+            interTop = rect2.y;
         }
-        if (i3 >= rectangle2.width) {
-            i3 = rectangle2.width - 1;
+
+        //这是不是写错了？！应该2左+2Width吧 (哦看调用2左永远是0，那加不加都行。。。）
+        if (interRight >= rect2.width) {
+            interRight = rect2.width - 1;
         }
-        if (i4 >= rectangle2.height) {
-            i4 = rectangle2.height - 1;
+        if (interBottom >= rect2.height) {
+            interBottom = rect2.height - 1;
         }
-        return new Rectangle(i, i2, (i3 - i) + 1, (i4 - i2) + 1);
+        return new Rectangle(interLeft, interTop, (interRight - interLeft) + 1, (interBottom - interTop) + 1);
     }
 
     @Override

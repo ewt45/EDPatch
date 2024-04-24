@@ -14,47 +14,43 @@ public class GuestApplicationsCollection {
     private final GuestApplicationLifecycleListenersList listeners = new GuestApplicationLifecycleListenersList();
     private boolean guestApplicationsAreRunnable = true;
 
-    public synchronized void addListener(GuestApplicationsLifecycleListener guestApplicationsLifecycleListener) {
-        this.listeners.addListener(guestApplicationsLifecycleListener);
+    public synchronized void addListener(GuestApplicationsLifecycleListener listener) {
+        this.listeners.addListener(listener);
     }
 
-    public synchronized void removeListener(GuestApplicationsLifecycleListener guestApplicationsLifecycleListener) {
-        this.listeners.removeListener(guestApplicationsLifecycleListener);
+    public synchronized void removeListener(GuestApplicationsLifecycleListener listener) {
+        this.listeners.removeListener(listener);
     }
 
-    public synchronized Translator registerTranslator(int i) {
-        Translator translator;
-        translator = getTranslator(i);
+    public synchronized Translator registerTranslator(int pid) {
+        Translator translator = getTranslator(pid);
         if (translator == null) {
-            translator = new Translator(this, i);
+            translator = new Translator(this, pid);
             this.translators.add(translator);
             this.listeners.sendTranslatorStarted(translator);
+            Log.d(TAG, "registerTranslator: 这里translator被添加"+ translator);
         }
-        Log.d(TAG, "registerTranslator: 这里translator被添加"+ translator);
-
         return translator;
     }
 
-    public synchronized void translatorStarted(int i, TranslatorConnection translatorConnection) {
-        Translator registerTranslator = registerTranslator(i);
+    public synchronized void translatorStarted(int pid, TranslatorConnection translatorConnection) {
+        Translator registerTranslator = registerTranslator(pid);
         registerTranslator.connectionEstablished(translatorConnection);
         registerTranslator.sendEmptyPacket();
     }
 
     public synchronized void killTranslator(Translator translator) {
-        Log.d(TAG, "killTranslator: 这里translator被删除一个"+translator);
         ProcessHelpers.killProcess(translator.getPid());
         if (this.translators.remove(translator)) {
             this.listeners.sendTranslatorExited(translator);
+            Log.d(TAG, "killTranslator: 这里translator被删除一个"+translator);
         }
     }
 
-    private Translator getTranslator(int i) {
-        for (Translator translator : this.translators) {
-            if (translator.getPid() == i) {
+    private Translator getTranslator(int pid) {
+        for (Translator translator : this.translators)
+            if (translator.getPid() == pid)
                 return translator;
-            }
-        }
         return null;
     }
 
@@ -110,9 +106,9 @@ public class GuestApplicationsCollection {
         sleep(10);
     }
 
-    private void sleep(int i) {
+    private void sleep(int millis) {
         try {
-            Thread.sleep(i);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

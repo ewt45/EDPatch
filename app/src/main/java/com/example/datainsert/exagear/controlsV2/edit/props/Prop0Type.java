@@ -1,5 +1,9 @@
 package com.example.datainsert.exagear.controlsV2.edit.props;
 
+import static com.example.datainsert.exagear.controlsV2.TouchAreaModel.TYPE_BUTTON;
+import static com.example.datainsert.exagear.controlsV2.TouchAreaModel.TYPE_COLUMN;
+import static com.example.datainsert.exagear.controlsV2.TouchAreaModel.TYPE_DPAD;
+import static com.example.datainsert.exagear.controlsV2.TouchAreaModel.TYPE_STICK;
 import static com.example.datainsert.exagear.controlsV2.edit.Edit1KeyView.buildOptionsGroup;
 import static com.example.datainsert.exagear.controlsV2.edit.Edit1KeyView.getButtonTypeFromModel;
 
@@ -18,12 +22,12 @@ public class Prop0Type extends Prop<TouchAreaModel>{
     RadioGroup groupType;
     static String[] mTypeNames = RR.getSArr(RR.ctr2_prop_type_names); //按钮 摇杆 十字键
     //直接用mModel来表示当前选择的是哪一个类型就行了
-    static int[] mTypeInts = new int[]{Const.BtnType.NORMAL, Const.BtnType.STICK, Const.BtnType.DPAD};
+    static int[] mTypeInts = new int[]{TYPE_BUTTON, TYPE_STICK, TYPE_DPAD, TYPE_COLUMN};
     OnTypeChangeListener mHostListener;
     public Prop0Type(Host<TouchAreaModel> host, Context c, OnTypeChangeListener listener) {
         super(host, c);
         mHostListener = listener;
-//        this.mMainView = mainView;;
+//        this. mMainView = mainView;;
 //        groupType = (RadioGroup) mainView.getChildAt(0);
     }
 
@@ -69,16 +73,20 @@ public class Prop0Type extends Prop<TouchAreaModel>{
         for(int i=0; i<groupType.getChildCount(); i++){
             RadioButton btn = (RadioButton) groupType.getChildAt(i);
             if(btn.isChecked()){
-                checkedType = i;
+                checkedType = mTypeInts[i];
                 break;
             }
         }
 
         int modelType = getButtonTypeFromModel(model);
         if(checkedType!=modelType){
-            ((RadioButton) groupType.getChildAt(modelType)).setChecked(true);
-            Log.d("Prop0Type", "updateUIFromModel: 有变化");
-
+            for(int i=0; i<mTypeInts.length; i++){
+                if(modelType == mTypeInts[i]){
+                    ((RadioButton) groupType.getChildAt(i)).setChecked(true);
+                    Log.d("Prop0Type", "updateUIFromModel: 有变化");
+                    break;
+                }
+            }
         }
     }
     /**
@@ -88,6 +96,6 @@ public class Prop0Type extends Prop<TouchAreaModel>{
         /**
          * 处理新model生成和更新对应的toucharea显示，调用onModelChanged在prop里调用
          */
-        public void onTypeChanged(@Const.BtnType int newType);
+        public void onTypeChanged(@TouchAreaModel.ModelType int newType);
     }
 }

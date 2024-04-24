@@ -6,7 +6,7 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GuestApplicationLifecycleListenersList {
-    private final List<GuestApplicationsLifecycleListener> listeners = new ArrayList();
+    private final List<GuestApplicationsLifecycleListener> listeners = new ArrayList<>();
 
     public void addListener(GuestApplicationsLifecycleListener guestApplicationsLifecycleListener) {
         this.listeners.add(guestApplicationsLifecycleListener);

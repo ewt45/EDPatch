@@ -34,8 +34,8 @@ public class GestureState3FingersToZoom extends AbstractGestureFSMState implemen
         this.timer = new InfiniteTimer(timerPeriodMs) { // from class: com.eltechs.axs.GestureStateMachine.GestureState3FingersToZoom.5
             @Override // android.os.CountDownTimer
             public void onTick(long j) {
-                if (GestureState3FingersToZoom.this.getContext().getMachine().isActiveState(GestureState3FingersToZoom.this)) {
-                    GestureState3FingersToZoom.this.notifyTimer();
+                if (getContext().getMachine().isActiveState(GestureState3FingersToZoom.this)) {
+                    notifyTimer();
                 }
             }
         };

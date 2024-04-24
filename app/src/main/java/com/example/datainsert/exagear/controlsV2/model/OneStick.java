@@ -54,7 +54,7 @@ public class OneStick extends TouchAreaModel {
     }
 
     public void setSize(int newSize) {
-        this.size = Math.max(TestHelper.makeMultipleOf(dp8/2,newSize), minStickAreaSize);
+        this.size = Math.max(floorDivToSmallestUnit(newSize), minStickAreaSize);
         this.width = this.size;
         this.height  = this.size;
     }

@@ -4,9 +4,11 @@ import static com.example.datainsert.exagear.controlsV2.TestHelper.getTextButton
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.widget.KeyOnBoardView;
@@ -25,10 +27,10 @@ public class Prop1Key extends Prop<TouchAreaModel>{
     @Override
     protected View createMainEditView(Context c) {
         //按键码
-        tvKeycodes = getTextButton(c, "");
+        tvKeycodes = QH.TV.one(c).button().text("").text16Sp().textGravity(Gravity.START).to();
         tvKeycodes.setOnClickListener(v -> {
             TouchAreaModel model = mHost.getModel();
-            KeyOnBoardView keyOnBoardView = new KeyOnBoardView(c);
+            KeyOnBoardView keyOnBoardView = new KeyOnBoardView(v.getContext());
             keyOnBoardView.setInitSelectedKeys(model.getKeycodes());
             new AlertDialog.Builder(v.getContext())
                     .setView(keyOnBoardView)

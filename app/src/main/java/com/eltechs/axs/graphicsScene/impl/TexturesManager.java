@@ -3,7 +3,6 @@ package com.eltechs.axs.graphicsScene.impl;
 import android.graphics.Bitmap;
 import com.eltechs.axs.xserver.impl.drawables.gl.PersistentGLDrawable;
 
-/* loaded from: classes.dex */
 public interface TexturesManager {
     boolean allocateTextures(int i);
 
@@ -11,9 +10,9 @@ public interface TexturesManager {
 
     int getTextureId(int i);
 
-    void getTextureSize(int i, int[] iArr);
+    void getTextureSize(int i, int[] size);
 
-    boolean setTextureSize(int i, int i2, int i3);
+    boolean setTextureSize(int i, int width, int height);
 
     void updateTextureFromBitmap(int i, Bitmap bitmap);
 

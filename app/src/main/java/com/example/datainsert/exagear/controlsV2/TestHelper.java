@@ -19,6 +19,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
@@ -26,13 +27,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
@@ -47,7 +48,6 @@ import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
-import com.example.datainsert.exagear.controlsV2.widget.DrawableAlign;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
 
@@ -56,7 +56,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TestHelper {
@@ -480,8 +479,14 @@ public class TestHelper {
         return resultList;
     }
 
-    public static float adjustTextPaintCenter(float v, Paint paint) {
-        return v - (paint.ascent() + paint.descent()) / 2f;
+    /**
+     * 调整canvas使用某paint绘制文字时，应向canvas传入的y（baseline），保证绘制后文字距离上下边距相等。
+     * @param absCenterY 原始的y中心，直接使用此中心作为baseline会导致文字并非垂直居中
+     * @param paint 用于绘制文字的paint
+     * @return 调整后的y值（baseline），将此值传入canvas中
+     */
+    public static float adjustTextPaintCenterY(float absCenterY, Paint paint) {
+        return absCenterY - (paint.ascent() + paint.descent()) / 2f;
     }
 
     public static int min(int... values) {
@@ -509,6 +514,28 @@ public class TestHelper {
         return builder.toString();
     }
 
+    /**
+     * 获取当前窗口的宽高。小窗时也可以正确获取小窗的宽高
+     */
+    public static Point getWindowDisplaySize(Context c){
+        Point point = new Point();
+        ((WindowManager)c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(point);
+        return point;
+    }
+
+    /**
+     * 获取系统的displayMetrics，不受屏幕旋转，小窗等影响(不行，会减去导航栏等的大小，只好用getRealSize了）
+     */
+    public static Point getSystemDisplaySize(Context c){
+//        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+//        return new Point(metrics.widthPixels, metrics.heightPixels);
+        Point point = new Point();
+        ((WindowManager)c.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getRealSize(point);
+        if(point.x < point.y)
+            point.set(point.y, point.x);
+        Log.d(TAG, "getSystemDisplaySize: 获取屏幕宽高="+ point);
+        return point;
+    }
 
     public static interface ArrayFilter<T> {
         public boolean accept(T item);

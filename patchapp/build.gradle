@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.ewt45.patchapp'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.ewt45.patchapp"

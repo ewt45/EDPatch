@@ -3,12 +3,11 @@ package com.example.datainsert.exagear.controlsV2.widget;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 import static com.example.datainsert.exagear.controlsV2.axs.XKeyButton.*;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.drawable.ColorStateListDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
 import android.util.SparseArray;
@@ -19,13 +18,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.ToggleButton;
 
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.axs.XKeyButton;
-
-import org.apache.commons.lang3.concurrent.Computable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +32,10 @@ import java.util.List;
  */
 public class KeyOnBoardView extends NestedScrollView implements CompoundButton.OnCheckedChangeListener {
 
-    private final List<CompoundButton> mSelectKeys = new ArrayList<>();
+    private final List<KeycodeButton> mSelectKeys = new ArrayList<>();
     //x keycode作为索引，Button作为元素
     //不能用SparseArray.indexOfValue获取其对应的索引
-    private final SparseArray<CompoundButton> mKeyBtnArray = new SparseArray<>();
+    private final SparseArray<KeycodeButton> mKeyBtnArray = new SparseArray<>();
 
     private boolean mIsMaxOne = false;
 
@@ -104,20 +100,9 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
         linearLineRoot.setClipChildren(false);
         for(int i=0; i<keys.length; i++){
             Info info = keys[i];
-            CheckBox check = new CheckBox(c);
-            check.setWidth(widths[i]);
-            check.setHeight(dp8*6);
-//            check.setTextSize(TypedValue.COMPLEX_UNIT_SP, keys[i].name.length()>5?12:14);
-            check.setText(info.name);
+
+            KeycodeButton check = new KeycodeButton(c, widths[i], dp8*6, info, this);
             mKeyBtnArray.put(info.xKeyCode,check);
-            check.setTag(info.xKeyCode);
-            check.setButtonDrawable(null);
-            check.setBackground(createKeyToggleDrawable());
-            check.setTextColor(0xFFF3F3F3);
-            check.setTextAlignment(TEXT_ALIGNMENT_GRAVITY);//不知道为啥，exa的apk里这个设置完raw的是CENTER但get的始终是GRAVITY。只能能用setGravity设置了
-            check.setGravity(Gravity.CENTER);
-            check.setOnCheckedChangeListener(this);
-            check.setChecked(false);
 
             //竖向占两/三格
             if(info == key_keypad_plus || info == key_keypad_enter || info == pointer_left || info == pointer_right)
@@ -135,20 +120,6 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
         linearLineRoot.addView(new View(c),QH.LPLinear.one(-2,-2).right().to());
         return linearLineRoot;
     }
-
-    private static Drawable createKeyToggleDrawable(){
-        //https://blog.csdn.net/Sansecy/article/details/107810160
-        //纯色的话直接GradientDrawable设置ColorStateList就能做到了。用不上StateListDrawable。。。
-        GradientDrawable gradient = new GradientDrawable();
-        gradient.setShape(GradientDrawable.RECTANGLE);
-        gradient.setCornerRadius(dp8/2f);
-        gradient.setColor(new ColorStateList(
-                new int[][]{{android.R.attr.state_checked},StateSet.WILD_CARD},
-                new int[]{0xff858484,0xff3A3A3A}
-        ));
-        return gradient;
-    }
-
 
     /**
      * 设置初始时选择哪些按钮
@@ -189,22 +160,90 @@ public class KeyOnBoardView extends NestedScrollView implements CompoundButton.O
      */
     @Override
     public void onCheckedChanged(CompoundButton btn, boolean isChecked) {
-        if (isChecked && !mSelectKeys.contains(btn)) {
+        TestHelper.assertTrue(btn instanceof KeycodeButton, "btn类型必须为KeycodeButton");
+        KeycodeButton btn2 = (KeycodeButton) btn;
+
+        //TODO 将旧的选中列表的都清除overlay，处理后再给新的选中列表重新设置一遍，并且记得invalidate
+        for(KeycodeButton oldSelectBtn:mSelectKeys)
+            oldSelectBtn.clearOrder();
+
+        if (isChecked && !mSelectKeys.contains(btn2)) {
             if (mIsMaxOne){
                 for(CompoundButton oldSelectBtn:mSelectKeys)
                     oldSelectBtn.setChecked(false);
                 mSelectKeys.clear();
             }
-            mSelectKeys.add(btn);
+            mSelectKeys.add(btn2);
         } else if (!isChecked) {
             mSelectKeys.remove(btn);
         }
+
+        for (int i=0; i<mSelectKeys.size(); i++)
+            mSelectKeys.get(i).setOrder(i+1);
+
+        postInvalidate();
     }
 
-    private static class KeyButton extends CompoundButton{
+    /**
+     * checkbox, 将keycode存在tag中
+     */
+    @SuppressLint("AppCompatCustomView")
+    private static class KeycodeButton extends CheckBox{
+        private final DrawableNumber overlayDrawable;
 
-        public KeyButton(Context context) {
-            super(context);
+        public KeycodeButton(Context c, int width, int height, Info info, OnCheckedChangeListener listener) {
+            super(c);
+
+            setWidth(width);
+            setHeight(height);
+//            check.setTextSize(TypedValue.COMPLEX_UNIT_SP, keys[i].name.length()>5?12:14);
+            setText(info.name);
+            setTag(info.xKeyCode);
+            setButtonDrawable(null);
+            setBackground(createKeyToggleDrawable());
+            setTextColor(0xFFF3F3F3);
+            setTextAlignment(TEXT_ALIGNMENT_GRAVITY);//不知道为啥，exa的apk里这个设置完raw的是CENTER但get的始终是GRAVITY。只能能用setGravity设置了
+            setGravity(Gravity.CENTER);
+            setOnCheckedChangeListener(listener);
+            setChecked(false);
+
+            overlayDrawable = new DrawableNumber(c, DrawableNumber.GRAVITY_RIGHT_BOTTOM);
+            overlayDrawable.setMaxRadius(dp8);
+            overlayDrawable.setTint(0xffDAA520);
+            getOverlay().add(overlayDrawable);
+        }
+
+        private static Drawable createKeyToggleDrawable(){
+            //https://blog.csdn.net/Sansecy/article/details/107810160
+            //纯色的话直接GradientDrawable设置ColorStateList就能做到了。用不上StateListDrawable。。。
+            GradientDrawable gradient = new GradientDrawable();
+            gradient.setShape(GradientDrawable.RECTANGLE);
+            gradient.setCornerRadius(dp8/2f);
+            gradient.setColor(new ColorStateList(
+                    new int[][]{{android.R.attr.state_checked},StateSet.WILD_CARD},
+                    new int[]{0xff858484,0xff3A3A3A}
+            ));
+            return gradient;
+        }
+
+        @Override
+        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+            super.onSizeChanged(w, h, oldw, oldh);
+            overlayDrawable.setBounds(0,0,w,h);
+        }
+
+        /**
+         * 清除序号标识
+         */
+        public void clearOrder(){
+            overlayDrawable.setLevel(0);
+        }
+
+        /**
+         * 右下角设置当前序号标识。用于表示当前选中的按键的次序
+         */
+        public void setOrder(int order) {
+            overlayDrawable.setLevel(order);
         }
     }
 }

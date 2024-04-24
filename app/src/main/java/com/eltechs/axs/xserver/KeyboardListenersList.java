@@ -25,15 +25,12 @@ public class KeyboardListenersList {
 
     public void sendKeyPressed(byte b, int i, Mask<KeyButNames> mask) {
         for (KeyboardListener keyboardListener : this.listeners) {
-            Log.d(TAG, "sendKeyPressed: 给监听器发送按下按键事件"+ keyboardListener);
-
             keyboardListener.keyPressed(b, i, mask);
         }
     }
 
     public void sendKeyReleased(byte b, int i, Mask<KeyButNames> mask) {
         for (KeyboardListener keyboardListener : this.listeners) {
-            Log.d(TAG, "sendKeyPressed: 给监听器发送松开按键事件"+ keyboardListener);
             keyboardListener.keyReleased(b, i, mask);
         }
     }

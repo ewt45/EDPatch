@@ -8,7 +8,7 @@ import java.util.List;
  */
 @Deprecated
 public class GestureJoyStickMode {
-    private final List<JoyStickModeChangeListener> listeners = new ArrayList();
+    private final List<JoyStickModeChangeListener> listeners = new ArrayList<>();
     private JoyStickModeState state;
 
     /* loaded from: classes.dex */

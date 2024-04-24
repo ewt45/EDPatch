@@ -23,7 +23,6 @@ public class ExagearImageConfigurationHelpers {
      * 创建 /etc/passwd文件 （用于存储用户信息），向其中写入一行用户信息
      * @param username 用户名
      * @param home 家目录
-     * @throws IOException
      */
     public void createEtcPasswd(String username, String home) throws IOException {
         File file = new File(this.image.getPath(), ExagearImagePaths.ETC_PASSWD);
@@ -50,18 +49,25 @@ public class ExagearImageConfigurationHelpers {
         FileHelpers.createFakeSymlink(new File(this.image.getPath(), str).getPath(), str2, str3);
     }
 
-    public void createVpathsList(String... strArr) throws IOException {
+    /**
+     * 将这些路径一行一行写入本地文件中 （rootfs/.exagear/vpaths-list）
+     * <br/> 并在rootfs目录下创建这些文件或文件夹。
+     * <br/> 注意只是创建空文件（夹），并未创建符号链接。符号链接貌似是ubt.so读取vpath的文本之后再创建的
+     * @param vpaths 路径列表。将rootfs路径认为是根目录。
+     *               文件夹的话名字结尾带 /，文件结尾不带。
+     */
+    public void createVpathsList(String... vpaths) throws IOException {
         FileHelpers.createDirectory(this.image.getConfigurationDir());
         File vpathsList = this.image.getVpathsList();
         vpathsList.createNewFile();
         PrintWriter printWriter = new PrintWriter(vpathsList);
-        for (String str : strArr) {
-            if (str.endsWith("/")) {
-                printWriter.printf("%s\n", str);
-                FileHelpers.createDirectory(new File(this.image.getPath(), str));
+        for (String vpath : vpaths) {
+            if (vpath.endsWith("/")) {
+                printWriter.printf("%s\n", vpath);
+                FileHelpers.createDirectory(new File(this.image.getPath(), vpath));
             } else {
-                printWriter.printf("%s\n", str);
-                FileHelpers.touch(new File(this.image.getPath(), str).toString());
+                printWriter.printf("%s\n", vpath);
+                FileHelpers.touch(new File(this.image.getPath(), vpath).toString());
             }
         }
         printWriter.close();

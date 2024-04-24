@@ -20,62 +20,38 @@ public abstract class ZipUnpacker {
         Code decompiled incorrectly, please refer to instructions dump.
     */
     public static void unpackZip(File assets, File dstDir, final Callbacks callbacks) throws IOException {
-        IOException iOException;
-        ZipFile zipFile;
         Assert.isTrue(dstDir.isDirectory(), String.format("'%s' must be a directory.", dstDir.getAbsolutePath()));
-        long length = assets.length();
-        if (callbacks != null) {
-            UiThread.post(new Runnable() { // from class: com.eltechs.axs.helpers.ZipUnpacker.1
-                @Override // java.lang.Runnable
-                public void run() {
-                    callbacks.reportProgress(-1L);
-                }
-            });
-        }
-        zipFile = new ZipFile(assets);
-        try {
+        long totalSize = assets.length();
+        if (callbacks != null)
+            UiThread.post(() -> callbacks.reportProgress(-1L));
+
+        try (ZipFile zipFile = new ZipFile(assets)) {
             Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
-            long j = 0;
-            long j2 = 0;
+            long finishedSize = 0;
+            long lastProgress = 0;
             while (entries.hasMoreElements()) {
                 ZipArchiveEntry nextElement = entries.nextElement();
                 if (nextElement.isDirectory()) {
-                    File file3 = new File(dstDir, nextElement.getName());
-                    if (file3.exists()) {
-                        if (!file3.isDirectory()) {
-                            throw new IOException(String.format("Attempted to create directory over file with same name '%s'.", file3.getAbsolutePath()));
-                        }
-                    } else if (!file3.mkdir()) {
-                        throw new IOException(String.format("Failed to create the directory '%s'.", file3.getAbsolutePath()));
-                    }
+                    File dstFile = new File(dstDir, nextElement.getName());
+                    if (dstFile.exists()) {
+                        if (!dstFile.isDirectory())
+                            throw new IOException(String.format("Attempted to create directory over file with same name '%s'.", dstFile.getAbsolutePath()));
+                    } else if (!dstFile.mkdir())
+                        throw new IOException(String.format("Failed to create the directory '%s'.", dstFile.getAbsolutePath()));
                 } else if (nextElement.isUnixSymlink()) {
                     extractOneSymlink(zipFile, nextElement, new File(dstDir, nextElement.getName()));
-                    j += nextElement.getCompressedSize();
+                    finishedSize += nextElement.getCompressedSize();
                 } else {
                     extractOneFile(zipFile, nextElement, new File(dstDir, nextElement.getName()));
-                    j += nextElement.getCompressedSize();
+                    finishedSize += nextElement.getCompressedSize();
                 }
-                final long j3 = (100 * j) / length;
-                if (j3 >= 5 + j2) {
-                    if (callbacks != null) {
-                        UiThread.post(new Runnable() { // from class: com.eltechs.axs.helpers.ZipUnpacker.2
-                            @Override // java.lang.Runnable
-                            public void run() {
-                                callbacks.reportProgress(j3);
-                            }
-                        });
-                    }
-                    j2 = j3;
+                final long progress = (100 * finishedSize) / totalSize;
+                if (progress >= 5 + lastProgress) {
+                    if (callbacks != null)
+                        UiThread.post(() -> callbacks.reportProgress(progress));
+                    lastProgress = progress;
                 }
             }
-            zipFile.close();
-        } catch (IOException e2) {
-            iOException = e2;
-            try {
-                zipFile.close();
-            } catch (IOException ignored) {
-            }
-            throw iOException;
         }
     }
 
@@ -89,7 +65,7 @@ public abstract class ZipUnpacker {
              FileOutputStream fileOutputStream2 = new FileOutputStream(file);) {
             IOStreamHelpers.copy(inputStream, fileOutputStream2);
             fileOutputStream2.flush();
-            file.setExecutable((zipArchiveEntry.getUnixMode() & 73) != 0);
+            file.setExecutable((zipArchiveEntry.getUnixMode() & 0111) != 0);
         } catch (IOException e) {
             e.printStackTrace();
         }

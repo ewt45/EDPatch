@@ -13,9 +13,10 @@ import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.model.OneDpad;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.ButtonDpadPressAdapter;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.ButtonStickPressAdapter;
+import com.example.datainsert.exagear.controlsV2.widget.DrawableNoOverlapStroke;
 
 public class TouchAreaDpad extends TouchAreaStick {
-    GradientDrawable mRectDraw = new GradientDrawable();
+    DrawableNoOverlapStroke mRectDraw = new DrawableNoOverlapStroke();
     Paint mCenterDraw = new Paint();
     Paint mDirectionDraw = new Paint();
 
@@ -29,7 +30,7 @@ public class TouchAreaDpad extends TouchAreaStick {
 
     private void updatePaint() {
         int darkenColor = TestHelper.darkenColor(mModel.mainColor);
-        int strokeWidth = (int) (getModel().getOuterRadius()/10);
+        int strokeWidth = (int) (getModel().getOuterRadius()/16);
         int barWidth = mModel.getSize() / 3; //一个横条或者竖条的宽度
         mRectDraw.setCornerRadius(4);
         mRectDraw.setStroke(strokeWidth, darkenColor);

@@ -19,6 +19,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.KeyEvent;
@@ -34,6 +35,7 @@ import com.example.datainsert.exagear.controlsV2.edit.EditConfigWindow;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.example.datainsert.exagear.controlsV2.options.OptionsProvider;
+import com.example.datainsert.exagear.controlsV2.widget.DrawableNumber;
 import com.example.datainsert.exagear.controlsV2.widget.TransitionHistoryView;
 
 public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
@@ -66,6 +68,17 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
 
         mFramePaint.setStrokeWidth(4);
         mFramePaint.setColor(Color.RED);
+//
+//        DrawableNumber drawableNumber = new DrawableNumber(getContext(), DrawableNumber.GRAVITY_RIGHT_BOTTOM);
+//        drawableNumber.setLevel(5);
+//        drawableNumber.setBounds(10,10,140,140);
+//        drawableNumber.setTint(0xffDAA520);
+//        drawableNumber.setMaxRadius(20);
+//
+//        ColorDrawable colorDrawable = new ColorDrawable(0xff858484);
+//        colorDrawable.setBounds(drawableNumber.getBounds());
+//        getOverlay().add(colorDrawable);
+//        getOverlay().add(drawableNumber);
     }
 
 
@@ -346,7 +359,5 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
         mProfile.syncAreaList(isEditing);
         //TODO 还应该同步profile里存储的全局属性，比如屏幕按键显隐，鼠标移动速度等
     }
-
-
 }
 

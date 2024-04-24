@@ -10,7 +10,7 @@ public abstract class SafeFileHelpers {
 
     /* loaded from: classes.dex */
     public interface FileCallback {
-        void apply(File file, String str) throws IOException;
+        void apply(File parent, String fileName) throws IOException;
     }
 
     /* loaded from: classes.dex */
@@ -30,7 +30,12 @@ public abstract class SafeFileHelpers {
 
     private static native int removeDirectoryImpl(String str, boolean z);
 
-    public static native int symlink(String str, String str2);
+    /**
+     * 创建符号链接
+     * @param source 真实文件的路径
+     * @param target 要创建的链接的路径
+     */
+    public static native int symlink(String source, String target);
 
     static {
         System.loadLibrary("fs-helpers");
@@ -84,21 +89,21 @@ public abstract class SafeFileHelpers {
         doWithFiles(file, i, ACCEPT_EXECUTABLE_FILES, fileCallback);
     }
 
-    public static void doWithFiles(File file, int i, FileFilter fileFilter, FileCallback fileCallback) throws IOException {
-        if (i < 0) {
+    public static void doWithFiles(File root, int depth, FileFilter fileFilter, FileCallback fileCallback) throws IOException {
+        if (depth < 0) {
             return;
         }
-        Assert.isTrue(file.isDirectory());
-        File canonicalFile = file.getCanonicalFile();
-        String[] listWellNamedFiles = listWellNamedFiles(canonicalFile);
-        for (String str : listWellNamedFiles) {
-            File file2 = new File(canonicalFile, str);
-            if (file2.isFile()) {
-                if (fileFilter.matches(canonicalFile, str)) {
-                    fileCallback.apply(canonicalFile, str);
+        Assert.isTrue(root.isDirectory());
+        File rootCanonicalFile = root.getCanonicalFile();
+        String[] children = listWellNamedFiles(rootCanonicalFile);
+        for (String childName : children) {
+            File child = new File(rootCanonicalFile, childName);
+            if (child.isFile()) {
+                if (fileFilter.matches(rootCanonicalFile, childName)) {
+                    fileCallback.apply(rootCanonicalFile, childName);
                 }
-            } else if (file2.isDirectory()) {
-                doWithFiles(file2, listWellNamedFiles.length == 1 ? i : i - 1, fileFilter, fileCallback);
+            } else if (child.isDirectory()) {
+                doWithFiles(child, children.length == 1 ? depth : depth - 1, fileFilter, fileCallback);
             }
         }
     }

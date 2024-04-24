@@ -8,29 +8,29 @@ public class GraphicsSceneConfigurer {
     private int nTextures;
     private RectangleF sceneViewport = new RectangleF(0.0f, 0.0f, 0.0f, 0.0f);
 
-    public void setSceneViewport(RectangleF rectangleF) {
-        this.sceneViewport = rectangleF;
+    public void setSceneViewport(RectangleF sceneViewport) {
+        this.sceneViewport = sceneViewport;
     }
 
-    public void setSceneViewport(float f, float f2, float f3, float f4) {
-        this.sceneViewport = new RectangleF(f, f2, f3, f4);
+    public void setSceneViewport(float x, float y, float width, float height) {
+        this.sceneViewport = new RectangleF(x, y, width, height);
     }
 
     public int addRectangle() {
-        int i = this.nRectangles;
-        this.nRectangles = i + 1;
-        return i;
+        int old = this.nRectangles;
+        this.nRectangles = old + 1;
+        return old;
     }
 
     public int addTexture() {
-        int i = this.nTextures;
-        this.nTextures = i + 1;
-        return i;
+        int old = this.nTextures;
+        this.nTextures = old + 1;
+        return old;
     }
 
     public SceneOfRectangles createScene() {
-        SceneOfRectangles sceneOfRectangles = new SceneOfRectangles(this.nRectangles, this.nTextures);
-        sceneOfRectangles.setSceneViewport(this.sceneViewport.x, this.sceneViewport.y, this.sceneViewport.width, this.sceneViewport.height);
-        return sceneOfRectangles;
+        SceneOfRectangles scene = new SceneOfRectangles(this.nRectangles, this.nTextures);
+        scene.setSceneViewport(sceneViewport.x, sceneViewport.y, sceneViewport.width, sceneViewport.height);
+        return scene;
     }
 }

@@ -1,6 +1,15 @@
 package com.example.datainsert.exagear.controlsV2.model;
 
+import static com.example.datainsert.exagear.controlsV2.TouchAreaModel.floorDivToSmallestUnit;
+
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.Log;
+
 import com.example.datainsert.exagear.controlsV2.Const;
+import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
@@ -8,6 +17,7 @@ import com.example.datainsert.exagear.controlsV2.touchAdapter.EditMoveAdapter;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaGesture;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +28,7 @@ import java.util.List;
  * 从json反序列化出来之后记得调用sync函数同步area列表
  */
 public class OneProfile {
+    private static final String TAG = "OneProfile";
     private final List<TouchAreaModel> modelList;
     transient private final List<TouchArea<? extends TouchAreaModel>> touchAreaList;
     transient private final List<TouchArea<? extends TouchAreaModel>> umodifiableList;
@@ -25,7 +36,9 @@ public class OneProfile {
     private final int version = 20240229; //版本号
     private boolean showTouchArea = true; //是否显示按键
     private float mouseMoveSpeed = 1f; //全局鼠标移动速度
+    private final int[] resolution = new int[]{1280, 720};//记录手机屏幕宽高，以便在其他设备导入时，计算应该缩放的大小
     transient private boolean isEditing = false;
+    transient private float[] scaleXY = new float[]{1,1};//记录当前窗口宽高/配置的宽高的比值，动态记录，而非修改model的原始数据
 
 
     /**
@@ -54,6 +67,7 @@ public class OneProfile {
     public void syncAreaList(boolean editing) {
         isEditing =editing;
         touchAreaList.clear();
+
         for (int i = 0; i < modelList.size(); i++) {
             TouchAreaModel model = modelList.remove(i);
             addModelAndAddArea(i, model);
@@ -68,6 +82,63 @@ public class OneProfile {
                 }
     }
 
+    /**
+     * 不同设备分辨率不同。所以需要根据touchAreaView宽高，来调整一下每个toucharea的区域
+     * <br/> 只应该在导入配置/解压内置配置 的时候调整一次。因为该操作会选择缩放后宽高中较小的一个，
+     * 所以像屏幕旋转这样的操作，两次之后按钮会缩小两次而非变回原大小
+     */
+    public void adjustProfileToFullscreen(){
+        //因为不会随时更新，所以还是按系统的来吧。不然万一小窗的时候导入以后就一直是小窗大小了
+        Point point = TestHelper.getSystemDisplaySize(Const.getActivity());
+        int[] currWH = {point.x, point.y};
+
+        if(resolution[0]==0 || resolution[1]==0) {
+            resolution[0] = currWH[0];
+            resolution[1] = currWH[1];
+            return;
+        }else if((currWH[0]==resolution[0] && currWH[1]== resolution[1])
+        || currWH[0]==0 || currWH[1]==0 )
+            return;
+
+        //不是matrix的问题，我把坐标强制按4整除处理了，所以缩放后传入的坐标不一定是显示的坐标。。。
+        // 也不准确，是精度问题。比如下减上作为高度再变为4的倍数，和下变为4倍数 减去 上变为4倍数 二者结果不一定一样的
+        // 草，是被最小允许宽度给限制了。。。另外矩阵反而不行，还是直接算宽高缩放吧
+        float scaleX = 1f*currWH[0]/resolution[0], scaleY = 1f*currWH[1]/resolution[1];
+        for(TouchAreaModel model:modelList) {
+            model.setLeft(floorDivToSmallestUnit((int) (model.getLeft() * scaleX)));
+            model.setTop((floorDivToSmallestUnit((int) (model.getTop() * scaleY))));
+            int minSize = (int) Math.min(model.getWidth() * scaleX, model.getWidth() * scaleY);
+            model.setWidth(minSize);
+            model.setHeight(minSize);
+        }
+
+//        Matrix matrix = new Matrix();
+//        matrix.postScale(1f*currWH[0]/resolution[0], 1f*currWH[1]/resolution[1]);
+//        RectF rect = new RectF();
+//        for(TouchAreaModel model:modelList){
+//            rect.set(model.getLeft(), model.getTop(), model.getLeft()+model.getWidth(), model.getTop()+model.getHeight());
+//            String logStr = "缩放前："+rect.toString();
+//            matrix.mapRect(rect);
+//            rect.left = floorDivToSmallestUnit((int) rect.left);
+//            rect.right = floorDivToSmallestUnit((int) rect.right);
+//            rect.top = floorDivToSmallestUnit((int) rect.top);
+//            rect.bottom = floorDivToSmallestUnit((int) rect.bottom);
+//            logStr += "， 缩放后："+rect;
+//
+//            int minSize = (int) Math.min(rect.width(), rect.height());
+//            model.setLeft((int) rect.left);
+//            model.setTop((int) rect.top);
+//            model.setWidth(minSize);
+//            model.setHeight(minSize);
+//
+//            logStr += "变为dp8整数倍后: "+model.getLeft()+", "+model.getTop()+", "+(model.getLeft()+model.getWidth())+", "+(model.getTop()+model.getHeight());
+//            Log.d(TAG, "adjustProfileToFullscreen: "+logStr);
+//        }
+
+        Log.d(TAG, "adjustProfileToFullscreen: 当前视图分辨率与配置设定分辨率不同，正在调整："+ Arrays.toString(resolution)+" -> "+Arrays.toString(currWH));
+        resolution[0] = currWH[0];
+        resolution[1] = currWH[1];
+    }
 
     /**
      * 获取当前是否在编辑状态。切换编辑状态调用syncAreaList

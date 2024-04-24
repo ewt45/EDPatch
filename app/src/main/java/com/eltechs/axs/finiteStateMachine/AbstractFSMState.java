@@ -11,12 +11,10 @@ public abstract class AbstractFSMState implements FSMState {
         this.machine = finiteStateMachine;
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     protected final void sendEvent(FSMEvent fSMEvent) {
         this.machine.sendEvent(this, fSMEvent);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     protected final void sendEventIfActive(FSMEvent fSMEvent) {
         synchronized (this.machine) {
             if (this.machine.isActiveState(this)) {
@@ -25,7 +23,6 @@ public abstract class AbstractFSMState implements FSMState {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
     protected final FiniteStateMachine getMachine() {
         return this.machine;
     }

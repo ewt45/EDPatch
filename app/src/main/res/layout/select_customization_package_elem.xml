@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cpi_buy_subscription_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="#ffffffff"
+    android:orientation="horizontal">
+
+    <Button
+        android:id="@+id/select_cp_button_elem"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawableLeft="@drawable/select_other_controls"
+        android:drawablePadding="10dp"
+        android:gravity="center" />
+
+    <Button
+        android:id="@+id/select_cp_button_info"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="45dp"
+        android:layout_height="match_parent"
+        android:drawableRight="@drawable/cpi_info"
+        android:tag="buy_subscription" />
+</LinearLayout>

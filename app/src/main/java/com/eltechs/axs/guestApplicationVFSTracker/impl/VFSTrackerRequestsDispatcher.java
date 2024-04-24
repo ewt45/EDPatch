@@ -27,18 +27,18 @@ public class VFSTrackerRequestsDispatcher implements RequestHandler<VFSTrackerCo
 
     @Override // com.eltechs.axs.xconnectors.RequestHandler
     public ProcessingResult handleRequest(VFSTrackerConnection vFSTrackerConnection, XInputStream xInputStream, XOutputStream xOutputStream) throws IOException {
-        if (xInputStream.getAvailableBytesCount() < 20) {
+        if (xInputStream.getAvailableBytesCount() < REQUEST_LENGTH) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        int i = xInputStream.getInt();
-        int extendAsUnsigned = ArithHelpers.extendAsUnsigned(xInputStream.getShort()) - 20;
-        int extendAsUnsigned2 = ArithHelpers.extendAsUnsigned(xInputStream.getShort());
-        if (i != 1263488840 || extendAsUnsigned2 < 0 || extendAsUnsigned2 >= this.requestHandlers.size()) {
+        int rqMagic = xInputStream.getInt();
+        int length = ArithHelpers.extendAsUnsigned(xInputStream.getShort()) - REQUEST_LENGTH;
+        int requestCode = ArithHelpers.extendAsUnsigned(xInputStream.getShort());
+        if (rqMagic != MAGIC || requestCode < 0 || requestCode >= this.requestHandlers.size()) {
             return ProcessingResult.PROCESSED_KILL_CONNECTION;
         }
-        if (xInputStream.getAvailableBytesCount() < extendAsUnsigned) {
+        if (xInputStream.getAvailableBytesCount() < length) {
             return ProcessingResult.INCOMPLETE_BUFFER;
         }
-        return this.requestHandlers.get(RequestCodes.values()[extendAsUnsigned2]).handleRequest(vFSTrackerConnection, xInputStream, xOutputStream);
+        return this.requestHandlers.get(RequestCodes.values()[requestCode]).handleRequest(vFSTrackerConnection, xInputStream, xOutputStream);
     }
 }

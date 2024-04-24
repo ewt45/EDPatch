@@ -13,16 +13,14 @@ public abstract class AbstractAction implements Action {
     private boolean enabled;
     private String name;
 
-    /* JADX INFO: Access modifiers changed from: protected */
     protected AbstractAction(String str) {
         this(str, false);
     }
 
-    /* JADX INFO: Access modifiers changed from: protected */
-    protected AbstractAction(String str, boolean z) {
-        this.name = str;
+    protected AbstractAction(String name, boolean checkable) {
+        this.name = name;
         this.enabled = true;
-        this.checkable = z;
+        this.checkable = checkable;
     }
 
     @Override // com.eltechs.axs.widgets.actions.Action

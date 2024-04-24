@@ -7,11 +7,8 @@ import java.io.File;
 /* loaded from: classes.dex */
 public class FSMStateCheckFileExists extends AbstractFSMState {
     private final File file;
-    public static final FSMEvent EXISTS = new FSMEvent() { // from class: com.eltechs.axs.finiteStateMachine.generalStates.FSMStateCheckFileExists.1
-    };
-    public static final FSMEvent DOESNT_EXISTS = new FSMEvent() { // from class: com.eltechs.axs.finiteStateMachine.generalStates.FSMStateCheckFileExists.2
-    };
-
+    public static final FSMEvent EXISTS = new FSMEvent();
+    public static final FSMEvent DOESNT_EXISTS = new FSMEvent();
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeInactive() {
     }

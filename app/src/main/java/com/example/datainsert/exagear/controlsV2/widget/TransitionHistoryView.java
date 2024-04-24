@@ -10,7 +10,6 @@ import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.RR;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,7 +58,7 @@ public class TransitionHistoryView extends View {
 //            int centerX =  getBounds().left+getBounds().width()/2;
 //            int textCenterY = getBounds().top+getBounds().height()/2;
             float topY = (lineHeight+linePadding)*i;
-            float textCenterY =  TestHelper.adjustTextPaintCenter(topY+lineHeight/2f,mTextPaint);
+            float textCenterY =  TestHelper.adjustTextPaintCenterY(topY+lineHeight/2f,mTextPaint);
 
             String part1String = tran.get(0)+"  ";
             float part1Width = mTextPaint.measureText(part1String);
@@ -78,14 +77,14 @@ public class TransitionHistoryView extends View {
             //线上面，事件
             float eventLeftWidth = part1Width+(arrowWidth-eventWidth)/2f;
             canvas.save();
-            canvas.scale(smallerTextScale,smallerTextScale,eventLeftWidth, TestHelper.adjustTextPaintCenter((topY+textCenterY)/2f,mTextPaint));
+            canvas.scale(smallerTextScale,smallerTextScale,eventLeftWidth, TestHelper.adjustTextPaintCenterY((topY+textCenterY)/2f,mTextPaint));
             canvas.drawText(tran.get(1),eventLeftWidth,(topY+textCenterY)/2f,mTextPaint);
             canvas.restore();
 
             //线下面，操作
             float actionsLeftWidth = part1Width+(arrowWidth-actionsWidth)/2f;
             canvas.save();
-            canvas.scale(smallerTextScale,smallerTextScale,actionsLeftWidth,TestHelper.adjustTextPaintCenter((topY+lineHeight+textCenterY)/2f,mTextPaint));
+            canvas.scale(smallerTextScale,smallerTextScale,actionsLeftWidth,TestHelper.adjustTextPaintCenterY((topY+lineHeight+textCenterY)/2f,mTextPaint));
             canvas.drawText(tran.get(3),actionsLeftWidth,(topY+lineHeight+textCenterY)/2f,mTextPaint);
             canvas.restore();
 

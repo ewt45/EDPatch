@@ -24,7 +24,7 @@ import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.TouchAreaView;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop0MainColor;
-import com.example.datainsert.exagear.controlsV2.edit.props.Prop0Name;
+import com.example.datainsert.exagear.controlsV2.edit.props.Prop1Name;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop0Size;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop0Type;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop1Key;
@@ -33,6 +33,9 @@ import com.example.datainsert.exagear.controlsV2.edit.props.Prop1Trigger;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop2Direction;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop2Key;
 import com.example.datainsert.exagear.controlsV2.edit.props.Prop3Key;
+import com.example.datainsert.exagear.controlsV2.edit.props.Prop5Keys;
+import com.example.datainsert.exagear.controlsV2.edit.props.Prop5LenLimit;
+import com.example.datainsert.exagear.controlsV2.edit.props.Prop5Vertical;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.model.DeserializerOfModel;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
@@ -42,8 +45,8 @@ import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -52,9 +55,11 @@ import java.util.List;
  */
 public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaModel> {
     private static final String TAG = "KeyPropertiesView";
+    private static final Integer PROP_KEY_UNIVERSAL = 999; //用于HashMap<Integer, Prop<TouchAreaModel>[]>中，记录通用属性的key
     TouchAreaModel mModel = null;
-    Prop<TouchAreaModel>[][] mProps;
+    LinkedHashMap<Integer, Prop<TouchAreaModel>[]> mProps = new LinkedHashMap<>();
     LinearLayout[] mPanels = new LinearLayout[2];
+    LinearLayout mPanelsNew;
 
     public Edit1KeyView(Context c) {
         super(c);
@@ -94,8 +99,10 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         });
 
         Button btnTest = new Button(c);
-        btnTest.setText("测试保存");
-        btnTest.setOnClickListener(v -> TestHelper.saveCurrentEditProfileToFile());
+        btnTest.setText("测试宽高");
+        btnTest.setOnClickListener(v -> {
+            TestHelper.getSystemDisplaySize(v.getContext());
+        });
 
         Button btnTestRead = new Button(c);
         btnTestRead.setText("测试读取state");
@@ -138,23 +145,25 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
             onModelChanged(newModelForField);
         };
 
+//        for (int i = 0; i < mPanels.length; i++) {
+//            mPanels[i] = new LinearLayout(c);
+//            mPanels[i].setOrientation(VERTICAL);
+//            mPanels[i].setVerticalGravity(Gravity.CENTER_VERTICAL);
+//            mPanels[i].setLayoutTransition(new LayoutTransition());
+//        }
 
-        for (int i = 0; i < mPanels.length; i++) {
-            mPanels[i] = new LinearLayout(c);
-            mPanels[i].setOrientation(VERTICAL);
-            mPanels[i].setVerticalGravity(Gravity.CENTER_VERTICAL);
-            mPanels[i].setLayoutTransition(new LayoutTransition());
-        }
+        mPanelsNew = new LinearLayout(c);
+        mPanelsNew.setOrientation(VERTICAL);
+        mPanelsNew.setLayoutTransition(new LayoutTransition());
 
-        mProps = new Prop[][]{
-                {new Prop0Type(this, c, typeChangeListener), new Prop0MainColor(this, c), new Prop0Name(this, c), new Prop0Size(this, c)},
-                {new Prop1Key(this, c), new Prop1Shape(this, c), new Prop1Trigger(this, c)},
-                {new Prop2Key(this, c), new Prop2Direction(this, c)},
-                {new Prop3Key(this, c)}};
+        mProps.put(PROP_KEY_UNIVERSAL, new Prop[]{new Prop0Type(this, c, typeChangeListener), new Prop0MainColor(this, c), new Prop0Size(this, c)});
+        mProps.put(TouchAreaModel.TYPE_BUTTON, new Prop[]{new Prop1Name(this, c), new Prop1Key(this, c), new Prop1Shape(this, c), new Prop1Trigger(this, c)});
+        mProps.put(TouchAreaModel.TYPE_STICK, new Prop[]{new Prop2Key(this, c), new Prop2Direction(this, c)});
+        mProps.put(TouchAreaModel.TYPE_DPAD, new Prop[]{new Prop3Key(this, c)});
+        mProps.put(TouchAreaModel.TYPE_COLUMN, new Prop[]{new Prop5LenLimit(this, c), new Prop5Vertical(this, c), new Prop5Keys(this, c), });
 
-        for (Prop[] propGroup : mProps) {
-            boolean hide = propGroup != mProps[0] && propGroup != mProps[1];
-            for (Prop prop : propGroup) {
+        for(Integer typeInt : mProps.keySet()) {
+            for (Prop<?> prop : mProps.get(typeInt)) {
                 TextView title = QH.getTitleTextView(c, prop.getTitle());
                 title.setGravity(Gravity.CENTER_VERTICAL);
 
@@ -178,18 +187,26 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
                     prop.mAltView.setVisibility(GONE);
                 }
 
-                mPanels[0].addView(title, QH.LPLinear.one(-1, dp8 * 6).left().top().to());
-                mPanels[1].addView(linear, QH.LPLinear.one(-1, dp8 * 6).left().right().top().to());
+                LinearLayout linearPropLine = new LinearLayout(c);
+                linearPropLine.setOrientation(HORIZONTAL);
+                linearPropLine.setVerticalGravity(Gravity.CENTER_VERTICAL);
+                linearPropLine.setBaselineAligned(false);
+                linearPropLine.setMinimumHeight(dp8*6);
+                linearPropLine.addView(title, QH.LPLinear.one(QH.px(c,80), -2).left().to());
+                linearPropLine.addView(linear, QH.LPLinear.one(0, -2).weight().left().right().to());
+                mPanelsNew.addView(linearPropLine, QH.LPLinear.one(-1,-2).top().to());
+//                mPanels[0].addView(title, QH.LPLinear.one(-1, dp8 * 6).left().top().to());
+//                mPanels[1].addView(linear, QH.LPLinear.one(-1, -2).left().right().top().to());
             }
         }
 
-        LinearLayout linearPanelsWrapper = new LinearLayout(c);
-        linearPanelsWrapper.setOrientation(HORIZONTAL);
-        linearPanelsWrapper.addView(mPanels[0]);
-        linearPanelsWrapper.addView(mPanels[1], QH.LPLinear.one().weight().to());
+//        LinearLayout linearPanelsWrapper = new LinearLayout(c);
+//        linearPanelsWrapper.setOrientation(HORIZONTAL);
+//        linearPanelsWrapper.addView(mPanels[0]);
+//        linearPanelsWrapper.addView(mPanels[1], QH.LPLinear.one().weight().to());
 
         addView(scrollToolbar);
-        addView(linearPanelsWrapper);
+        addView(mPanelsNew);
 
         //初始的时候成员变量为null，然后传入一个实例，这样才会判断不等，调用inflate初次生成视图
         onModelChanged(createDefaultButtonWhenEmpty());
@@ -271,21 +288,24 @@ public class Edit1KeyView extends LinearLayout implements Prop.Host<TouchAreaMod
         else if (mModel != model) { //行行行我每次都刷新行了吧
             mModel = model;
             int type = getButtonTypeFromModel(model);
-            int line = mProps[0].length;
-            for (int i = 1; i < mProps.length; i++)
-                for (Prop unused : mProps[i]) {
-                    mPanels[0].getChildAt(line).setVisibility(type == (i - 1) ? VISIBLE : GONE);
-                    mPanels[1].getChildAt(line).setVisibility(type == (i - 1) ? VISIBLE : GONE);
-                    line++;
+            int line = mProps.get(PROP_KEY_UNIVERSAL).length;
+            for(Integer typeInt : mProps.keySet()){
+                if(typeInt.equals(PROP_KEY_UNIVERSAL)) continue;
+                for(Prop<?> unused : mProps.get(typeInt)){
+                    mPanelsNew.getChildAt(line).setVisibility(type == typeInt ? VISIBLE : GONE);
+//                    mPanels[0].getChildAt(line).setVisibility(type == typeInt?VISIBLE:GONE);
+//                    mPanels[1].getChildAt(line).setVisibility(type == typeInt?VISIBLE:GONE);
+                    line ++;
                 }
+            }
         }
 
-        for (Prop prop : mProps[0])
-            if (!prop.isChangingSource())
+        for(Prop<?> prop : mProps.get(PROP_KEY_UNIVERSAL))
+            if(!prop.isChangingSource())
                 prop.updateUIFromModel(mModel);
 
-        for (Prop prop : mProps[getButtonTypeFromModel(mModel) + 1])
-            if (!prop.isChangingSource())
+        for(Prop<?> prop : mProps.get(getButtonTypeFromModel(mModel)))
+            if(!prop.isChangingSource())
                 prop.updateUIFromModel(mModel);
 
         Const.getTouchView().invalidate();

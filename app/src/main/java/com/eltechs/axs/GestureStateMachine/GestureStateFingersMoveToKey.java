@@ -9,17 +9,16 @@ import java.util.List;
 
 /* loaded from: classes.dex */
 public class GestureStateFingersMoveToKey extends AbstractGestureFSMState implements TouchEventAdapter {
-    public static FSMEvent GESTURE_COMPLETED = new FSMEvent() { // from class: com.eltechs.axs.GestureStateMachine.GestureStateFingersMoveToKey.1
-    };
+    public static FSMEvent GESTURE_COMPLETED = new FSMEvent();
     private final PointerMoveToKeyAdapter leftAdapter;
     private Finger leftFinger;
     private final PointerMoveToKeyAdapter rightAdapter;
     private Finger rightFinger;
 
-    public GestureStateFingersMoveToKey(GestureContext gestureContext, PointerMoveToKeyAdapter pointerMoveToKeyAdapter, PointerMoveToKeyAdapter pointerMoveToKeyAdapter2) {
+    public GestureStateFingersMoveToKey(GestureContext gestureContext, PointerMoveToKeyAdapter leftAdapter, PointerMoveToKeyAdapter rightAdapter) {
         super(gestureContext);
-        this.leftAdapter = pointerMoveToKeyAdapter;
-        this.rightAdapter = pointerMoveToKeyAdapter2;
+        this.leftAdapter = leftAdapter;
+        this.rightAdapter = rightAdapter;
     }
 
     private boolean isFingerAtRightArea(Finger finger) {
@@ -30,8 +29,7 @@ public class GestureStateFingersMoveToKey extends AbstractGestureFSMState implem
     public void notifyMoved(Finger finger, List<Finger> list) {
         if (finger == this.leftFinger) {
             this.leftAdapter.pointerMove(finger.getX(), finger.getY());
-        } else if (finger != this.rightFinger) {
-        } else {
+        } else if (finger == this.rightFinger) {
             this.rightAdapter.pointerMove(finger.getX(), finger.getY());
         }
     }
@@ -73,9 +71,7 @@ public class GestureStateFingersMoveToKey extends AbstractGestureFSMState implem
                     this.rightAdapter.pointerExited(this.rightFinger.getX(), this.rightFinger.getY());
                     this.rightFinger = null;
                     return;
-                } else if (finger != this.leftFinger) {
-                    return;
-                } else {
+                } else if (finger == this.leftFinger) {
                     this.leftAdapter.pointerExited(this.leftFinger.getX(), this.leftFinger.getY());
                     this.leftFinger = null;
                     return;
@@ -94,11 +90,7 @@ public class GestureStateFingersMoveToKey extends AbstractGestureFSMState implem
     @Override // com.eltechs.axs.finiteStateMachine.FSMState
     public void notifyBecomeActive() {
         getContext().getFingerEventsSource().addListener(this);
-        boolean z = true;
-        if (getContext().getFingers().size() != 1) {
-            z = false;
-        }
-        Assert.state(z);
+        Assert.state(getContext().getFingers().size() == 1);
         Finger finger = getContext().getFingers().get(0);
         if (isFingerAtRightArea(finger)) {
             this.rightFinger = finger;

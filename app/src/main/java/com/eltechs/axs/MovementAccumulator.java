@@ -18,22 +18,22 @@ public class MovementAccumulator {
         ASC
     }
 
-    public MovementAccumulator(float f, float f2) {
-        this.moveDeltaPixels = f2;
-        this.movementUnitsInOnePixel = f;
+    public MovementAccumulator(float movementUnitsInOnePixel, float moveDeltaPixels) {
+        this.movementUnitsInOnePixel = movementUnitsInOnePixel;
+        this.moveDeltaPixels = moveDeltaPixels;
     }
 
-    public void reset(float f) {
+    public void reset(float fingerAxisPos) {
         this.direction = Direction.NEUTRAL;
-        this.axis = f;
+        this.axis = fingerAxisPos;
         this.movementUnitsAccumulated = 0.0f;
         this.movementStartTimestamp = 0L;
     }
 
-    private void handlePointPositionChange(float f) {
+    private void handlePointPositionChange(float currFingerAxisPos) {
         Assert.isTrue(this.direction != Direction.NEUTRAL);
-        float abs = Math.abs(f - this.axis);
-        this.axis = f;
+        float abs = Math.abs(currFingerAxisPos - this.axis);
+        this.axis = currFingerAxisPos;
         this.movementUnitsAccumulated += abs * this.movementUnitsInOnePixel;
     }
 
@@ -41,52 +41,39 @@ public class MovementAccumulator {
         return (z && f < 5.0f) || f > this.moveDeltaPixels;
     }
 
-    public void processFingerMovement(boolean z, float f, long j) {
-        float axis = f - getAxis();
+    public void processFingerMovement(boolean z, float nowFingerAxisPos, long currTime) {
+        float axis = nowFingerAxisPos - getAxis();
         float abs = Math.abs(axis);
         switch (this.direction) {
             case NEUTRAL:
-                if (abs > this.moveDeltaPixels) {
-                    if (axis > 0.0f) {
-                        start(Direction.ASC, f, j);
-                        return;
-                    } else {
-                        start(Direction.DESC, f, j);
-                        return;
-                    }
-                }
+                if (abs > this.moveDeltaPixels)
+                    start(axis > 0.0f ? Direction.ASC : Direction.DESC, nowFingerAxisPos, currTime);
                 return;
             case ASC:
                 if (axis > 0.0f) {
-                    handlePointPositionChange(f);
-                    return;
+                    handlePointPositionChange(nowFingerAxisPos);
                 } else if (movementStopNeeded(abs, z)) {
-                    stop(f);
-                    return;
-                } else {
-                    return;
+                    stop(nowFingerAxisPos);
                 }
+                return;
             case DESC:
                 if (axis < 0.0f) {
-                    handlePointPositionChange(f);
-                    return;
+                    handlePointPositionChange(nowFingerAxisPos);
                 } else if (movementStopNeeded(abs, z)) {
-                    stop(f);
-                    return;
-                } else {
-                    return;
+                    stop(nowFingerAxisPos);
                 }
+                return;
             default:
                 Assert.unreachable();
                 return;
         }
     }
 
-    public void start(Direction direction, float f, long j) {
+    public void start(Direction direction, float currFingerAxisPos, long currTIme) {
         this.direction = direction;
         Assert.state(this.direction != Direction.NEUTRAL, "Movement in neutral direction is not a movement at all");
-        this.movementStartTimestamp = j;
-        handlePointPositionChange(f);
+        this.movementStartTimestamp = currTIme;
+        handlePointPositionChange(currFingerAxisPos);
     }
 
     public void stop(float f) {

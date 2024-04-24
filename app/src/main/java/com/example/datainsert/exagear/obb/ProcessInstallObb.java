@@ -18,7 +18,6 @@ import com.eltechs.axs.helpers.ZipInstallerObb;
 import com.eltechs.ed.BuildConfig;
 import com.eltechs.ed.R;
 import com.eltechs.ed.activities.EDStartupActivity;
-import com.ewt45.exagearsupportv7.ui.home.HomeFragment;
 import com.example.datainsert.exagear.QH;
 
 import org.apache.commons.io.IOUtils;
@@ -151,28 +150,5 @@ public class ProcessInstallObb {
             e.printStackTrace();
         }
     }
-
-    public static void startest(HomeFragment homeFragment){
-        SelectObbFragment fragment = (SelectObbFragment) homeFragment.requireActivity().getSupportFragmentManager().findFragmentByTag(SelectObbFragment.TAG);
-        //防止多次添加
-        if(fragment==null){
-            fragment=  new SelectObbFragment();
-            fragment.setZipInstallerObb(new ZipInstallerObb(null,false ,false,null,null,null));
-            homeFragment.requireActivity().getSupportFragmentManager().beginTransaction()
-                    .add(QH.rslvID(R.id.startupAdButtons,0x7f0900f2),fragment,SelectObbFragment.TAG).commit();
-        }
-        //外布局设置成显示，否则隐藏状态下替换fragment也不会显示
-        ViewGroup startupAdButtons = homeFragment.requireActivity().findViewById(QH.rslvID(R.id.startupAdButtons,0x7f0900f2));
-        startupAdButtons.setVisibility(View.VISIBLE);
-        //清空原有子布局,如果遇到fragment保留
-        while(startupAdButtons.getChildCount()>0){
-            View child = startupAdButtons.getChildAt(0);
-            if(child.getTag()==null || !child.getTag().equals(SelectObbFragment.TAG))
-                startupAdButtons.removeView(child);
-        }
-        //显示fragment
-        homeFragment.requireActivity().getSupportFragmentManager().beginTransaction().show(fragment).addToBackStack(null).commit();
-    }
-
 
 }

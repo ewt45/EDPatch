@@ -69,7 +69,7 @@ public class XKeyButton {
     final public static Info key_l = new Info(38,0,KeyEvent.KEYCODE_L,"L");
     final public static Info key_semicolon = new Info(39,0,KeyEvent.KEYCODE_SEMICOLON,":\n;");
     final public static Info key_apostrophe = new Info(40,0,KeyEvent.KEYCODE_APOSTROPHE,"\"\n'");
-    final public static Info key_enter = new Info(28,0,KeyEvent.KEYCODE_ENTER,"Enter ⏎");
+    final public static Info key_enter = new Info(28,0,KeyEvent.KEYCODE_ENTER,"Enter");// ⏎
     final public static Info key_left_shift = new Info(42,0,KeyEvent.KEYCODE_SHIFT_LEFT,"Shift");
     final public static Info key_z = new Info(44,0,KeyEvent.KEYCODE_Z,"Z");
     final public static Info key_x = new Info(45,0,KeyEvent.KEYCODE_X,"X");

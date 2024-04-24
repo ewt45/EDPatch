@@ -130,6 +130,9 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
         this.freeze = false;
     }
 
+    /**
+     * @param rectangleF 注意这里rect y向上为正
+     */
     public synchronized void setXViewport(RectangleF rectangleF) {
         this.xViewport = rectangleF;
         updateSceneViewports();
@@ -174,24 +177,24 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
         this.cursorDrawable = this.viewFacade.getCursorDrawable();
         if (this.cursorDrawable == null) {
             Point pointerLocation = this.viewFacade.getPointerLocation();
-            int width = pointerLocation.x - (this.rootCursorBitmap.getWidth() / 2);
-            int height = pointerLocation.y - (this.rootCursorBitmap.getHeight() / 2);
+            int cursorX = pointerLocation.x - (this.rootCursorBitmap.getWidth() / 2);
+            int cursorY = pointerLocation.y - (this.rootCursorBitmap.getHeight() / 2);
             this.scene.setTextureSize(i, this.rootCursorBitmap.getWidth(), this.rootCursorBitmap.getHeight());
-            this.scene.placeRectangle(i, width, -height, this.rootCursorBitmap.getWidth(), this.rootCursorBitmap.getHeight(), 1.0f, i, 1.0f, false);
+            this.scene.placeRectangle(i, cursorX, -cursorY, this.rootCursorBitmap.getWidth(), this.rootCursorBitmap.getHeight(), 1.0f, i, 1.0f, false);
             return;
         }
         placeDrawable(i, 1, this.cursorDrawable, false);
     }
 
-    private void placeDrawable(int i, int i2, PlacedDrawable placedDrawable, boolean z) {
+    private void placeDrawable(int rect, int drawable, PlacedDrawable placedDrawable, boolean z) {
         Rectangle location = placedDrawable.getLocation();
-        this.scene.setTextureSize(i, location.width, location.height);
-        this.scene.placeRectangle(i, location.x, -location.y, location.width, location.height, i2, i, 1.0f, z);
+        this.scene.setTextureSize(rect, location.width, location.height);
+        this.scene.placeRectangle(rect, location.x, -location.y, location.width, location.height, drawable, rect, 1.0f, z);
     }
 
-    private void moveDrawable(int i, int i2, Rectangle rectangle) {
-        this.scene.setTextureSize(i, rectangle.width, rectangle.height);
-        this.scene.moveRectangle(i, rectangle.x, -rectangle.y, rectangle.width, rectangle.height, i2);
+    private void moveDrawable(int rect, int drawable, Rectangle rectangle) {
+        this.scene.setTextureSize(rect, rectangle.width, rectangle.height);
+        this.scene.moveRectangle(rect, rectangle.x, -rectangle.y, rectangle.width, rectangle.height, drawable);
     }
 
     private void recreateSceneOfXServer() {
@@ -200,7 +203,7 @@ public class AXSRendererGL implements GLSurfaceView.Renderer {
             int size = listNonRootWindowDrawables.size();
             int i = size + 1;
             int i2 = 0;
-            this.windowDrawables = new ArrayList(size);
+            this.windowDrawables = new ArrayList<>(size);
             setScene(new SceneOfRectangles(i, i));
             updateSceneViewports();
             while (i2 < size) {

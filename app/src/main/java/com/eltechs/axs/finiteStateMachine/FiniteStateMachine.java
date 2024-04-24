@@ -6,7 +6,6 @@ import com.eltechs.axs.helpers.Assert;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/* loaded from: classes.dex */
 public class FiniteStateMachine {
     private static final String TAG= "FiniteStateMachine";
     private AbstractFSMState currentState;
@@ -15,34 +14,32 @@ public class FiniteStateMachine {
     private ArrayList<AbstractFSMState> allStates = new ArrayList<>();
     private FSMListenersList listeners = new FSMListenersList();
 
-    /* JADX INFO: Access modifiers changed from: private */
-    /* loaded from: classes.dex */
-    public static class FSMTransitionTableEntry {
+    private static class FSMTransitionTableEntry {
         public final FSMEvent event;
         public final AbstractFSMState postState;
         public final AbstractFSMState preState;
 
-        public FSMTransitionTableEntry(AbstractFSMState abstractFSMState, FSMEvent fSMEvent, AbstractFSMState abstractFSMState2) {
-            this.preState = abstractFSMState;
-            this.event = fSMEvent;
-            this.postState = abstractFSMState2;
+        public FSMTransitionTableEntry(AbstractFSMState preState, FSMEvent event, AbstractFSMState postState) {
+            this.preState = preState;
+            this.event = event;
+            this.postState = postState;
         }
     }
 
-    public void setStatesList(AbstractFSMState... abstractFSMStateArr) {
-        for (AbstractFSMState abstractFSMState : abstractFSMStateArr) {
-            abstractFSMState.attach(this);
-            this.allStates.add(abstractFSMState);
+    public void setStatesList(AbstractFSMState... allStates) {
+        for (AbstractFSMState state : allStates) {
+            state.attach(this);
+            this.allStates.add(state);
         }
     }
 
-    public void setInitialState(AbstractFSMState abstractFSMState) {
-        Assert.state(this.allStates.contains(abstractFSMState));
-        this.currentState = abstractFSMState;
+    public void setInitialState(AbstractFSMState initialState) {
+        Assert.state(this.allStates.contains(initialState));
+        this.currentState = initialState;
     }
 
-    public void setDefaultState(AbstractFSMState abstractFSMState) {
-        this.defaultState = abstractFSMState;
+    public void setDefaultState(AbstractFSMState defaultState) {
+        this.defaultState = defaultState;
     }
 
     public void configurationCompleted() {
@@ -53,42 +50,42 @@ public class FiniteStateMachine {
         this.currentState.notifyBecomeActive();
     }
 
-    public void addTransition(AbstractFSMState abstractFSMState, FSMEvent fSMEvent, AbstractFSMState abstractFSMState2) {
-        Assert.state(this.allStates.contains(abstractFSMState), "Transition from unknown state");
-        Assert.state(this.allStates.contains(abstractFSMState2), "Transition to unknown state");
-        this.transitionTable.add(new FSMTransitionTableEntry(abstractFSMState, fSMEvent, abstractFSMState2));
+    public void addTransition(AbstractFSMState preState, FSMEvent event, AbstractFSMState postState) {
+        Assert.state(this.allStates.contains(preState), "Transition from unknown state");
+        Assert.state(this.allStates.contains(postState), "Transition to unknown state");
+        this.transitionTable.add(new FSMTransitionTableEntry(preState, event, postState));
     }
 
     public boolean isActiveState(AbstractFSMState abstractFSMState) {
-        boolean z;
+        boolean isActive;
         synchronized (this) {
-            z = this.currentState == abstractFSMState;
+            isActive = this.currentState == abstractFSMState;
         }
-        return z;
+        return isActive;
     }
 
-    private void changeState(AbstractFSMState abstractFSMState) {
+    private void changeState(AbstractFSMState postState) {
         this.currentState.notifyBecomeInactive();
         this.listeners.sendLeftState(this.currentState);
-        this.currentState = abstractFSMState;
+        this.currentState = postState;
         this.currentState.notifyBecomeActive();
         this.listeners.sendEnteredState(this.currentState);
     }
 
-    private AbstractFSMState getNextStateByCurrentStateAndEvent(AbstractFSMState abstractFSMState, FSMEvent fSMEvent) {
-        for (FSMTransitionTableEntry next : this.transitionTable) {
-            if (next.preState == abstractFSMState && next.event == fSMEvent) {
-                return next.postState;
+    private AbstractFSMState getNextStateByCurrentStateAndEvent(AbstractFSMState currentState, FSMEvent event) {
+        for (FSMTransitionTableEntry entry : this.transitionTable) {
+            if (entry.preState == currentState && entry.event == event) {
+                return entry.postState;
             }
         }
         return this.defaultState;
     }
 
-    public void sendEvent(AbstractFSMState abstractFSMState, FSMEvent fSMEvent) {
+    public void sendEvent(AbstractFSMState preState, FSMEvent event) {
         synchronized (this) {
-            Assert.state(abstractFSMState == this.currentState);
-            AbstractFSMState nextState = getNextStateByCurrentStateAndEvent(this.currentState, fSMEvent);
-            Log.d(TAG, String.format("sendEvent: 状态改变：%s --- %s --> %s",currentState.getClass().getSimpleName(),fSMEvent.toString(),nextState.getClass().getSimpleName()));
+            Assert.state(preState == this.currentState);
+            AbstractFSMState nextState = getNextStateByCurrentStateAndEvent(this.currentState, event);
+            Log.d(TAG, String.format("sendEvent: 状态改变：%s --- %s --> %s", this.currentState.getClass().getSimpleName(),event.toString(),nextState.getClass().getSimpleName()));
             changeState(nextState);
         }
     }

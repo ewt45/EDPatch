@@ -6,10 +6,10 @@ public class SyscallReportData {
     private int flags;
     private int syscallNr;
 
-    public SyscallReportData(int i, int i2, int i3) {
-        this.syscallNr = i;
-        this.flags = i2;
-        this.fileIndex = i3;
+    public SyscallReportData(int syscallNr, int flags, int fileIndex) {
+        this.syscallNr = syscallNr;
+        this.flags = flags;
+        this.fileIndex = fileIndex;
     }
 
     public int getSyscallNr() {

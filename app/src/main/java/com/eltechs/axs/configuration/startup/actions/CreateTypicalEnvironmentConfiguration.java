@@ -1,7 +1,12 @@
 package com.eltechs.axs.configuration.startup.actions;
 
+import android.net.LocalServerSocket;
+import android.util.Log;
+import android.widget.Toast;
+
 import com.eltechs.axs.ExagearImageConfiguration.ExagearImage;
 import com.eltechs.axs.ExagearImageConfiguration.TempDirMaintenanceComponent;
+import com.eltechs.axs.Globals;
 import com.eltechs.axs.applicationState.EnvironmentAware;
 import com.eltechs.axs.applicationState.ExagearImageAware;
 import com.eltechs.axs.applicationState.SelectedExecutableFileAware;
@@ -14,9 +19,12 @@ import com.eltechs.axs.environmentService.components.EtcHostsFileUpdaterComponen
 import com.eltechs.axs.environmentService.components.GuestApplicationsTrackerComponent;
 import com.eltechs.axs.environmentService.components.SysVIPCEmulatorComponent;
 import com.eltechs.axs.environmentService.components.XServerComponent;
+import com.eltechs.axs.helpers.UiThread;
 import com.eltechs.axs.network.SocketPaths;
 import com.eltechs.axs.productsRegistry.ProductIDs;
 import com.eltechs.axs.xconnectors.epoll.UnixSocketConfiguration;
+
+import java.io.IOException;
 
 /* loaded from: classes.dex */
 public class CreateTypicalEnvironmentConfiguration<StateClass extends EnvironmentAware & ExagearImageAware & SelectedExecutableFileAware<StateClass>> extends AbstractStartupAction<StateClass> {
@@ -69,6 +77,19 @@ public class CreateTypicalEnvironmentConfiguration<StateClass extends Environmen
     }
 
     private UnixSocketConfiguration createGATServerSocketConf() {
-        return UnixSocketConfiguration.createAbstractSocket(SocketPaths.GUEST_APPLICATIONS_TRACKER + this.productId);
+        // 避开socket冲突，以便多个exa能同时运行。
+        int increase = 0;
+        String name = "";
+        for(; increase<10; increase++){
+            name = SocketPaths.GUEST_APPLICATIONS_TRACKER + (productId + increase);
+            try (LocalServerSocket ignored = new LocalServerSocket(name)) {
+                Log.d("ConnectionListener", "forAbstractAfUnixAddress: 该af_unix socket 文件地址可用 "+name);
+                break;
+            }catch (IOException e){
+                UiThread.post(()-> Toast.makeText(Globals.getAppContext(), "检测到多个exa同时运行。尝试更换socket地址", Toast.LENGTH_SHORT).show());
+                Log.e("ConnectionListener", "forAbstractAfUnixAddress: 该af_unix socket 文件地址不可用 "+name, e);
+            }
+        }
+        return UnixSocketConfiguration.createAbstractSocket(name);
     }
 }
