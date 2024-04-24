@@ -97,6 +97,7 @@ public abstract class UBT {
         arrayList.add(elfLoaderPath);
         arrayList.add("--");
         arrayList.addAll(guestArguments);
-        return runUbt(launchConfig.getGuestExecutablePath(), elfLoaderPath, libUbtPath, (String[]) arrayList.toArray(new String[0]),  launchConfig.getGuestEnvironmentVariables().toArray(new String[0]));
+        return 1;
+//        return runUbt(launchConfig.getGuestExecutablePath(), elfLoaderPath, libUbtPath, (String[]) arrayList.toArray(new String[0]),  launchConfig.getGuestEnvironmentVariables().toArray(new String[0]));
     }
 }

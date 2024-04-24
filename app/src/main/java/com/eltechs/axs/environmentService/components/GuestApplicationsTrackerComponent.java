@@ -78,6 +78,7 @@ public class GuestApplicationsTrackerComponent extends EnvironmentComponent {
 
     public boolean haveGuestApplications() {
         Assert.state(this.tracker != null, "Guest applications tracker is not yet started.");
-        return this.tracker.haveGuestApplications();
+        return true;
+//        return this.tracker.haveGuestApplications();
     }
 }
