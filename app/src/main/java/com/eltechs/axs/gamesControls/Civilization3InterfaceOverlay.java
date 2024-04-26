@@ -34,7 +34,6 @@ import com.eltechs.axs.widgets.touchScreenControlsOverlay.TouchScreenControlsWid
 import com.eltechs.axs.widgets.viewOfXServer.ViewOfXServer;
 import com.eltechs.axs.xserver.KeyButNames;
 import com.eltechs.axs.xserver.KeyboardListener;
-import com.eltechs.axs.xserver.KeyboardModifiersListener;
 import com.eltechs.axs.xserver.ViewFacade;
 import com.eltechs.axs.xserver.impl.masks.Mask;
 import java.util.Arrays;
@@ -95,7 +94,7 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
         int i = (int) ((isDisplaySmall(displayMetrics) ? buttonSzSmallDisplayInches : 0.4f) * displayMetrics.densityDpi);
         ViewFacade xServerFacade = viewOfXServer.getXServerFacade();
         linearLayout.addView(createMouseModeButton(xServerDisplayActivity, this.mouseMode, i));
-        linearLayout.addView(createShiftButton(xServerDisplayActivity, xServerFacade, i));
+        linearLayout.addView(createShiftButton2(xServerDisplayActivity, xServerFacade, i));
         linearLayout.addView(createScrollViewWithButtons(xServerDisplayActivity, xServerFacade, i));
         if (!this.isLeftToolbarVisible) {
             linearLayout.setVisibility(8);
@@ -138,6 +137,42 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
         viewFacade.addKeyboardModifiersChangeListener(mask -> button.setText(
                 mask.isSet(KeyButNames.SHIFT) ? str_shiftOn : str_shiftOff));
         return button;
+    }
+
+    /**
+     * 修复xegw shift无法切换的问题。
+     */
+    private static Button createShiftButton2(Activity activity, final ViewFacade viewFacade, int i) {
+        final String str_shiftOff = "Shift OFF";
+        final String str_shiftOn = "Shift ON";
+        final Button button = new Button(activity);
+        button.setWidth(i);
+        button.setMaxWidth(i);
+        button.setMinWidth(i);
+        button.setHeight(i);
+        button.setMaxHeight(i);
+        button.setMinHeight(i);
+        button.setText(str_shiftOff);
+        button.setTag(Boolean.FALSE);
+        button.setOnClickListener(new ShiftViewClickListener(viewFacade));
+        //xserver.Keyboard删掉触发监听器，所以回调接收不到。另外keyboard本身的modifierState也无法正常工作。
+        return button;
+    }
+    private static class ShiftViewClickListener implements View.OnClickListener{
+        private final ViewFacade vf;
+
+        public ShiftViewClickListener(ViewFacade vf) {
+            this.vf = vf;
+        }
+
+        @Override
+        public void onClick(View v) {
+            boolean isNowOff = v.getTag().equals(Boolean.FALSE);
+            v.setTag(isNowOff ? Boolean.TRUE : Boolean.FALSE);
+            ((Button) v).setText(isNowOff ? "Shift ON" : "Shift OFF");
+            if (isNowOff) vf.injectKeyPress((byte) KEY_SHIFT_LEFT.getValue());
+            else vf.injectKeyRelease((byte) KEY_SHIFT_LEFT.getValue());
+        }
     }
 
     private static ScrollView createScrollViewWithButtons(Activity activity, ViewFacade viewFacade, int i) {
