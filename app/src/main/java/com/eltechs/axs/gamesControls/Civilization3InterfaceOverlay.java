@@ -2,6 +2,8 @@ package com.eltechs.axs.gamesControls;
 
 import static com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeState.MOUSE_MODE_LEFT;
 import static com.eltechs.axs.GestureStateMachine.GestureMouseMode.MouseModeState.MOUSE_MODE_RIGHT;
+import static com.eltechs.axs.KeyCodesX.KEY_SHIFT_LEFT;
+import static com.eltechs.axs.KeyCodesX.KEY_SHIFT_RIGHT;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,7 +17,7 @@ import android.widget.ScrollView;
 import com.eltechs.axs.CommonApplicationConfigurationAccessor;
 import com.eltechs.axs.GestureStateMachine.GestureMouseMode;
 import com.eltechs.axs.KeyCodesX;
-import com.eltechs.axs.R_original;
+import com.eltechs.ed.R;
 import com.eltechs.axs.TouchScreenControlsFactory;
 import com.eltechs.axs.activities.XServerDisplayActivity;
 import com.eltechs.axs.activities.XServerDisplayActivityInterfaceOverlay;
@@ -107,8 +109,8 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
     }
 
     private static Button createShiftButton(Activity activity, final ViewFacade viewFacade, int i) {
-        final String str_shiftOff = activity.getResources().getString(R_original.string.civ3_shift_off);
-        final String str_shiftOn = activity.getResources().getString(R_original.string.civ3_shift_on);
+        final String str_shiftOff = activity.getResources().getString(R.string.civ3_shift_off);
+        final String str_shiftOn = activity.getResources().getString(R.string.civ3_shift_on);
         final Button button = new Button(activity);
         button.setWidth(i);
         button.setMaxWidth(i);
@@ -118,7 +120,8 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
         button.setMinHeight(i);
         button.setText(str_shiftOff);
         button.setOnClickListener(view ->
-                viewFacade.switchModifierState(KeyButNames.SHIFT, (byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), true));
+                viewFacade.switchModifierState(KeyButNames.SHIFT, (byte) KEY_SHIFT_LEFT.getValue(), true));
+        //xserver.Keyboard删掉触发监听器，所以这里接收不到。另外keyboard本身的modifierState也无法正常工作。
         viewFacade.addKeyboardListener(new KeyboardListener() { // from class: com.eltechs.axs.gamesControls.Civilization3InterfaceOverlay.2
             @Override // com.eltechs.axs.xserver.KeyboardListener
             public void keyPressed(byte b, int i2, Mask<KeyButNames> mask) {
@@ -126,12 +129,14 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
 
             @Override // com.eltechs.axs.xserver.KeyboardListener
             public void keyReleased(byte b, int i2, Mask<KeyButNames> mask) {
-                if (b != ((byte) KeyCodesX.KEY_SHIFT_LEFT.getValue()) && b!= ((byte) KeyCodesX.KEY_SHIFT_RIGHT.getValue()))
-                    viewFacade.setModifierState(KeyButNames.SHIFT, false, (byte) KeyCodesX.KEY_SHIFT_LEFT.getValue(), true);
+                if (b != ((byte) KEY_SHIFT_LEFT.getValue())
+                        && b!= ((byte) KEY_SHIFT_RIGHT.getValue()))
+                    viewFacade.setModifierState(KeyButNames.SHIFT, false, (byte) KEY_SHIFT_LEFT.getValue(), true);
             }
         });
 
-        viewFacade.addKeyboardModifiersChangeListener(mask -> button.setText(mask.isSet(KeyButNames.SHIFT) ? str_shiftOn : str_shiftOff));
+        viewFacade.addKeyboardModifiersChangeListener(mask -> button.setText(
+                mask.isSet(KeyButNames.SHIFT) ? str_shiftOn : str_shiftOff));
         return button;
     }
 
@@ -158,7 +163,7 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
     }
 
     private static ImageButton createMouseModeButton(Activity activity, final GestureMouseMode gestureMouseMode, int size) {
-        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, size, size, R_original.drawable.mouse_left);
+        final ImageButton createRegularImageButton = ButtonHelpers.createRegularImageButton(activity, size, size, R.drawable.mouse_left);
         createRegularImageButton.setOnClickListener(view -> gestureMouseMode.setState(
                 gestureMouseMode.getState().equals(MOUSE_MODE_LEFT)
                         ? MOUSE_MODE_RIGHT
@@ -166,9 +171,9 @@ public class Civilization3InterfaceOverlay implements XServerDisplayActivityInte
 
         gestureMouseMode.addListener((gestureMouseMode2, mouseModeState) -> {
             if (mouseModeState == MOUSE_MODE_LEFT) {
-                createRegularImageButton.setImageResource(R_original.drawable.mouse_left);
+                createRegularImageButton.setImageResource(R.drawable.mouse_left);
             } else {
-                createRegularImageButton.setImageResource(R_original.drawable.mouse_right);
+                createRegularImageButton.setImageResource(R.drawable.mouse_right);
             }
         });
         return createRegularImageButton;
