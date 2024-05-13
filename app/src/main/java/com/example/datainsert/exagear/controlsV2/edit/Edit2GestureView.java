@@ -23,6 +23,8 @@ import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchArea;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
+import com.example.datainsert.exagear.controlsV2.edit.gestures.EditGestureDialog;
+import com.example.datainsert.exagear.controlsV2.edit.gestures.EditGestureRootView;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMAction2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressLint("NotifyDataSetChanged")
-public class Edit2GestureView extends LinearLayout implements EditConfigWindow.OnReEnterListener {
+public class Edit2GestureView extends LinearLayout implements EditConfigWindow.OnReEnterListener, EditConfigWindow.RequestFullScreen {
     private final StateAdapter mStateAdapter;
     private final ActionAdapter mActionAdapter;
     private final List<Integer> stateTypeCreatable = new ArrayList<>();
@@ -108,6 +110,12 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
             });
         });
 
+        Button btnNewLayoutTest = new Button(c);
+        btnNewLayoutTest.setText("新UI测试");
+        btnNewLayoutTest.setOnClickListener(v -> {
+            Const.getEditWindow().toNextView(new EditGestureRootView(v.getContext(), getGestureAreaModel()), "手势编辑");
+        });
+
         //放入tabPager
         LinearLayout linearState = new LinearLayout(c);
         linearState.setOrientation(VERTICAL);
@@ -123,6 +131,7 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
         linearDebug.setOrientation(VERTICAL);
         linearDebug.addView(checkGestureHistory);
         linearDebug.addView(btnPreviewInGraphic);
+        linearDebug.addView(btnNewLayoutTest);
 
         String[] tabTitles = RR.getSArr(RR.ctr2_ges_subTitles);
         TabPagerLayout tabPagerLayout = new TabPagerLayout(c)
@@ -200,6 +209,11 @@ public class Edit2GestureView extends LinearLayout implements EditConfigWindow.O
         //状态重命名后刷新
         mStateAdapter.setDataList(getGestureAreaModel().getEditableStateList());
         mActionAdapter.setDataList(getGestureAreaModel().getEditableActionList());
+    }
+
+    @Override
+    public boolean isApplyLimit() {
+        return true;
     }
 
     private static class StateAdapter extends RecyclerAdapter<FSMState2> {

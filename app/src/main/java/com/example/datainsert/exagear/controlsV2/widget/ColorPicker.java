@@ -1,4 +1,4 @@
-package com.example.datainsert.exagear.controlsV2.widget.colorpicker;
+package com.example.datainsert.exagear.controlsV2.widget;
 
 import static android.graphics.drawable.GradientDrawable.OVAL;
 import static android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT;
@@ -6,14 +6,22 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.Region;
+import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -169,7 +177,7 @@ public class ColorPicker extends LinearLayout {
             @Override
             protected Drawable createProgressDrawable(int[] colors) {
                 mProgressGradient = createGradientDrawable(new int[]{0, 0});
-                return wrapAlphaAlertBg(getContext(), mProgressGradient);
+                return wrapAlphaAlertBg(getContext(), mProgressGradient, 400);
             }
 
 
@@ -203,7 +211,7 @@ public class ColorPicker extends LinearLayout {
         resultD.setCornerRadius(10);
 //        resultD.setSize(QH.px(c,72),QH.px(c,36));
         mImageResult.setImageDrawable(resultD);
-        mImageResult.setBackground(wrapAlphaAlertBg(c, new GradientDrawable()));
+        mImageResult.setBackground(DrawableMosaic.repeatedBitmapDrawable(c.getResources(), 10));
 
         mEditHex = new LimitEditText(c);
         mEditHex.setText("000000");
@@ -224,7 +232,7 @@ public class ColorPicker extends LinearLayout {
         // 这个设置会修改seekH的progress，触发监听导致又修改了EditText的值，导致输入和输出不等，不过还好差的不多
         mEditHex.setOnEditorActionListener((v, actionId, event) -> {
             String s = v.getText().toString();
-            updateResultAndHSV(0xff000000 | Integer.valueOf(s.length() == 0 ? "0" : s, 16));
+            updateResultAndHSV(0xff000000 | Integer.valueOf(s.isEmpty() ? "0" : s, 16));
             return true;
         });
 
@@ -261,12 +269,13 @@ public class ColorPicker extends LinearLayout {
     }
 
     /**
-     * 需要注意给topDrawable设置一个宽高，否则会按照bitmap的宽高来，非常小
+     * 在给定drawable下面再加上一个黑白格背景作为透明度提示
+     * <br/> 需要注意给topDrawable设置一个宽高，否则会按照bitmap的宽高来，非常小
      */
-    public static LayerDrawable wrapAlphaAlertBg(Context c, GradientDrawable topDrawable) {
-        return new LayerDrawable(new Drawable[]{DrawableMosaic.repeatedBitmapDrawable(c.getResources()), topDrawable});
+    public static LayerDrawable wrapAlphaAlertBg(Context c, GradientDrawable topDrawable, float cornerRadius) {
+        topDrawable.setCornerRadius(cornerRadius);
+        return new LayerDrawable(new Drawable[]{DrawableMosaic.repeatedBitmapDrawable(c.getResources(), cornerRadius), topDrawable});
     }
-
 
     private String colorToHexString(int color) {
         StringBuilder builder = new StringBuilder();
@@ -316,7 +325,7 @@ public class ColorPicker extends LinearLayout {
             super(context);
             setMax(max);
 //            setMinimumHeight(minTouchSize);
-            setProgressDrawableTiled(createProgressDrawable(colors));
+            setProgressDrawable(createProgressDrawable(colors));
             setThumb(createThumbDrawable());
             setSplitTrack(false);
             setOnSeekBarChangeListener(this);

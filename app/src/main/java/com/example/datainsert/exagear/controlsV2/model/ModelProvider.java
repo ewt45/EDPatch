@@ -18,8 +18,10 @@ import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.FSMR;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionButtonClick;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionMouseClickByMode;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionPointerMove;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionRunOption;
+import com.example.datainsert.exagear.controlsV2.gestureMachine.state.ActionSwitchMouseMode;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.State1FingerMoveToMouseMove;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.State2FingersZoom;
 import com.example.datainsert.exagear.controlsV2.gestureMachine.state.StateCheckFingerNearToPointer;
@@ -84,7 +86,9 @@ public class ModelProvider {
             FSMR.state.判断_手指与鼠标位置距离,
             FSMR.state.监测手指数量变化,
             FSMR.state.两根手指缩放,
-            FSMR.state.操作_直接执行选项
+            FSMR.state.操作_直接执行选项,
+            FSMR.state.操作_切换鼠标左右键,
+            FSMR.state.操作_根据模式点击鼠标按键
     };
 
     public static final Class<? extends FSMState2>[] stateClasses = new Class[]{
@@ -98,7 +102,9 @@ public class ModelProvider {
             StateCheckFingerNearToPointer.class,
             StateCountDownWaitFingerNumChange.class,
             State2FingersZoom.class,
-            ActionRunOption.class
+            ActionRunOption.class,
+            ActionSwitchMouseMode.class,
+            ActionMouseClickByMode.class
     };
 
     public static Class<? extends TouchArea<? extends TouchAreaModel>> getAreaClass(Class<? extends TouchAreaModel> modelClass) {

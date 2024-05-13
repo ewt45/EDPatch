@@ -84,7 +84,8 @@ public abstract class FSMState2 {
 
 
     /**
-     * 根据给定标题，说明，单个属性编辑视图，创建完整的编辑湿度
+     * 根据给定标题，说明，单个属性编辑视图，创建完整的编辑视图
+     * <br/> 如果想创建空的视图。后两个参数，长度设为0即可
      *
      * @param titleAndHelps 每个字符串数组第一个元素是属性名称，第二个为null或者是这个属性的说明，在名称右上角显示一个问号，用户可点击
      * @param editViews     一般都是LimitEditText。单个属性的编辑视图
@@ -154,7 +155,7 @@ public abstract class FSMState2 {
     }
 
     /**
-     * 注意此id是标识一个示例，而非state类型（stateTag）
+     * 注意此id是标识一个实例，而非state类型（stateTag）
      */
     public int getId() {
         return id;
@@ -204,7 +205,7 @@ public abstract class FSMState2 {
      * @see #createTranEditView(FSMState2, Context, OneGestureArea)
      */
     public View createPropEditView(Context c) {
-        throw new RuntimeException("尚未实现编辑内容");
+        return createEditViewQuickly(this, c, new String[0][0], new View[0]);
     }
 
     /**

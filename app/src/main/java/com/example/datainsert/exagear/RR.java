@@ -200,7 +200,7 @@ public class RR {
     public static int fsm_event_fastMove = 181;
     public static int fsm_event_noMoveThenRelease = 182;
     public static int fsm_event_moveThenRelease = 183;
-    public static int fsm_state_testSpd = 184;
+    public static int fsm_event_finger_num_same = 184;
     public static int fsm_state_init=185;
     public static int fsm_state_fallback=186;
     public static int fsm_state_1FMouseMove=187;
@@ -211,7 +211,9 @@ public class RR {
     public static int fsm_state_fingerNum=192;
     public static int fsm_state_2FZoom=193;
     public static int fsm_state_action_option =194;
-    public static int fsm_event_finger_num_same = 195;
+    public static int fsm_state_testSpd = 195;
+    public static int fsm_state_action_switchMouseClickMode = 277;
+    public static int fsm_state_action_clickMouseByMode = 278;
     public static int ctr2_editTab_titles = 200;
     public static int global_type = 204;
     public static int global_color = 205;
@@ -282,7 +284,7 @@ public class RR {
     public static int ctr2_profile_bundleProfNotAllow = 274;
     public static int ctr2_prop_lengthLimit = 275;
     public static int ctr2_prop_vertical = 276;
-    public static int ctr2_prop_vertical_names = 277;
+    public static int ctr2_prop_vertical_names = 279;
 
 
 
@@ -492,6 +494,8 @@ public class RR {
         zhArray.put(fsm_state_fingerNum,"检测手指数量变化");
         zhArray.put(fsm_state_2FZoom,"两根手指缩放");
         zhArray.put(fsm_state_action_option,"执行选项");
+        zhArray.put(fsm_state_action_switchMouseClickMode, "切换鼠标左右模式");
+        zhArray.put(fsm_state_action_clickMouseByMode, "根据鼠标左右模式点击左键/右键");
         zhArray.put(ctr2_editTab_titles,"按键$手势$多配置$其他");
         zhArray.put(global_type,"类型");
         zhArray.put(global_color,"颜色");
@@ -575,6 +579,7 @@ public class RR {
         zhArray.put(ctr2_prop_lengthLimit, "长度限制");
         zhArray.put(ctr2_prop_vertical, "排列方向");
         zhArray.put(ctr2_prop_vertical_names, "横向$竖向");
+
 
 
 
@@ -792,6 +797,8 @@ public class RR {
         enArray.put(fsm_state_fingerNum,"Detect finger number change");
         enArray.put(fsm_state_2FZoom,"Two fingers zoom");
         enArray.put(fsm_state_action_option,"Run options");
+        enArray.put(fsm_state_action_switchMouseClickMode, "Switch mouse click mode (left/right)");
+        enArray.put(fsm_state_action_clickMouseByMode, "Click left/right button by mouse click mode");
         enArray.put(ctr2_editTab_titles,"Keys$Gestures$Profiles$Others");
         enArray.put(global_type,"Type");
         enArray.put(global_color,"Color");
@@ -879,6 +886,7 @@ public class RR {
         enArray.put(ctr2_prop_lengthLimit, "Length limit");
         enArray.put(ctr2_prop_vertical, "Orientation");
         enArray.put(ctr2_prop_vertical_names, "horizontal$vertical");
+
 
 
         /*

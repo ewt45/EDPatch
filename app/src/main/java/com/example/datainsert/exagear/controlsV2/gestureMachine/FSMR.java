@@ -49,6 +49,8 @@ public class FSMR {
         stateArr.put(FSMR.state.监测手指数量变化, getS(RR.fsm_state_fingerNum));
         stateArr.put(FSMR.state.两根手指缩放, getS(RR.fsm_state_2FZoom));
         stateArr.put(state.操作_直接执行选项, getS(RR.fsm_state_action_option));
+        stateArr.put(state.操作_切换鼠标左右键, getS(RR.fsm_state_action_switchMouseClickMode));
+        stateArr.put(state.操作_根据模式点击鼠标按键, getS(RR.fsm_state_action_clickMouseByMode));
 
         eventIdArr.put(event.完成, getS(RR.fsm_event_complete));
         eventIdArr.put(event.某手指松开, getS(RR.fsm_event_release));
@@ -147,6 +149,8 @@ public class FSMR {
         public static final int 监测手指数量变化 = 9;
         public static final int 两根手指缩放 = 10;
         public static final int 操作_直接执行选项 = 11;
+        public static final int 操作_切换鼠标左右键 = 12;
+        public static final int 操作_根据模式点击鼠标按键 = 13;
     }
 
 

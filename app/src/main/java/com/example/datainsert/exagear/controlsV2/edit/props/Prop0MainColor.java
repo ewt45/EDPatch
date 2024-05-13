@@ -8,8 +8,6 @@ import static com.example.datainsert.exagear.controlsV2.Const.minTouchSize;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,7 +19,7 @@ import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.controlsV2.TouchAreaModel;
 import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
-import com.example.datainsert.exagear.controlsV2.widget.colorpicker.ColorPicker;
+import com.example.datainsert.exagear.controlsV2.widget.ColorPicker;
 import com.example.datainsert.exagear.QH;
 
 public class Prop0MainColor extends Prop<TouchAreaModel> {
@@ -65,7 +63,7 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
         ImageView imageBgColor = new ImageView(c);
         mDrawable = new GradientDrawable();
         mDrawable.setSize(minTouchSize * 2, minTouchSize);//需要给这个设置一个宽高，否则会按照bitmap的宽高来，非常小
-        imageBgColor.setImageDrawable(ColorPicker.wrapAlphaAlertBg(c, mDrawable));
+        imageBgColor.setImageDrawable(ColorPicker.wrapAlphaAlertBg(c, mDrawable, 10));
         imageBgColor.setMinimumHeight(minTouchSize);
         imageBgColor.setOnClickListener(v -> {
             LinearLayout linearColorRoot = new LinearLayout(c);

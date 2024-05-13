@@ -8,14 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import com.example.datainsert.exagear.controlsV2.widget.colorpicker.ColorPicker;
+import android.util.Log;
 
 /**
  * 绘制一个马赛克背景 用于标识透明
@@ -35,15 +36,41 @@ public class DrawableMosaic extends Drawable {
     /**
      * 原马赛克只有四格，此函数返回一个TileMode为REPEAT的BitmapDrawable，重复平铺填满画面
      * @param resources 一般是context.getResources()
+     * @param cornerRadius bitmapDrawable的圆角大小
      * @return BitmapDrawable
      */
-    public static BitmapDrawable repeatedBitmapDrawable(Resources resources){
+    public static BitmapDrawable repeatedBitmapDrawable(Resources resources, float cornerRadius){
         Drawable bgAlertSingleDrawable = new DrawableMosaic();//c.getDrawable(R.drawable.alpha_bg);
         Bitmap bgAlertSingleBitmap = Bitmap.createBitmap(dp8*2,dp8*2, Bitmap.Config.ARGB_8888);
         Canvas tmpCanvas = new Canvas(bgAlertSingleBitmap);
         bgAlertSingleDrawable.setBounds(0, 0, bgAlertSingleBitmap.getWidth(), bgAlertSingleBitmap.getHeight());
         bgAlertSingleDrawable.draw(tmpCanvas);
-        BitmapDrawable bgAlertRepeatDrawable = new BitmapDrawable(resources, bgAlertSingleBitmap);
+        //BitmapDrawable没有自带设置圆角的函数，直接重写draw，里面clipRoundRect。
+        BitmapDrawable bgAlertRepeatDrawable = new BitmapDrawable(resources, bgAlertSingleBitmap) {
+            private final Path roundRectPath = new Path();
+
+            @Override
+            protected void onBoundsChange(Rect b) {
+                super.onBoundsChange(b);
+                roundRectPath.reset();
+                roundRectPath.addRoundRect(b.left, b.top, b.right, b.bottom, cornerRadius, cornerRadius, Path.Direction.CW);
+            }
+
+            @Nullable
+            @Override
+            public Region getTransparentRegion() {
+                Log.d("TAG", "getTransparentRegion: 半径="+cornerRadius);
+                return null;
+            }
+
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.save();
+                canvas.clipPath(roundRectPath);
+                super.draw(canvas);
+                canvas.restore();
+            }
+        };
         bgAlertRepeatDrawable.setTileModeXY(REPEAT, REPEAT);
         return bgAlertRepeatDrawable;
     }
@@ -70,9 +97,7 @@ public class DrawableMosaic extends Drawable {
     }
 
     @Override
-    public void setColorFilter(@Nullable ColorFilter colorFilter) {
-
-    }
+    public void setColorFilter(@Nullable ColorFilter colorFilter) {}
 
     @Override
     public int getOpacity() {

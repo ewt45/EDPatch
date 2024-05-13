@@ -1,11 +1,12 @@
 package com.example.datainsert.exagear.controlsV2.gestureMachine;
 
+import android.support.annotation.IntDef;
+
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.Finger;
 import com.example.datainsert.exagear.controlsV2.TouchAdapter;
 import com.example.datainsert.exagear.controlsV2.XServerViewHolder;
 import com.example.datainsert.exagear.controlsV2.XZoomHandler;
-import com.example.datainsert.exagear.controlsV2.axs.AndroidPointReporter;
 import com.example.datainsert.exagear.controlsV2.touchAdapter.GestureDistributeAdapter;
 import com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaGesture;
 
@@ -17,6 +18,9 @@ public class GestureContext2 {
     private final GestureDistributeAdapter gestureTouchAdapter;
 //    private KeyEventReporter keyboardReporter;
     private GestureMachine machine;
+    public static final int MOUSE_CLICK_MODE_LEFT = 0;
+    public static final int MOUSE_CLICK_MODE_RIGHT = 1;
+    @MouseClickMode private int mouseClickMode = MOUSE_CLICK_MODE_LEFT; //点击时是左键还是右键
 
     public GestureContext2(TouchAreaGesture touchArea, GestureDistributeAdapter gestureTouchAdapter) {
         this.host = Const.getXServerHolder();
@@ -88,6 +92,14 @@ public class GestureContext2 {
     }
 
 
+    public void setMouseClickMode(@MouseClickMode int mode) {
+        this.mouseClickMode = mode;
+    }
 
+    public int getMouseClickMode() {
+        return mouseClickMode;
+    }
 
+    @IntDef({MOUSE_CLICK_MODE_LEFT, MOUSE_CLICK_MODE_RIGHT})
+    @interface MouseClickMode{}
 }

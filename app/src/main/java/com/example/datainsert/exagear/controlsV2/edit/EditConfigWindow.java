@@ -14,21 +14,17 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.NestedScrollView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
-import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.eltechs.ed.R;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.QH;
 import com.example.datainsert.exagear.RR;
@@ -51,7 +47,8 @@ public class EditConfigWindow extends RelativeLayout {
     private final List<View> mTitles = new ArrayList<>();
     private final List<View> mSubViews = new ArrayList<>();
     private final ImageView mIconView;//最小化时只显示这个图标
-    private boolean isMinimized = false;
+    private boolean isMinimized = false; //当前是否最小化
+    private boolean isBoundLimited = true; //当前是否限制视图宽高
 
     public EditConfigWindow(Context c) {
         super(c);
@@ -158,14 +155,6 @@ public class EditConfigWindow extends RelativeLayout {
         toNextView(editMain, editMain.mToolbar);
     }
 
-    private static int min(int... values) {
-        int min = values[0];
-        for (int value : values)
-            if (value < min)
-                min = value;
-        return min;
-    }
-
     /**
      * 最大化时，动画效果会导致左侧出界，所以需要临时禁用
      */
@@ -199,6 +188,9 @@ public class EditConfigWindow extends RelativeLayout {
         }
     }
 
+    /**
+     * 同 {@link #toNextView(View, View)}
+     */
     public void toNextView(View content, String title) {
         TextView titleView = QH.getTitleTextView(content.getContext(), title);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
@@ -207,12 +199,21 @@ public class EditConfigWindow extends RelativeLayout {
         toNextView(content, titleView);
     }
 
+    /**
+     * 进入下一个视图。左上角图标变为箭头，点击可返回上一个视图。箭头右侧显示titleView。下方侠士content
+     * @param content 若实现{@link EditConfigWindow.RequestFullScreen}，则根据此调整是否显示宽高。
+     *                若实现{@link EditConfigWindow.OnReEnterListener}，则之后再进入另外一个视图并返回到此content视图时，调用该回调
+     * @param titleView 可为标题，也可为tab等自定义视图
+     */
     public void toNextView(View content, @NonNull View titleView) {
 //        TransitionManager.beginDelayedTransition(this);
         if (titleView.getClass().equals(TextView.class)) {
             titleView.setLayoutParams(QH.LPLinear.one(0, -1).weight().right().to());
             TestHelper.onTouchMoveView(titleView, this);
         }
+
+        //检查是否需要修改限制宽高
+        applyWindowSizeByTargetView(content);
 
         mLinearTitle.removeViewAt(1);
         mLinearTitle.addView(titleView);
@@ -225,6 +226,9 @@ public class EditConfigWindow extends RelativeLayout {
         changeHomeButtonIcon();
     }
 
+    /**
+     * 若上一个视图实现{@link EditConfigWindow.OnReEnterListener}，则调用回调
+     */
     public void toPreviousView() {
         if (isFirstView())
             return;
@@ -236,6 +240,10 @@ public class EditConfigWindow extends RelativeLayout {
 
         mPager.removeAllViews();
         View targetSubView = mSubViews.get(mSubViews.size() - 1);
+
+        //检查是否需要修改限制宽高
+        applyWindowSizeByTargetView(targetSubView);
+
         mPager.addView(targetSubView,QH.LPRelative.one().alignParentWidth().to());
         if (targetSubView instanceof OnReEnterListener)
             ((OnReEnterListener) targetSubView).onReEnter();
@@ -262,11 +270,33 @@ public class EditConfigWindow extends RelativeLayout {
     }
 
     /**
+     * 准备要显示的view，如果实现了{@link EditConfigWindow.RequestFullScreen}，则根据其设定，修改是否限制宽高。若不限制宽高，则margin也设为0
+     */
+    private void applyWindowSizeByTargetView(View targetView) {
+        if(!(targetView instanceof RequestFullScreen))
+            return;
+
+        boolean oldValue = isBoundLimited;
+        isBoundLimited = ((RequestFullScreen) targetView).isApplyLimit();
+        if(isBoundLimited != oldValue && !isBoundLimited) {
+            MarginLayoutParams params = (MarginLayoutParams) getLayoutParams();
+            params.leftMargin=0;
+            params.topMargin=0;
+            setLayoutParams(params);
+        }
+    }
+
+    /**
      * layoutParams先传 width=match_parent height=wrap_content，然后如果太大了 再根据mMaxWidth/Height限制一下
      * 这里一定要在过小时给定精确宽高，否则移动时无法判断是否出界
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if(!isBoundLimited) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            return;
+        }
+
         //先修改一下宽高，合适了再让super处理
         int oriWidthSize = MeasureSpec.getSize(widthMeasureSpec);
         int oriHeightSize = MeasureSpec.getSize(heightMeasureSpec);
@@ -313,5 +343,13 @@ public class EditConfigWindow extends RelativeLayout {
      */
     public interface OnReEnterListener {
         void onReEnter();
+    }
+
+    /**
+     * 调用{@link #toNextView(View, String)}时，要显示的下一个View可以实现此接口，
+     * 以控制自身是全屏还是限制最大宽高
+     */
+    public interface RequestFullScreen {
+        boolean isApplyLimit();
     }
 }

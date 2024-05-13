@@ -18,7 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * 编辑模式下，用于修改设置的悬浮窗
  */
-public class Edit0Main extends RelativeLayout implements EditConfigWindow.OnReEnterListener{
+public class Edit0Main extends RelativeLayout implements EditConfigWindow.OnReEnterListener, EditConfigWindow.RequestFullScreen{
     private static final String TAG = "EditConfigWindow";
     final View mToolbar;
 
@@ -67,5 +67,10 @@ public class Edit0Main extends RelativeLayout implements EditConfigWindow.OnReEn
             if(sub instanceof EditConfigWindow.OnReEnterListener)
                 ((EditConfigWindow.OnReEnterListener) sub).onReEnter();
         }
+    }
+
+    @Override
+    public boolean isApplyLimit() {
+        return true;
     }
 }

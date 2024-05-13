@@ -24,7 +24,7 @@ import com.example.datainsert.exagear.controlsV2.model.OneButton;
 public class TouchAreaButton extends TouchArea<OneButton> {
     TextPaint mTextPaint = new TextPaint(); //支持换行需要StaticLayout或Dynamic，但是new了之后不让改Paint，真麻烦
     GradientDrawable mDrawable = new GradientDrawable();
-    PorterDuffXfermode mDSTOVERMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
+//    PorterDuffXfermode mDSTOVERMode = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
     private String lastText = ""; //用于在update文字大小时，与model当前文字对比，如果没变就不重新计算大小了。（每次刷新都计算的话，大小会变来变去）
     private String renderText = ""; //可能在lastText的基础上做一些调整
     private int[] lastWH = {0,0}; //草了宽高也要记录

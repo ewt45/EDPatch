@@ -9,6 +9,7 @@ import static com.example.datainsert.exagear.controlsV2.touchArea.TouchAreaButto
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
@@ -30,6 +31,8 @@ public class TouchAreaColumn extends TouchArea<OneColumn> {
     Paint mLinePaint = new Paint();
     /** 绘制时外部轮廓的边界 */
     Rect mBounds = new Rect();
+
+    Path mClipBorderPath = new Path();
     public TouchAreaColumn(@NonNull OneColumn data) {
         this(data, new ColumnPressAdapter(data));
     }
@@ -89,49 +92,58 @@ public class TouchAreaColumn extends TouchArea<OneColumn> {
     public void onDraw(Canvas canvas) {
         updatePaint();
         boolean isV = mModel.isVertical();
-        canvas.save();
 
         mModel.getBounds(mBounds);
+
+        Rect b = mBounds;
 
         ColumnPressAdapter runtimeAdapter = getAdapter() instanceof ColumnPressAdapter
                 ? (ColumnPressAdapter) getAdapter() : null;
 
         canvas.save();
         //绘制文字和分割线时，用clipRect让出轮廓描边的宽度
-        canvas.clipRect(mBounds.left+TOUCH_AREA_STROKE_WIDTH, mBounds.top+TOUCH_AREA_STROKE_WIDTH, mBounds.right-TOUCH_AREA_STROKE_WIDTH, mBounds.bottom-TOUCH_AREA_STROKE_WIDTH);
+//        canvas.clipRect(mBounds.left+TOUCH_AREA_STROKE_WIDTH, mBounds.top+TOUCH_AREA_STROKE_WIDTH, mBounds.right-TOUCH_AREA_STROKE_WIDTH, mBounds.bottom-TOUCH_AREA_STROKE_WIDTH);
 
-        //应用当前滚动后的偏移 (先裁切再滚动，保证轮廓不跟着滚动）
         float scrollOffset = runtimeAdapter != null ? runtimeAdapter.getScrollOffset() : 0;
-        float canvasTranslateX = isV ? 0 : scrollOffset, canvasTranslateY = isV ? scrollOffset : 0;
-        canvas.translate(canvasTranslateX, canvasTranslateY);
+        int strokeWidth = TOUCH_AREA_STROKE_WIDTH;
+        float oneSize = isV ? mModel.getHeight() : mModel.getWidth();
 
-        //perpendicular  parallel
-        //在排列方向上的那些边，命名为start/end_alongAxis, 需要根据循环不停改变 . 如果垂直，则为两个y值，水平则为两个x轴的值
-        // 与排列方向垂直的那些边，命名为 start/end_offAxis，只需计算一次
+        //裁切边框圆角矩形
+        mClipBorderPath.reset();
+        mClipBorderPath.addRoundRect(b.left+strokeWidth, b.top+strokeWidth, b.right-strokeWidth, b.bottom-strokeWidth,
+                TOUCH_AREA_ROUND_CORNER_RADIUS, TOUCH_AREA_ROUND_CORNER_RADIUS, Path.Direction.CW);
+        canvas.clipPath(mClipBorderPath);
 
-        float start_offAxis = isV ? mBounds.left : mBounds.top;
-        float end_offAxis = isV ? mBounds.right : mBounds.bottom;
-        float center_offAxis = (start_offAxis + end_offAxis) / 2;
+        float oneTop = isV ? b.top + scrollOffset : b.top;
+        float oneBottom = isV ? -1 : b.bottom;
+        float oneLeft = isV ? b.left : b.left + scrollOffset;
+        float oneRight = isV ? b.right : -1;
 
-        //要全部画出来然后裁掉吗？还是只画可见的部分
-        float centerX = mBounds.centerX();
-        for(int i=0; i<mModel.getKeycodes().size(); i++) {
-            //当前按钮所对应的沿轴向两个边界
-            float start_alongAxis = isV ? (mBounds.top + i*mModel.getHeight()) : (mBounds.left + i*mModel.getWidth());
-            float end_alongAxis = isV ? (mBounds.top + (i+1)*mModel.getHeight()) : (mBounds.left + (i+1)*mModel.getWidth());
-            float center_alongAxis = (start_alongAxis + end_alongAxis) / 2;
+        for (byte i = 0; i < mModel.getKeycodes().size(); i++) { //loop all buttons
+            if(isV) oneBottom = oneTop + oneSize;
+            else oneRight = oneLeft + oneSize;
+
             //绘制文字
-            String text = mModel.getNameAt(i);
-            setPaintTextSize(text, mTextPaint, mModel.getWidth() - 2*TOUCH_AREA_STROKE_WIDTH);
-            float textCenterX = isV ? center_offAxis : center_alongAxis;
-            float textCenterY = adjustTextPaintCenterY(isV ? center_alongAxis : center_offAxis, mTextPaint);
-            canvas.drawText(mModel.getNameAt(i), textCenterX, textCenterY, mTextPaint);
+            boolean shouldDrawText = isV
+                    ? (oneTop < b.bottom && oneBottom > b.top)
+                    : (oneLeft < b.right && oneRight > b.left);
+            if(shouldDrawText) {
+                String text = mModel.getNameAt(i);
+                setPaintTextSize(text, mTextPaint, mModel.getWidth() - 2*TOUCH_AREA_STROKE_WIDTH);
+                float textCenterX = (oneLeft + oneRight) / 2;
+                float textCenterY = adjustTextPaintCenterY((oneTop + oneBottom) / 2, mTextPaint);
+                canvas.drawText(text, textCenterX, textCenterY, mTextPaint);
+            }
+
             //绘制底部分割线
-            float endLineStartX = isV ? start_offAxis : end_alongAxis;
-            float endLineStartY = isV ? end_alongAxis : start_offAxis;
-            float endLineStopX = isV ? end_offAxis : end_alongAxis;
-            float endLineStopY = isV ? end_alongAxis : end_offAxis;
-            canvas.drawLine(endLineStartX, endLineStartY, endLineStopX, endLineStopY, mLinePaint);
+            if(isV && (oneBottom > b.top && oneBottom < b.bottom))
+                canvas.drawLine(oneLeft, oneBottom, oneRight, oneBottom, mLinePaint);
+            else if(!isV && (oneRight > b.left && oneRight  < b.right)) {
+                canvas.drawLine(oneRight, oneTop, oneRight, oneBottom, mLinePaint);
+            }
+
+            oneTop += (isV ? oneSize : 0);
+            oneLeft += (!isV ? oneSize : 0);
         }
 
         canvas.restore();
@@ -141,7 +153,6 @@ public class TouchAreaColumn extends TouchArea<OneColumn> {
         mDrawable.setBounds(mBounds.left, mBounds.top, mBounds.right, mBounds.bottom);
         mDrawable.draw(canvas);
 
-        canvas.restore();
 
     }
 }

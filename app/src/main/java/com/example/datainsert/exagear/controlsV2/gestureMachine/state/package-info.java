@@ -7,7 +7,11 @@
  * <br/>序列化用不到的一定要用transient关键字定义，
  * <br/>对应的stateTag和class记录在ModelProvider中, 对应的文本记录在FSMR的static块中
  * <br/> 需要重写{@link com.example.datainsert.exagear.controlsV2.gestureMachine.FSMState2#createPropEditView(android.content.Context)} 以支持编辑功能
- * <br/><br/> State发送转移事件时，可能会执行附带的动作（Action），action在初始化时和其他State一同传入状态机，执行时调用run方法，不发送事件。tag的isAction为true
+ * <br/>
+ * <br/>
+ * Action: State发送转移事件时，可能会执行附带的动作（Action），
+ * action在初始化时和其他State一同传入状态机，执行时调用run方法，不发送事件。
+ * tag的isAction为true
  *
  */
 package com.example.datainsert.exagear.controlsV2.gestureMachine.state;
