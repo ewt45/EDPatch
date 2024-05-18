@@ -34,7 +34,7 @@ public interface XServerViewHolder {
     /**
      * 用于控制屏幕缩放。如果没有实现，可以传入XZoomHandler.EMPTY
      */
-    XZoomHandler getZoomController();
+    XZoomHandler getZoomHandler();
 
     /**
      * 设置x屏幕上可见的范围的起始位置和宽高（相对完整可见区域）,用于屏幕缩放时

@@ -34,8 +34,8 @@ public class TouchAreaStick extends TouchArea<OneStick> {
 
     private void updatePaint() {
         mRoundDraw.setCornerRadius(400);
-        mRoundDraw.setStroke((int) (mModel.getOuterRadius()/16), TestHelper.darkenColor(mModel.mainColor));//描边宽度根据大小而变化，为外圆半径的十分之一
-        mRoundDraw.setColor(mModel.mainColor);
+        mRoundDraw.setStroke((int) (mModel.getOuterRadius()/16), TestHelper.darkenColor(mModel.getMainColor()));//描边宽度根据大小而变化，为外圆半径的十分之一
+        mRoundDraw.setColor(mModel.getMainColor());
     }
 
     @Override

@@ -104,6 +104,7 @@ public class OneStick extends TouchAreaModel {
     }
 
     private void mendToOnly4Keycodes() {
+        List<Integer> keycodes = getKeycodes();
         while (keycodes.size() < 4)
             keycodes.add(0);
         while (keycodes.size() > 4)

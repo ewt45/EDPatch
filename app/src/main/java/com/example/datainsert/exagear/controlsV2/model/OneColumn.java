@@ -47,7 +47,7 @@ public class OneColumn extends TouchAreaModel {
      * getHeight/Width获取的是单个按钮的宽高。此函数获取的是沿排列方向的总长度。不受maxLength限制
      */
     public int getTotalLength(){
-        return keycodes.size() * (isVertical ? getHeight() : getWidth());
+        return getKeycodes().size() * (isVertical ? getHeight() : getWidth());
     }
 
     /**
@@ -122,6 +122,7 @@ public class OneColumn extends TouchAreaModel {
      * 根据给定keycode返回用户友好名称。若该keycode不存于列表中会抛出异常
      */
     public String getNameByKeycode(Integer keycode){
+        List<Integer> keycodes = getKeycodes();
         for(int i=0; i<keycodes.size(); i++)
             if(keycodes.get(i).equals(keycode))
                 return getNameAt(i);
@@ -139,6 +140,7 @@ public class OneColumn extends TouchAreaModel {
      * 根据给定keycode 设置其用户友好名称。若该keycode不存于列表中会抛出异常
      */
     public void setNameByKeycode(Integer keycode, String name) {
+        List<Integer> keycodes = getKeycodes();
         for(int i=0; i<keycodes.size(); i++)
             if(keycodes.get(i).equals(keycode)) {
                 setNameAt(i, name);

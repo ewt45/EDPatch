@@ -46,7 +46,6 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
     private final Paint mFramePaint = new Paint();
 //    private final Keyboard mKeyboard;
     AndroidMouseReporter mMouse = new AndroidMouseReporter();
-    //TODO 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
     private OneProfile mProfile;
     private EditConfigWindow mEditWindow; //编辑模式下的编辑视图根窗口
     private TransitionHistoryView mTvGestureHistory; //显示
@@ -173,7 +172,7 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
 
     @Override // android.view.View
     public boolean onGenericMotionEvent(MotionEvent motionEvent) {
-        //TODO 摇杆的移动好像会进到这里
+        //摇杆的移动好像会进到这里
         boolean isStylus = motionEvent.isFromSource(SOURCE_STYLUS);
         boolean isMouse = motionEvent.isFromSource(SOURCE_MOUSE);
         return isStylus || isMouse
@@ -218,13 +217,8 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
                 }
                 break;
 
-            //TODO 为什么这俩要遍历所有的finger呢，只处理那一个不行吗 （啊貌似pointerId永远对应最后按下的那一根手指，其他手指接收不到事件了）（同时间多个手指的变化只会发送一次事件，所以不能一次只处理一根手指）
+            //为什么这俩要遍历所有的finger呢，只处理那一个不行吗 （啊貌似pointerId永远对应最后按下的那一根手指，其他手指接收不到事件了）（同时间多个手指的变化只会发送一次事件，所以不能一次只处理一根手指）
             case MotionEvent.ACTION_MOVE:
-//                if (this.userFingers[pointerId] != null) {
-//                    this.userFingers[pointerId].update(motionEvent.getX(actionIndex), motionEvent.getY(actionIndex));
-//                    handleFingerMove(this.userFingers[pointerId]);
-//                    break;
-//                }
                 for (int i = 0; i < MAX_FINGERS; i++) {
                     if (this.userFingers[i] != null) {
                         int findPointerIndex = motionEvent.findPointerIndex(i);
@@ -240,10 +234,6 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
                 break;
             case MotionEvent.ACTION_CANCEL:
                 //同时间多个手指的变化只会发送一次事件，所以不能一次只处理一根手指
-//                if (this.userFingers[i] != null) {
-//                    handleFingerUp(this.userFingers[i]);
-//                    this.userFingers[i] = null;
-//                }
                 for (int i = 0; i < MAX_FINGERS; i++) {
                     if (this.userFingers[i] != null) {
                         handleFingerUp(this.userFingers[i]);
@@ -357,7 +347,7 @@ public class TouchAreaView extends FrameLayout implements View.OnKeyListener {
         boolean isEditing = mProfile != null && mProfile.isEditing();
         mProfile = profile;
         mProfile.syncAreaList(isEditing);
-        //TODO 还应该同步profile里存储的全局属性，比如屏幕按键显隐，鼠标移动速度等
+        // ? 还应该同步profile里存储的全局属性，比如屏幕按键显隐，鼠标移动速度等
     }
 }
 

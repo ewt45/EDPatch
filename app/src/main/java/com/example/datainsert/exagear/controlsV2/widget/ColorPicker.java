@@ -6,52 +6,50 @@ import static android.view.Gravity.CENTER_VERTICAL;
 import static com.example.datainsert.exagear.controlsV2.Const.dp8;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Outline;
-import android.graphics.Region;
-import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.DrawableWrapper;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.eltechs.axs.helpers.AndroidHelpers;
 import com.example.datainsert.exagear.controlsV2.TestHelper;
 import com.example.datainsert.exagear.QH;
-import com.example.datainsert.exagear.controlsV2.widget.DrawableMosaic;
-import com.example.datainsert.exagear.controlsV2.widget.LimitEditText;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * 创建一个选择颜色的视图
+ *
+ * hsv和hex，只能同时更改一种。
+ * 设置一个flag，0为谁都不更新，1为hsv数值变化时修改结果。2为hex数值变化时修改结果。
+ * 使用hsv时，在数值变化的回调中修改结果颜色，edittext显示文字， edittext处于禁用状态。
+ * 使用hex时，edittext处于启用状态，只有启用时才会修改结果颜色。
  */
 public class ColorPicker extends LinearLayout {
+    private static final int EDIT_NONE = 0, EDIT_HSV = 1, EDIT_HEX = 2;
     static final int max_color_count = 255 * 255 * 255;
     static final int max_alpha_count = 255;
     static final int strokeWidth = AndroidHelpers.dpToPx(2);
     static final int thumbSize = AndroidHelpers.dpToPx(18);
-    private final ColoredSeekbar mSeekH, mSeekS, mSeekV;
-    private final ColoredSeekbar mSeekA;
+    private final ColoredSeekbar mSeekH, mSeekS, mSeekV, mSeekA;
     private final ImageView mImageResult;
     private final LimitEditText mEditHex;
+    private int editFlag = EDIT_NONE;
     private final OnColorChangeListener mChangeListener;
 
-    public ColorPicker(Context context, int initColor, OnColorChangeListener listener) {
-        super(context);
+    public ColorPicker(Context c, int initColor, OnColorChangeListener listener) {
+        super(c);
         setOrientation(HORIZONTAL);
         mChangeListener = listener;
-
-        Context c = context;
 
         int colorCount = 36;
         int step = 360 / colorCount;
@@ -64,28 +62,18 @@ public class ColorPicker extends LinearLayout {
         colorsMain[colorCount] = colorsMain[0];
 
         mSeekH = new ColoredSeekbar(c, max_color_count, colorsMain) {
-            @Override
-            protected void updateProgressDrawable(int color) {
-
-            }
 
             private int getColorValue() {
                 return Color.HSVToColor(new float[]{getHSVValue(), 1f, 1f});
             }
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                super.onProgressChanged(seekBar, progress, fromUser);
+            protected void updateThumbDrawable() {
                 int color = getColorValue();
                 mSeekS.setBaseColor(color);
                 mSeekV.setBaseColor(color);
                 mSeekA.setBaseColor(color);
-                updateResultAndHex();
-            }
-
-            @Override
-            protected void updateThumbDrawable() {
-                ((GradientDrawable) mSeekH.getThumb()).setColor(getColorValue());
+                ((GradientDrawable) mSeekH.getThumb()).setColor(color);
             }
 
             @Override
@@ -101,12 +89,6 @@ public class ColorPicker extends LinearLayout {
 
         //0-1 越小越白。默认1
         mSeekS = new ColoredSeekbar(c, 100) {
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                super.onProgressChanged(seekBar, progress, fromUser);
-                updateResultAndHex();
-            }
 
             @Override
             protected void updateProgressDrawable(int color) {
@@ -133,11 +115,6 @@ public class ColorPicker extends LinearLayout {
 
         // 0-1 越小越黑.默认1
         mSeekV = new ColoredSeekbar(c, 100) {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                super.onProgressChanged(seekBar, progress, fromUser);
-                updateResultAndHex();
-            }
 
             @Override
             protected void updateProgressDrawable(int color) {
@@ -165,14 +142,6 @@ public class ColorPicker extends LinearLayout {
         //0-255 越小越透明，默认255
         mSeekA = new ColoredSeekbar(c, 255) {
             GradientDrawable mProgressGradient;
-//            GradientDrawable mThumbGradient;
-
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                super.onProgressChanged(seekBar, progress, fromUser);
-                updateResultAndHex();
-            }
 
             @Override
             protected Drawable createProgressDrawable(int[] colors) {
@@ -199,12 +168,9 @@ public class ColorPicker extends LinearLayout {
             }
 
             @Override
-            public void setHSVValue(float value) {
-            }
+            public void setHSVValue(float value) {}
         };
 
-        //TODO scrollview的时候 手机上边距还是太大。
-        // 颜色结果要不直接铺满整个视图背景吧，不然滚动的话可能看不到了
         mImageResult = new ImageView(c);
         GradientDrawable resultD = new GradientDrawable();
         resultD.setColor(Color.BLACK);
@@ -213,28 +179,34 @@ public class ColorPicker extends LinearLayout {
         mImageResult.setImageDrawable(resultD);
         mImageResult.setBackground(DrawableMosaic.repeatedBitmapDrawable(c.getResources(), 10));
 
-        mEditHex = new LimitEditText(c);
-        mEditHex.setText("000000");
-        mEditHex.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
-        mEditHex.setFilters(new InputFilter[]{new InputFilter.LengthFilter(6)});
-        mEditHex.setUpdateListener(editText -> {
-            Editable s = editText.getText();
-            for (int i = 0; i < s.length(); i++) {
-                char c1 = s.charAt(i);
-                if ((c1 >= '0' && c1 <= '9') || (c1 >= 'a' && c1 <= 'f') || (c1 >= 'A' && c1 <= 'F'))
-                    continue;
-                s.delete(i, i + 1);
-                return; //只要更改一处，就不往下走了，因为这次更改会再触发一次监听
-            }
+        mEditHex = new LimitEditText(c)
+                .setCustomInputType(LimitEditText.TYPE_HEX_COLOR_ARGB)
+                .setHexColorARGBValue(initColor)
+                .setUpdateListener(editText -> {
+                    //如果自身不处于编辑状态，则仅供显示hex数值，不会触发回调。
+                    if(editFlag == EDIT_HEX)
+                        updateResult(editText.getHexColorARGBValue());
+                });
+        mEditHex.setEnabled(false);
+
+        TextView btnDoneHex = QH.TV.one(c).button().bold().text16Sp().to();
+        boolean[] hexEditing = {false};
+        btnDoneHex.setText("✎");
+        btnDoneHex.setOnClickListener(v -> {
+            hexEditing[0] = !hexEditing[0];
+            btnDoneHex.setText(hexEditing[0] ? "✓" : "✎"); //✔  ✓
+            mEditHex.setEnabled(hexEditing[0]);
+            mSeekH.setEnabled(!hexEditing[0]);
+            mSeekS.setEnabled(!hexEditing[0]);
+            mSeekV.setEnabled(!hexEditing[0]);
+            mSeekA.setEnabled(!hexEditing[0]);
+            editFlag = hexEditing[0] ? EDIT_HEX : EDIT_HSV;
         });
 
-        //TODO 不仅手动输入的时候会进入监听，拖拽seekbar的时候也会改变文字进入监听。要不改成输入法确定？或者平时textview，点击变edittext。
-        // 这个设置会修改seekH的progress，触发监听导致又修改了EditText的值，导致输入和输出不等，不过还好差的不多
-        mEditHex.setOnEditorActionListener((v, actionId, event) -> {
-            String s = v.getText().toString();
-            updateResultAndHSV(0xff000000 | Integer.valueOf(s.isEmpty() ? "0" : s, 16));
-            return true;
-        });
+        LinearLayout linearHex = new LinearLayout(c);
+        linearHex.setOrientation(HORIZONTAL);
+        linearHex.addView(mEditHex, QH.LPLinear.one(0, -2).weight().to());
+        linearHex.addView(btnDoneHex, QH.LPLinear.one(-2, -2).left().right().to());
 
 //        LinearLayout linearResults = new LinearLayout(c);
 //        linearResults.setOrientation(HORIZONTAL);
@@ -244,28 +216,37 @@ public class ColorPicker extends LinearLayout {
         LayoutParams seekParams = new LayoutParams(-1, -2);
         seekParams.topMargin = dp8;
 
-        LinearLayout linearHSVA = new LinearLayout(c);
-        linearHSVA.setOrientation(VERTICAL);
-        linearHSVA.addView(QH.getOneLineWithTitle(c, "H", mSeekH, false));
-        linearHSVA.addView(QH.getOneLineWithTitle(c, "S", mSeekS, false), seekParams);
-        linearHSVA.addView(QH.getOneLineWithTitle(c, "V", mSeekV, false), seekParams);
-        linearHSVA.addView(QH.getOneLineWithTitle(c, "A", mSeekA, false), seekParams);
+        LinearLayout linearHsvHex = new LinearLayout(c);
+        linearHsvHex.setOrientation(VERTICAL);
+        linearHsvHex.addView(getOneLine("H", mSeekH), QH.LPLinear.one(-1, -2).bottom().to());
+        linearHsvHex.addView(getOneLine("S", mSeekS), QH.LPLinear.one(-1, -2).bottom().to());
+        linearHsvHex.addView(getOneLine("V", mSeekV), QH.LPLinear.one(-1, -2).bottom().to());
+        linearHsvHex.addView(getOneLine("A", mSeekA), QH.LPLinear.one(-1, -2).bottom().to());
+        linearHsvHex.addView(getOneLine("HEX", linearHex), QH.LPLinear.one(-1, -2).to());
 
-//        addView(linearResults);
-        addView(mImageResult, QH.LPLinear.one(QH.px(c, 32), QH.px(c, 64)).gravity(CENTER_VERTICAL).to());
-        addView(linearHSVA, QH.LPLinear.one(0, -2).weight().left(dp8 * 2).to());
+        ScrollView scrollHSVA = new ScrollView(c);
+        scrollHSVA.addView(linearHsvHex);
+
+        addView(mImageResult, QH.LPLinear.one(dp8*4, -1).gravity(CENTER_VERTICAL).to());
+        addView(scrollHSVA, QH.LPLinear.one(0, -2).weight().left(dp8 * 2).to());
 
         //初始化值
-        float[] initHsv = new float[3];
-        Color.colorToHSV(initColor, initHsv);
-        int hValueBefore = mSeekH.getProgress();
-        mSeekH.setHSVValue(initHsv[0]);
-        //一般会自动触发H的onProgressChanged来修改SV的背景色，但是如果没变化，就要手动触发了
-        if(mSeekH.getProgress() == hValueBefore)
-            mSeekH.onProgressChanged(mSeekH,hValueBefore,false);
-        mSeekS.setHSVValue(initHsv[1]);
-        mSeekV.setHSVValue(initHsv[2]);
-        mSeekA.setProgress(((initColor & 0xff000000) >> 24) & 0x00ff);
+        updateResult(initColor);
+        //一般会自动触发H的onProgressChanged来修改SV的背景色，但是如果初始颜色就是0，则setProgress没变化不会触发回调，此时就要手动触发了
+        mSeekH.onProgressChanged(mSeekH, mSeekH.getProgress(),false);
+
+        editFlag = EDIT_HSV;
+    }
+
+    private ViewGroup getOneLine(String title, View view) {
+        Context c = view.getContext();
+        LinearLayout linearRoot = new LinearLayout(c);
+        linearRoot.setOrientation(HORIZONTAL);
+        TextView tv = QH.TV.one(c).bold().solidColor().text16Sp().text(title).to();
+        tv.setMinWidth(dp8*3); //不然HSV三个字母宽度不一样。。
+        linearRoot.addView(tv, QH.LPLinear.one(-2, -2).left().gravity(CENTER_VERTICAL).to());
+        linearRoot.addView(view, QH.LPLinear.one(0, -2).weight().left().right().gravity(CENTER_VERTICAL).to());
+        return linearRoot;
     }
 
     /**
@@ -285,39 +266,37 @@ public class ColorPicker extends LinearLayout {
         return builder.toString();
     }
 
-    private int computeColorResult() {
+    private int computeColorResultFromHSV() {
         return Color.HSVToColor(mSeekA.getProgress(), new float[]{mSeekH.getHSVValue(), mSeekS.getHSVValue(), mSeekV.getHSVValue()});
     }
 
     /**
-     * 每次刷新颜色结果显示时调用此函数。
+     * 每次刷新颜色结果显示时调用此函数。根据正在编辑的控件，修改其他控件的颜色
      */
-    private void updateResultAndHex() {
-        int color = computeColorResult();
+    private void updateResult(int color) {
         ((GradientDrawable) mImageResult.getDrawable()).setColor(color);
-        mEditHex.setText(colorToHexString(color));
 
-        mChangeListener.onColorChange(color);
-    }
+        if(editFlag != EDIT_HSV) {
+            float[] hsv = new float[3];
+            Color.colorToHSV(color, hsv);
+            mSeekH.setHSVValue(hsv[0]);
+            mSeekS.setHSVValue(hsv[1]);
+            mSeekV.setHSVValue(hsv[2]);
+            mSeekA.setProgress(TestHelper.getColorAlpha(color));
+        }
 
-    /**
-     * 每次刷新颜色结果显示时调用此函数。
-     * @param color 请确保透明度为ff
-     */
-    private void updateResultAndHSV(int color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(color, hsv);
-        mSeekH.setHSVValue(hsv[0]);
-        mSeekS.setHSVValue(hsv[1]);
-        mSeekV.setHSVValue(hsv[2]);
+        if(editFlag != EDIT_HEX) {
+            mEditHex.setText(colorToHexString(color));
+        }
 
-        mChangeListener.onColorChange(color);
+        if(editFlag != EDIT_NONE)
+            mChangeListener.onColorChange(color);
     }
 
     public interface OnColorChangeListener{
         void onColorChange(int argb);
     }
-    private abstract static class ColoredSeekbar extends android.support.v7.widget.AppCompatSeekBar
+    private abstract class ColoredSeekbar extends android.support.v7.widget.AppCompatSeekBar
             implements TestHelper.SimpleSeekbarListener {
         protected int mColor;
 
@@ -370,11 +349,15 @@ public class ColorPicker extends LinearLayout {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             updateThumbDrawable();
+            if(fromUser && editFlag == EDIT_HSV)
+                updateResult(computeColorResultFromHSV());
         }
 
-        abstract protected void updateProgressDrawable(int color);
+        protected void updateProgressDrawable(int color) { }
 
         abstract protected void updateThumbDrawable();
+//        /** 当onProgressChanged被调用时，如果传入参数fromUser为true，则调用此函数更新数据*/
+//         protected void updateValueFromUser(int progress){};
 
 
         /**

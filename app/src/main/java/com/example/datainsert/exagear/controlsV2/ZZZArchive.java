@@ -74,7 +74,7 @@ public class ZZZArchive {
     }
 
     public void inchToPx(){ //from: StateCountDownMeasureSpeed
-        //TODO 感觉有问题，如果这个距离单位是inch的话，应该获取xdpi才对
+        //感觉有问题，如果这个距离单位是inch的话，应该获取xdpi才对
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_IN, 0.03f, Const.getContext().getResources().getDisplayMetrics());
         float dpi = Const.getDpi();
         float maxMovePx = Const.fingerStandingMaxMoveInches * dpi;

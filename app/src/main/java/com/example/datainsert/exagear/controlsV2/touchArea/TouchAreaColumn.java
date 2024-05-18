@@ -58,17 +58,17 @@ public class TouchAreaColumn extends TouchArea<OneColumn> {
         //        mPaint.setStyle(mData.shape== Const.BtnShape.RECT? Paint.Style.FILL_AND_STROKE: Paint.Style.STROKE);
 //        mPaint.setColor(mData.bgColor);
 
-        mLinePaint.setColor(mModel.mainColor);
+        mLinePaint.setColor(mModel.getMainColor());
         mLinePaint.setStyle(Paint.Style.STROKE);
         mLinePaint.setStrokeWidth(TOUCH_AREA_STROKE_WIDTH);
 
 
-        int tmpStyle = mModel.colorStyle;
+        int tmpStyle = mModel.getColorStyle();
         if (mModel.isPressed())
             tmpStyle = tmpStyle == STROKE ? FILL : STROKE; //如果按下了，颜色反转
 
 //        mDrawable.setBounds(mModel.getLeft(), 0, mModel.getLeft() + width, mModel.getTop()+height);
-        mDrawable.setStroke(TOUCH_AREA_STROKE_WIDTH, mModel.mainColor);
+        mDrawable.setStroke(TOUCH_AREA_STROKE_WIDTH, mModel.getMainColor());
         mDrawable.setCornerRadius(TOUCH_AREA_ROUND_CORNER_RADIUS);
 
 //        mDrawable.setStroke(tmpStyle == STROKE ? 4 : 0, mModel.mainColor);
@@ -80,7 +80,7 @@ public class TouchAreaColumn extends TouchArea<OneColumn> {
 //        float finalTxtSize = mTextPaint.getTextSize() * mModel.getWidth() / currTxtWidthIfDraw;//再根据当前实际宽度，缩放文字大小
 //        mTextPaint.setTextSize(finalTxtSize);
 //        mTextPaint.setColor(tmpStyle == STROKE ? mModel.mainColor : TestHelper.getContrastColor(mModel.mainColor));
-        mTextPaint.setColor(mModel.mainColor);
+        mTextPaint.setColor(mModel.getMainColor());
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.setStyle(Paint.Style.FILL);
 //        mTextPaint.setXfermode(mData.colorStyle == STROKE?null:mDSTOVERMode ); //设置颜色混合

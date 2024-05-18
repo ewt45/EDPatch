@@ -24,6 +24,7 @@ import java.util.List;
 /**
  * 存model列表和touchArea列表，每个model对应一个area，
  * model添加或删除只能通过这个类进行，且只能通过add和remove函数，直接操作列表会报错
+ * 添加新toucharea的时候，应该插入到0的位置。然后遍历的时候先遍历到。手势区域应该放在最后一个。
  * model增删时会自动增删area
  * 从json反序列化出来之后记得调用sync函数同步area列表
  */
@@ -170,10 +171,8 @@ public class OneProfile {
         return umodifiableList;
     }
 
-
-
     /**
-     * 同{@link #addModelAndAddArea(int, TouchAreaModel)}
+     * 同{@link #addModelAndAddArea(int, TouchAreaModel)} ， index传入0
      */
     public TouchArea<? extends TouchAreaModel> addModelAndAddArea(TouchAreaModel model) {
         return addModelAndAddArea(0, model);
@@ -183,6 +182,7 @@ public class OneProfile {
      * 根据model添加一个按钮触摸区域，（因为手势触摸区域固定有且只有一块，不会添加或删除），根据model类型添加对应的adapter。
      * <br/>注意model应不属于当前任何一个touchArea （这句已废弃：注意area最终使用的model并非传入的实例，所以在调用此方法后应通过area.getModel()来获取实际的model
      * <br/>注意TouchAreaModel可能有继承关系，所以不能用instanceOf，应该用getClass().equals
+     * @param index 如果是新建按钮时，应该将index设为0，因为最后一个index代表的是手势区域
      */
     public TouchArea<? extends TouchAreaModel> addModelAndAddArea(int index, TouchAreaModel model) {
         if(model==null)

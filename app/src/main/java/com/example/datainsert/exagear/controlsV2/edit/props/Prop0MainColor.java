@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,9 +25,7 @@ import com.example.datainsert.exagear.QH;
 
 public class Prop0MainColor extends Prop<TouchAreaModel> {
     GradientDrawable mDrawable;
-    LimitEditText mEdit;
     TextView mTvColorStyle;
-    boolean isEditingEdit=false;
     int[] colorStyleInts = new int[]{Const.BtnColorStyle.STROKE, Const.BtnColorStyle.FILL};
     String[] colorStyleNames = RR.getSArr(RR.ctr2_prop_colorStyle_names); //描边, 填充
 
@@ -36,13 +35,8 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
 
     @Override
     public void updateUIFromModel(TouchAreaModel model) {
-        mDrawable.setColor(model.mainColor);
-
-        String modelStr = Integer.toHexString(model.mainColor);
-        if (!isEditingEdit && !mEdit.getText().toString().equals(modelStr))
-            mEdit.setHexColorARGBValue(model.mainColor);
-
-        mTvColorStyle.setText(colorStyleNames[model.colorStyle]);
+        mDrawable.setColor(model.getMainColor());
+        mTvColorStyle.setText(colorStyleNames[model.getColorStyle()]);
     }
 
     /**
@@ -66,19 +60,13 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
         imageBgColor.setImageDrawable(ColorPicker.wrapAlphaAlertBg(c, mDrawable, 10));
         imageBgColor.setMinimumHeight(minTouchSize);
         imageBgColor.setOnClickListener(v -> {
-            LinearLayout linearColorRoot = new LinearLayout(c);
-            linearColorRoot.setPadding(dp8, dp8, dp8, dp8);
-            linearColorRoot.setOrientation(VERTICAL);
-            linearColorRoot.addView(new ColorPicker(c, mHost.getModel().mainColor, argb -> {
-                mHost.getModel().mainColor = argb;
+            ColorPicker picker = new ColorPicker(c, mHost.getModel().getMainColor(), argb -> {
+                mHost.getModel().setMainColor(argb);
                 onWidgetListener();
-            }));
-            new AlertDialog.Builder(c)
-                    .setView(TestHelper.wrapAsScrollView(linearColorRoot))
-                    .setPositiveButton(android.R.string.ok, null)
-                    .setCancelable(false)
-                    .show();
-//            mHost.getWindow().toNextView(linearColorRoot,getTitle());
+            });
+            int padding = dp8 * 2;
+            picker.setPadding(padding, padding, padding, padding);
+            Const.getEditWindow().toNextView(picker, "选择颜色");
         });
 
         mTvColorStyle = new TextView(c);
@@ -88,8 +76,8 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
         TestHelper.setTextViewSwapDrawable(mTvColorStyle);
         QH.setRippleBackground(mTvColorStyle);
         mTvColorStyle.setOnClickListener(v->{
-            int oldStyle = mHost.getModel().colorStyle;
-            mHost.getModel().colorStyle = (oldStyle+1)%colorStyleInts.length;
+            int oldStyle = mHost.getModel().getColorStyle();
+            mHost.getModel().setColorStyle((oldStyle+1)%colorStyleInts.length);
             onWidgetListener();
         });
 
@@ -104,18 +92,6 @@ public class Prop0MainColor extends Prop<TouchAreaModel> {
 
     @Override
     protected View createAltEditView(Context c) {
-        //颜色 输入十六进制
-        mEdit = new LimitEditText(c)
-                .setCustomInputType(LimitEditText.TYPE_HEX_COLOR_ARGB)
-                .setUpdateListener(editText -> {
-                    //用户输入->内容改变->设置到model，调用update-> update里又重新设置到edit，内容又改变？
-                    mHost.getModel().mainColor = editText.getHexColorARGBValue();
-                    isEditingEdit=true;
-                    onWidgetListener();
-                    isEditingEdit=false;
-                });
-        mEdit.setMinWidth(dp8*8);
-        mEdit.setMinimumWidth(dp8*8);
-        return mEdit;
+        return null;
     }
 }

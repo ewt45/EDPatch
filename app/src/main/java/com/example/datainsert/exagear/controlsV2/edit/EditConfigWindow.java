@@ -17,7 +17,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -131,7 +130,7 @@ public class EditConfigWindow extends RelativeLayout {
 
                 //放大时，可能会导致左侧出边界然后无法移动，所以需要限制位置。但是必须放在post里否则不生效（emm缩小时也需要）
                 //另外，设置LayoutTransition也会导致限制不生效。为LayoutTransition设置监听器，会导致回正用力过度不知道怎么解决，所以只好在放大的时候临时取消动画。。
-                post(() -> TestHelper.restrictViewInsideParent(EditConfigWindow.this, (FrameLayout) getParent()));
+                post(() -> TestHelper.restrictEditWindowInsideParent(EditConfigWindow.this, (FrameLayout) getParent()));
 
                 isMinimized = !isMinimized;
             }

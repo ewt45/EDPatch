@@ -33,6 +33,12 @@ public class ExampleInstrumentedTest {
     private static final String TAG = "ExampleInstrumentedTest";
 
     @Test
+    public void 测试_矩阵和逆矩阵的计算结果() {
+        int progress = 20;
+        Matrix matrix = new Matrix();
+    }
+
+    @Test
     public void 测试_安卓dalvikvm运行外部java代码是否是在同进程下() throws IOException {
 //        //对比：进程号，某个类的变量
 //        int mainPid = Process.myPid();

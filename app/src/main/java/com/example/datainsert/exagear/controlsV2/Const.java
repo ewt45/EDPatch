@@ -161,7 +161,7 @@ public class Const {
     public static void clear() {
         activityRef = null;
         xServerViewHolder = null;
-        //TODO touchAreaView不清空了，声明周期让fragment维护（其附属的的view和profile也要考虑下怎么办）
+        //TODO touchAreaView不清空了，生命周期让fragment维护（其附属的的view和profile也要考虑下怎么办）
 //        editKeyViewRef = null;
 //        touchAreaViewRef = null;
 //        gestureContextRef = null;

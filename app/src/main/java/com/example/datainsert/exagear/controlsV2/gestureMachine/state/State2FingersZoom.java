@@ -50,6 +50,7 @@ public class State2FingersZoom extends FSMState2 implements TouchAdapter {
 //        lastDistance = GeometryHelpers.distance(finger1.getX(), finger1.getY(), finger2.getX(), finger2.getY());
         mZoomController = getContext().getZoomController();
 //        mZoomController.setAnchorBoth(finger1.getX(), finger1.getY());
+        //为什么原代码用的getXWhenFingerCountLastChanged？
         mZoomController.start(finger1.getX(),finger1.getY(),finger2.getX(),finger2.getY());
     }
 

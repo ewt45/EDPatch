@@ -54,7 +54,6 @@ public class XZoomHandlerImpl implements XZoomHandler {
     @Override
     public void start(float x1, float y1, float x2, float y2) {
         lastDistance = TestHelper.distance(x1, y1, x2, y2);
-        //TODO 为什么原代码用的getXWhenFingerCountLastChanged？
         setAnchorWhenStart(x1,y1);
         setAnchorLatest(x1,y1);
     }
@@ -112,10 +111,12 @@ public class XZoomHandlerImpl implements XZoomHandler {
     }
 
     /**
+     * 尚未实现！！
      * 直接设置缩放倍率。默认以屏幕中心为原点吧
      */
     public void setZoomFactor(double factor) {
-        //TODO 模拟调用start()和update()，第一次传左上角和右下角，第二次传左上角*factor和右下角*factor？
+        //模拟调用start()和update()，第一次传左上角和右下角，第二次传左上角*factor和右下角*factor？
+        throw new RuntimeException("尚未实现");
     }
 
     public boolean isZoomed() {

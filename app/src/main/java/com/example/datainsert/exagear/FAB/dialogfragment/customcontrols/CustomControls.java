@@ -59,6 +59,7 @@ import com.example.datainsert.exagear.controls.model.KeyCodes3;
 import com.example.datainsert.exagear.controlsV2.Const;
 import com.example.datainsert.exagear.controlsV2.ControlsFragment;
 import com.example.datainsert.exagear.controlsV2.XServerViewHolderImpl;
+import com.example.datainsert.exagear.controlsV2.XServerViewHolderStub;
 
 import org.apache.commons.io.FileUtils;
 
@@ -111,7 +112,7 @@ public class CustomControls extends BaseFragment implements DialogInterface.OnCl
         ActionBar actionBar = ((AppCompatActivity)a).getSupportActionBar();
         if (actionBar != null) actionBar.hide();
 
-        Const.init(a, new XServerViewHolderImpl(null));
+        Const.init(a, new XServerViewHolderStub());
         ControlsFragment fragment = new ControlsFragment()  ;
         Bundle args = new Bundle();
         args.putBoolean(ControlsFragment.ARGV_START_EDIT_ON_SHOW,true);

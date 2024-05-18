@@ -157,17 +157,7 @@ public abstract class TouchArea<T extends TouchAreaModel> {
         return mAdapter;
     }
 
-    protected View getEditView(){
-        //TODO
-        return  new TextView(mHost.getContext());
-    }
-
     public T getModel(){
         return mModel;
-    }
-
-
-    static class EditCallback{
-
     }
 }

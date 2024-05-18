@@ -19,7 +19,6 @@ import com.eltechs.ed.activities.EDMainActivity;
 import com.example.datainsert.exagear.controlsV2.model.ModelProvider;
 import com.example.datainsert.exagear.controlsV2.model.OneProfile;
 
-//TODO fab里也改成这个fragment，还是去掉？
 public class ControlsFragment extends Fragment {
     public static final String ARGV_START_EDIT_ON_SHOW = "ARGV_START_EDIT_ON_SHOW";
     private static final String TAG = "ControlsFragment";

@@ -88,7 +88,7 @@ public class GestureContext2 {
     }
 
     public XZoomHandler getZoomController() {
-        return this.host.getZoomController();
+        return this.host.getZoomHandler();
     }
 
 

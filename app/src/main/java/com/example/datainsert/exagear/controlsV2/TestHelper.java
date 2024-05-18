@@ -112,7 +112,7 @@ public class TestHelper {
                         noClickWhenFinish=false;
 
                         //如果移出了父视图边界，应该回到边界内
-                        restrictViewInsideParent(movedView, (FrameLayout) movedView.getParent());
+                        restrictEditWindowInsideParent(movedView, (FrameLayout) movedView.getParent());
                         return true;
                     }
                 }
@@ -122,16 +122,18 @@ public class TestHelper {
     }
 
     /**
-     * 当一个视图移动了位置的时候，限制它不允许出父视图边界
+     * 将EditConfigWindow的位置限制在父视图内。因为用于拖拽移动的按钮放在左上角，所以：
+     * <br/> 左，上：不能超出父边界（加上8dp的margin）
+     * <br/> 右，下：可适当超出父边界，但留在父视图边界内，可见的部分不得小于minTouchSize
      *
      * @param movedView 移动了位置的视图
      * @param parent    父视图，必须是FrameLayout
      */
-    public static void restrictViewInsideParent(View movedView, FrameLayout parent) {
+    public static void restrictEditWindowInsideParent(View movedView, FrameLayout parent) {
         FrameLayout.LayoutParams paramsUpd = (FrameLayout.LayoutParams) movedView.getLayoutParams();
 
-        //TODO 应该是留在父视图内部的剩余部分，应该保持最小宽度即可，出一点边界没关系
-        // 目前只有下方和右方这么改了，左和上还是不能出界。目前这个布局没问题因为移动的按下位置就在左上角，但是为了兼容性之后还是改一下吧）
+        //应该是留在父视图内部的剩余部分，保持最小宽度即可，出一点边界没关系。
+        // 目前只有下方和右方这么改了，左和上还是不能出界。目前这个布局没问题因为移动的按下位置就在左上角，但是为了兼容性之后还是改一下吧）算了先只给EditWindow用吧
 
         // 因为初始时gravity为center，导致leftMargin为0时不是贴的父视图左边，所以不能直接读写leftMargin的值
         if (movedView.getLeft() < dp8)
@@ -144,15 +146,15 @@ public class TestHelper {
 
         //烦死了 onMeasure那里AT_MOST的话貌似又不用限制最小宽度也可能出界了。干脆右-左和 右对比父右 都看一下就行了
         int minTouchSize = dp8 * 6;
-        if (movedView.getRight() - movedView.getLeft() < minTouchSize)
-            paramsUpd.leftMargin -= minTouchSize - (movedView.getRight() - movedView.getLeft());
-        else if (parent.getWidth() - movedView.getLeft() < minTouchSize)
-            paramsUpd.leftMargin -= minTouchSize - (parent.getWidth() - movedView.getLeft());
 
-        if (movedView.getBottom() - movedView.getTop() < minTouchSize)
-            paramsUpd.topMargin -= minTouchSize - (movedView.getBottom() - movedView.getTop());
-        else if (parent.getHeight() - movedView.getTop() < minTouchSize)
-            paramsUpd.topMargin -= minTouchSize - (parent.getHeight() - movedView.getTop());
+        int smallestWidth = Math.min(movedView.getRight(), parent.getWidth()) - movedView.getLeft();
+        if(smallestWidth < minTouchSize)
+            paramsUpd.leftMargin -= minTouchSize - smallestWidth;
+
+        int smallestHeight = Math.min(movedView.getBottom(), parent.getHeight()) - movedView.getTop();
+        if (smallestHeight < minTouchSize)
+            paramsUpd.topMargin -= minTouchSize - smallestHeight;
+
         movedView.setLayoutParams(paramsUpd);
     }
 
@@ -235,8 +237,12 @@ public class TestHelper {
         return (argb & 0x00ffffff) | (alpha << 24);
     }
 
+    public static int getColorAlpha(int argb) {
+        return ((argb & 0xff000000) >> 24) & 0x00ff;
+    }
+
     /**
-     * 根据给定颜色，返回黑色或白色（看哪个对比度更高）
+     * 根据给定颜色，返回黑色或白色（看哪个对比度更高）。透明度与原颜色保持一致
      */
     public static int getContrastColor(int oriColor) {
         int alpha = oriColor & 0xff000000;

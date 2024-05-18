@@ -23,11 +23,11 @@ public abstract class TouchAreaModel {
     public static final int TYPE_GESTURE = 3;
     public static final int TYPE_COLUMN = 4;
     public static final int TYPE_NONE=-1;
-    //TODO 保证编辑完成时改值不为空， keycodes至少存在一个按键
-    protected final List<Integer> keycodes;
-    public int mainColor = Const.defaultTouchAreaBgColor;
+    //保证编辑完成时该值不为空， keycodes至少存在一个按键
+    private final List<Integer> keycodes;
+    private int mainColor = Const.defaultTouchAreaBgColor;
     @Const.BtnColorStyle
-    public int colorStyle = Const.BtnColorStyle.STROKE;
+    private int colorStyle = Const.BtnColorStyle.STROKE;
     @SerializedName(value = Const.GsonField.md_ModelType)
     @ModelType
     protected int modelType = TYPE_NONE;//这个要在每个子类里构造函数的时候设置成对应的
@@ -43,7 +43,7 @@ public abstract class TouchAreaModel {
         keycodes = new ArrayList<>();
         keycodes.add(0);
 //        name = getKeycodesString();
-        //TODO 像这种初始化用到别的地方的变量的，构造函数不为空的，会出问题吗
+        //是先走到构造函数还是先走到变量的直接赋值？ （先变量直接赋值，再走到这里）
         width = mMinAreaSize;
         height = mMinAreaSize;
     }
@@ -63,6 +63,9 @@ public abstract class TouchAreaModel {
     }
 
     public List<Integer> getKeycodes() {
+        //保证该值不为空， keycodes至少存在一个按键
+        if(keycodes.isEmpty())
+            keycodes.add(0);
         return keycodes;
     }
 
@@ -162,6 +165,22 @@ public abstract class TouchAreaModel {
         this.height = Math.max(mMinAreaSize, floorDivToSmallestUnit(height));
     }
 
+    public int getMainColor() {
+        return mainColor;
+    }
+
+    public void setMainColor(int mainColor) {
+        this.mainColor = mainColor;
+    }
+
+    public int getColorStyle() {
+        return colorStyle;
+    }
+
+    public void setColorStyle(int colorStyle) {
+        this.colorStyle = colorStyle;
+    }
+
     /**
      * 为方便对齐，需要将left，top，width，height全部转换为dp8(对应的px值)的倍数，向下取整
      */
@@ -184,17 +203,14 @@ public abstract class TouchAreaModel {
     public void cloneOf(TouchAreaModel ref){
         if(ref==null)
             return;
-        mainColor = ref.mainColor;
-        colorStyle = ref.colorStyle;
-        left = ref.left;
-//        modelType = ref.modelType; //草，这个自身类型不要复制啊，不然就变身了
 
+//        modelType = ref.modelType; //草，这个自身类型不要复制啊，不然就变身了
+        mainColor = ref.mainColor;
+        setColorStyle(ref.getColorStyle());
         setLeft(ref.getLeft());
         setTop(ref.getTop());
         setWidth(ref.getWidth());
         setHeight(ref.getHeight()); //通过setter函数，这样能处理对应的限制
-        colorStyle = ref.colorStyle;
-        mainColor = ref.mainColor;
         setKeycodes(ref.keycodes);
 
         cloneSelfFields(ref);

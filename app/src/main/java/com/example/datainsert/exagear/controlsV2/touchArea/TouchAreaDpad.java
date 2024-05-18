@@ -29,12 +29,12 @@ public class TouchAreaDpad extends TouchAreaStick {
     }
 
     private void updatePaint() {
-        int darkenColor = TestHelper.darkenColor(mModel.mainColor);
+        int darkenColor = TestHelper.darkenColor(mModel.getMainColor());
         int strokeWidth = (int) (getModel().getOuterRadius()/16);
         int barWidth = mModel.getSize() / 3; //一个横条或者竖条的宽度
         mRectDraw.setCornerRadius(4);
         mRectDraw.setStroke(strokeWidth, darkenColor);
-        mRectDraw.setColor(mModel.mainColor);
+        mRectDraw.setColor(mModel.getMainColor());
         //设置成横条，然后绘制的时候旋转90度在绘制个竖条
         mRectDraw.setBounds(mModel.getLeft(), mModel.getTop() + barWidth, mModel.getLeft() + mModel.getSize(), mModel.getTop() + mModel.getSize() * 2 / 3);
 
